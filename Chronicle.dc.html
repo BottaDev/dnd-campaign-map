@@ -617,7 +617,7 @@ class Component extends DCLogic {
     document.removeEventListener("mouseup", this._onUp);
   }
 
-  worldH(){ return (this._world && this._world.offsetHeight) ? this._world.offsetHeight : ((this._vp?this._vp.clientWidth:836)*5400/8100); }
+  worldH(){ return (this._vp ? this._vp.clientWidth : 836) * 5400/8100; }
   clampView(v){
     const vp=this._vp; if(!vp) return v;
     const vw=vp.clientWidth, vh=vp.clientHeight;
@@ -678,7 +678,7 @@ class Component extends DCLogic {
     const filtered = this.filtered();
     const selId = this.state.selectedId;
     const view = this.state.view;
-    const inv = 1/view.scale;
+    const inv = 6/view.scale;
 
     const partyRows = this.characters.map(c=>{
       const on = en[c.id];
@@ -811,7 +811,7 @@ class Component extends DCLogic {
       rightTabShown: !!panel && this.state.rightCollapsed,
       onRightExpand:()=>this.setRightCollapsed(false),
       vpRef:this.vpRef, worldRef:this.worldRef,
-      worldStyle:`position:absolute;top:0;left:0;width:100%;transform:translate(${view.x}px,${view.y}px) scale(${view.scale});transform-origin:0 0;will-change:transform;`,
+      worldStyle:`position:absolute;top:0;left:0;width:600%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/6).toFixed(6)});transform-origin:0 0;will-change:transform;`,
       onDown:e=>{ this._drag={px:e.clientX,py:e.clientY}; if(this._vp) this._vp.style.cursor="grabbing"; },
       stop:e=>e.stopPropagation(),
       onImgLoad:()=>this.setView(this.state.view),
