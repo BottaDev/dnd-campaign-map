@@ -1,0 +1,94 @@
+Game Log 
+Session #xx - xx.xx.xxxx
+Starting Notes
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="540" w:right="0" w:hanging="270"/><w:jc w:val="left"/><w:rPr><w:b w:val="1"/><w:bCs w:val="1"/></w:rPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">We started here
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="540" w:right="0" w:hanging="270"/><w:jc w:val="left"/><w:rPr><w:u w:val="none"/></w:rPr><w:sectPr><w:type w:val="continuous"/><w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">We ended here
+Session Log
+In Game Time (xxxx DR)
+Start: Marpenoth 17, 11:00 AM</w:r><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:b w:val="1"/><w:bCs w:val="1"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">End: Marpenoth 17, 12:00 PM</w:r><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:b w:val="1"/><w:bCs w:val="1"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Last Long Rest: Marpenoth 17, 7:00 AM
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:bookmarkStart w:colFirst="0" w:colLast="0" w:name="_w796671dvtqm" w:id="5"/><w:bookmarkEnd w:id="5"/><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Active Effects at Session’s End:
+A has mage armor up
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">B is holding an action
+Active Plots
+Plot A -  Lorem ipsum
+Quest / Threat
+Lorem ipsum 
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:bookmarkStart w:colFirst="0" w:colLast="0" w:name="_7pauzd7p7mvx" w:id="9"/><w:bookmarkEnd w:id="9"/><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">NPCs &amp; Locations:
+Person
+Place
+Name (race); role
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Name (region)
+Notes:
+Notes notes notes
+More notes
+Sub-notes
+More sub-notes
+Plot B -  Lorem ipsum
+Quest / Threat
+Lorem ipsum 
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:bookmarkStart w:colFirst="0" w:colLast="0" w:name="_347yuoummrgr" w:id="13"/><w:bookmarkEnd w:id="13"/><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">NPCs &amp; Locations:
+Person
+Place
+Name (race); role
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Name (region)
+Notes:
+Notes notes notes
+More notes
+Sub-notes
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">More sub-notes
+Plot C -  Lorem ipsum
+Quest / Threat
+Lorem ipsum 
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:bookmarkStart w:colFirst="0" w:colLast="0" w:name="_hsgshen7ppc" w:id="17"/><w:bookmarkEnd w:id="17"/><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">NPCs &amp; Locations:
+Person
+Place
+Name (race); role
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Name (region)
+Notes:
+Notes notes notes
+More notes
+Sub-notes
+More sub-notes
+Completed Plots
+Name of plot (Marpenoth 15)
+Quest / Threat
+Lorem ipsum 
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="1"><w:col w:space="0" w:w="9889.5"/></w:cols></w:sectPr></w:pPr><w:bookmarkStart w:colFirst="0" w:colLast="0" w:name="_jxc9xt667hqu" w:id="22"/><w:bookmarkEnd w:id="22"/><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">NPCs &amp; Locations:
+Person
+Place
+Name (race); role
+<w:pgSz w:h="16838" w:w="11906" w:orient="portrait"/><w:pgMar w:bottom="720" w:top="720" w:left="1008" w:right="1008" w:header="0" w:footer="720"/><w:cols w:equalWidth="0" w:num="2"><w:col w:space="720" w:w="4584.74"/><w:col w:space="0" w:w="4584.74"/></w:cols></w:sectPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Name (region)
+Notes:
+Notes notes notes
+More notes
+Sub-notes
+More sub-notes
+Global Notes
+Global Achievements
+Records
+85.4 lbs
+XXX
+TBD
+Allies
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="240" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Name
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="240" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Location
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="240" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Affiliations
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="240" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/></w:rPr></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rFonts w:ascii="Alegreya SC Medium" w:cs="Alegreya SC Medium" w:eastAsia="Alegreya SC Medium" w:hAnsi="Alegreya SC Medium"/><w:color w:val="660000"/><w:sz w:val="26"/><w:szCs w:val="26"/><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Notes
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Goblin Boss, Izobai
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Unknown
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Twisting Spear Tribe
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Hlin Trollbane
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Beldora
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Bryn Shander
+<w:left w:space="0" w:sz="0" w:val="nil"/><w:bottom w:space="0" w:sz="0" w:val="nil"/><w:right w:space="0" w:sz="0" w:val="nil"/><w:between w:space="0" w:sz="0" w:val="nil"/></w:pBdr><w:shd w:fill="auto" w:val="clear"/><w:spacing w:after="0" w:before="0" w:line="276" w:lineRule="auto"/><w:ind w:left="0" w:right="0" w:firstLine="0"/><w:jc w:val="left"/><w:rPr/></w:pPr><w:r w:rsidDel="00000000" w:rsidR="00000000" w:rsidRPr="00000000"><w:rPr><w:rtl w:val="0"/></w:rPr><w:t xml:space="preserve">Homeless
+Enemies
+Name
+Location
+Affiliations
+Notes
+Torga Icevein
+Unknown
+Torgs Merchant Caravan
+Z
+Targos
+???
