@@ -4,70 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Running the app
 
-No build step. Open [Chronicle.dc.html](Chronicle.dc.html) directly in a browser. The app is self-contained; `support.js` is the only dependency and is already bundled.
+```
+npx serve -p 5500 .
+```
 
-> `support.js` is generated — do **not** edit it manually. The comment at the top says to rebuild it from `dc-runtime/src/*.ts` with `cd dc-runtime && bun run build`, but that source directory is not present in this repo.
+Open `http://localhost:5500/Chronicle.dc.html` in a browser. There is no build step for the app itself — all content is in the single `.dc.html` file. Just reload the browser after edits.
+
+## Rebuilding support.js
+
+`support.js` is a generated bundle — do **not** edit it directly. The source lives in a separate `dc-runtime` repo/directory (not present here). The comment at the top of `support.js` shows the rebuild command:
+
+```
+cd dc-runtime && bun run build
+```
 
 ## Architecture
 
-The entire application lives in one file: **`Chronicle.dc.html`**.
+This is a single-file **Design Component** (`.dc.html`) application powered by the `dc-runtime`. The runtime is loaded via `support.js`, which in turn loads React 18 from unpkg before booting.
 
-It uses a custom **DC (Document Component) runtime** (`support.js`) built on top of React (loaded globally as `window.React`). The DC runtime is not a published package — `support.js` is a bundled build of it.
+### dc-runtime concepts
 
-### DC file format
+- **`<x-dc>`** — wraps the entire template; the runtime strips it and mounts a React root in its place.
+- **`{{ expr }}`** — template interpolation; `expr` resolves against the values returned by `renderVals()`.
+- **`<sc-for list="{{ … }}" as="item">`** / **`<sc-if value="{{ … }}">`** — structural directives compiled into React elements.
+- **`<helmet>`** — injects `<link>`, `<style>`, `<script>` tags into `<head>` at runtime.
+- **`<script type="text/x-dc" data-dc-script>`** — the logic block; must define `class Component extends DCLogic`. The `data-props` attribute carries JSON metadata for the editor.
+- **`style-hover="…"`** — pseudo-class helper that injects a scoped CSS rule via the pseudo sheet.
+- **`DCLogic` / `StreamableLogic`** — base class for the component. Key methods: `renderVals()` (returns the values available to the template), `setState()`, `componentDidMount()`, `componentWillUnmount()`.
 
-A `.dc.html` file has three parts inside `<x-dc>`:
+### Chronicle.dc.html structure
 
-1. **HTML template** — Mustache-style `{{ variable }}` interpolation. Directives `<sc-for list="{{ … }}" as="item">` and `<sc-if value="{{ … }}">` handle loops and conditionals. Inline event handlers use `onClick="{{ handler }}"`.
-2. **`<helmet>`** — injected into `<head>` (fonts, global styles).
-3. **`<script type="text/x-dc" data-dc-script>`** — contains `class Component extends DCLogic { … }`. Props schema and preview size live in `data-props` on this element (JSON-encoded).
+The file is a single-component D&D campaign chronicle with three panes:
 
-### Component lifecycle
+| Pane | Content |
+|------|---------|
+| Left sidebar | Party member filters, date/text filters, chronological event timeline |
+| Center | Pannable/zoomable Exandria map with character route SVG overlays and event pins |
+| Right panel | Session log — opened when an event pin or timeline card is clicked |
 
-- **`constructor(props)`** — define `this.characters`, `this.events`, `this.sessions`, `this.codex`, `this.routes`, and initial `this.state`.
-- **`componentDidMount()` / `componentWillUnmount()`** — wire up wheel/mouse listeners for map pan & zoom; set up auto-centering retries.
-- **`renderVals()`** — returns a flat object of every template variable. This is the only method the DC runtime calls for rendering. There is no `render()` or JSX.
+**Data is hard-coded inside the `Component` constructor:**
+- `this.characters` — the four PCs with portrait image paths and colors
+- `this.routes` — arrays of `{xp, yp}` waypoints (% of map dimensions) per character
+- `this.events` — individual campaign events, each with `{id, date, session, igLabel, title, summary, xp, yp, characterIds[]}`
+- `this.sessions` — keyed by session number; each entry has the full session log (plots, NPCs, notes, effects)
 
-### Data model (all hardcoded in the constructor)
+**Key helper classes inside the script block:**
+- `MapViewport` — handles wheel zoom, mouse-drag pan, clamping, and centering on a selected event
+- `DocsStore` — `localStorage` persistence for any per-event title/body overrides
+- `FILTER_PREDICATES` — array of filter functions (text search, date range) applied in `passes()`
 
-| Field | Description |
-|---|---|
-| `this.characters` | Array of `{ id, name, role, color, seal }` — the party members |
-| `this.events` | Array of campaign events with `{ id, date, session, igLabel, title, summary, xp, yp, tags, characterIds }` — `xp/yp` are `%` coordinates on the Exandria map |
-| `this.routes` | Per-character arrays of `{ xp, yp }` waypoints drawn as SVG polylines on the map |
-| `this.sessions` | Keyed by session number; each entry holds the session log: `startedHere`, `endedHere`, `ig` times, `effects`, `activePlots`, `completedPlots` |
-| `this.codex` | Global reference data: `records` (stats), `allies`, `enemies` |
+**`renderVals()` builds all template bindings**, including `partyRows`, `timeline`, `pins`, `routesSvg`, `sel` (selected event popup), and `panel` (right session panel).
 
-### Map & viewport
+### Assets
 
-The map image is `assets/exandria-map.jpeg`. Coordinates (`xp`, `yp`) are percentages of the full image dimensions. The viewport supports mouse-drag panning and scroll-wheel zooming (`MIN=1`, `MAX=6`). `centerOn(ev, minScale)` computes the view transform to bring an event's pin to the center of the viewport.
+- `assets/exandria-map.jpeg` — the base map image
+- `assets/icon-{ayante,ereldra,mortis,sorfon}.jpeg` — circular PC portrait images used as map seals and sidebar avatars
 
-### State
+### Adding a new session or event
 
-```js
-this.state = {
-  enabled: { sorfon, ayante, mortis, ereldra },   // character visibility toggles
-  filters: { text, characterId, tag, from, to },   // timeline filter values
-  selectedId: null,                                 // currently selected event id
-  view: { scale, x, y },                           // map viewport
-  collapsed: false,                                 // left sidebar collapsed
-  rightCollapsed: false,                            // right story panel collapsed
-  codexOpen: false,                                 // codex modal
-  docs: {},                                         // overrides persisted to localStorage
-}
-```
-
-`docs` lets the user override an event's `title` and `body` fields; overrides are persisted to `localStorage` under the key `"chronicle-docs"`.
-
-### Layout
-
-Three-column CSS Grid: `[left sidebar] [map] [right story panel]`. Column widths are computed by `renderVals()` as `gridCols` and driven by `collapsed` / `rightCollapsed` state, with a CSS `transition` for animation. The right panel opens when an event is selected on the timeline or map.
-
-## Adding content
-
-To add a new session or event:
-1. Push new objects into `this.events` (in the constructor).
-2. Add a matching key to `this.sessions` for the session log.
-3. Update `this.routes` waypoints as needed.
-4. Update `this.codex` records, allies, or enemies if the session changed them.
-5. Reload the browser — no build required.
+1. Append objects to `this.events` in the constructor (follow the existing shape).
+2. Add a matching entry to `this.sessions` keyed by session number.
+3. Route waypoints go in `this.routes[characterId]` as `{xp, yp}` percentage coordinates on the map.

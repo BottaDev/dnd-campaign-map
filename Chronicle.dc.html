@@ -186,82 +186,6 @@
       </div>
     </div>
 
-
-    <!-- codex button -->
-    <button onClick="{{ onCodexOpen }}" onMouseDown="{{ stop }}" title="Open the Codex" style="position:absolute;right:26px;bottom:24px;z-index:18;display:flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid rgba(70,45,15,.6);border-radius:12px;background:linear-gradient(180deg,#f7eed4,#d9b86f);color:#1f1409;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.05);transform:translateY(-1px);"><span style="font-size:14px;line-height:1;">✦</span>Codex</button>
-
-    <!-- codex modal -->
-    <sc-if value="{{ codexOpen }}" hint-placeholder-val="{{ false }}">
-      <div onClick="{{ onCodexClose }}" style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:30px;background:rgba(10,7,3,.64);backdrop-filter:blur(3px);animation:chr-pop .18s ease both;">
-        <div onClick="{{ stop }}" onMouseDown="{{ stop }}" class="chr-scroll" style="position:relative;width:min(960px,97%);max-height:90vh;overflow-y:auto;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,252,244,.6)),radial-gradient(900px 700px at 30% 12%,#f6ecd2,#e7d3a6);border:1px solid rgba(70,45,15,.5);border-radius:16px;padding:28px 30px 32px;box-shadow:0 44px 100px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.5);font-family:'EB Garamond',serif;color:#2a1b0c;">
-          <button onClick="{{ onCodexClose }}" title="Close" style="position:absolute;top:18px;right:18px;width:32px;height:32px;border-radius:9px;border:1px solid rgba(70,45,15,.4);background:rgba(255,250,238,.8);color:#5a4830;font-size:16px;line-height:1;cursor:pointer;">✕</button>
-
-          <div style="text-align:center;margin-bottom:20px;">
-            <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:#8a6a28;padding-left:.42em;">Global Notes</div>
-            <div style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:32px;color:#1d1106;margin-top:5px;">The Codex</div>
-            <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:9px;color:#9a7a36;">
-              <span style="height:1px;width:54px;background:linear-gradient(90deg,transparent,#b58f3e);"></span><span style="font-size:13px;">✦</span><span style="height:1px;width:54px;background:linear-gradient(90deg,#b58f3e,transparent);"></span>
-            </div>
-          </div>
-
-          <!-- records -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;">
-            <sc-for list="{{ codex.records }}" as="r" hint-placeholder-count="4">
-              <div style="text-align:center;padding:15px 11px;border-radius:12px;border:1px solid rgba(70,45,15,.28);background:rgba(255,253,247,.55);box-shadow:0 6px 14px rgba(0,0,0,.06);">
-                <div style="font-family:'Cinzel',serif;font-size:30px;font-weight:700;color:#231408;line-height:1;">{{ r.value }}</div>
-                <div style="font-size:11px;font-style:italic;color:#7a6240;margin-top:7px;line-height:1.32;">{{ r.label }}</div>
-              </div>
-            </sc-for>
-          </div>
-
-          <!-- allies -->
-          <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;">
-            <span style="width:9px;height:9px;border-radius:50%;background:#2f8557;box-shadow:0 0 8px rgba(47,133,87,.5);"></span>
-            <span style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Allies</span>
-            <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
-          </div>
-          <div style="border:1px solid rgba(70,45,15,.3);border-radius:12px;overflow:hidden;margin-bottom:24px;">
-            <div style="display:grid;grid-template-columns:1.5fr 1fr 1.1fr 1.7fr;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;">
-              <div style="padding:10px 13px;">Name</div><div style="padding:10px 13px;">Location</div><div style="padding:10px 13px;">Affiliations</div><div style="padding:10px 13px;">Notes</div>
-            </div>
-            <sc-for list="{{ codex.allies }}" as="a" hint-placeholder-count="3">
-              <div style="display:grid;grid-template-columns:1.5fr 1fr 1.1fr 1.7fr;border-top:1px solid rgba(70,45,15,.16);background:rgba(255,255,255,.4);">
-                <div style="padding:11px 13px;">
-                  <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:#231408;">{{ a.name }}</div>
-                  <div style="font-size:11.5px;font-style:italic;color:#7a6240;margin-top:2px;">{{ a.sub }}</div>
-                </div>
-                <div style="padding:11px 13px;font-size:13px;color:#43331c;">{{ a.location }}</div>
-                <div style="padding:11px 13px;font-size:13px;color:#43331c;">{{ a.affiliations }}</div>
-                <div style="padding:11px 13px;font-size:12.5px;line-height:1.4;color:#5a4830;">{{ a.notes }}</div>
-              </div>
-            </sc-for>
-          </div>
-
-          <!-- enemies -->
-          <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;">
-            <span style="width:9px;height:9px;border-radius:50%;background:#b8447e;box-shadow:0 0 8px rgba(184,68,126,.5);"></span>
-            <span style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Enemies</span>
-            <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
-          </div>
-          <div style="border:1px solid rgba(70,45,15,.3);border-radius:12px;overflow:hidden;">
-            <div style="display:grid;grid-template-columns:1.5fr 1fr 1.1fr 1.7fr;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;">
-              <div style="padding:10px 13px;">Name</div><div style="padding:10px 13px;">Location</div><div style="padding:10px 13px;">Affiliations</div><div style="padding:10px 13px;">Notes</div>
-            </div>
-            <sc-for list="{{ codex.enemies }}" as="e" hint-placeholder-count="3">
-              <div style="display:grid;grid-template-columns:1.5fr 1fr 1.1fr 1.7fr;border-top:1px solid rgba(70,45,15,.16);background:rgba(255,255,255,.4);">
-                <div style="padding:11px 13px;">
-                  <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:#231408;">{{ e.name }}</div>
-                  <div style="font-size:11.5px;font-style:italic;color:#7a6240;margin-top:2px;">{{ e.sub }}</div>
-                </div>
-                <div style="padding:11px 13px;font-size:13px;color:#43331c;">{{ e.location }}</div>
-                <div style="padding:11px 13px;font-size:13px;color:#43331c;">{{ e.affiliations }}</div>
-                <div style="padding:11px 13px;font-size:12.5px;line-height:1.4;color:#5a4830;">{{ e.notes }}</div>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </div>
-    </sc-if>
   </main>
 
   <!-- RIGHT STORY PANEL -->
@@ -427,6 +351,58 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:840},&quot;showRoutes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showLegend&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+// ── MapViewport — viewport math + DOM event wiring (SRP) ─────────────────
+class MapViewport {
+  constructor({ min=1, max=6, aspectRatio=5400/8100 }={}) {
+    this.MIN=min; this.MAX=max; this._ar=aspectRatio;
+    this._el=null; this._drag=null; this._userTouched=false;
+  }
+  worldH(){ return (this._el?this._el.clientWidth:836)*this._ar; }
+  clamp(v){
+    const el=this._el; if(!el) return v;
+    const vw=el.clientWidth, vh=el.clientHeight;
+    const dw=vw*v.scale, dh=this.worldH()*v.scale;
+    return { scale:v.scale,
+      x: dw<=vw?(vw-dw)/2:Math.min(0,Math.max(vw-dw,v.x)),
+      y: dh<=vh?(vh-dh)/2:Math.min(0,Math.max(vh-dh,v.y)) };
+  }
+  pan(v,dx,dy)      { return this.clamp({scale:v.scale,x:v.x+dx,y:v.y+dy}); }
+  zoom(v,px,py,f)   { const s2=Math.max(this.MIN,Math.min(this.MAX,v.scale*f)),k=s2/v.scale; return this.clamp({scale:s2,x:px-(px-v.x)*k,y:py-(py-v.y)*k}); }
+  center(v,ev,minScale){ const el=this._el; if(!el) return v; const vw=el.clientWidth,vh=el.clientHeight,s=Math.max(v.scale,minScale); return this.clamp({scale:s,x:vw/2-(ev.xp/100*vw)*s,y:vh/2-(ev.yp/100*this.worldH())*s}); }
+  attach(el,onPan,onZoom,onDragEnd){
+    this._el=el;
+    this._onWheel=e=>{ e.preventDefault(); const r=el.getBoundingClientRect(); onZoom(e.clientX-r.left,e.clientY-r.top,e.deltaY<0?1.18:1/1.18); };
+    this._onMove=e=>{ if(!this._drag)return; onPan(e.clientX-this._drag.px,e.clientY-this._drag.py); this._drag.px=e.clientX; this._drag.py=e.clientY; };
+    this._onUp=()=>{ if(this._drag){ this._drag=null; onDragEnd(); } };
+    el.addEventListener("wheel",this._onWheel,{passive:false});
+    document.addEventListener("mousemove",this._onMove);
+    document.addEventListener("mouseup",this._onUp);
+  }
+  detach(){
+    if(this._el) this._el.removeEventListener("wheel",this._onWheel);
+    document.removeEventListener("mousemove",this._onMove);
+    document.removeEventListener("mouseup",this._onUp);
+  }
+  startDrag(clientX,clientY,setCursor){ this._userTouched=true; this._drag={px:clientX,py:clientY}; setCursor("grabbing"); }
+}
+
+// ── DocsStore — localStorage persistence (SRP + DIP) ─────────────────────
+class DocsStore {
+  constructor(key="chronicle-docs"){ this._key=key; }
+  load()     { try{ const d=JSON.parse(localStorage.getItem(this._key)||"{}"); return (d&&typeof d==="object")?d:{}; }catch(e){ return {}; } }
+  save(docs) { try{ localStorage.setItem(this._key,JSON.stringify(docs)); }catch(e){} }
+  titleOf(docs,ev){ const d=docs[ev.id]; return (d&&d.title!=null&&d.title!=="")?d.title:ev.title; }
+  bodyOf(docs,ev) { const d=docs[ev.id]; return (d&&d.body!=null)?d.body:ev.summary; }
+  set(docs,id,field,val){ return {...docs,[id]:{...(docs[id]||{}),[field]:val}}; }
+}
+
+// ── Filter predicates — extend without modifying Component (OCP) ──────────
+const FILTER_PREDICATES = [
+  (ev,f) => !f.text || (ev.title+" "+ev.summary).toLowerCase().includes(f.text.toLowerCase()),
+  (ev,f) => !f.from || ev.date>=f.from,
+  (ev,f) => !f.to   || ev.date<=f.to,
+];
+
 class Component extends DCLogic {
   constructor(props){
     super(props);
@@ -522,23 +498,6 @@ class Component extends DCLogic {
         ],
       },
     };
-    this.codex = {
-      records:[
-        { value:"4,800", label:"Gold earned this session" },
-        { value:"1", label:"Title won — Sorfon, Emissary of Kraghammer" },
-        { value:"~10", label:"Days to bring Cassandra back" },
-        { value:"3", label:"Active plots in motion" },
-      ],
-      allies:[
-        { name:"Percival 'Percy' de Rolo", sub:"Human · King of Whitestone", location:"Whitestone", affiliations:"Vox Machina", notes:"Cassandra's brother; confirmed the ~10-day limbo and will not stop searching for a cure." },
-        { name:"The Raven Queen", sub:"Goddess of Death", location:"—", affiliations:"Mortis's patron", notes:"Named an ally in compassion for the effort to bring Cassandra back." },
-        { name:"Daffodil", sub:"Smuggler", location:"Shaste Pass", affiliations:"Owes Percy a debt", notes:"Has a boat — a debt that may yet be called in." },
-      ],
-      enemies:[
-        { name:"Ashardalon", sub:"Ancient Red Dragon", location:"A hidden hoard", affiliations:"Ereldra's patron", notes:"Reached Ereldra in a vision over the crossing; pulling the party toward Whitestone and the de Rolo line." },
-        { name:"Haftifaflmorhen", sub:"Ancient Black Dragon", location:"Kraghammer (driven off)", affiliations:"—", notes:"Slew Cassandra de Rolo before being driven off." },
-      ],
-    };
     this.state = {
       enabled:{ sorfon:true, ayante:true, mortis:true, ereldra:true },
       filters:{ text:"", from:"", to:"", sessionMin:"", sessionMax:"" },
@@ -546,221 +505,194 @@ class Component extends DCLogic {
       view:{ scale:1, x:0, y:0 },
       collapsed:false,
       rightCollapsed:false,
-      codexOpen:false,
       docs:{},
     };
-    this.reflow=()=>{ requestAnimationFrame(()=>requestAnimationFrame(()=>this.setView(this.state.view))); setTimeout(()=>this.setView(this.state.view), 320); };
-    this.MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    this.MIN=1; this.MAX=6;
-    this._vp=null; this._world=null; this._drag=null; this._userTouched=false;
-    this.vpRef=el=>{ this._vp=el; };
-    this.worldRef=el=>{ this._world=el; };
+    this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
+    this.store    = new DocsStore("chronicle-docs");
+    this.MONTHS   = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    this._vpEl=null;
+    this.vpRef   = el=>{ this._vpEl=el; };
+    this.worldRef= el=>{ };
+    this.reflow  = ()=>{ const r=()=>this.setState(s=>({view:this.viewport.clamp(s.view)})); requestAnimationFrame(()=>requestAnimationFrame(r)); setTimeout(r,320); };
   }
 
   componentDidMount(){
-    this._onWheel=e=>{ if(!this._vp) return; e.preventDefault(); const r=this._vp.getBoundingClientRect(); this.zoomAt(e.clientX-r.left, e.clientY-r.top, e.deltaY<0?1.18:1/1.18); };
-    this._onMove=e=>{ if(!this._drag) return; this.panBy(e.clientX-this._drag.px, e.clientY-this._drag.py); this._drag.px=e.clientX; this._drag.py=e.clientY; };
-    this._onUp=()=>{ if(this._drag){ this._drag=null; if(this._vp) this._vp.style.cursor="grab"; } };
-    if(this._vp) this._vp.addEventListener("wheel", this._onWheel, {passive:false});
-    document.addEventListener("mousemove", this._onMove);
-    document.addEventListener("mouseup", this._onUp);
-    // Robust initial centering: retry until layout + image height are ready, but never override user interaction.
-    // Frame the campaign region (Menagerie Coast) so the map fills the panel — no dead space — on first load.
-    this._center=()=>{ if(this._userTouched || !this._vp) return; this.setState({ view:this.centerOn({xp:38,yp:30}, 2.2) }); };
+    const el=this._vpEl;
+    if(el) this.viewport.attach(
+      el,
+      (dx,dy)   => this.setState(s=>({ view:this.viewport.pan(s.view,dx,dy) })),
+      (px,py,f) => this.setState(s=>({ view:this.viewport.zoom(s.view,px,py,f) })),
+      ()        => { if(this._vpEl) this._vpEl.style.cursor="grab"; }
+    );
+    // Retry centering until layout + image are ready; never override user interaction.
+    this._center=()=>{ if(this.viewport._userTouched||!this._vpEl) return; this.setState(s=>({view:this.viewport.center(s.view,{xp:38,yp:30},2.2)})); };
     requestAnimationFrame(()=>requestAnimationFrame(this._center));
-    [60,200,500,1000].forEach(t=>setTimeout(this._center, t));
-    try{ const saved=JSON.parse(localStorage.getItem("chronicle-docs")||"{}"); if(saved&&typeof saved==="object") this.setState({docs:saved}); }catch(e){}
+    [60,200,500,1000].forEach(t=>setTimeout(this._center,t));
+    const saved=this.store.load(); if(Object.keys(saved).length) this.setState({docs:saved});
   }
-  componentWillUnmount(){
-    if(this._vp) this._vp.removeEventListener("wheel", this._onWheel);
-    document.removeEventListener("mousemove", this._onMove);
-    document.removeEventListener("mouseup", this._onUp);
-  }
+  componentWillUnmount(){ this.viewport.detach(); }
 
-  worldH(){ return (this._vp ? this._vp.clientWidth : 836) * 5400/8100; }
-  clampView(v){
-    const vp=this._vp; if(!vp) return v;
-    const vw=vp.clientWidth, vh=vp.clientHeight;
-    const dispW=vw*v.scale, dispH=this.worldH()*v.scale;
-    let x = dispW<=vw ? (vw-dispW)/2 : Math.min(0, Math.max(vw-dispW, v.x));
-    let y = dispH<=vh ? (vh-dispH)/2 : Math.min(0, Math.max(vh-dispH, v.y));
-    return { scale:v.scale, x, y };
-  }
-  setView(v){ this.setState({ view:this.clampView(v) }); }
-  setCollapsed(v){ this.setState({ collapsed:v }); this.reflow(); }
-  setRightCollapsed(v){ this.setState({ rightCollapsed:v }); this.reflow(); }
-  persistDocs(docs){ try{ localStorage.setItem("chronicle-docs", JSON.stringify(docs)); }catch(e){} }
-  setDoc(id,field,val){ this.setState(s=>{ const docs={...s.docs, [id]:{...(s.docs[id]||{}), [field]:val}}; this.persistDocs(docs); return {docs}; }); }
-  titleOf(ev){ const d=this.state.docs[ev.id]; return (d&&d.title!=null&&d.title!=="")?d.title:ev.title; }
-  bodyOf(ev){ const d=this.state.docs[ev.id]; return (d&&d.body!=null)?d.body:ev.summary; }
-  panBy(dx,dy){ this._userTouched=true; const v=this.state.view; this.setView({ scale:v.scale, x:v.x+dx, y:v.y+dy }); }
-  zoomAt(px,py,factor){ this._userTouched=true; const v=this.state.view; const s2=Math.max(this.MIN,Math.min(this.MAX, v.scale*factor)); const k=s2/v.scale; this.setView({ scale:s2, x:px-(px-v.x)*k, y:py-(py-v.y)*k }); }
-  centerOn(ev, minScale){
-    const vp=this._vp; if(!vp) return this.state.view;
-    const vw=vp.clientWidth, vh=vp.clientHeight;
-    const s=Math.max(this.state.view.scale, minScale);
-    return this.clampView({ scale:s, x:vw/2-(ev.xp/100*vw)*s, y:vh/2-(ev.yp/100*this.worldH())*s });
-  }
-
-  charById(id){ return this.characters.find(c=>c.id===id)||null; }
-  fmtDate(iso){ const [y,m,d]=iso.split("-"); return `${d} ${this.MONTHS[+m-1]} ${y}`; }
-  charLabel(ids){ return ids.map(i=>this.charById(i)?.name||i).join(" · "); }
-
-  toggle(id){ this.setState(s=>({ enabled:{...s.enabled,[id]:!s.enabled[id]} })); }
-  setF(key,val){ this.setState(s=>({ filters:{...s.filters,[key]:val}, selectedId:null })); }
-  reset(){ this.setState({ filters:{text:"",from:"",to:"",sessionMin:"",sessionMax:""}, selectedId:null }); }
+  // ── State actions ─────────────────────────────────────────────────────────
+  setCollapsed(v)      { this.setState({collapsed:v}); this.reflow(); }
+  setRightCollapsed(v) { this.setState({rightCollapsed:v}); this.reflow(); }
+  setDoc(id,field,val) { this.setState(s=>{ const docs=this.store.set(s.docs,id,field,val); this.store.save(docs); return {docs}; }); }
+  toggle(id)           { this.setState(s=>({enabled:{...s.enabled,[id]:!s.enabled[id]}})); }
+  setF(key,val)        { this.setState(s=>({filters:{...s.filters,[key]:val},selectedId:null})); }
+  reset()              { this.setState({filters:{text:"",from:"",to:"",sessionMin:"",sessionMax:""},selectedId:null}); }
   select(id){
-    this._userTouched=true;
+    this.viewport._userTouched=true;
     this.setState(s=>{
-      const sel = s.selectedId===id ? null : id;
-      let view = s.view;
-      if(sel){ const ev=this.events.find(e=>e.id===sel); if(ev) view=this.centerOn(ev, 2.4); }
-      return { selectedId:sel, view, rightCollapsed:false };
+      const sel=s.selectedId===id?null:id;
+      let view=s.view;
+      if(sel){ const ev=this.events.find(e=>e.id===sel); if(ev) view=this.viewport.center(s.view,ev,2.4); }
+      return {selectedId:sel,view,rightCollapsed:false};
     });
     this.reflow();
   }
 
-  passes(ev,f){
-    if(f.text){ const hay=(ev.title+" "+ev.summary).toLowerCase(); if(!hay.includes(f.text.toLowerCase())) return false; }
-    if(f.from && ev.date < f.from) return false;
-    if(f.to && ev.date > f.to) return false;
-    return true;
+  // ── Data helpers ──────────────────────────────────────────────────────────
+  charById(id)  { return this.characters.find(c=>c.id===id)||null; }
+  fmtDate(iso)  { const [y,m,d]=iso.split("-"); return `${d} ${this.MONTHS[+m-1]} ${y}`; }
+  charLabel(ids){ return ids.map(i=>this.charById(i)?.name||i).join(" · "); }
+
+  // ── Filter — delegates to FILTER_PREDICATES (OCP) ────────────────────────
+  passes(ev,f)  { return FILTER_PREDICATES.every(pred=>pred(ev,f)); }
+  filtered()    { const f=this.state.filters; return this.events.filter(e=>this.passes(e,f)).sort((a,b)=>a.date.localeCompare(b.date)); }
+
+  // ── Private render builders (SRP) ────────────────────────────────────────
+  _multiSeal(){
+    const url=`data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>')}`;
+    return { color:"#3A8CC4", base:`#5BAEE0 url("${url}") center/62% no-repeat` };
   }
-  filtered(){ const f=this.state.filters; return this.events.filter(e=>this.passes(e,f)).sort((a,b)=>a.date.localeCompare(b.date)); }
 
-  renderVals(){
-    const showRoutes = this.props.showRoutes ?? true;
-    const showLegend = this.props.showLegend ?? true;
-    const en = this.state.enabled;
-    const filtered = this.filtered();
-    const selId = this.state.selectedId;
-    const view = this.state.view;
-    const inv = 6/view.scale;
-
-    const partyRows = this.characters.map(c=>{
-      const on = en[c.id];
+  _buildPartyRows(en){
+    return this.characters.map(c=>{
+      const on=en[c.id];
       return {
-        ...c,
-        onToggle: ()=>this.toggle(c.id),
+        ...c, onToggle:()=>this.toggle(c.id),
         rowStyle:`display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:12px;cursor:pointer;text-align:left;border:1px solid ${on?"rgba(70,45,15,.4)":"rgba(70,45,15,.16)"};background:${on?"rgba(255,255,255,.62)":"rgba(255,255,255,.2)"};opacity:${on?1:.5};box-shadow:${on?"0 6px 14px rgba(0,0,0,.08)":"none"};transition:all .16s ease;`,
         sealStyle:`flex:none;width:30px;height:30px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);border:1.5px solid rgba(255,252,244,.7);${on?"":"filter:grayscale(.7);"}`,
         dotStyle:`flex:none;width:9px;height:9px;border-radius:50%;background:${on?c.color:"transparent"};border:1.5px solid ${on?c.color:"rgba(70,45,15,.4)"};box-shadow:${on?`0 0 8px ${c.color}99`:"none"};`,
       };
     });
+  }
 
-    const f = this.state.filters;
-
-
-    const multiColor="#3A8CC4";
-    const groupStarUrl=`data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>')}`;
-    const multiSealBase=`#5BAEE0 url("${groupStarUrl}") center/62% no-repeat`;
-
+  _buildTimeline(filtered,selId,ms){
     const groups={};
     filtered.forEach(ev=>{ (groups[ev.session]=groups[ev.session]||[]).push(ev); });
-    const timeline=Object.keys(groups).map(Number).sort((a,b)=>a-b).map(sess=>({
+    return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(sess=>({
       session:sess, label:`Session ${sess}`,
       events:groups[sess].map(ev=>{
-        const c=this.charById(ev.characterIds[0]);
-        const isMultiTl=ev.characterIds.length>1;
-        const isSel=ev.id===selId;
+        const c=this.charById(ev.characterIds[0]), isMulti=ev.characterIds.length>1, isSel=ev.id===selId;
         return {
-          ...ev, title:this.titleOf(ev), seal:c.seal, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds),
+          ...ev, title:this.store.titleOf(this.state.docs,ev),
+          dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds),
           onSelect:()=>this.select(ev.id),
-          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:${isMultiTl?multiSealBase:`url(${c.sealImg}) center/cover`};border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
+          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:${isMulti?ms.base:`url(${c?.sealImg}) center/cover`};border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
           cardStyle:`position:relative;cursor:pointer;padding:12px 14px;margin-bottom:11px;border-radius:13px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.3)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.5)"};box-shadow:${isSel?"0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3)":"0 8px 16px rgba(0,0,0,.07)"};transform:translateX(${isSel?"3px":"0"});transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;`,
         };
       }),
     }));
+  }
 
+  _buildRoutesSvg(filtered,en,showRoutes){
     const kids=[];
-    if(showRoutes){
-      this.characters.forEach(c=>{
-        const hasEvents=filtered.some(ev=>ev.characterIds.includes(c.id));
-        if(!hasEvents || !en[c.id]) return;
-        const pts=this.routes[c.id]; if(!pts||pts.length<2) return;
-        kids.push(React.createElement("polyline",{key:c.id,points:pts.map(p=>`${p.xp},${p.yp}`).join(" "),fill:"none",stroke:c.color,strokeWidth:2.4,strokeDasharray:"5 6",strokeLinecap:"round",strokeLinejoin:"round",opacity:.92,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 1px 1px rgba(0,0,0,.55))"}}));
-      });
-    }
-    const routesSvg=React.createElement("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none",style:{position:"absolute",inset:0,width:"100%",height:"100%"}},kids);
+    if(showRoutes) this.characters.forEach(c=>{
+      if(!en[c.id]||!filtered.some(ev=>ev.characterIds.includes(c.id))) return;
+      const pts=this.routes[c.id]; if(!pts||pts.length<2) return;
+      kids.push(React.createElement("polyline",{key:c.id,points:pts.map(p=>`${p.xp},${p.yp}`).join(" "),fill:"none",stroke:c.color,strokeWidth:2.4,strokeDasharray:"5 6",strokeLinecap:"round",strokeLinejoin:"round",opacity:.92,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 1px 1px rgba(0,0,0,.55))"}}));
+    });
+    return React.createElement("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none",style:{position:"absolute",inset:0,width:"100%",height:"100%"}},kids);
+  }
 
-    const pins=filtered.filter(ev=>en[ev.characterIds[0]]).map(ev=>{
-      const isMulti=ev.characterIds.length>1;
-      const c=this.charById(ev.characterIds[0]);
-      const isSel=ev.id===selId;
-      const k=(isSel?1.25:1)*inv;
-      const outerColor=isMulti?multiColor:c.color;
-      const innerBg=isMulti?multiSealBase:`url(${c.sealImg}) center/cover`;
+  _buildPins(filtered,en,view,selId,ms){
+    const MAX=this.viewport.MAX, inv=MAX/view.scale;
+    return filtered.filter(ev=>en[ev.characterIds[0]]).map(ev=>{
+      const isMulti=ev.characterIds.length>1, c=this.charById(ev.characterIds[0]);
+      const isSel=ev.id===selId, k=(isSel?1.25:1)*inv;
+      const outerColor=isMulti?ms.color:c?.color, innerBg=isMulti?ms.base:`url(${c?.sealImg}) center/cover`;
       return {
-        seal:c.seal, title:this.titleOf(ev), onSelect:()=>this.select(ev.id),
+        title:this.store.titleOf(this.state.docs,ev), onSelect:()=>this.select(ev.id),
         style:`position:absolute;left:${ev.xp}%;top:${ev.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${outerColor},${outerColor}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
         sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${innerBg};`,
       };
     });
+  }
 
-    const selEv=this.events.find(e=>e.id===selId);
-    let sel=null;
-    if(selEv){
-      const isMultiSel=selEv.characterIds.length>1;
-      const c=this.charById(selEv.characterIds[0]);
-      sel={
-        seal:c.seal, title:this.titleOf(selEv), summary:selEv.summary, session:selEv.session, dateLabel:selEv.igLabel||this.fmtDate(selEv.date),
-        style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:linear-gradient(180deg,#f7eed4,#ead7ab);border:1px solid rgba(70,45,15,.55);border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
-        sealStyle:isMultiSel?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:${multiSealBase};border:1.5px solid rgba(255,252,244,.7);`:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);`,
-      };
-    }
+  _buildPopup(selEv,view,ms){
+    if(!selEv) return null;
+    const MAX=this.viewport.MAX, inv=MAX/view.scale;
+    const isMulti=selEv.characterIds.length>1, c=this.charById(selEv.characterIds[0]);
+    return {
+      title:this.store.titleOf(this.state.docs,selEv), summary:selEv.summary,
+      session:selEv.session, dateLabel:selEv.igLabel||this.fmtDate(selEv.date),
+      style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:linear-gradient(180deg,#f7eed4,#ead7ab);border:1px solid rgba(70,45,15,.55);border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
+      sealStyle:isMulti?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid rgba(255,252,244,.7);`:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c?.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);`,
+    };
+  }
 
-    // SESSION LOG SHEET (right) — read-only
-    let panel=null;
-    if(selEv){
-      const sNo=selEv.session;
-      const sd=this.sessions[sNo]||{};
-      const evs=this.events.filter(e=>e.session===sNo).sort((a,b)=>a.date.localeCompare(b.date));
-      const npcFmt=n=>`${n.name}${n.race?` (${n.race})`:""}${n.role?` — ${n.role}`:""}${n.region?` · ${n.region}`:""}`;
-      const mapPlot=p=>({ name:p.name, qt:p.qt, closed:p.closed||"", hasClosed:!!p.closed,
-        npcs:(p.npcs||[]).map(npcFmt), notes:p.notes||[],
-        hasNpcs:(p.npcs||[]).length>0, hasNotes:(p.notes||[]).length>0 });
-      panel={
-        sessionLabel:`Session ${String(sNo).padStart(2,"0")}`,
-        dateLabel:sd.dateLabel||"",
-        startedHere:sd.startedHere||"—",
-        endedHere:sd.endedHere||"—",
-        igStart:(sd.ig&&sd.ig.start)||"—",
-        igEnd:(sd.ig&&sd.ig.end)||"—",
-        igRest:(sd.ig&&sd.ig.rest)||"—",
-        effects:sd.effects||[], hasEffects:(sd.effects||[]).length>0,
-        events:evs.map(ev=>{
-          const c2=this.charById(ev.characterIds[0]);
-          const isMultiEv=ev.characterIds.length>1;
-          const isSel=ev.id===selId;
-          return {
-            title:ev.title, summary:ev.summary, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds), seal:c2.seal,
-            onSelect:()=>this.select(ev.id),
-            sealStyle:isMultiEv?`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:${multiSealBase};border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
-            rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.28)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.45)"};box-shadow:${isSel?"0 10px 22px rgba(120,85,30,.2)":"0 5px 12px rgba(0,0,0,.06)"};transition:all .16s ease;`,
-          };
-        }),
-        activePlots:(sd.activePlots||[]).map(mapPlot), hasActive:(sd.activePlots||[]).length>0,
-        completedPlots:(sd.completedPlots||[]).map(mapPlot), hasCompleted:(sd.completedPlots||[]).length>0,
-        onMinimize:()=>this.setRightCollapsed(true),
-        onClose:()=>this.setState({selectedId:null}),
-      };
-    }
-    const leftW = this.state.collapsed ? "0px" : "430px";
-    const rightOpen = !!selEv && !this.state.rightCollapsed;
-    const rightW = rightOpen ? "446px" : "0px";
+  _buildPanel(selEv,selId,ms){
+    if(!selEv) return null;
+    const sNo=selEv.session, sd=this.sessions[sNo]||{};
+    const evs=this.events.filter(e=>e.session===sNo).sort((a,b)=>a.date.localeCompare(b.date));
+    const npcFmt=n=>`${n.name}${n.race?` (${n.race})`:""}${n.role?` — ${n.role}`:""}${n.region?` · ${n.region}`:""}`;
+    const mapPlot=p=>({ name:p.name, qt:p.qt, closed:p.closed||"", hasClosed:!!p.closed,
+      npcs:(p.npcs||[]).map(npcFmt), notes:p.notes||[],
+      hasNpcs:(p.npcs||[]).length>0, hasNotes:(p.notes||[]).length>0 });
+    return {
+      sessionLabel:`Session ${String(sNo).padStart(2,"0")}`,
+      dateLabel:sd.dateLabel||"", startedHere:sd.startedHere||"—", endedHere:sd.endedHere||"—",
+      igStart:(sd.ig&&sd.ig.start)||"—", igEnd:(sd.ig&&sd.ig.end)||"—", igRest:(sd.ig&&sd.ig.rest)||"—",
+      effects:sd.effects||[], hasEffects:(sd.effects||[]).length>0,
+      events:evs.map(ev=>{
+        const c2=this.charById(ev.characterIds[0]), isMulti=ev.characterIds.length>1, isSel=ev.id===selId;
+        return {
+          title:ev.title, summary:ev.summary, dateLabel:ev.igLabel||this.fmtDate(ev.date),
+          charLabel:this.charLabel(ev.characterIds), onSelect:()=>this.select(ev.id),
+          sealStyle:isMulti?`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2?.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
+          rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.28)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.45)"};box-shadow:${isSel?"0 10px 22px rgba(120,85,30,.2)":"0 5px 12px rgba(0,0,0,.06)"};transition:all .16s ease;`,
+        };
+      }),
+      activePlots:(sd.activePlots||[]).map(mapPlot), hasActive:(sd.activePlots||[]).length>0,
+      completedPlots:(sd.completedPlots||[]).map(mapPlot), hasCompleted:(sd.completedPlots||[]).length>0,
+      onMinimize:()=>this.setRightCollapsed(true),
+      onClose:()=>this.setState({selectedId:null}),
+    };
+  }
+
+  // ── renderVals — coordinates builders, owns no logic (SRP) ───────────────
+  renderVals(){
+    const showRoutes=this.props.showRoutes??true;
+    const showLegend=this.props.showLegend??true;
+    const {enabled:en,selectedId:selId,view,collapsed,rightCollapsed}=this.state;
+    const filtered=this.filtered();
+    const selEv=this.events.find(e=>e.id===selId)||null;
+    const ms=this._multiSeal();
+    const MAX=this.viewport.MAX;
+
+    const partyRows  = this._buildPartyRows(en);
+    const timeline   = this._buildTimeline(filtered,selId,ms);
+    const routesSvg  = this._buildRoutesSvg(filtered,en,showRoutes);
+    const pins       = this._buildPins(filtered,en,view,selId,ms);
+    const sel        = this._buildPopup(selEv,view,ms);
+    const panel      = this._buildPanel(selEv,selId,ms);
+
+    const lastSess   = Math.max(...Object.keys(this.sessions).map(Number));
+    const leftW      = collapsed?"0px":"430px";
+    const rightOpen  = !!selEv&&!rightCollapsed;
+    const rightW     = rightOpen?"446px":"0px";
 
     const legend=this.characters.map(c=>{
       const on=en[c.id];
       return {
-        name:c.name, seal:c.seal, count:`${this.routes[c.id].length} stops`,
-        onToggle:()=>this.toggle(c.id),
+        name:c.name, count:`${this.routes[c.id].length} stops`, onToggle:()=>this.toggle(c.id),
         rowStyle:`display:flex;align-items:center;gap:9px;width:100%;padding:5px 6px;border:none;background:none;cursor:pointer;border-radius:8px;opacity:${on?1:.4};transition:opacity .16s ease;`,
         sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;color:#fff;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);${on?"":"filter:grayscale(.7);"}`,
       };
     });
 
     return {
-      partyRows, f,
+      partyRows, f:this.state.filters,
       onText:e=>this.setF("text",e.target.value), onFrom:e=>this.setF("from",e.target.value), onTo:e=>this.setF("to",e.target.value),
       onReset:()=>this.reset(),
       resultsText:`${filtered.length} / ${this.events.length}`,
@@ -768,25 +700,21 @@ class Component extends DCLogic {
       routesSvg, pins,
       hasSelected:!!sel, sel:sel||{}, onClose:()=>this.setState({selectedId:null}),
       legend, showLegendFlag:showLegend,
-      codex:this.codex, codexOpen:this.state.codexOpen,
-      onCodexOpen:()=>this.setState({codexOpen:true}),
-      onCodexClose:()=>this.setState({codexOpen:false}),
-      collapsed:this.state.collapsed,
-      gridCols:`${leftW} 1fr ${rightW}`,
+      collapsed, gridCols:`${leftW} 1fr ${rightW}`,
       onCollapse:()=>this.setCollapsed(true), onExpand:()=>this.setCollapsed(false),
       panel:panel||{}, hasPanel:!!panel, rightOpen,
-      rightTabShown: !!panel && this.state.rightCollapsed,
+      rightTabShown:!!panel&&rightCollapsed,
       onRightExpand:()=>this.setRightCollapsed(false),
       vpRef:this.vpRef, worldRef:this.worldRef,
-      worldStyle:`position:absolute;top:0;left:0;width:${this.MAX*100}%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/this.MAX).toFixed(6)});transform-origin:0 0;will-change:transform;`,
-      onDown:e=>{ this._drag={px:e.clientX,py:e.clientY}; if(this._vp) this._vp.style.cursor="grabbing"; },
+      worldStyle:`position:absolute;top:0;left:0;width:${MAX*100}%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/MAX).toFixed(6)});transform-origin:0 0;will-change:transform;`,
+      onDown:e=>{ this.viewport.startDrag(e.clientX,e.clientY,cur=>{ if(this._vpEl) this._vpEl.style.cursor=cur; }); },
       stop:e=>e.stopPropagation(),
-      onImgLoad:()=>this.setView(this.state.view),
-      onZoomIn:()=>{ const vp=this._vp; this.zoomAt(vp?vp.clientWidth/2:0, vp?vp.clientHeight/2:0, 1.4); },
-      onZoomOut:()=>{ const vp=this._vp; this.zoomAt(vp?vp.clientWidth/2:0, vp?vp.clientHeight/2:0, 1/1.4); },
-      onResetView:()=>this.setView({scale:1,x:0,y:0}),
+      onImgLoad:()=>this.setState(s=>({view:this.viewport.clamp(s.view)})),
+      onZoomIn: ()=>{ const el=this._vpEl; this.setState(s=>({view:this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1.4)})); },
+      onZoomOut:()=>{ const el=this._vpEl; this.setState(s=>({view:this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1/1.4)})); },
+      onResetView:()=>this.setState(s=>({view:this.viewport.clamp({scale:1,x:0,y:0})})),
       zoomLabel:`${Math.round(view.scale*100)}%`,
-      sampleNote:"Session 8 logged · Kraghammer → Vasselheim.",
+      sampleNote:`Session ${lastSess} logged · Kraghammer → Vasselheim.`,
     };
   }
 }
