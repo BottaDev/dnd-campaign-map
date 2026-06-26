@@ -42,7 +42,7 @@
           <span style="font-size:13px;">✦</span>
           <span style="height:1px;width:54px;background:linear-gradient(90deg,#b58f3e,transparent);"></span>
         </div>
-        <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:#6a5435;line-height:1.4;margin:12px 18px 0;">An interactive atlas of routes, dated events and the threads that bind your party's saga.</p>
+        <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:#6a5435;line-height:1.4;margin:12px 18px 0;">An interactive record of the journeys, deeds, and entanglements of Bund Der Vier.</p>
       </div>
 
       <!-- CHARACTERS -->
@@ -361,10 +361,7 @@
             <sc-for list="{{ panel.activePlots }}" as="p" hint-placeholder-count="2">
               <div style="position:relative;padding:13px 14px;border-radius:13px;border:1px solid rgba(70,45,15,.3);background:rgba(255,255,255,.5);box-shadow:0 6px 14px rgba(0,0,0,.06);">
                 <div style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#231408;margin-bottom:8px;">{{ p.name }}</div>
-                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                  <span style="flex:none;font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#7a3140;border:1px solid rgba(199,162,75,.5);background:rgba(199,162,75,.12);padding:2px 7px;border-radius:999px;height:fit-content;margin-top:1px;">Quest / Threat</span>
-                  <span style="font-size:13px;line-height:1.42;color:#5a4830;">{{ p.qt }}</span>
-                </div>
+                <div style="font-size:13px;line-height:1.42;color:#5a4830;margin-bottom:8px;">{{ p.qt }}</div>
                 <sc-if value="{{ p.hasNpcs }}" hint-placeholder-val="{{ false }}">
                   <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">NPCs &amp; Locations</div>
                   <div style="display:grid;gap:4px;">
@@ -399,10 +396,7 @@
                   <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#231408;">{{ p.name }}</span>
                   <span style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#2f8557;border:1px solid rgba(47,133,87,.45);background:rgba(47,133,87,.1);padding:2px 8px;border-radius:999px;">{{ p.closed }}</span>
                 </div>
-                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                  <span style="flex:none;font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#7a3140;border:1px solid rgba(199,162,75,.5);background:rgba(199,162,75,.12);padding:2px 7px;border-radius:999px;height:fit-content;margin-top:1px;">Quest / Threat</span>
-                  <span style="font-size:13px;line-height:1.42;color:#5a4830;">{{ p.qt }}</span>
-                </div>
+                <div style="font-size:13px;line-height:1.42;color:#5a4830;margin-bottom:8px;">{{ p.qt }}</div>
                 <sc-if value="{{ p.hasNpcs }}" hint-placeholder-val="{{ false }}">
                   <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">NPCs &amp; Locations</div>
                   <div style="display:grid;gap:4px;">
