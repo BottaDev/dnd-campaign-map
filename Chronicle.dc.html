@@ -657,17 +657,22 @@ class Component extends DCLogic {
     const f = this.state.filters;
 
 
+    const multiColor="#3A8CC4";
+    const groupStarUrl=`data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>')}`;
+    const multiSealBase=`#5BAEE0 url("${groupStarUrl}") center/62% no-repeat`;
+
     const groups={};
     filtered.forEach(ev=>{ (groups[ev.session]=groups[ev.session]||[]).push(ev); });
     const timeline=Object.keys(groups).map(Number).sort((a,b)=>a-b).map(sess=>({
       session:sess, label:`Session ${sess}`,
       events:groups[sess].map(ev=>{
         const c=this.charById(ev.characterIds[0]);
+        const isMultiTl=ev.characterIds.length>1;
         const isSel=ev.id===selId;
         return {
           ...ev, title:this.titleOf(ev), seal:c.seal, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds),
           onSelect:()=>this.select(ev.id),
-          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
+          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:${isMultiTl?multiSealBase:`url(${c.sealImg}) center/cover`};border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
           cardStyle:`position:relative;cursor:pointer;padding:12px 14px;margin-bottom:11px;border-radius:13px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.3)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.5)"};box-shadow:${isSel?"0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3)":"0 8px 16px rgba(0,0,0,.07)"};transform:translateX(${isSel?"3px":"0"});transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;`,
         };
       }),
@@ -685,24 +690,28 @@ class Component extends DCLogic {
     const routesSvg=React.createElement("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none",style:{position:"absolute",inset:0,width:"100%",height:"100%"}},kids);
 
     const pins=filtered.filter(ev=>en[ev.characterIds[0]]).map(ev=>{
+      const isMulti=ev.characterIds.length>1;
       const c=this.charById(ev.characterIds[0]);
       const isSel=ev.id===selId;
       const k=(isSel?1.25:1)*inv;
+      const outerColor=isMulti?multiColor:c.color;
+      const innerBg=isMulti?multiSealBase:`url(${c.sealImg}) center/cover`;
       return {
         seal:c.seal, title:this.titleOf(ev), onSelect:()=>this.select(ev.id),
-        style:`position:absolute;left:${ev.xp}%;top:${ev.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
-        sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;`,
+        style:`position:absolute;left:${ev.xp}%;top:${ev.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${outerColor},${outerColor}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
+        sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${innerBg};`,
       };
     });
 
     const selEv=this.events.find(e=>e.id===selId);
     let sel=null;
     if(selEv){
+      const isMultiSel=selEv.characterIds.length>1;
       const c=this.charById(selEv.characterIds[0]);
       sel={
         seal:c.seal, title:this.titleOf(selEv), summary:selEv.summary, session:selEv.session, dateLabel:selEv.igLabel||this.fmtDate(selEv.date),
         style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:linear-gradient(180deg,#f7eed4,#ead7ab);border:1px solid rgba(70,45,15,.55);border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
-        sealStyle:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);`,
+        sealStyle:isMultiSel?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:${multiSealBase};border:1.5px solid rgba(255,252,244,.7);`:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);`,
       };
     }
 
@@ -727,11 +736,12 @@ class Component extends DCLogic {
         effects:sd.effects||[], hasEffects:(sd.effects||[]).length>0,
         events:evs.map(ev=>{
           const c2=this.charById(ev.characterIds[0]);
+          const isMultiEv=ev.characterIds.length>1;
           const isSel=ev.id===selId;
           return {
             title:ev.title, summary:ev.summary, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds), seal:c2.seal,
             onSelect:()=>this.select(ev.id),
-            sealStyle:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
+            sealStyle:isMultiEv?`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:${multiSealBase};border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
             rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.28)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.45)"};box-shadow:${isSel?"0 10px 22px rgba(120,85,30,.2)":"0 5px 12px rgba(0,0,0,.06)"};transition:all .16s ease;`,
           };
         }),
