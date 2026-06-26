@@ -54,7 +54,7 @@
         <div style="display:grid;gap:9px;">
           <sc-for list="{{ partyRows }}" as="c" hint-placeholder-count="4">
             <button onClick="{{ c.onToggle }}" style="{{ c.rowStyle }}">
-              <span style="{{ c.sealStyle }}">{{ c.seal }}</span>
+              <span style="{{ c.sealStyle }}"><img src="{{ c.seal }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></span>
               <span style="display:grid;gap:1px;text-align:left;flex:1;min-width:0;">
                 <span style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:.04em;color:#231408;line-height:1.1;">{{ c.name }}</span>
                 <span style="font-size:12px;font-style:italic;color:#7a6240;line-height:1.1;">{{ c.role }}</span>
@@ -132,7 +132,7 @@
                 <span style="position:absolute;left:11px;top:2px;bottom:2px;width:2px;background:linear-gradient(180deg,rgba(120,85,30,.55),rgba(120,85,30,.18));"></span>
                 <sc-for list="{{ grp.events }}" as="ev" hint-placeholder-count="2">
                   <div onClick="{{ ev.onSelect }}" style="{{ ev.cardStyle }}">
-                    <span style="{{ ev.nodeStyle }}">{{ ev.seal }}</span>
+                    <span style="{{ ev.nodeStyle }}"><img src="{{ ev.seal }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></span>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
                       <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:#9a7a36;text-transform:uppercase;">{{ ev.dateLabel }}</span>
                       <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
@@ -174,14 +174,14 @@
         <div style="position:absolute;inset:0;pointer-events:none;">{{ routesSvg }}</div>
 
         <sc-for list="{{ pins }}" as="p" hint-placeholder-count="6">
-          <button onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}">{{ p.seal }}</span></button>
+          <button onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}"><img src="{{ p.seal }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></span></button>
         </sc-for>
 
         <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ false }}">
           <div onMouseDown="{{ stop }}" style="{{ sel.style }}">
             <div style="position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:#f5ead0;border-right:1px solid rgba(70,45,15,.5);border-bottom:1px solid rgba(70,45,15,.5);transform:translateX(-50%) rotate(45deg);"></div>
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <span style="{{ sel.sealStyle }}">{{ sel.seal }}</span>
+              <span style="{{ sel.sealStyle }}"><img src="{{ sel.seal }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></span>
               <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#9a7a36;">{{ sel.dateLabel }} · Session {{ sel.session }}</span>
               <button onClick="{{ onClose }}" style="margin-left:auto;border:none;background:none;cursor:pointer;color:#9a7a36;font-size:15px;line-height:1;padding:0 2px;">✕</button>
             </div>
@@ -205,21 +205,6 @@
       </div>
     </div>
 
-    <!-- legend -->
-    <sc-if value="{{ showLegendFlag }}" hint-placeholder-val="{{ true }}">
-    <div style="position:absolute;right:26px;top:26px;min-width:188px;background:linear-gradient(180deg,rgba(245,234,208,.96),rgba(232,210,164,.94));border:1px solid rgba(70,45,15,.5);border-radius:12px;padding:13px 14px;box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45);">
-      <div style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;margin-bottom:10px;display:flex;align-items:center;gap:8px;">Legend<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.4),transparent);"></span></div>
-      <div style="display:grid;gap:8px;">
-        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
-          <button onClick="{{ l.onToggle }}" style="{{ l.rowStyle }}">
-            <span style="{{ l.sealStyle }}">{{ l.seal }}</span>
-            <span style="font-family:'Cinzel',serif;font-size:12.5px;color:#231408;flex:1;text-align:left;">{{ l.name }}</span>
-            <span style="font-size:10.5px;font-style:italic;color:#8a7250;">{{ l.count }}</span>
-          </button>
-        </sc-for>
-      </div>
-    </div>
-    </sc-if>
 
     <!-- codex button -->
     <button onClick="{{ onCodexOpen }}" onMouseDown="{{ stop }}" title="Open the Codex" style="position:absolute;right:26px;bottom:24px;z-index:18;display:flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid rgba(70,45,15,.6);border-radius:12px;background:linear-gradient(180deg,#f7eed4,#d9b86f);color:#1f1409;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.05);transform:translateY(-1px);"><span style="font-size:14px;line-height:1;">✦</span>Codex</button>
@@ -371,7 +356,7 @@
         <div style="display:grid;gap:10px;margin-bottom:20px;">
           <sc-for list="{{ panel.events }}" as="ev" hint-placeholder-count="2">
             <button onClick="{{ ev.onSelect }}" style="{{ ev.rowStyle }}">
-              <span style="{{ ev.sealStyle }}">{{ ev.seal }}</span>
+              <span style="{{ ev.sealStyle }}"><img src="{{ ev.seal }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></span>
               <span style="display:grid;gap:3px;min-width:0;">
                 <span style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
                   <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#9a7a36;">{{ ev.dateLabel }}</span>
@@ -471,10 +456,10 @@ class Component extends DCLogic {
   constructor(props){
     super(props);
     this.characters = [
-      { id:"sorfon",  name:"Sorfon",  role:"Cleric of Pelor",            color:"#3a6fb0", seal:"\u2726" },
-      { id:"ayante",  name:"Ayante",  role:"The Seeker",                 color:"#b8447e", seal:"\u2756" },
-      { id:"mortis",  name:"Mortis",  role:"Warlock of the Raven Queen", color:"#2f8557", seal:"\u271a" },
-      { id:"ereldra", name:"Ereldra", role:"Warlock of Ashardalon",      color:"#7e5ad0", seal:"\u273a" },
+      { id:"sorfon",  name:"Sorfon",  role:"Cleric of Pelor",            color:"#C49B6A", seal:"assets/icon-sorfon.jpeg" },
+      { id:"ayante",  name:"Ayante",  role:"The Seeker",                 color:"#3D3830", seal:"assets/icon-ayante.jpeg" },
+      { id:"mortis",  name:"Mortis",  role:"Warlock of the Raven Queen", color:"#858590", seal:"assets/icon-mortis.jpeg" },
+      { id:"ereldra", name:"Ereldra", role:"Warlock of Ashardalon",      color:"#474B68", seal:"assets/icon-ereldra.jpeg" },
     ];
     // coords are % of the full Exandria map — Tal'Dorei (Kraghammer) across the Ozmit Sea to Issylra (Vasselheim)
     this.routes = {
@@ -686,7 +671,7 @@ class Component extends DCLogic {
         ...c,
         onToggle: ()=>this.toggle(c.id),
         rowStyle:`display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:12px;cursor:pointer;text-align:left;border:1px solid ${on?"rgba(70,45,15,.4)":"rgba(70,45,15,.16)"};background:${on?"rgba(255,255,255,.62)":"rgba(255,255,255,.2)"};opacity:${on?1:.5};box-shadow:${on?"0 6px 14px rgba(0,0,0,.08)":"none"};transition:all .16s ease;`,
-        sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;font-size:14px;color:#fff;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);border:1.5px solid rgba(255,252,244,.7);${on?"":"filter:grayscale(.7);"}`,
+        sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);border:1.5px solid rgba(255,252,244,.7);${on?"":"filter:grayscale(.7);"}`,
         dotStyle:`flex:none;width:9px;height:9px;border-radius:50%;background:${on?c.color:"transparent"};border:1.5px solid ${on?c.color:"rgba(70,45,15,.4)"};box-shadow:${on?`0 0 8px ${c.color}99`:"none"};`,
       };
     });
@@ -705,7 +690,7 @@ class Component extends DCLogic {
         return {
           ...ev, title:this.titleOf(ev), seal:c.seal, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds), tagChips:ev.tags,
           onSelect:()=>this.select(ev.id),
-          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
+          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
           cardStyle:`position:relative;cursor:pointer;padding:12px 14px;margin-bottom:11px;border-radius:13px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.3)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.5)"};box-shadow:${isSel?"0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3)":"0 8px 16px rgba(0,0,0,.07)"};transform:translateX(${isSel?"3px":"0"});transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;`,
         };
       }),
@@ -727,7 +712,7 @@ class Component extends DCLogic {
       return {
         seal:c.seal, title:this.titleOf(ev), onSelect:()=>this.select(ev.id),
         style:`position:absolute;left:${ev.xp}%;top:${ev.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
-        sealStyle:`display:flex;align-items:center;justify-content:center;width:100%;height:100%;transform:rotate(45deg);font-size:13px;color:#fff;`,
+        sealStyle:`display:flex;align-items:center;justify-content:center;width:100%;height:100%;transform:rotate(45deg);overflow:hidden;border-radius:50%;`,
       };
     });
 
@@ -738,7 +723,7 @@ class Component extends DCLogic {
       sel={
         seal:c.seal, title:this.titleOf(selEv), summary:selEv.summary, session:selEv.session, dateLabel:selEv.igLabel||this.fmtDate(selEv.date),
         style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:linear-gradient(180deg,#f7eed4,#ead7ab);border:1px solid rgba(70,45,15,.55);border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
-        sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;color:#fff;background:radial-gradient(circle at 38% 30%,${c.color},${c.color}cc);border:1.5px solid rgba(255,252,244,.7);`,
+        sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,252,244,.7);`,
       };
     }
 
@@ -767,7 +752,7 @@ class Component extends DCLogic {
           return {
             title:ev.title, summary:ev.summary, dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds), seal:c2.seal,
             onSelect:()=>this.select(ev.id),
-            sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;color:#fff;background:radial-gradient(circle at 38% 30%,${c2.color},${c2.color}cc);border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
+            sealStyle:`flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
             rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.28)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.45)"};box-shadow:${isSel?"0 10px 22px rgba(120,85,30,.2)":"0 5px 12px rgba(0,0,0,.06)"};transition:all .16s ease;`,
           };
         }),
