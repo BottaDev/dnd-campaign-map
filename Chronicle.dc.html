@@ -552,7 +552,7 @@ class Component extends DCLogic {
     this.reflow=()=>{ requestAnimationFrame(()=>requestAnimationFrame(()=>this.setView(this.state.view))); setTimeout(()=>this.setView(this.state.view), 320); };
     this.MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     this.MIN=1; this.MAX=6;
-    this._vp=null; this._world=null; this._drag=null;
+    this._vp=null; this._world=null; this._drag=null; this._userTouched=false;
     this.vpRef=el=>{ this._vp=el; };
     this.worldRef=el=>{ this._world=el; };
   }
@@ -602,9 +602,9 @@ class Component extends DCLogic {
     return this.clampView({ scale:s, x:vw/2-(ev.xp/100*vw)*s, y:vh/2-(ev.yp/100*this.worldH())*s });
   }
 
-  charById(id){ return this.characters.find(c=>c.id===id); }
+  charById(id){ return this.characters.find(c=>c.id===id)||null; }
   fmtDate(iso){ const [y,m,d]=iso.split("-"); return `${d} ${this.MONTHS[+m-1]} ${y}`; }
-  charLabel(ids){ return ids.map(i=>this.charById(i).name).join(" · "); }
+  charLabel(ids){ return ids.map(i=>this.charById(i)?.name||i).join(" · "); }
 
   toggle(id){ this.setState(s=>({ enabled:{...s.enabled,[id]:!s.enabled[id]} })); }
   setF(key,val){ this.setState(s=>({ filters:{...s.filters,[key]:val}, selectedId:null })); }
@@ -676,7 +676,7 @@ class Component extends DCLogic {
     if(showRoutes){
       this.characters.forEach(c=>{
         const hasEvents=filtered.some(ev=>ev.characterIds.includes(c.id));
-        if(!hasEvents) return;
+        if(!hasEvents || !en[c.id]) return;
         const pts=this.routes[c.id]; if(!pts||pts.length<2) return;
         kids.push(React.createElement("polyline",{key:c.id,points:pts.map(p=>`${p.xp},${p.yp}`).join(" "),fill:"none",stroke:c.color,strokeWidth:2.4,strokeDasharray:"5 6",strokeLinecap:"round",strokeLinejoin:"round",opacity:.92,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 1px 1px rgba(0,0,0,.55))"}}));
       });
@@ -778,7 +778,7 @@ class Component extends DCLogic {
       rightTabShown: !!panel && this.state.rightCollapsed,
       onRightExpand:()=>this.setRightCollapsed(false),
       vpRef:this.vpRef, worldRef:this.worldRef,
-      worldStyle:`position:absolute;top:0;left:0;width:600%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/6).toFixed(6)});transform-origin:0 0;will-change:transform;`,
+      worldStyle:`position:absolute;top:0;left:0;width:${this.MAX*100}%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/this.MAX).toFixed(6)});transform-origin:0 0;will-change:transform;`,
       onDown:e=>{ this._drag={px:e.clientX,py:e.clientY}; if(this._vp) this._vp.style.cursor="grabbing"; },
       stop:e=>e.stopPropagation(),
       onImgLoad:()=>this.setView(this.state.view),
