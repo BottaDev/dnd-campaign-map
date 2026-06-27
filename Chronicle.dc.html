@@ -343,7 +343,7 @@
         </sc-if>
 
         <div style="margin-top:auto;padding-top:13px;display:flex;align-items:center;gap:7px;color:#8a7250;font-size:11px;font-style:italic;border-top:1px solid rgba(70,45,15,.18);">
-          <span style="width:7px;height:7px;border-radius:50%;background:#9a7a36;"></span>Bund der Vier · Session 8 — The Vigil for Cassandra.
+          <span style="width:7px;height:7px;border-radius:50%;background:#9a7a36;"></span>Bund der Vier · Session Log.
         </div>
       </div>
     </sc-if>
@@ -420,6 +420,11 @@ class Component extends DCLogic {
       ereldra:[{xp:44.8,yp:33.1},{xp:42.1,yp:31.9},{xp:37.2,yp:29.9},{xp:33.1,yp:28.1},{xp:30.0,yp:26.8}],
     };
     this.events = [
+      { id:"s2_01", date:"2026-03-11", session:2, igLabel:"Day 4 · Emon", title:"Screams from Greyskull Keep", summary:"Sorfon and Ayante meet in a small plaza near the locked Keep as screams erupt from inside. Ereldra lingers behind. Mortis is already within, following the Raven Queen's golden thread.", xp:41.2, yp:40.0, characterIds:["sorfon","ayante","ereldra","mortis"] },
+      { id:"s2_02", date:"2026-03-11", session:2, igLabel:"Day 4 · Greyskull Keep, Emon", title:"The Book of Baba Yaga", summary:"Slipping away from the others, Mortis finds a heavy tome pinned to a hallway shelf by an axe. He pries it open and discovers it belongs to Baba Yaga — grandmother of all witches. It snaps shut before he finishes, and he cannot reopen it.", xp:40.8, yp:39.6, characterIds:["mortis"] },
+      { id:"s2_03", date:"2026-03-11", session:2, igLabel:"Day 4 · Greyskull Keep, Emon", title:"Sarenrae's Anger", summary:"Sorfon prays in the Keep's chapel and contacts Sarenrae directly. The goddess is angered by his lifelong devotion to Pelor alone, but gives a cryptic clue: 'The temple is just a temple; follow YOUR light.'", xp:40.5, yp:40.4, characterIds:["sorfon"] },
+      { id:"s2_04", date:"2026-03-11", session:2, igLabel:"Day 4 · Greyskull Keep, Emon", title:"Allura Vysoren Intervenes", summary:"The archmage Allura Vysoren arrives to investigate the disturbance. She freezes Mortis, revealing him as the apparent ghost, then casts a bind spell linking him to Sorfon's armor. The party is named Mortis's wardens and charged with a future mission to repair the damages caused.", xp:41.6, yp:40.5, characterIds:["sorfon","ayante","mortis","ereldra"] },
+      { id:"s2_05", date:"2026-03-11", session:2, igLabel:"Day 4 · Greyskull Keep, Emon", title:"Long Rest at the Keep", summary:"The party settles in for a long rest at Greyskull Keep. Allura confirms that Pike Trickfoot is in Issylra. Two hours remain before Mortis's bind spell expires.", xp:41.9, yp:39.3, characterIds:["sorfon","ayante","mortis","ereldra"] },
       { id:"s8_01", date:"2026-06-25", session:8, igLabel:"Day 1 · Kraghammer", title:"The Vigil for Cassandra", summary:"The dragon driven off, Cassandra de Rolo lies fallen in the ruined palace. Mortis reaches for her departing spirit before it slips beyond reach.", xp:45.6, yp:33.4, characterIds:["mortis"] },
       { id:"s8_02", date:"2026-06-25", session:8, igLabel:"Day 1 · Kraghammer", title:"Returning the Baruk-Cazhak", summary:"The party restores the legendary dwarven axe to Kraghammer and escorts Cassandra's body from the palace. Both bounties are claimed — 4,800 gp — and Sorfon is named Emissary of Kraghammer.", xp:44.9, yp:32.7, characterIds:["sorfon","ayante","mortis","ereldra"] },
       { id:"s8_03", date:"2026-06-26", session:8, igLabel:"Day 2 · The road west", title:"Percy's Word", summary:"Through the carriage's communicator, Percy confirms the soul has roughly ten days in limbo — and that a true resurrection is far harder than the party had hoped.", xp:42.6, yp:31.8, characterIds:["sorfon","mortis","ereldra","ayante"] },
@@ -429,6 +434,71 @@ class Component extends DCLogic {
     ];
     // ── Session log (Bund der Vier · Session 8) ───────────────────
     this.sessions = {
+      2:{ dateLabel:"Recorded 11 Mar 2026 · Ghosts of Greyskull Keep",
+        startedHere:"Vasselheim, a small plaza near Greyskull Keep — Sorfon and Ayante outside as screams erupt from within the locked Keep; Mortis already inside following the Raven Queen's golden thread.",
+        endedHere:"Greyskull Keep, Vasselheim — the party settled in for a long rest; two hours remain before Mortis's bind spell expires.",
+        ig:{ start:"Day 4 — Vasselheim, plaza near Greyskull Keep", end:"Day 4 — night, Greyskull Keep (long rest taken)", rest:"Day 4 — end of this session" },
+        effects:[
+          "Mortis is bound to Sorfon's armor by Allura's bind spell — 2 hours remain before expiry.",
+          "Ereldra holds two books taken from the Keep's library: one ordinary, one malevolent.",
+          "Mortis found the Book of Baba Yaga; read some contents before it snapped shut — he cannot reopen it.",
+          "The party owes Allura a mission to repair the damage caused to Greyskull Keep.",
+        ],
+        activePlots:[
+          { name:"Plot A — Finding Pike / The Temple of Sarenrae",
+            qt:"Sorfon's mother is devout to Sarenrae and trained at an ancient temple whose location is now lost. Pike Trickfoot is the only one who knows where it is. This session, Allura confirmed that Pike is currently in Issylra. Sorfon also contacted Sarenrae directly in the Keep's chapel — she is angered by his lifelong neglect of her, but offered a cryptic clue: 'The temple is just a temple; follow YOUR light.'",
+            npcs:[
+              {name:"Sorfon's mother",race:"human",role:"devout of Sarenrae — trained at the lost ancient temple"},
+              {name:"Pike Trickfoot",race:"gnome",role:"cleric, currently in Issylra — only one who knows the temple's location"},
+              {name:"Allura Vysoren",race:"human",role:"archmage in Vasselheim — confirmed Pike's location this session"},
+              {name:"Sarenrae",role:"goddess of the dawn — contacted in Greyskull's chapel, angered, gave a cryptic clue"},
+              {name:"Temple of Sarenrae",role:"lost ancient temple where Sorfon's mother trained — destination unknown"},
+            ],
+            notes:[
+              "Pike cannot be reached by magitech — must be found in person in Issylra.",
+              "Sarenrae is angered — Sorfon dedicated all prayers to Pelor and never prayed to her.",
+              "Sarenrae's clue: 'The temple is just a temple; follow YOUR light.'",
+              "Mortis recognized Sarenrae as the Eternal Light — an ally of the Raven Queen; her followers prize redemption.",
+              "Ayante struck Sorfon for praying to Sarenrae — served him a smaller portion at dinner.",
+            ] },
+          { name:"Plot B — The Raven Queen's Call",
+            qt:"In a vision, the Raven Queen appeared to Mortis alongside the illusory image of a Vox Machina member currently in another plane — an emissary of the Raven Queen, connected by the golden thread. Before the vision ended, the Raven Queen warned: 'There is death in Kraghammer.' The golden thread led Mortis to Greyskull Keep.",
+            npcs:[
+              {name:"The Raven Queen",role:"Mortis's patron — appeared in vision alongside a Vox Machina emissary"},
+              {name:"Unknown Vox Machina member",role:"in another plane — the Raven Queen's emissary, linked by the golden thread"},
+              {name:"Kraghammer",role:"dwarven stronghold — death was foretold there by the Raven Queen"},
+            ],
+            notes:[
+              "The golden thread led Mortis specifically to Greyskull Keep.",
+              "The identity of the Vox Machina emissary is unknown.",
+              "The warning about Kraghammer has not yet been investigated.",
+            ] },
+          { name:"Plot C — The Book of Baba Yaga",
+            qt:"While the party ate in the kitchen, Mortis slipped into the hallway and found a heavy tome pinned to a shelf by an axe. He pried it open and discovered it belongs to Baba Yaga — grandmother of all witches and the fey world's equivalent of the devil. The book deals in her curses. It snapped shut before he finished reading, and he cannot reopen it.",
+            npcs:[
+              {name:"Baba Yaga",role:"grandmother of all witches, the fey world's devil-equivalent — her tome is in Greyskull Keep"},
+              {name:"Greyskull Keep",role:"the tome sits on a hallway shelf, axe embedded in the cover"},
+            ],
+            notes:[
+              "Mortis read some curse content before the book closed.",
+              "He cannot reopen it — unclear if physical or magical resistance.",
+              "Why is Baba Yaga's tome in Vox Machina's home? The axe holding it shut may be significant.",
+            ] },
+          { name:"Plot D — Debt to Allura / The Greyskull Mission",
+            qt:"Allura Vysoren arrived to investigate the disturbance at Greyskull Keep, froze Mortis (revealing him as the apparent ghost), and proposed: the party stays for a day then undertakes a mission to repair the damages caused. The party is now Mortis's wardens.",
+            npcs:[
+              {name:"Allura Vysoren",race:"human",role:"archmage, Greyskull Keep caretaker — key new contact"},
+              {name:"Greyskull Keep",role:"Vasselheim — the party's current lodging"},
+            ],
+            notes:[
+              "Bind spell linking Mortis to Sorfon cast by Allura — 6 hours total, 2 hours remain at session's end.",
+              "Allura asked: execute or imprison Mortis? Sorfon argued mercy, sensing he was an undead puppet not freely acting.",
+              "Mortis is approximately 300 years out of time — knew this continent as Gwessar (renamed Tal'Dorei ~300 years ago).",
+              "Nature of the repair mission is not yet revealed.",
+            ] },
+        ],
+        completedPlots:[],
+      },
       8:{ dateLabel:"Recorded 25 Jun 2026 · The Vigil for Cassandra",
         startedHere:"Kraghammer, in the ruins of the dwarven palace — moments after the dragon was driven off and Cassandra de Rolo fell. Mortis reaches out to her departing spirit.",
         endedHere:"At the gates of Vasselheim after the airship crossing — magic items surrendered to the guard, the party racing to revive Cassandra before her soul is lost.",
