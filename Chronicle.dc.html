@@ -23,41 +23,42 @@
   @keyframes chr-pop{0%{opacity:0}100%{opacity:1}}
 </style>
 </helmet>
-<div style="height:100vh;width:100%;display:grid;grid-template-columns:{{ gridCols }};transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1);font-family:'EB Garamond',Georgia,serif;color:#2a1b0c;overflow:hidden;background:radial-gradient(1200px 800px at 72% 18%,rgba(255,210,120,.10),transparent 60%),radial-gradient(900px 600px at 28% 82%,rgba(180,120,40,.07),transparent 55%),linear-gradient(180deg,#1b1410,#0c0a06);">
+<div style="height:100vh;width:100%;display:grid;grid-template-columns:{{ gridCols }};transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1);font-family:'EB Garamond',Georgia,serif;color:{{ t.mainColor }};overflow:hidden;background:{{ t.mainBg }};">
 
-  <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;padding:0;background:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 26% 16%,#f5ead0,#e6d0a0);border-right:1px solid rgba(70,45,15,.45);box-shadow:14px 0 40px rgba(0,0,0,.45),inset -1px 0 0 rgba(255,255,255,.4);">
+  <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;padding:0;background:{{ t.sidebarBg }};border-right:1px solid {{ t.sidebarBorder }};box-shadow:{{ t.sidebarShadowL }};">
     <div style="position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;background-image:radial-gradient(1.5px 1.5px at 12% 22%,rgba(60,40,10,.6) 40%,transparent 42%),radial-gradient(1.5px 1.5px at 78% 64%,rgba(60,40,10,.5) 40%,transparent 42%),radial-gradient(1px 1px at 46% 88%,rgba(60,40,10,.5) 40%,transparent 42%);background-size:24px 24px,30px 30px,18px 18px;"></div>
     <div style="position:absolute;top:-20px;left:-20px;right:-20px;height:260px;pointer-events:none;background:radial-gradient(520px 360px at 32% 14%,rgba(255,222,140,.5),transparent 60%);animation:chr-flicker 7s ease-in-out infinite;"></div>
 
     <div style="position:relative;padding:24px 22px 18px;">
 
-      <button onClick="{{ onCollapse }}" title="Collapse sidebar" style="position:absolute;top:14px;right:14px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid rgba(70,45,15,.45);background:linear-gradient(180deg,rgba(255,250,238,.9),rgba(231,210,164,.85));color:#5a4830;font-size:16px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.05);transform:translateX(-1px);">‹</button>
+      <button onClick="{{ onCollapse }}" title="Collapse sidebar" style="position:absolute;top:14px;right:14px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ t.collapseBorder }};background:{{ t.collapseBg }};color:{{ t.collapseColor }};font-size:16px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);transform:translateX(-1px);">‹</button>
+      <button onClick="{{ onThemeToggle }}" title="{{ t.toggleTitle }}" style="position:absolute;top:14px;right:52px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ t.collapseBorder }};background:{{ t.collapseBg }};color:{{ t.collapseColor }};font-size:14px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);">{{ t.toggleIcon }}</button>
 
       <!-- BRAND -->
       <div style="position:relative;text-align:center;padding:6px 6px 20px;">
-        <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:#8a6a28;padding-left:.42em;">Exandria</div>
-        <h1 style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:38px;line-height:1;margin:8px 0 2px;color:#1d1106;text-shadow:0 1px 0 rgba(255,255,255,.5);">Chronicle</h1>
-        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;color:#9a7a36;">
+        <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:{{ t.accent }};padding-left:.42em;">Exandria</div>
+        <h1 style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:38px;line-height:1;margin:8px 0 2px;color:{{ t.h1 }};text-shadow:{{ t.h1Shadow }};">Chronicle</h1>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;color:{{ t.accent }};">
           <span style="height:1px;width:54px;background:linear-gradient(90deg,transparent,#b58f3e);"></span>
           <span style="font-size:13px;">✦</span>
           <span style="height:1px;width:54px;background:linear-gradient(90deg,#b58f3e,transparent);"></span>
         </div>
-        <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:#6a5435;line-height:1.4;margin:12px 18px 0;">An interactive record of the journeys, deeds, and entanglements of Bund Der Vier.</p>
+        <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:14px;color:{{ t.tagline }};line-height:1.4;margin:12px 18px 0;">An interactive record of the journeys, deeds, and entanglements of Bund Der Vier.</p>
       </div>
 
       <!-- CHARACTERS -->
       <div style="position:relative;margin-top:6px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:#1e1208;">Bund Der Vier</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.4),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ t.sectionLabel }};">Bund Der Vier</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLine }},transparent);"></span>
         </div>
         <div style="display:grid;gap:9px;">
           <sc-for list="{{ partyRows }}" as="c" hint-placeholder-count="4">
             <button onClick="{{ c.onToggle }}" style="{{ c.rowStyle }}">
               <span style="{{ c.sealStyle }}"></span>
               <span style="display:grid;gap:1px;text-align:left;flex:1;min-width:0;">
-                <span style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:.04em;color:#231408;line-height:1.1;">{{ c.name }}</span>
-                <span style="font-size:12px;font-style:italic;color:#7a6240;line-height:1.1;">{{ c.role }}</span>
+                <span style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:.04em;color:{{ t.titleText }};line-height:1.1;">{{ c.name }}</span>
+                <span style="font-size:12px;font-style:italic;color:{{ t.labelSm }};line-height:1.1;">{{ c.role }}</span>
               </span>
               <span style="{{ c.dotStyle }}"></span>
             </button>
@@ -68,30 +69,30 @@
       <!-- FILTERS -->
       <div style="position:relative;margin-top:24px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:#1e1208;">Timeline Filters</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.4),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ t.sectionLabel }};">Timeline Filters</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLine }},transparent);"></span>
         </div>
         <div style="display:grid;gap:11px;">
           <label style="display:grid;gap:6px;">
-            <span style="font-size:12px;letter-spacing:.04em;color:#5a4830;font-variant:small-caps;font-feature-settings:'smcp';">Search title or summary</span>
+            <span style="font-size:12px;letter-spacing:.04em;color:{{ t.bodyText }};font-variant:small-caps;font-feature-settings:'smcp';">Search title or summary</span>
             <div style="position:relative;display:flex;align-items:center;">
-              <span style="position:absolute;left:11px;font-size:13px;color:#9a7a36;pointer-events:none;">⌕</span>
-              <input value="{{ f.text }}" onInput="{{ onText }}" type="text" placeholder="cult, relic, Trostenwald…" style="width:100%;padding:10px 12px 10px 30px;border:1px solid rgba(70,45,15,.4);border-radius:10px;font-family:'EB Garamond',serif;font-size:14.5px;color:#2a1b0c;background:rgba(255,255,255,.6);outline:none;" />
+              <span style="position:absolute;left:11px;font-size:13px;color:{{ t.accent }};pointer-events:none;">⌕</span>
+              <input value="{{ f.text }}" onInput="{{ onText }}" type="text" placeholder="cult, relic, Trostenwald…" style="width:100%;padding:10px 12px 10px 30px;border:1px solid {{ t.inputBorder }};border-radius:10px;font-family:'EB Garamond',serif;font-size:14.5px;color:{{ t.inputColor }};background:{{ t.inputBg }};outline:none;" />
             </div>
           </label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <label style="display:grid;gap:6px;min-width:0;">
-              <span style="font-size:12px;letter-spacing:.04em;color:#5a4830;font-variant:small-caps;">From</span>
-              <input value="{{ f.from }}" onChange="{{ onFrom }}" type="date" style="width:100%;min-width:0;padding:9px 10px;border:1px solid rgba(70,45,15,.4);border-radius:10px;font-family:'EB Garamond',serif;font-size:13px;color:#2a1b0c;background:rgba(255,255,255,.6);outline:none;" />
+              <span style="font-size:12px;letter-spacing:.04em;color:{{ t.bodyText }};font-variant:small-caps;">From</span>
+              <input value="{{ f.from }}" onChange="{{ onFrom }}" type="date" style="width:100%;min-width:0;padding:9px 10px;border:1px solid {{ t.inputBorder }};border-radius:10px;font-family:'EB Garamond',serif;font-size:13px;color:{{ t.inputColor }};background:{{ t.inputBg }};outline:none;" />
             </label>
             <label style="display:grid;gap:6px;min-width:0;">
-              <span style="font-size:12px;letter-spacing:.04em;color:#5a4830;font-variant:small-caps;">To</span>
-              <input value="{{ f.to }}" onChange="{{ onTo }}" type="date" style="width:100%;min-width:0;padding:9px 10px;border:1px solid rgba(70,45,15,.4);border-radius:10px;font-family:'EB Garamond',serif;font-size:13px;color:#2a1b0c;background:rgba(255,255,255,.6);outline:none;" />
+              <span style="font-size:12px;letter-spacing:.04em;color:{{ t.bodyText }};font-variant:small-caps;">To</span>
+              <input value="{{ f.to }}" onChange="{{ onTo }}" type="date" style="width:100%;min-width:0;padding:9px 10px;border:1px solid {{ t.inputBorder }};border-radius:10px;font-family:'EB Garamond',serif;font-size:13px;color:{{ t.inputColor }};background:{{ t.inputBg }};outline:none;" />
             </label>
           </div>
           <div style="display:flex;align-items:center;gap:10px;margin-top:2px;">
-            <button onClick="{{ onReset }}" style="flex:1;padding:11px 12px;border:1px solid rgba(70,45,15,.55);border-radius:10px;background:linear-gradient(180deg,#fdedc6,#d6b46b);color:#1f1409;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.1em;text-transform:uppercase;font-size:11px;box-shadow:0 8px 16px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.05);transform:translateY(-1px);">Reset</button>
-            <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:#8a6a28;white-space:nowrap;">{{ resultsText }}</span>
+            <button onClick="{{ onReset }}" style="flex:1;padding:11px 12px;border:1px solid {{ t.resetBorder }};border-radius:10px;background:{{ t.resetBg }};color:{{ t.resetColor }};cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.1em;text-transform:uppercase;font-size:11px;box-shadow:0 8px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);transform:translateY(-1px);">Reset</button>
+            <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:{{ t.accent }};white-space:nowrap;">{{ resultsText }}</span>
           </div>
         </div>
       </div>
@@ -99,12 +100,12 @@
       <!-- TIMELINE -->
       <div style="position:relative;margin-top:26px;padding-bottom:10px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:#1e1208;">Chronicle</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.4),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ t.sectionLabel }};">Chronicle</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLine }},transparent);"></span>
         </div>
 
         <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
-          <div style="text-align:center;padding:26px 10px;color:#8a7250;font-style:italic;font-size:14px;border:1px dashed rgba(70,45,15,.35);border-radius:12px;">No events match these filters. The pages here are blank.</div>
+          <div style="text-align:center;padding:26px 10px;color:{{ t.emptyColor }};font-style:italic;font-size:14px;border:1px dashed {{ t.emptyBorder }};border-radius:12px;">No events match these filters. The pages here are blank.</div>
         </sc-if>
 
         <div style="position:relative;padding-left:6px;">
@@ -112,20 +113,20 @@
             <div style="position:relative;margin-bottom:6px;">
               <div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;">
                 <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:linear-gradient(180deg,#3a2a14,#241608);padding:4px 11px;border-radius:999px;box-shadow:0 4px 9px rgba(0,0,0,.25);">{{ grp.label }}</span>
-                <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.28),transparent);"></span>
+                <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineTL }},transparent);"></span>
               </div>
               <div style="position:relative;padding-left:30px;">
-                <span style="position:absolute;left:11px;top:2px;bottom:2px;width:2px;background:linear-gradient(180deg,rgba(120,85,30,.55),rgba(120,85,30,.18));"></span>
+                <span style="position:absolute;left:11px;top:2px;bottom:2px;width:2px;background:{{ t.timelineLine }};"></span>
                 <sc-for list="{{ grp.events }}" as="ev" hint-placeholder-count="2">
                   <div onClick="{{ ev.onSelect }}" style="{{ ev.cardStyle }}">
                     <span style="{{ ev.nodeStyle }}"></span>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
-                      <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:#9a7a36;text-transform:uppercase;">{{ ev.dateLabel }}</span>
+                      <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:{{ t.accent }};text-transform:uppercase;">{{ ev.dateLabel }}</span>
                       <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
-                      <span style="font-size:11px;font-style:italic;color:#8a7250;">{{ ev.charLabel }}</span>
+                      <span style="font-size:11px;font-style:italic;color:{{ t.labelXs }};">{{ ev.charLabel }}</span>
                     </div>
-                    <div style="font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;color:#231408;line-height:1.2;margin-bottom:4px;">{{ ev.title }}</div>
-                    <div style="font-size:13.5px;line-height:1.42;color:#5a4830;">{{ ev.summary }}</div>
+                    <div style="font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;color:{{ t.titleText }};line-height:1.2;margin-bottom:4px;">{{ ev.title }}</div>
+                    <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">{{ ev.summary }}</div>
                   </div>
                 </sc-for>
               </div>
@@ -134,17 +135,17 @@
         </div>
       </div>
 
-      <div style="text-align:center;padding:6px 0 8px;color:#9a7a36;font-size:11px;font-style:italic;">{{ sampleNote }}</div>
+      <div style="text-align:center;padding:6px 0 8px;color:{{ t.accent }};font-size:11px;font-style:italic;">{{ sampleNote }}</div>
     </div>
   </aside>
 
   <!-- MAP -->
   <main style="position:relative;overflow:hidden;background:#0f0c07;">
     <sc-if value="{{ collapsed }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ onExpand }}" title="Show sidebar" style="position:absolute;left:0;top:28px;z-index:20;display:flex;align-items:center;gap:7px;padding:11px 14px 11px 12px;border:1px solid rgba(70,45,15,.5);border-left:none;border-radius:0 12px 12px 0;background:linear-gradient(180deg,#f7eed4,#e3cb95);color:#3a2a14;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:6px 0 18px rgba(0,0,0,.35);">›<span>Chronicle</span></button>
+      <button onClick="{{ onExpand }}" title="Show sidebar" style="position:absolute;left:0;top:28px;z-index:20;display:flex;align-items:center;gap:7px;padding:11px 14px 11px 12px;border:1px solid {{ t.expandBorder }};border-left:none;border-radius:0 12px 12px 0;background:{{ t.expandBg }};color:{{ t.expandColor }};font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:6px 0 18px rgba(0,0,0,.4);">›<span>Chronicle</span></button>
     </sc-if>
     <sc-if value="{{ rightTabShown }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ onRightExpand }}" title="Show session log" style="position:absolute;right:0;top:28px;z-index:20;display:flex;align-items:center;gap:7px;padding:11px 12px 11px 14px;border:1px solid rgba(70,45,15,.5);border-right:none;border-radius:12px 0 0 12px;background:linear-gradient(180deg,#f7eed4,#e3cb95);color:#3a2a14;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:-6px 0 18px rgba(0,0,0,.35);"><span>Session</span>‹</button>
+      <button onClick="{{ onRightExpand }}" title="Show session log" style="position:absolute;right:0;top:28px;z-index:20;display:flex;align-items:center;gap:7px;padding:11px 12px 11px 14px;border:1px solid {{ t.expandBorder }};border-right:none;border-radius:12px 0 0 12px;background:{{ t.expandBg }};color:{{ t.expandColor }};font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:-6px 0 18px rgba(0,0,0,.4);"><span>Session</span>‹</button>
     </sc-if>
     <div ref="{{ vpRef }}" onMouseDown="{{ onDown }}" style="position:absolute;inset:14px;border-radius:6px;overflow:hidden;cursor:grab;user-select:none;box-shadow:inset 0 0 0 1px rgba(199,162,75,.35),inset 0 0 0 9px rgba(20,14,6,.92),inset 0 0 0 10px rgba(199,162,75,.3),0 30px 80px rgba(0,0,0,.6);background:#11100c;">
 
@@ -160,14 +161,14 @@
 
         <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ false }}">
           <div onMouseDown="{{ stop }}" style="{{ sel.style }}">
-            <div style="position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:#f5ead0;border-right:1px solid rgba(70,45,15,.5);border-bottom:1px solid rgba(70,45,15,.5);transform:translateX(-50%) rotate(45deg);"></div>
+            <div style="position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:{{ t.popupArrowBg }};border-right:1px solid {{ t.popupArrowBorder }};border-bottom:1px solid {{ t.popupArrowBorder }};transform:translateX(-50%) rotate(45deg);"></div>
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
               <span style="{{ sel.sealStyle }}"></span>
-              <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#9a7a36;">{{ sel.dateLabel }} · Session {{ sel.session }}</span>
-              <button onClick="{{ onClose }}" style="margin-left:auto;border:none;background:none;cursor:pointer;color:#9a7a36;font-size:15px;line-height:1;padding:0 2px;">✕</button>
+              <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:{{ t.accent }};">{{ sel.dateLabel }} · Session {{ sel.session }}</span>
+              <button onClick="{{ onClose }}" style="margin-left:auto;border:none;background:none;cursor:pointer;color:{{ t.accent }};font-size:15px;line-height:1;padding:0 2px;">✕</button>
             </div>
-            <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#231408;line-height:1.2;margin-bottom:5px;">{{ sel.title }}</div>
-            <div style="font-size:13px;line-height:1.42;color:#5a4830;">{{ sel.summary }}</div>
+            <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:{{ t.titleText }};line-height:1.2;margin-bottom:5px;">{{ sel.title }}</div>
+            <div style="font-size:13px;line-height:1.42;color:{{ t.bodyText }};">{{ sel.summary }}</div>
           </div>
         </sc-if>
       </div>
@@ -189,7 +190,7 @@
   </main>
 
   <!-- RIGHT STORY PANEL -->
-  <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;background:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 74% 16%,#f5ead0,#e6d0a0);border-left:1px solid rgba(70,45,15,.45);box-shadow:-14px 0 40px rgba(0,0,0,.45),inset 1px 0 0 rgba(255,255,255,.4);">
+  <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;background:{{ t.sidebarBgR }};border-left:1px solid {{ t.sidebarBorder }};box-shadow:{{ t.sidebarShadowR }};">
     <div style="position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;background-image:radial-gradient(1.5px 1.5px at 18% 24%,rgba(60,40,10,.6) 40%,transparent 42%),radial-gradient(1.5px 1.5px at 72% 60%,rgba(60,40,10,.5) 40%,transparent 42%);background-size:26px 26px,30px 30px;"></div>
     <sc-if value="{{ hasPanel }}" hint-placeholder-val="{{ false }}">
       <div style="position:relative;display:flex;flex-direction:column;min-height:100vh;width:446px;padding:24px 22px 28px;">
@@ -198,65 +199,65 @@
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:4px;">
           <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#f5ead0;background:linear-gradient(180deg,#3a2a14,#241608);padding:5px 12px;border-radius:999px;box-shadow:0 4px 9px rgba(0,0,0,.25);">{{ panel.sessionLabel }}</span>
           <span style="flex:1;"></span>
-          <button onClick="{{ panel.onMinimize }}" title="Minimize" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(70,45,15,.4);background:rgba(255,250,238,.7);color:#5a4830;font-size:15px;line-height:1;cursor:pointer;">›</button>
-          <button onClick="{{ panel.onClose }}" title="Close" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(70,45,15,.4);background:rgba(255,250,238,.7);color:#5a4830;font-size:14px;line-height:1;cursor:pointer;">✕</button>
+          <button onClick="{{ panel.onMinimize }}" title="Minimize" style="width:28px;height:28px;border-radius:8px;border:1px solid {{ t.panelBtnBorder }};background:{{ t.panelBtnBg }};color:{{ t.panelBtnColor }};font-size:15px;line-height:1;cursor:pointer;">›</button>
+          <button onClick="{{ panel.onClose }}" title="Close" style="width:28px;height:28px;border-radius:8px;border:1px solid {{ t.panelBtnBorder }};background:{{ t.panelBtnBg }};color:{{ t.panelBtnColor }};font-size:14px;line-height:1;cursor:pointer;">✕</button>
         </div>
-        <div style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:27px;color:#1d1106;line-height:1.1;margin:8px 0 3px;">Session Log</div>
-        <div style="font-family:'EB Garamond',serif;font-style:italic;font-size:13px;color:#7a6240;margin-bottom:20px;">{{ panel.dateLabel }}</div>
+        <div style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:27px;color:{{ t.h1 }};line-height:1.1;margin:8px 0 3px;">Session Log</div>
+        <div style="font-family:'EB Garamond',serif;font-style:italic;font-size:13px;color:{{ t.labelSm }};margin-bottom:20px;">{{ panel.dateLabel }}</div>
 
         <!-- Starting Notes -->
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Starting Notes</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">Starting Notes</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-          <div style="padding:11px 12px;border-radius:11px;border:1px solid rgba(70,45,15,.28);background:rgba(255,253,247,.55);">
-            <div style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin-bottom:6px;">We started here</div>
-            <div style="font-size:13px;line-height:1.42;color:#43331c;">{{ panel.startedHere }}</div>
+          <div style="padding:11px 12px;border-radius:11px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <div style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin-bottom:6px;">We started here</div>
+            <div style="font-size:13px;line-height:1.42;color:{{ t.bodyText2 }};">{{ panel.startedHere }}</div>
           </div>
-          <div style="padding:11px 12px;border-radius:11px;border:1px solid rgba(70,45,15,.28);background:rgba(255,253,247,.55);">
-            <div style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin-bottom:6px;">We ended here</div>
-            <div style="font-size:13px;line-height:1.42;color:#43331c;">{{ panel.endedHere }}</div>
+          <div style="padding:11px 12px;border-radius:11px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <div style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin-bottom:6px;">We ended here</div>
+            <div style="font-size:13px;line-height:1.42;color:{{ t.bodyText2 }};">{{ panel.endedHere }}</div>
           </div>
         </div>
 
         <!-- In-Game Time -->
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">In-Game Time</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">In-Game Time</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
         </div>
         <div style="display:grid;gap:7px;margin-bottom:20px;">
-          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:rgba(255,253,247,.5);border:1px solid rgba(70,45,15,.22);">
-            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#7a6240;">Start</span>
-            <span style="font-size:13.5px;color:#231408;">{{ panel.igStart }}</span>
+          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:{{ t.igRowBg }};border:1px solid {{ t.igRowBorder }};">
+            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:{{ t.igRowLabel }};">Start</span>
+            <span style="font-size:13.5px;color:{{ t.igRowText }};">{{ panel.igStart }}</span>
           </div>
-          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:rgba(255,253,247,.5);border:1px solid rgba(70,45,15,.22);">
-            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#7a6240;">End</span>
-            <span style="font-size:13.5px;color:#231408;">{{ panel.igEnd }}</span>
+          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:{{ t.igRowBg }};border:1px solid {{ t.igRowBorder }};">
+            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:{{ t.igRowLabel }};">End</span>
+            <span style="font-size:13.5px;color:{{ t.igRowText }};">{{ panel.igEnd }}</span>
           </div>
-          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:rgba(255,253,247,.5);border:1px solid rgba(70,45,15,.22);">
-            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#7a6240;">Last Long Rest</span>
-            <span style="font-size:13.5px;color:#231408;">{{ panel.igRest }}</span>
+          <div style="display:flex;align-items:baseline;gap:10px;padding:9px 13px;border-radius:10px;background:{{ t.igRowBg }};border:1px solid {{ t.igRowBorder }};">
+            <span style="flex:none;width:104px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:{{ t.igRowLabel }};">Last Long Rest</span>
+            <span style="font-size:13.5px;color:{{ t.igRowText }};">{{ panel.igRest }}</span>
           </div>
         </div>
 
         <!-- Active Effects -->
         <sc-if value="{{ panel.hasEffects }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Active Effects at Session's End</span>
-            <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">Active Effects at Session's End</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
           </div>
           <div style="display:grid;gap:7px;margin-bottom:20px;">
             <sc-for list="{{ panel.effects }}" as="ef" hint-placeholder-count="2">
-              <div style="display:flex;gap:9px;font-size:13px;line-height:1.42;color:#43331c;"><span style="flex:none;color:#b8447e;margin-top:1px;">✦</span>{{ ef }}</div>
+              <div style="display:flex;gap:9px;font-size:13px;line-height:1.42;color:{{ t.effectColor }};"><span style="flex:none;color:{{ t.effectBullet }};margin-top:1px;">✦</span>{{ ef }}</div>
             </sc-for>
           </div>
         </sc-if>
 
         <!-- What Happened -->
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">What Happened</span>
-          <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">What Happened</span>
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
         </div>
         <div style="display:grid;gap:10px;margin-bottom:20px;">
           <sc-for list="{{ panel.events }}" as="ev" hint-placeholder-count="2">
@@ -264,12 +265,12 @@
               <span style="{{ ev.sealStyle }}"></span>
               <span style="display:grid;gap:3px;min-width:0;">
                 <span style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
-                  <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#9a7a36;">{{ ev.dateLabel }}</span>
+                  <span style="font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.accent }};">{{ ev.dateLabel }}</span>
                   <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
-                  <span style="font-size:11px;font-style:italic;color:#8a7250;">{{ ev.charLabel }}</span>
+                  <span style="font-size:11px;font-style:italic;color:{{ t.labelXs }};">{{ ev.charLabel }}</span>
                 </span>
-                <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#231408;line-height:1.2;">{{ ev.title }}</span>
-                <span style="font-size:13px;line-height:1.42;color:#5a4830;">{{ ev.summary }}</span>
+                <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:{{ t.titleText }};line-height:1.2;">{{ ev.title }}</span>
+                <span style="font-size:13px;line-height:1.42;color:{{ t.bodyText }};">{{ ev.summary }}</span>
               </span>
             </button>
           </sc-for>
@@ -278,27 +279,27 @@
         <!-- Active Plots -->
         <sc-if value="{{ panel.hasActive }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Active Plots</span>
-            <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">Active Plots</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
           </div>
           <div style="display:grid;gap:12px;margin-bottom:20px;">
             <sc-for list="{{ panel.activePlots }}" as="p" hint-placeholder-count="2">
-              <div style="position:relative;padding:13px 14px;border-radius:13px;border:1px solid rgba(70,45,15,.3);background:rgba(255,255,255,.5);box-shadow:0 6px 14px rgba(0,0,0,.06);">
-                <div style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#231408;margin-bottom:8px;">{{ p.name }}</div>
-                <div style="font-size:13px;line-height:1.42;color:#5a4830;margin-bottom:8px;">{{ p.qt }}</div>
+              <div style="position:relative;padding:13px 14px;border-radius:13px;border:1px solid {{ t.activePlotBorder }};background:{{ t.activePlotBg }};box-shadow:0 6px 14px rgba(0,0,0,.1);">
+                <div style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:{{ t.plotTitle }};margin-bottom:8px;">{{ p.name }}</div>
+                <div style="font-size:13px;line-height:1.42;color:{{ t.plotText }};margin-bottom:8px;">{{ p.qt }}</div>
                 <sc-if value="{{ p.hasNpcs }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">NPCs &amp; Locations</div>
+                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin:8px 0 5px;">NPCs &amp; Locations</div>
                   <div style="display:grid;gap:4px;">
                     <sc-for list="{{ p.npcs }}" as="n" hint-placeholder-count="1">
-                      <div style="font-size:12.5px;color:#43331c;padding-left:14px;position:relative;"><span style="position:absolute;left:0;top:7px;width:5px;height:5px;background:#b89a5a;border-radius:50%;"></span>{{ n }}</div>
+                      <div style="font-size:12.5px;color:{{ t.bodyText2 }};padding-left:14px;position:relative;"><span style="position:absolute;left:0;top:7px;width:5px;height:5px;background:#b89a5a;border-radius:50%;"></span>{{ n }}</div>
                     </sc-for>
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.hasNotes }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">Notes</div>
+                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin:8px 0 5px;">Notes</div>
                   <div style="display:grid;gap:4px;">
                     <sc-for list="{{ p.notes }}" as="nt" hint-placeholder-count="2">
-                      <div style="font-size:12.5px;line-height:1.4;color:#5a4830;padding-left:14px;position:relative;"><span style="position:absolute;left:2px;top:0;color:#b89a5a;">›</span>{{ nt }}</div>
+                      <div style="font-size:12.5px;line-height:1.4;color:{{ t.bodyText }};padding-left:14px;position:relative;"><span style="position:absolute;left:2px;top:0;color:#b89a5a;">›</span>{{ nt }}</div>
                     </sc-for>
                   </div>
                 </sc-if>
@@ -310,30 +311,30 @@
         <!-- Completed Plots -->
         <sc-if value="{{ panel.hasCompleted }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px;">
-            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#1e1208;">Completed Plots</span>
-            <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(42,27,12,.35),transparent);"></span>
+            <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:{{ t.sectionLabel }};">Completed Plots</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineFaint }},transparent);"></span>
           </div>
           <div style="display:grid;gap:12px;margin-bottom:18px;">
             <sc-for list="{{ panel.completedPlots }}" as="p" hint-placeholder-count="1">
-              <div style="position:relative;padding:13px 14px;border-radius:13px;border:1px solid rgba(47,133,87,.4);background:linear-gradient(180deg,rgba(238,247,240,.7),rgba(228,240,230,.55));box-shadow:0 6px 14px rgba(0,0,0,.05);">
+              <div style="position:relative;padding:13px 14px;border-radius:13px;border:1px solid {{ t.completedBorder }};background:{{ t.completedBg }};box-shadow:0 6px 14px rgba(0,0,0,.1);">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-                  <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#231408;">{{ p.name }}</span>
-                  <span style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#2f8557;border:1px solid rgba(47,133,87,.45);background:rgba(47,133,87,.1);padding:2px 8px;border-radius:999px;">{{ p.closed }}</span>
+                  <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:{{ t.plotTitle }};">{{ p.name }}</span>
+                  <span style="font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.completedBadgeColor }};border:1px solid {{ t.completedBadgeBorder }};background:{{ t.completedBadgeBg }};padding:2px 8px;border-radius:999px;">{{ p.closed }}</span>
                 </div>
-                <div style="font-size:13px;line-height:1.42;color:#5a4830;margin-bottom:8px;">{{ p.qt }}</div>
+                <div style="font-size:13px;line-height:1.42;color:{{ t.plotText }};margin-bottom:8px;">{{ p.qt }}</div>
                 <sc-if value="{{ p.hasNpcs }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">NPCs &amp; Locations</div>
+                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin:8px 0 5px;">NPCs &amp; Locations</div>
                   <div style="display:grid;gap:4px;">
                     <sc-for list="{{ p.npcs }}" as="n" hint-placeholder-count="1">
-                      <div style="font-size:12.5px;color:#43331c;padding-left:14px;position:relative;"><span style="position:absolute;left:0;top:7px;width:5px;height:5px;background:#b89a5a;border-radius:50%;"></span>{{ n }}</div>
+                      <div style="font-size:12.5px;color:{{ t.bodyText2 }};padding-left:14px;position:relative;"><span style="position:absolute;left:0;top:7px;width:5px;height:5px;background:#b89a5a;border-radius:50%;"></span>{{ n }}</div>
                     </sc-for>
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.hasNotes }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9a7a36;margin:8px 0 5px;">Notes</div>
+                  <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:{{ t.accent }};margin:8px 0 5px;">Notes</div>
                   <div style="display:grid;gap:4px;">
                     <sc-for list="{{ p.notes }}" as="nt" hint-placeholder-count="2">
-                      <div style="font-size:12.5px;line-height:1.4;color:#5a4830;padding-left:14px;position:relative;"><span style="position:absolute;left:2px;top:0;color:#b89a5a;">›</span>{{ nt }}</div>
+                      <div style="font-size:12.5px;line-height:1.4;color:{{ t.bodyText }};padding-left:14px;position:relative;"><span style="position:absolute;left:2px;top:0;color:#b89a5a;">›</span>{{ nt }}</div>
                     </sc-for>
                   </div>
                 </sc-if>
@@ -342,8 +343,8 @@
           </div>
         </sc-if>
 
-        <div style="margin-top:auto;padding-top:13px;display:flex;align-items:center;gap:7px;color:#8a7250;font-size:11px;font-style:italic;border-top:1px solid rgba(70,45,15,.18);">
-          <span style="width:7px;height:7px;border-radius:50%;background:#9a7a36;"></span>Bund der Vier · Session Log.
+        <div style="margin-top:auto;padding-top:13px;display:flex;align-items:center;gap:7px;color:{{ t.footerColor }};font-size:11px;font-style:italic;border-top:1px solid {{ t.footerBorder }};">
+          <span style="width:7px;height:7px;border-radius:50%;background:{{ t.accent }};"></span>Bund der Vier · Session Log.
         </div>
       </div>
     </sc-if>
@@ -402,6 +403,110 @@ const FILTER_PREDICATES = [
   (ev,f) => !f.from || ev.date>=f.from,
   (ev,f) => !f.to   || ev.date<=f.to,
 ];
+
+// ── Themes ────────────────────────────────────────────────────────────────
+const THEMES = {
+  dark: {
+    toggleIcon:"☀", toggleTitle:"Switch to light mode",
+    mainBg:"radial-gradient(1200px 800px at 72% 18%,rgba(180,130,40,.07),transparent 60%),radial-gradient(900px 600px at 28% 82%,rgba(120,80,20,.05),transparent 55%),linear-gradient(180deg,#0f0c07,#080604)",
+    mainColor:"#ddc89a",
+    sidebarBg:"linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 26% 16%,#1e1610,#141008)",
+    sidebarBgR:"linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 74% 16%,#1e1610,#141008)",
+    sidebarBorder:"rgba(180,140,60,.18)",
+    sidebarShadowL:"14px 0 40px rgba(0,0,0,.7),inset -1px 0 0 rgba(255,255,255,.04)",
+    sidebarShadowR:"-14px 0 40px rgba(0,0,0,.7),inset 1px 0 0 rgba(255,255,255,.04)",
+    h1:"#f0e4c8", h1Shadow:"0 1px 0 rgba(0,0,0,.8)",
+    accent:"#c4a040",
+    sectionLabel:"#c8a86a",
+    tagline:"#9a8060",
+    bodyText:"#b89868", bodyText2:"#c4a87a",
+    labelSm:"#9a8060", labelXs:"#8a7050",
+    titleText:"#ede2c4",
+    inputBg:"rgba(255,255,255,.07)", inputBorder:"rgba(180,140,60,.2)", inputColor:"#e0d0aa",
+    sepLine:"rgba(200,160,60,.25)", sepLineFaint:"rgba(200,160,60,.22)", sepLineTL:"rgba(200,160,60,.15)",
+    timelineLine:"linear-gradient(180deg,rgba(180,130,40,.45),rgba(180,130,40,.12))",
+    emptyBorder:"rgba(180,140,60,.2)", emptyColor:"#8a7050",
+    collapseBg:"linear-gradient(180deg,rgba(40,28,12,.95),rgba(30,20,8,.92))", collapseBorder:"rgba(180,140,60,.3)", collapseColor:"#c4a87a",
+    resetBg:"linear-gradient(180deg,#3a2810,#2a1e08)", resetBorder:"rgba(180,140,60,.35)", resetColor:"#c4a04a",
+    expandBg:"linear-gradient(180deg,#2a1c08,#201408)", expandBorder:"rgba(180,140,60,.3)", expandColor:"#c4a84a",
+    panelBtnBg:"rgba(40,28,12,.8)", panelBtnBorder:"rgba(180,140,60,.3)", panelBtnColor:"#c4a87a",
+    popupBg:"linear-gradient(180deg,#1e180e,#282010)", popupBorder:"rgba(180,140,60,.35)",
+    popupArrowBg:"#1e180e", popupArrowBorder:"rgba(180,140,60,.35)",
+    panelCardBg:"rgba(255,255,255,.04)", panelCardBorder:"rgba(180,140,60,.18)",
+    igRowBg:"rgba(255,255,255,.04)", igRowBorder:"rgba(180,140,60,.14)", igRowLabel:"#9a8060", igRowText:"#ede2c4",
+    effectColor:"#c4a87a", effectBullet:"#c4607a",
+    activePlotBg:"rgba(255,255,255,.04)", activePlotBorder:"rgba(180,140,60,.2)",
+    plotTitle:"#ede2c4", plotText:"#b89868",
+    completedBg:"linear-gradient(180deg,rgba(14,26,18,.8),rgba(12,22,16,.65))",
+    completedBorder:"rgba(47,133,87,.35)",
+    completedBadgeColor:"#3da66a", completedBadgeBorder:"rgba(47,133,87,.45)", completedBadgeBg:"rgba(47,133,87,.15)",
+    footerBorder:"rgba(180,140,60,.15)", footerColor:"#8a7050",
+    // JS builders
+    charRowBorderOn:"rgba(180,140,60,.25)", charRowBorderOff:"rgba(180,140,60,.1)",
+    charRowBgOn:"rgba(255,255,255,.07)", charRowBgOff:"rgba(255,255,255,.02)",
+    charRowShadowOn:"0 6px 14px rgba(0,0,0,.3)",
+    sealBorder:"rgba(255,252,244,.35)",
+    nodeSelBorder:"#c7a24b", nodeUnselBorder:"rgba(255,252,244,.25)",
+    nodeSelShadow:"0 0 0 3px rgba(199,162,75,.4)", nodeUnselShadow:"0 2px 5px rgba(0,0,0,.5)",
+    tlCardBorderSel:"rgba(199,162,75,.85)", tlCardBorderUnsel:"rgba(180,140,60,.18)",
+    tlCardBgSel:"linear-gradient(180deg,rgba(50,36,14,.95),rgba(42,30,10,.9))", tlCardBgUnsel:"rgba(255,255,255,.04)",
+    tlCardShadowSel:"0 14px 28px rgba(0,0,0,.4),inset 0 0 0 1px rgba(199,162,75,.3)", tlCardShadowUnsel:"0 4px 10px rgba(0,0,0,.25)",
+    panelRowBorderSel:"rgba(199,162,75,.85)", panelRowBorderUnsel:"rgba(180,140,60,.18)",
+    panelRowBgSel:"linear-gradient(180deg,rgba(50,36,14,.95),rgba(42,30,10,.9))", panelRowBgUnsel:"rgba(255,255,255,.04)",
+    panelRowShadowSel:"0 10px 22px rgba(0,0,0,.4)", panelRowShadowUnsel:"0 3px 8px rgba(0,0,0,.2)",
+    panelSealBorder:"rgba(255,252,244,.3)",
+  },
+  light: {
+    toggleIcon:"🌙", toggleTitle:"Switch to dark mode",
+    mainBg:"radial-gradient(1200px 800px at 72% 18%,rgba(255,210,120,.10),transparent 60%),radial-gradient(900px 600px at 28% 82%,rgba(180,120,40,.07),transparent 55%),linear-gradient(180deg,#1b1410,#0c0a06)",
+    mainColor:"#2a1b0c",
+    sidebarBg:"linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 26% 16%,#f5ead0,#e6d0a0)",
+    sidebarBgR:"linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 74% 16%,#f5ead0,#e6d0a0)",
+    sidebarBorder:"rgba(70,45,15,.45)",
+    sidebarShadowL:"14px 0 40px rgba(0,0,0,.45),inset -1px 0 0 rgba(255,255,255,.4)",
+    sidebarShadowR:"-14px 0 40px rgba(0,0,0,.45),inset 1px 0 0 rgba(255,255,255,.4)",
+    h1:"#1d1106", h1Shadow:"0 1px 0 rgba(255,255,255,.5)",
+    accent:"#9a7a36",
+    sectionLabel:"#1e1208",
+    tagline:"#6a5435",
+    bodyText:"#5a4830", bodyText2:"#43331c",
+    labelSm:"#7a6240", labelXs:"#8a7250",
+    titleText:"#231408",
+    inputBg:"rgba(255,255,255,.6)", inputBorder:"rgba(70,45,15,.4)", inputColor:"#2a1b0c",
+    sepLine:"rgba(42,27,12,.4)", sepLineFaint:"rgba(42,27,12,.35)", sepLineTL:"rgba(42,27,12,.28)",
+    timelineLine:"linear-gradient(180deg,rgba(120,85,30,.55),rgba(120,85,30,.18))",
+    emptyBorder:"rgba(70,45,15,.35)", emptyColor:"#8a7250",
+    collapseBg:"linear-gradient(180deg,rgba(255,250,238,.9),rgba(231,210,164,.85))", collapseBorder:"rgba(70,45,15,.45)", collapseColor:"#5a4830",
+    resetBg:"linear-gradient(180deg,#fdedc6,#d6b46b)", resetBorder:"rgba(70,45,15,.55)", resetColor:"#1f1409",
+    expandBg:"linear-gradient(180deg,#f7eed4,#e3cb95)", expandBorder:"rgba(70,45,15,.5)", expandColor:"#3a2a14",
+    panelBtnBg:"rgba(255,250,238,.7)", panelBtnBorder:"rgba(70,45,15,.4)", panelBtnColor:"#5a4830",
+    popupBg:"linear-gradient(180deg,#f7eed4,#ead7ab)", popupBorder:"rgba(70,45,15,.55)",
+    popupArrowBg:"#f5ead0", popupArrowBorder:"rgba(70,45,15,.5)",
+    panelCardBg:"rgba(255,253,247,.55)", panelCardBorder:"rgba(70,45,15,.28)",
+    igRowBg:"rgba(255,253,247,.5)", igRowBorder:"rgba(70,45,15,.22)", igRowLabel:"#7a6240", igRowText:"#231408",
+    effectColor:"#43331c", effectBullet:"#b8447e",
+    activePlotBg:"rgba(255,255,255,.5)", activePlotBorder:"rgba(70,45,15,.3)",
+    plotTitle:"#231408", plotText:"#5a4830",
+    completedBg:"linear-gradient(180deg,rgba(238,247,240,.7),rgba(228,240,230,.55))",
+    completedBorder:"rgba(47,133,87,.4)",
+    completedBadgeColor:"#2f8557", completedBadgeBorder:"rgba(47,133,87,.45)", completedBadgeBg:"rgba(47,133,87,.1)",
+    footerBorder:"rgba(70,45,15,.18)", footerColor:"#8a7250",
+    // JS builders
+    charRowBorderOn:"rgba(70,45,15,.4)", charRowBorderOff:"rgba(70,45,15,.16)",
+    charRowBgOn:"rgba(255,255,255,.62)", charRowBgOff:"rgba(255,255,255,.2)",
+    charRowShadowOn:"0 6px 14px rgba(0,0,0,.08)",
+    sealBorder:"rgba(255,252,244,.7)",
+    nodeSelBorder:"#c7a24b", nodeUnselBorder:"#f5ead0",
+    nodeSelShadow:"0 0 0 3px rgba(199,162,75,.4)", nodeUnselShadow:"0 2px 5px rgba(0,0,0,.3)",
+    tlCardBorderSel:"rgba(199,162,75,.85)", tlCardBorderUnsel:"rgba(70,45,15,.3)",
+    tlCardBgSel:"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))", tlCardBgUnsel:"rgba(255,255,255,.5)",
+    tlCardShadowSel:"0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3)", tlCardShadowUnsel:"0 8px 16px rgba(0,0,0,.07)",
+    panelRowBorderSel:"rgba(199,162,75,.85)", panelRowBorderUnsel:"rgba(70,45,15,.28)",
+    panelRowBgSel:"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))", panelRowBgUnsel:"rgba(255,255,255,.45)",
+    panelRowShadowSel:"0 10px 22px rgba(120,85,30,.2)", panelRowShadowUnsel:"0 5px 12px rgba(0,0,0,.06)",
+    panelSealBorder:"rgba(255,252,244,.7)",
+  },
+};
 
 class Component extends DCLogic {
   constructor(props){
@@ -576,6 +681,7 @@ class Component extends DCLogic {
       collapsed:false,
       rightCollapsed:false,
       docs:{},
+      darkMode:true,
     };
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
@@ -635,19 +741,19 @@ class Component extends DCLogic {
     return { color:"#3A8CC4", base:`#5BAEE0 url("${url}") center/62% no-repeat` };
   }
 
-  _buildPartyRows(en){
+  _buildPartyRows(en,th){
     return this.characters.map(c=>{
       const on=en[c.id];
       return {
         ...c, onToggle:()=>this.toggle(c.id),
-        rowStyle:`display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:12px;cursor:pointer;text-align:left;border:1px solid ${on?"rgba(70,45,15,.4)":"rgba(70,45,15,.16)"};background:${on?"rgba(255,255,255,.62)":"rgba(255,255,255,.2)"};opacity:${on?1:.5};box-shadow:${on?"0 6px 14px rgba(0,0,0,.08)":"none"};transition:all .16s ease;`,
-        sealStyle:`flex:none;width:30px;height:30px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.4);border:1.5px solid rgba(255,252,244,.7);${on?"":"filter:grayscale(.7);"}`,
-        dotStyle:`flex:none;width:9px;height:9px;border-radius:50%;background:${on?c.color:"transparent"};border:1.5px solid ${on?c.color:"rgba(70,45,15,.4)"};box-shadow:${on?`0 0 8px ${c.color}99`:"none"};`,
+        rowStyle:`display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:12px;cursor:pointer;text-align:left;border:1px solid ${on?th.charRowBorderOn:th.charRowBorderOff};background:${on?th.charRowBgOn:th.charRowBgOff};opacity:${on?1:.5};box-shadow:${on?th.charRowShadowOn:"none"};transition:all .16s ease;`,
+        sealStyle:`flex:none;width:30px;height:30px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.2);border:1.5px solid ${th.sealBorder};${on?"":"filter:grayscale(.7);"}`,
+        dotStyle:`flex:none;width:9px;height:9px;border-radius:50%;background:${on?c.color:"transparent"};border:1.5px solid ${on?c.color:th.charRowBorderOn};box-shadow:${on?`0 0 8px ${c.color}99`:"none"};`,
       };
     });
   }
 
-  _buildTimeline(filtered,selId,ms){
+  _buildTimeline(filtered,selId,ms,th){
     const groups={};
     filtered.forEach(ev=>{ (groups[ev.session]=groups[ev.session]||[]).push(ev); });
     return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(sess=>({
@@ -658,8 +764,8 @@ class Component extends DCLogic {
           ...ev, title:this.store.titleOf(this.state.docs,ev),
           dateLabel:ev.igLabel||this.fmtDate(ev.date), charLabel:this.charLabel(ev.characterIds),
           onSelect:()=>this.select(ev.id),
-          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:${isMulti?ms.base:`url(${c?.sealImg}) center/cover`};border:2px solid ${isSel?"#c7a24b":"#f5ead0"};box-shadow:${isSel?"0 0 0 3px rgba(199,162,75,.4)":"0 2px 5px rgba(0,0,0,.3)"};transition:all .16s ease;z-index:1;`,
-          cardStyle:`position:relative;cursor:pointer;padding:12px 14px;margin-bottom:11px;border-radius:13px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.3)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.5)"};box-shadow:${isSel?"0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3)":"0 8px 16px rgba(0,0,0,.07)"};transform:translateX(${isSel?"3px":"0"});transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;`,
+          nodeStyle:`position:absolute;left:-30px;top:14px;width:24px;height:24px;border-radius:50%;overflow:hidden;background:${isMulti?ms.base:`url(${c?.sealImg}) center/cover`};border:2px solid ${isSel?th.nodeSelBorder:th.nodeUnselBorder};box-shadow:${isSel?th.nodeSelShadow:th.nodeUnselShadow};transition:all .16s ease;z-index:1;`,
+          cardStyle:`position:relative;cursor:pointer;padding:12px 14px;margin-bottom:11px;border-radius:13px;border:1px solid ${isSel?th.tlCardBorderSel:th.tlCardBorderUnsel};background:${isSel?th.tlCardBgSel:th.tlCardBgUnsel};box-shadow:${isSel?th.tlCardShadowSel:th.tlCardShadowUnsel};transform:translateX(${isSel?"3px":"0"});transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;`,
         };
       }),
     }));
@@ -689,19 +795,19 @@ class Component extends DCLogic {
     });
   }
 
-  _buildPopup(selEv,view,ms){
+  _buildPopup(selEv,view,ms,th){
     if(!selEv) return null;
     const MAX=this.viewport.MAX, inv=MAX/view.scale;
     const isMulti=selEv.characterIds.length>1, c=this.charById(selEv.characterIds[0]);
     return {
       title:this.store.titleOf(this.state.docs,selEv), summary:selEv.summary,
       session:selEv.session, dateLabel:selEv.igLabel||this.fmtDate(selEv.date),
-      style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:linear-gradient(180deg,#f7eed4,#ead7ab);border:1px solid rgba(70,45,15,.55);border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
-      sealStyle:isMulti?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid rgba(255,252,244,.7);`:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c?.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);`,
+      style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:266px;background:${th.popupBg};border:1px solid ${th.popupBorder};border-radius:13px;padding:13px 14px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);z-index:8;transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;animation:chr-pop .18s ease both;`,
+      sealStyle:isMulti?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid ${th.sealBorder};`:`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c?.sealImg}) center/cover;border:1.5px solid ${th.sealBorder};`,
     };
   }
 
-  _buildPanel(selEv,selId,ms){
+  _buildPanel(selEv,selId,ms,th){
     if(!selEv) return null;
     const sNo=selEv.session, sd=this.sessions[sNo]||{};
     const evs=this.events.filter(e=>e.session===sNo).sort((a,b)=>a.date.localeCompare(b.date));
@@ -719,8 +825,8 @@ class Component extends DCLogic {
         return {
           title:ev.title, summary:ev.summary, dateLabel:ev.igLabel||this.fmtDate(ev.date),
           charLabel:this.charLabel(ev.characterIds), onSelect:()=>this.select(ev.id),
-          sealStyle:isMulti?`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2?.sealImg}) center/cover;border:1.5px solid rgba(255,252,244,.7);box-shadow:0 1px 3px rgba(0,0,0,.3);`,
-          rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?"rgba(199,162,75,.85)":"rgba(70,45,15,.28)"};background:${isSel?"linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9))":"rgba(255,255,255,.45)"};box-shadow:${isSel?"0 10px 22px rgba(120,85,30,.2)":"0 5px 12px rgba(0,0,0,.06)"};transition:all .16s ease;`,
+          sealStyle:isMulti?`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:${ms.base};border:1.5px solid ${th.panelSealBorder};box-shadow:0 1px 3px rgba(0,0,0,.3);`:`flex:none;width:26px;height:26px;border-radius:50%;overflow:hidden;background:url(${c2?.sealImg}) center/cover;border:1.5px solid ${th.panelSealBorder};box-shadow:0 1px 3px rgba(0,0,0,.3);`,
+          rowStyle:`display:flex;gap:11px;width:100%;text-align:left;cursor:pointer;padding:11px 12px;border-radius:12px;border:1px solid ${isSel?th.panelRowBorderSel:th.panelRowBorderUnsel};background:${isSel?th.panelRowBgSel:th.panelRowBgUnsel};box-shadow:${isSel?th.panelRowShadowSel:th.panelRowShadowUnsel};transition:all .16s ease;`,
         };
       }),
       activePlots:(sd.activePlots||[]).map(mapPlot), hasActive:(sd.activePlots||[]).length>0,
@@ -734,18 +840,19 @@ class Component extends DCLogic {
   renderVals(){
     const showRoutes=this.props.showRoutes??true;
     const showLegend=this.props.showLegend??true;
-    const {enabled:en,selectedId:selId,view,collapsed,rightCollapsed}=this.state;
+    const {enabled:en,selectedId:selId,view,collapsed,rightCollapsed,darkMode}=this.state;
     const filtered=this.filtered();
     const selEv=this.events.find(e=>e.id===selId)||null;
     const ms=this._multiSeal();
     const MAX=this.viewport.MAX;
+    const th=THEMES[darkMode?"dark":"light"];
 
-    const partyRows  = this._buildPartyRows(en);
-    const timeline   = this._buildTimeline(filtered,selId,ms);
+    const partyRows  = this._buildPartyRows(en,th);
+    const timeline   = this._buildTimeline(filtered,selId,ms,th);
     const routesSvg  = this._buildRoutesSvg(filtered,en,showRoutes);
     const pins       = this._buildPins(filtered,en,view,selId,ms);
-    const sel        = this._buildPopup(selEv,view,ms);
-    const panel      = this._buildPanel(selEv,selId,ms);
+    const sel        = this._buildPopup(selEv,view,ms,th);
+    const panel      = this._buildPanel(selEv,selId,ms,th);
 
     const lastSess   = Math.max(...Object.keys(this.sessions).map(Number));
     const leftW      = collapsed?"0px":"430px";
@@ -762,9 +869,11 @@ class Component extends DCLogic {
     });
 
     return {
+      t:th,
       partyRows, f:this.state.filters,
       onText:e=>this.setF("text",e.target.value), onFrom:e=>this.setF("from",e.target.value), onTo:e=>this.setF("to",e.target.value),
       onReset:()=>this.reset(),
+      onThemeToggle:()=>this.setState(s=>({darkMode:!s.darkMode})),
       resultsText:`${filtered.length} / ${this.events.length}`,
       timeline, isEmpty:filtered.length===0,
       routesSvg, pins,
