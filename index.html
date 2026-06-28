@@ -111,25 +111,28 @@
         <div style="position:relative;padding-left:6px;">
           <sc-for list="{{ timeline }}" as="grp" hint-placeholder-count="3">
             <div style="position:relative;margin-bottom:6px;">
-              <div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;">
+              <div onClick="{{ grp.onToggle }}" style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;cursor:pointer;">
                 <span style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:linear-gradient(180deg,#3a2a14,#241608);padding:4px 11px;border-radius:999px;box-shadow:0 4px 9px rgba(0,0,0,.25);">{{ grp.label }}</span>
                 <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLineTL }},transparent);"></span>
+                <span style="font-size:11px;color:{{ t.accent }};transition:transform .2s ease;transform:rotate({{ grp.isOpen ? '0deg' : '-90deg' }});">▾</span>
               </div>
-              <div style="position:relative;padding-left:30px;">
-                <span style="position:absolute;left:11px;top:2px;bottom:2px;width:2px;background:{{ t.timelineLine }};"></span>
-                <sc-for list="{{ grp.events }}" as="ev" hint-placeholder-count="2">
-                  <div onClick="{{ ev.onSelect }}" style="{{ ev.cardStyle }}">
-                    <span style="{{ ev.nodeStyle }}"></span>
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
-                      <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:{{ t.accent }};text-transform:uppercase;">{{ ev.dateLabel }}</span>
-                      <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
-                      <span style="font-size:11px;font-style:italic;color:{{ t.labelXs }};">{{ ev.charLabel }}</span>
+              <sc-if value="{{ grp.isOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="position:relative;padding-left:30px;">
+                  <span style="position:absolute;left:11px;top:2px;bottom:2px;width:2px;background:{{ t.timelineLine }};"></span>
+                  <sc-for list="{{ grp.events }}" as="ev" hint-placeholder-count="2">
+                    <div onClick="{{ ev.onSelect }}" style="{{ ev.cardStyle }}">
+                      <span style="{{ ev.nodeStyle }}"></span>
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
+                        <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:{{ t.accent }};text-transform:uppercase;">{{ ev.dateLabel }}</span>
+                        <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
+                        <span style="font-size:11px;font-style:italic;color:{{ t.labelXs }};">{{ ev.charLabel }}</span>
+                      </div>
+                      <div style="font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;color:{{ t.titleText }};line-height:1.2;margin-bottom:4px;">{{ ev.title }}</div>
+                      <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">{{ ev.summary }}</div>
                     </div>
-                    <div style="font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;color:{{ t.titleText }};line-height:1.2;margin-bottom:4px;">{{ ev.title }}</div>
-                    <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">{{ ev.summary }}</div>
-                  </div>
-                </sc-for>
-              </div>
+                  </sc-for>
+                </div>
+              </sc-if>
             </div>
           </sc-for>
         </div>
@@ -682,6 +685,7 @@ class Component extends DCLogic {
       rightCollapsed:false,
       docs:{},
       darkMode:true,
+      collapsedSessions:{},
     };
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
@@ -714,6 +718,7 @@ class Component extends DCLogic {
   setDoc(id,field,val) { this.setState(s=>{ const docs=this.store.set(s.docs,id,field,val); this.store.save(docs); return {docs}; }); }
   toggle(id)           { this.setState(s=>({enabled:{...s.enabled,[id]:!s.enabled[id]}})); }
   setF(key,val)        { this.setState(s=>({filters:{...s.filters,[key]:val},selectedId:null})); }
+  toggleSession(sess)  { this.setState(s=>({collapsedSessions:{...s.collapsedSessions,[sess]:!s.collapsedSessions[sess]}})); }
   reset()              { this.setState({filters:{text:"",from:"",to:"",sessionMin:"",sessionMax:""},selectedId:null}); }
   select(id){
     this.viewport._userTouched=true;
@@ -756,8 +761,10 @@ class Component extends DCLogic {
   _buildTimeline(filtered,selId,ms,th){
     const groups={};
     filtered.forEach(ev=>{ (groups[ev.session]=groups[ev.session]||[]).push(ev); });
+    const collapsed=this.state.collapsedSessions;
     return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(sess=>({
       session:sess, label:`Session ${sess}`,
+      isOpen:!collapsed[sess], onToggle:()=>this.toggleSession(sess),
       events:groups[sess].map(ev=>{
         const c=this.charById(ev.characterIds[0]), isMulti=ev.characterIds.length>1, isSel=ev.id===selId;
         return {
