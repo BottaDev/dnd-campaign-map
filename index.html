@@ -779,12 +779,20 @@ class Component extends DCLogic {
   }
 
   _buildRoutesSvg(filtered,en,showRoutes){
+    // Derive unique pin locations from visible events, sorted chronologically
+    const pinMap={};
+    if(showRoutes){
+      filtered.filter(ev=>en[ev.characterIds[0]]).forEach(ev=>{
+        const key=`${ev.xp},${ev.yp}`;
+        if(!pinMap[key]||ev.date<pinMap[key].minDate) pinMap[key]={xp:ev.xp,yp:ev.yp,minDate:ev.date};
+      });
+    }
+    const pins=Object.values(pinMap).sort((a,b)=>a.minDate.localeCompare(b.minDate));
     const kids=[];
-    if(showRoutes) this.characters.forEach(c=>{
-      if(!en[c.id]||!filtered.some(ev=>ev.characterIds.includes(c.id))) return;
-      const pts=this.routes[c.id]; if(!pts||pts.length<2) return;
-      kids.push(React.createElement("polyline",{key:c.id,points:pts.map(p=>`${p.xp},${p.yp}`).join(" "),fill:"none",stroke:c.color,strokeWidth:2.4,strokeDasharray:"5 6",strokeLinecap:"round",strokeLinejoin:"round",opacity:.92,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 1px 1px rgba(0,0,0,.55))"}}));
-    });
+    for(let i=0;i<pins.length-1;i++){
+      const a=pins[i],b=pins[i+1];
+      kids.push(React.createElement("line",{key:i,x1:a.xp,y1:a.yp,x2:b.xp,y2:b.yp,stroke:"#1a1208",strokeWidth:3.5,strokeDasharray:"7 5",strokeLinecap:"round",opacity:.9,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 0 3px rgba(0,0,0,.8))"}}));
+    }
     return React.createElement("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none",style:{position:"absolute",inset:0,width:"100%",height:"100%"}},kids);
   }
 
