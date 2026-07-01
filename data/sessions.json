@@ -1,0 +1,261 @@
+{
+  "2": {
+    "dateLabel": "Recorded 11 Mar 2026 · Ghosts of Greyskull Keep",
+    "startedHere": "Emon, a small plaza near Greyskull Keep — Sorfon and Ayante outside as screams erupt from within the locked Keep; Mortis already inside following the Raven Queen's golden thread.",
+    "endedHere": "Greyskull Keep, Emon — the party settled in for a long rest; two hours remain before Mortis's bind spell expires.",
+    "ig": {
+      "start": "Day 4 — Emon, plaza near Greyskull Keep",
+      "end": "Day 4 — night, Greyskull Keep (long rest taken)",
+      "rest": "Day 4 — end of this session"
+    },
+    "effects": [
+      "Mortis is bound to Sorfon's armor by Allura's bind spell — 2 hours remain before expiry.",
+      "Ereldra holds two books taken from the Keep's library: one ordinary, one malevolent.",
+      "Mortis found the Book of Baba Yaga; read some contents before it snapped shut — he cannot reopen it.",
+      "The party owes Allura a mission to repair the damage caused to Greyskull Keep."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Finding Pike / The Temple of Sarenrae",
+        "qt": "Sorfon's mother is devout to Sarenrae and trained at an ancient temple whose location is now lost. Pike Trickfoot is the only one who knows where it is. This session, Allura confirmed that Pike is currently in Issylra. Sorfon also contacted Sarenrae directly in the Keep's chapel — she is angered by his lifelong neglect of her, but offered a cryptic clue: 'The temple is just a temple; follow YOUR light.'",
+        "npcs": [
+          {
+            "name": "Sorfon's mother",
+            "race": "human",
+            "role": "devout of Sarenrae — trained at the lost ancient temple"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "race": "gnome",
+            "role": "cleric, currently in Issylra — only one who knows the temple's location"
+          },
+          {
+            "name": "Allura Vysoren",
+            "race": "human",
+            "role": "archmage in Emon — confirmed Pike's location this session"
+          },
+          {
+            "name": "Sarenrae",
+            "role": "goddess of the dawn — contacted in Greyskull's chapel, angered, gave a cryptic clue"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "role": "lost ancient temple where Sorfon's mother trained — destination unknown"
+          }
+        ],
+        "notes": [
+          "Pike cannot be reached by magitech — must be found in person in Issylra.",
+          "Sarenrae is angered — Sorfon dedicated all prayers to Pelor and never prayed to her.",
+          "Sarenrae's clue: 'The temple is just a temple; follow YOUR light.'",
+          "Mortis recognized Sarenrae as the Eternal Light — an ally of the Raven Queen; her followers prize redemption.",
+          "Ayante struck Sorfon for praying to Sarenrae — served him a smaller portion at dinner."
+        ]
+      },
+      {
+        "name": "Plot B — The Raven Queen's Call",
+        "qt": "In a vision, the Raven Queen appeared to Mortis alongside the illusory image of a Vox Machina member currently in another plane — an emissary of the Raven Queen, connected by the golden thread. Before the vision ended, the Raven Queen warned: 'There is death in Kraghammer.' The golden thread led Mortis to Greyskull Keep.",
+        "npcs": [
+          {
+            "name": "The Raven Queen",
+            "role": "Mortis's patron — appeared in vision alongside a Vox Machina emissary"
+          },
+          {
+            "name": "Unknown Vox Machina member",
+            "role": "in another plane — the Raven Queen's emissary, linked by the golden thread"
+          },
+          {
+            "name": "Kraghammer",
+            "role": "dwarven stronghold — death was foretold there by the Raven Queen"
+          }
+        ],
+        "notes": [
+          "The golden thread led Mortis specifically to Greyskull Keep.",
+          "The identity of the Vox Machina emissary is unknown.",
+          "The warning about Kraghammer has not yet been investigated."
+        ]
+      },
+      {
+        "name": "Plot C — The Book of Baba Yaga",
+        "qt": "While the party ate in the kitchen, Mortis slipped into the hallway and found a heavy tome pinned to a shelf by an axe. He pried it open and discovered it belongs to Baba Yaga — grandmother of all witches and the fey world's equivalent of the devil. The book deals in her curses. It snapped shut before he finished reading, and he cannot reopen it.",
+        "npcs": [
+          {
+            "name": "Baba Yaga",
+            "role": "grandmother of all witches, the fey world's devil-equivalent — her tome is in Greyskull Keep"
+          },
+          {
+            "name": "Greyskull Keep",
+            "role": "the tome sits on a hallway shelf, axe embedded in the cover"
+          }
+        ],
+        "notes": [
+          "Mortis read some curse content before the book closed.",
+          "He cannot reopen it — unclear if physical or magical resistance.",
+          "Why is Baba Yaga's tome in Vox Machina's home? The axe holding it shut may be significant."
+        ]
+      },
+      {
+        "name": "Plot D — Debt to Allura / The Greyskull Mission",
+        "qt": "Allura Vysoren arrived to investigate the disturbance at Greyskull Keep, froze Mortis (revealing him as the apparent ghost), and proposed: the party stays for a day then undertakes a mission to repair the damages caused. The party is now Mortis's wardens.",
+        "npcs": [
+          {
+            "name": "Allura Vysoren",
+            "race": "human",
+            "role": "archmage, Greyskull Keep caretaker — key new contact"
+          },
+          {
+            "name": "Greyskull Keep",
+            "role": "Emon — the party's current lodging"
+          }
+        ],
+        "notes": [
+          "Bind spell linking Mortis to Sorfon cast by Allura — 6 hours total, 2 hours remain at session's end.",
+          "Allura asked: execute or imprison Mortis? Sorfon argued mercy, sensing he was an undead puppet not freely acting.",
+          "Mortis is approximately 300 years out of time — knew this continent as Gwessar (renamed Tal'Dorei ~300 years ago).",
+          "Nature of the repair mission is not yet revealed."
+        ]
+      }
+    ],
+    "completedPlots": []
+  },
+  "8": {
+    "dateLabel": "Recorded 25 Jun 2026 · The Vigil for Cassandra",
+    "startedHere": "Kraghammer, in the ruins of the dwarven palace — moments after the dragon was driven off and Cassandra de Rolo fell. Mortis reaches out to her departing spirit.",
+    "endedHere": "At the gates of Vasselheim after the airship crossing — magic items surrendered to the guard, the party racing to revive Cassandra before her soul is lost.",
+    "ig": {
+      "start": "Day 1 — Kraghammer, just after the dragon",
+      "end": "Day 4 — arrival at Vasselheim",
+      "rest": "Day 3 — aboard the airship"
+    },
+    "effects": [
+      "Cassandra de Rolo's body lies in limbo — about 10 days remain to bring her back before her soul moves on.",
+      "Magic items surrendered at Vasselheim's gate; Sorfon carries Pelor's two talismans and now holds the title Emissary of Kraghammer."
+    ],
+    "activePlots": [
+      {
+        "name": "Bringing Cassandra Back",
+        "qt": "Cassandra de Rolo died to the ancient black dragon Haftifaflmorhen at Kraghammer, and her soul lingers in limbo for roughly ten days. The party must find someone able to cast a resurrection before the window closes. Mortis now knows the spell Speak with Dead exists but needs a teacher — his patron the Raven Queen, and the cleric Pike, are the most promising paths.",
+        "npcs": [
+          {
+            "name": "Cassandra de Rolo",
+            "race": "human",
+            "role": "deceased, soul in limbo — the party's charge"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "role": "cleric who can revive her; cannot be reached by magitech, must be found in person"
+          },
+          {
+            "name": "Percival 'Percy' de Rolo",
+            "race": "human",
+            "role": "King of Whitestone, Cassandra's brother — will not stop searching for a way"
+          },
+          {
+            "name": "Vasselheim",
+            "region": "continent across the sea",
+            "role": "walled city, the party's destination"
+          }
+        ],
+        "notes": [
+          "The carriage's communicator links to Percy; he confirmed the ~10-day limbo and that a true resurrection is far harder than hoped.",
+          "The Raven Queen, Mortis's patron, is named an ally in compassion for the resurrection effort.",
+          "Mortis must find a library or mage willing to teach Speak with Dead, or a scroll to copy.",
+          "Pelor confirmed the party is on the right path and will 'arrive before time.'"
+        ]
+      },
+      {
+        "name": "Pelor's Charge",
+        "qt": "Pelor, god of the sun, spoke to Sorfon and set a sacred task: carry Pelor's incense from the Temple of Pelor in Vasselheim to the Temple of Sarenrae. Sorfon is also charged with protecting the surviving de Rolo family. Separately, Pelor asked Sorfon to test Ayante's worthiness before Ayante can reach the divine through him.",
+        "npcs": [
+          {
+            "name": "Pelor",
+            "role": "god of the sun, Sorfon's deity — speaks through paired talismans and sunlight"
+          },
+          {
+            "name": "Temple of Pelor",
+            "region": "Vasselheim",
+            "role": "where the incense must be taken (it will not be easy to remove)"
+          },
+          {
+            "name": "High Priestess of Pelor",
+            "role": "give the phrase: 'The sacrament of Toro must manifest; the reunion must take place'"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "region": "Salenroy",
+            "role": "where the incense must be delivered"
+          }
+        ],
+        "notes": [
+          "Sorfon must protect Percy and Cassandra, the surviving de Rolo family.",
+          "Ayante is not meant to hear the gods directly; Sorfon is his link, and must first put him to the test.",
+          "Pelor's short mantra was recited and accepted as a prayer.",
+          "Pelor will lend his aid the moment Cassandra is brought to safety."
+        ]
+      },
+      {
+        "name": "The Patron in the Hoard",
+        "qt": "During the airship crossing, the ancient red dragon Ashardalon — seated on a vast hoard — reached Ereldra through a vision, claiming to be her patron and demanding to know why the party had strayed from Whitestone. She professed loyalty, claiming she is earning Percy and Cassandra's trust to serve the patron's true objective, which is tied to the de Rolo family. A hidden agenda now runs beneath the rescue.",
+        "npcs": [
+          {
+            "name": "Ashardalon",
+            "race": "red dragon",
+            "role": "Ereldra's ancient patron — fixated on Whitestone and the de Rolo line"
+          },
+          {
+            "name": "Whitestone",
+            "role": "the patron's true target"
+          },
+          {
+            "name": "An ancient warlock founder",
+            "race": "??",
+            "role": "said to have split himself across the planes and founded the warlock order the party serves; reached by burning bones"
+          },
+          {
+            "name": "Vasselheim",
+            "region": "oligarchy of high priests",
+            "role": "the gods' doors are closed and divine influence runs weak"
+          }
+        ],
+        "notes": [
+          "Ereldra was the one contacted — her eye turned catlike and clouded; the rest of the party treated it as an affliction to fight off.",
+          "The patron believes the objective lies with the de Rolo family, so keeping Percy and Cassandra close serves it.",
+          "Lore recalled: Umbrasyl and the fall of Westruun; Thornax, the red dragon who cratered Emon.",
+          "Vox Machina connections run through everything here — possible allies and dangers alike."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "Delivering the Barûk-Kazad",
+        "closed": "Closed this session",
+        "qt": "The party returned the legendary dwarven axe to Kraghammer and escorted Cassandra's body from the ruined palace. Both bounties — the axe to Kraghammer and Cassandra to Whitestone — were claimed for 4,800 gp total.",
+        "npcs": [
+          {
+            "name": "The Iron Fist of Kraghammer",
+            "race": "dwarf",
+            "role": "Constructor General who rewarded the party"
+          },
+          {
+            "name": "Kraghammer",
+            "role": "ruined dwarven palace, now securing the Baruk under guard"
+          },
+          {
+            "name": "A mechanical dwarf engineer",
+            "race": "dwarf",
+            "role": "~800 years old, bears a noble Kham house name"
+          },
+          {
+            "name": "Whitestone",
+            "region": "north",
+            "role": "Cassandra's true destination"
+          }
+        ],
+        "notes": [
+          "The Barûk-Kazad will be kept under maximum security, out of sight, guarded around the clock.",
+          "Sorfon was named Emissary of Kraghammer — given ceremonial plate and a council seat (the 'Hang of Kham' honor).",
+          "Total reward: 4,800 gp (the Baruk bounty plus the Whitestone escort bounty)."
+        ]
+      }
+    ]
+  }
+}

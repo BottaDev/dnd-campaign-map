@@ -1,0 +1,34 @@
+[
+  {
+    "id": "ayante",
+    "name": "Ayante",
+    "role": "Fighter · Battle Master",
+    "color": "#3D3830",
+    "seal": "",
+    "sealImg": "assets/icon-ayante.jpeg"
+  },
+  {
+    "id": "ereldra",
+    "name": "Ereldra",
+    "role": "Warlock · The Hexblade",
+    "color": "#474B68",
+    "seal": "",
+    "sealImg": "assets/icon-ereldra.jpeg"
+  },
+  {
+    "id": "mortis",
+    "name": "Mortis",
+    "role": "Wizard · School of Necromancy / Cleric · Death Domain",
+    "color": "#858590",
+    "seal": "",
+    "sealImg": "assets/icon-mortis.jpeg"
+  },
+  {
+    "id": "sorfon",
+    "name": "Sorfon",
+    "role": "Paladin · Oath of Vengeance",
+    "color": "#C49B6A",
+    "seal": "",
+    "sealImg": "assets/icon-sorfon.jpeg"
+  }
+]
