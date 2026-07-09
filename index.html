@@ -14,6 +14,7 @@
 <style>
   html,body{height:100%;margin:0;background:#0c0a06;}
   *{box-sizing:border-box;}
+  .chr-root{height:100vh;height:100dvh;}
   ::selection{background:rgba(199,162,75,.35);}
   .chr-scroll::-webkit-scrollbar{width:11px;}
   .chr-scroll::-webkit-scrollbar-track{background:rgba(70,45,15,.10);}
@@ -23,7 +24,7 @@
   @keyframes chr-pop{0%{opacity:0}100%{opacity:1}}
 </style>
 </helmet>
-<div style="height:100vh;width:100%;display:grid;grid-template-columns:{{ gridCols }};transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1);font-family:'EB Garamond',Georgia,serif;color:{{ t.mainColor }};overflow:hidden;background:{{ t.mainBg }};">
+<div class="chr-root" style="width:100%;display:grid;grid-template-columns:{{ gridCols }};transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1);font-family:'EB Garamond',Georgia,serif;color:{{ t.mainColor }};overflow:hidden;background:{{ t.mainBg }};">
 
   <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;padding:0;background:{{ t.sidebarBg }};border-right:1px solid {{ t.sidebarBorder }};box-shadow:{{ t.sidebarShadowL }};">
     <div style="position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;background-image:radial-gradient(1.5px 1.5px at 12% 22%,rgba(60,40,10,.6) 40%,transparent 42%),radial-gradient(1.5px 1.5px at 78% 64%,rgba(60,40,10,.5) 40%,transparent 42%),radial-gradient(1px 1px at 46% 88%,rgba(60,40,10,.5) 40%,transparent 42%);background-size:24px 24px,30px 30px,18px 18px;"></div>
@@ -150,7 +151,7 @@
     <sc-if value="{{ rightTabShown }}" hint-placeholder-val="{{ false }}">
       <button onClick="{{ onRightExpand }}" title="Show session log" style="position:absolute;right:0;top:28px;z-index:20;display:flex;align-items:center;gap:7px;padding:11px 12px 11px 14px;border:1px solid {{ t.expandBorder }};border-right:none;border-radius:12px 0 0 12px;background:{{ t.expandBg }};color:{{ t.expandColor }};font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:-6px 0 18px rgba(0,0,0,.4);"><span>Session</span>‹</button>
     </sc-if>
-    <div ref="{{ vpRef }}" onMouseDown="{{ onDown }}" style="position:absolute;inset:14px;border-radius:6px;overflow:hidden;cursor:grab;user-select:none;box-shadow:inset 0 0 0 1px rgba(199,162,75,.35),inset 0 0 0 9px rgba(20,14,6,.92),inset 0 0 0 10px rgba(199,162,75,.3),0 30px 80px rgba(0,0,0,.6);background:#11100c;">
+    <div ref="{{ vpRef }}" onMouseDown="{{ onDown }}" style="position:absolute;inset:14px;border-radius:6px;overflow:hidden;cursor:grab;user-select:none;touch-action:none;box-shadow:inset 0 0 0 1px rgba(199,162,75,.35),inset 0 0 0 9px rgba(20,14,6,.92),inset 0 0 0 10px rgba(199,162,75,.3),0 30px 80px rgba(0,0,0,.6);background:#11100c;">
 
       <!-- transformable world -->
       <div ref="{{ worldRef }}" style="{{ worldStyle }}">
@@ -186,7 +187,7 @@
           <button onClick="{{ onZoomOut }}" onMouseDown="{{ stop }}" title="Zoom out" style="width:36px;height:34px;border:none;background:linear-gradient(180deg,#efe2c2,#cdac63);color:#1f1409;font-family:'Cinzel',serif;font-size:21px;line-height:1;cursor:pointer;">−</button>
         </div>
         <button onClick="{{ onResetView }}" onMouseDown="{{ stop }}" title="Reset view" style="width:36px;height:34px;border-radius:11px;border:1px solid rgba(70,45,15,.6);background:linear-gradient(180deg,#f7eed4,#d9b86f);color:#1f1409;font-size:16px;line-height:1;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.45);">⤢</button>
-        <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(243,231,201,.82);text-shadow:0 1px 3px rgba(0,0,0,.85);padding-bottom:9px;pointer-events:none;">{{ zoomLabel }} · scroll to zoom · drag to pan</span>
+        <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(243,231,201,.82);text-shadow:0 1px 3px rgba(0,0,0,.85);padding-bottom:9px;pointer-events:none;">{{ zoomLabel }} · {{ zoomHint }}</span>
       </div>
     </div>
 
@@ -196,7 +197,7 @@
   <aside class="chr-scroll" style="position:relative;min-width:0;overflow-y:auto;overflow-x:hidden;background:{{ t.sidebarBgR }};border-left:1px solid {{ t.sidebarBorder }};box-shadow:{{ t.sidebarShadowR }};">
     <div style="position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;background-image:radial-gradient(1.5px 1.5px at 18% 24%,rgba(60,40,10,.6) 40%,transparent 42%),radial-gradient(1.5px 1.5px at 72% 60%,rgba(60,40,10,.5) 40%,transparent 42%);background-size:26px 26px,30px 30px;"></div>
     <sc-if value="{{ hasPanel }}" hint-placeholder-val="{{ false }}">
-      <div style="position:relative;display:flex;flex-direction:column;min-height:100vh;width:446px;padding:24px 22px 28px;">
+      <div style="position:relative;display:flex;flex-direction:column;min-height:100vh;width:{{ panelW }};padding:24px 22px 28px;">
 
         <!-- header -->
         <div style="display:flex;align-items:center;gap:11px;margin-bottom:4px;">
@@ -378,12 +379,54 @@ class MapViewport {
     this._onWheel=e=>{ e.preventDefault(); const r=el.getBoundingClientRect(); onZoom(e.clientX-r.left,e.clientY-r.top,e.deltaY<0?1.18:1/1.18); };
     this._onMove=e=>{ if(!this._drag)return; onPan(e.clientX-this._drag.px,e.clientY-this._drag.py); this._drag.px=e.clientX; this._drag.py=e.clientY; };
     this._onUp=()=>{ if(this._drag){ this._drag=null; onDragEnd(); } };
+    this._onTouchStart=e=>{
+      this._userTouched=true;
+      if(e.touches.length>=2){
+        const [a,b]=e.touches;
+        this._drag=null;
+        this._pinch={ d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), mx:(a.clientX+b.clientX)/2, my:(a.clientY+b.clientY)/2 };
+      } else {
+        this._pinch=null;
+        this._drag={ px:e.touches[0].clientX, py:e.touches[0].clientY };
+      }
+    };
+    this._onTouchMove=e=>{
+      if(this._pinch&&e.touches.length>=2){
+        e.preventDefault();
+        const [a,b]=e.touches;
+        const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+        const mx=(a.clientX+b.clientX)/2, my=(a.clientY+b.clientY)/2;
+        const r=el.getBoundingClientRect();
+        if(this._pinch.d>0) onZoom(mx-r.left,my-r.top,d/this._pinch.d);
+        onPan(mx-this._pinch.mx,my-this._pinch.my);
+        this._pinch={d,mx,my};
+      } else if(this._drag&&e.touches.length===1){
+        e.preventDefault();
+        const t=e.touches[0];
+        onPan(t.clientX-this._drag.px,t.clientY-this._drag.py);
+        this._drag={px:t.clientX,py:t.clientY};
+      }
+    };
+    this._onTouchEnd=e=>{
+      if(e.touches.length===0){ if(this._drag||this._pinch){ this._drag=null; this._pinch=null; onDragEnd(); } }
+      else if(e.touches.length===1){ this._pinch=null; this._drag={px:e.touches[0].clientX,py:e.touches[0].clientY}; }
+    };
     el.addEventListener("wheel",this._onWheel,{passive:false});
+    el.addEventListener("touchstart",this._onTouchStart,{passive:true});
+    el.addEventListener("touchmove",this._onTouchMove,{passive:false});
+    el.addEventListener("touchend",this._onTouchEnd);
+    el.addEventListener("touchcancel",this._onTouchEnd);
     document.addEventListener("mousemove",this._onMove);
     document.addEventListener("mouseup",this._onUp);
   }
   detach(){
-    if(this._el) this._el.removeEventListener("wheel",this._onWheel);
+    if(this._el){
+      this._el.removeEventListener("wheel",this._onWheel);
+      this._el.removeEventListener("touchstart",this._onTouchStart);
+      this._el.removeEventListener("touchmove",this._onTouchMove);
+      this._el.removeEventListener("touchend",this._onTouchEnd);
+      this._el.removeEventListener("touchcancel",this._onTouchEnd);
+    }
     document.removeEventListener("mousemove",this._onMove);
     document.removeEventListener("mouseup",this._onUp);
   }
@@ -519,12 +562,14 @@ class Component extends DCLogic {
     this.routes = {};
     this.events = [];
     this.sessions = {};
+    this._mq = window.matchMedia("(max-width: 900px)");
     this.state = {
       enabled:{ sorfon:true, ayante:true, mortis:true, ereldra:true },
       filters:{ text:"", from:"", to:"", sessionMin:"", sessionMax:"" },
       selectedId:null,
       view:{ scale:1, x:0, y:0 },
-      collapsed:false,
+      isMobile:this._mq.matches,
+      collapsed:this._mq.matches,
       rightCollapsed:false,
       docs:{},
       darkMode:true,
@@ -548,6 +593,9 @@ class Component extends DCLogic {
       (px,py,f) => this.setState(s=>({ view:this.viewport.zoom(s.view,px,py,f) })),
       ()        => { if(this._vpEl) this._vpEl.style.cursor="grab"; }
     );
+    this._mqHandler=e=>{ this.setState(s=>({isMobile:e.matches, collapsed:e.matches?true:s.collapsed})); this.reflow(); };
+    if(this._mq.addEventListener) this._mq.addEventListener("change",this._mqHandler); else this._mq.addListener(this._mqHandler);
+    window.addEventListener("resize",this.reflow);
     // Retry centering until layout + image are ready; never override user interaction.
     this._center=()=>{ if(this.viewport._userTouched||!this._vpEl) return; this.setState(s=>({view:this.viewport.center(s.view,{xp:38,yp:30},2.2)})); };
     requestAnimationFrame(()=>requestAnimationFrame(this._center));
@@ -566,11 +614,16 @@ class Component extends DCLogic {
       this.setState({dataError:String(err && err.message || err)});
     });
   }
-  componentWillUnmount(){ this.viewport.detach(); }
+  componentWillUnmount(){
+    this.viewport.detach();
+    if(this._mq.removeEventListener) this._mq.removeEventListener("change",this._mqHandler); else this._mq.removeListener(this._mqHandler);
+    window.removeEventListener("resize",this.reflow);
+  }
 
   // ── State actions ─────────────────────────────────────────────────────────
-  setCollapsed(v)      { this.setState({collapsed:v}); this.reflow(); }
-  setRightCollapsed(v) { this.setState({rightCollapsed:v}); this.reflow(); }
+  // On mobile only one pane is visible at a time, so opening one closes the other.
+  setCollapsed(v)      { this.setState(s=>({collapsed:v, rightCollapsed:(!v&&s.isMobile)?true:s.rightCollapsed})); this.reflow(); }
+  setRightCollapsed(v) { this.setState(s=>({rightCollapsed:v, collapsed:(!v&&s.isMobile)?true:s.collapsed})); this.reflow(); }
   setDoc(id,field,val) { this.setState(s=>{ const docs=this.store.set(s.docs,id,field,val); this.store.save(docs); return {docs}; }); }
   toggle(id)           { this.setState(s=>({enabled:{...s.enabled,[id]:!s.enabled[id]}})); }
   setF(key,val)        { this.setState(s=>({filters:{...s.filters,[key]:val},selectedId:null})); }
@@ -581,9 +634,16 @@ class Component extends DCLogic {
     this.setState(s=>{
       const sel=s.selectedId===id?null:id;
       let view=s.view;
-      if(sel){ const ev=this.events.find(e=>e.id===sel); if(ev) view=this.viewport.center(s.view,ev,2.4); }
+      if(sel&&!s.isMobile){ const ev=this.events.find(e=>e.id===sel); if(ev) view=this.viewport.center(s.view,ev,2.4); }
+      // On mobile, jump to the map (close both panes) instead of auto-opening the session log.
+      if(s.isMobile) return {selectedId:sel,view,collapsed:sel?true:s.collapsed,rightCollapsed:sel?true:s.rightCollapsed};
       return {selectedId:sel,view,rightCollapsed:false};
     });
+    // On mobile the map pane may have been 0px wide during selection; center once layout settles.
+    if(this.state.isMobile){
+      const recenter=()=>{ const ev=this.events.find(e=>e.id===this.state.selectedId); if(ev) this.setState(s=>({view:this.viewport.center(s.view,ev,2.4)})); };
+      [60,380].forEach(t=>setTimeout(recenter,t));
+    }
     this.reflow();
   }
 
@@ -740,9 +800,15 @@ class Component extends DCLogic {
 
     const sessNos    = Object.keys(this.sessions).map(Number);
     const lastSess   = sessNos.length ? Math.max(...sessNos) : 0;
+    const isMobile   = this.state.isMobile;
     const leftW      = collapsed?"0px":"430px";
     const rightOpen  = !!selEv&&!rightCollapsed;
     const rightW     = rightOpen?"446px":"0px";
+    // Mobile shows a single pane at a time: left sidebar, session log, or map.
+    // Length units only (no fr) — Chrome can't transition between fr and px/% tracks.
+    const gridCols   = isMobile
+      ? (!collapsed ? "100% 0px 0px" : (rightOpen ? "0px 0px 100%" : "0px 100% 0px"))
+      : `${leftW} calc(100% - ${leftW} - ${rightW}) ${rightW}`;
 
     const legend=this.characters.map(c=>{
       const on=en[c.id];
@@ -764,7 +830,9 @@ class Component extends DCLogic {
       routesSvg, pins,
       hasSelected:!!sel, sel:sel||{}, onClose:()=>this.setState({selectedId:null}),
       legend, showLegendFlag:showLegend,
-      collapsed, gridCols:`${leftW} 1fr ${rightW}`,
+      collapsed, gridCols,
+      panelW:isMobile?"100vw":"446px",
+      zoomHint:isMobile?"pinch to zoom · drag to pan":"scroll to zoom · drag to pan",
       onCollapse:()=>this.setCollapsed(true), onExpand:()=>this.setCollapsed(false),
       panel:panel||{}, hasPanel:!!panel, rightOpen,
       rightTabShown:!!panel&&rightCollapsed,
