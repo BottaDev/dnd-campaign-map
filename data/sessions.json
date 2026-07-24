@@ -257,5 +257,145 @@
         ]
       }
     ]
+  },
+  "10": {
+    "dateLabel": "Recorded 24 Jul 2026 · Watched in Vasselheim",
+    "startedHere": "Pelor's chapel on the High Pass — the custodian hands over the sealed urn of incense while Mortis and Ereldra are still down in the crypt, standing over Caval's grave.",
+    "endedHere": "A deep gnome trader's stall off the main avenue — a dead imp spy at their feet, the session ending mid-purchase as the Raven Queen's thread marks a Speak with Dead scroll.",
+    "ig": {
+      "start": "Day 7 — ~3:00 PM, Pelor's chapel and the crypt",
+      "end": "Day 7 — ~6:00 PM, the trader's stall",
+      "rest": "Day 7 — that morning, aboard Percy's airship"
+    },
+    "effects": [
+      "Deck of Many Things draws (~8 h): Sorfon +1 to attack and damage; Ereldra disadvantage on initiative; Ayante +2d10 maximum HP; Mortis holds three free castings of Knock.",
+      "Cassandra's body still has ~7 days of limbo; Mortis now holds the diamond.",
+      "Mortis and Ereldra have no pilgrim papers and risk expulsion from Vasselheim.",
+      "La Toma — the Slayer's Take — now knows Mortis is in the city."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Bringing Cassandra Back",
+        "qt": "Cassandra still has about seven days of limbo and Mortis holds the diamond. At a trader's stall a golden thread — the Raven Queen's mark — singled out a scroll of Speak with Dead, the spell Mortis has hunted since Kraghammer. A cleric who can actually cast the resurrection, Pike, is still missing.",
+        "npcs": [
+          {
+            "name": "Cassandra de Rolo",
+            "race": "human",
+            "role": "deceased, ~7 days of limbo left — wheeled through the city on the stretcher"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "role": "the cleric who must cast the resurrection — still to be found"
+          },
+          {
+            "name": "The gnome trader",
+            "race": "deep gnome",
+            "role": "sells scrolls, potions, alchemy kits and magical tattoos off the main avenue"
+          },
+          {
+            "name": "Chapel of Pelor, High Pass",
+            "role": "where the party chose to leave Cassandra's body"
+          }
+        ],
+        "notes": [
+          "A golden thread tied one scroll in the trader's stock: Speak with Dead, exactly what Mortis needs.",
+          "Also on offer: Cause Fear and Dust Devil scrolls at 100 gp each, five healing potions, tattoos at 200 gp.",
+          "Hugo offered his house for the body; the party refused (his mother and 11-year-old sister live there).",
+          "The session ended mid-purchase — the rest of the shopping is still open."
+        ]
+      },
+      {
+        "name": "Plot B — Pelor's Charge",
+        "qt": "The custodian handed over the incense at last. It must now be carried about 7 km across the city to the Temple of Sarenrae. Sorfon and Ayante swore to protect Pelor's sacred texts and hold pilgrim rights; the chapel is now their sworn house.",
+        "npcs": [
+          {
+            "name": "The custodian of Pelor's chapel",
+            "race": "human",
+            "role": "lone keeper and librarian of the sacred texts — oddly fit, a former abbey orphan"
+          },
+          {
+            "name": "The censer of Pelor",
+            "role": "sealed urn worked in silver with gold and copper, holding ash, kindling and an ivy"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "role": "about 7 km across the city — where the incense must be delivered"
+          },
+          {
+            "name": "Chapel of Pelor, High Pass",
+            "role": "now the party's sworn house, its sacred texts under their protection"
+          }
+        ],
+        "notes": [
+          "The incense smells of sandalwood, palo santo and pine; it stirred an old memory of Sorfon's youth.",
+          "The ivy sealed inside is a wound-healing herb that grows in beds near forest country.",
+          "Sorfon and Ayante hold pilgrim rights; Mortis and Ereldra still need theirs or risk expulsion.",
+          "Sorfon carries the censer; it hangs from a chain or rides in a pack."
+        ]
+      },
+      {
+        "name": "Plot C — Hunted and Watched",
+        "qt": "An invisible imp was riding at Hugo's feet, spying on the party. Smelling of brandy and sulfur, it broke under intimidation: its master is La Toma — the Slayer's Take — the monster-hunter guild quartered in the war district pavilion, and they are hunting Mortis. The party killed it, but a familiar can always be re-summoned. Separately, the white-robed man from the crossroads turned out to be the Archon of Bahamut.",
+        "npcs": [
+          {
+            "name": "La Toma (the Slayer's Take)",
+            "role": "monster-hunter guild quartered in the war district pavilion — hunting Mortis"
+          },
+          {
+            "name": "The Archon of Bahamut",
+            "race": "human",
+            "role": "bald and tall in white robes with silver and pale blue — the most powerful man in the city this cycle"
+          },
+          {
+            "name": "Hugo",
+            "race": "human",
+            "role": "tall, good-natured guard of Bahamut who guided the party — oblivious to the imp at his feet"
+          },
+          {
+            "name": "The war district pavilion",
+            "region": "Vasselheim",
+            "role": "La Toma's seat, named by the imp under threat"
+          }
+        ],
+        "notes": [
+          "See Invisibility revealed the imp; Arcana (22) marked it a familiar used as a spying instrument.",
+          "Killed by launching it off a staff at speed and finishing it with Toll the Dead — it can be re-summoned.",
+          "Bahamut's faith governs Vasselheim this cycle; the Archon presides over the Congress on the central path.",
+          "Mortis was seen without his disguise; a guard read him as consecrated rather than desecrated."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "Caval's Grave and the Witch's Book",
+        "closed": "Closed this session",
+        "qt": "In the crypt Ereldra read the inscription over the grave — 'Here lies Caval' — and Mortis told her what he remembered of the betrayal. They agreed to keep it between them. Above ground the party finally argued out Baba Yaga's book and settled what to do with it.",
+        "npcs": [
+          {
+            "name": "Caval",
+            "race": "cursed being",
+            "role": "Mortis's betrayer — his grave marked in the Low Pass crypt"
+          },
+          {
+            "name": "Baba Yaga's book",
+            "role": "bound in human skin, clasped with real teeth — foul fey magic"
+          },
+          {
+            "name": "Allura",
+            "role": "the debt owed to her comes before Mortis settles anything with Caval"
+          },
+          {
+            "name": "The crypt, Low Pass",
+            "role": "Caval's grave, its inscription written in a shadar-kai dialect"
+          }
+        ],
+        "notes": [
+          "The book: human-skin leather stitched with wire, calcified teeth for a clasp, a blood signature inside.",
+          "Burning it is worse than keeping it — a one-hour ritual returns it to Baba Yaga, who feels it destroyed.",
+          "Stowed in the bag of holding; Mortis promised to tell the party before ever opening it.",
+          "Mortis asked Ereldra to keep Caval secret; Sorfon and Ayante were not told."
+        ]
+      }
+    ]
   }
 }
