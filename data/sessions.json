@@ -300,7 +300,7 @@
         "notes": [
           "A golden thread tied one scroll in the trader's stock: Speak with Dead, exactly what Mortis needs.",
           "Also on offer: Cause Fear and Dust Devil scrolls at 100 gp each, five healing potions, tattoos at 200 gp.",
-          "Hugo offered his house for the body; the party refused (his mother and 11-year-old sister live there).",
+          "Ubu offered his house for the body; the party refused (his mother and 11-year-old sister live there).",
           "The session ended mid-purchase — the rest of the shopping is still open."
         ]
       },
@@ -335,7 +335,7 @@
       },
       {
         "name": "Plot C — Hunted and Watched",
-        "qt": "An invisible imp was riding at Hugo's feet, spying on the party. Smelling of brandy and sulfur, it broke under intimidation: its master is La Toma — the Slayer's Take — the monster-hunter guild quartered in the war district pavilion, and they are hunting Mortis. The party killed it, but a familiar can always be re-summoned. Separately, the white-robed man from the crossroads turned out to be the Archon of Bahamut.",
+        "qt": "An invisible imp was riding at Ubu's feet, spying on the party. Smelling of brandy and sulfur, it broke under intimidation: its master is La Toma — the Slayer's Take — the monster-hunter guild quartered in the war district pavilion, and they are hunting Mortis. The party killed it, but a familiar can always be re-summoned. Separately, the white-robed man from the crossroads turned out to be the Archon of Bahamut.",
         "npcs": [
           {
             "name": "La Toma (the Slayer's Take)",
@@ -347,7 +347,7 @@
             "role": "bald and tall in white robes with silver and pale blue — the most powerful man in the city this cycle"
           },
           {
-            "name": "Hugo",
+            "name": "Ubu",
             "race": "human",
             "role": "tall, good-natured guard of Bahamut who guided the party — oblivious to the imp at his feet"
           },
