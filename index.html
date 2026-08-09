@@ -34,6 +34,7 @@
 
       <button onClick="{{ onCollapse }}" title="Collapse sidebar" style="position:absolute;top:14px;right:14px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ t.collapseBorder }};background:{{ t.collapseBg }};color:{{ t.collapseColor }};font-size:16px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);transform:translateX(-1px);">‹</button>
       <button onClick="{{ onThemeToggle }}" title="{{ t.toggleTitle }}" style="position:absolute;top:14px;right:52px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ t.collapseBorder }};background:{{ t.collapseBg }};color:{{ t.collapseColor }};font-size:14px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);">{{ t.toggleIcon }}</button>
+      <button onClick="{{ onOpenTutorial }}" title="How this page works" style="position:absolute;top:14px;right:90px;z-index:6;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid {{ t.collapseBorder }};background:{{ t.collapseBg }};color:{{ t.collapseColor }};font-family:'Cinzel',serif;font-size:15px;line-height:1;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.3);transition:transform .12s ease,filter .12s ease;" style-hover="filter:brightness(1.1);">?</button>
 
       <!-- BRAND -->
       <div style="position:relative;text-align:center;padding:6px 6px 20px;">
@@ -67,6 +68,14 @@
         </div>
       </div>
 
+      <!-- VIEW TOGGLE -->
+      <div style="position:relative;margin-top:22px;display:flex;gap:8px;">
+        <button onClick="{{ onViewChronicle }}" style="{{ chronToggleStyle }}">Chronicle</button>
+        <button onClick="{{ onViewQuests }}" style="{{ questToggleStyle }}">Quests · {{ quests.activeCount }}</button>
+      </div>
+
+      <sc-if value="{{ isChronicle }}" hint-placeholder-val="{{ true }}">
+      <div>
       <!-- FILTERS -->
       <div style="position:relative;margin-top:24px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
@@ -139,6 +148,74 @@
         </div>
       </div>
 
+      </div>
+      </sc-if>
+
+      <!-- QUESTS VIEW -->
+      <sc-if value="{{ isQuests }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;margin-top:24px;padding-bottom:10px;">
+        <sc-if value="{{ quests.hasActive }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ t.sectionLabel }};">In Progress</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLine }},transparent);"></span>
+            <span style="font-family:'Cinzel',serif;font-size:11px;color:{{ t.accent }};">{{ quests.activeCount }}</span>
+          </div>
+          <div style="display:grid;gap:11px;margin-bottom:24px;">
+            <sc-for list="{{ quests.active }}" as="q" hint-placeholder-count="3">
+              <button onClick="{{ q.onOpen }}" style="{{ q.cardStyle }}" style-hover="transform:translateY(-1px);box-shadow:0 12px 22px rgba(0,0,0,.16);">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px;">
+                  <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:{{ t.plotTitle }};line-height:1.15;flex:1;min-width:0;">{{ q.title }}</span>
+                  <span style="{{ q.badgeStyle }}">{{ q.badge }}</span>
+                </div>
+                <div style="font-size:13px;line-height:1.42;color:{{ t.plotText }};margin-bottom:9px;">{{ q.summary }}</div>
+                <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
+                  <span style="display:flex;gap:3px;align-items:center;">
+                    <sc-for list="{{ q.seals }}" as="s" hint-placeholder-count="2">
+                      <span style="{{ s }}"></span>
+                    </sc-for>
+                  </span>
+                  <span style="flex:1;"></span>
+                  <sc-if value="{{ q.hasGiver }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:11px;font-style:italic;color:{{ t.labelXs }};">{{ q.giver }}</span>
+                    <span style="width:3px;height:3px;border-radius:50%;background:#b89a5a;"></span>
+                  </sc-if>
+                  <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:{{ t.accent }};">{{ q.sessText }}</span>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ quests.hasCompleted }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <span style="font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:{{ t.sectionLabel }};">Completed</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,{{ t.sepLine }},transparent);"></span>
+            <span style="font-family:'Cinzel',serif;font-size:11px;color:{{ t.accent }};">{{ quests.completedCount }}</span>
+          </div>
+          <div style="display:grid;gap:11px;">
+            <sc-for list="{{ quests.completed }}" as="q" hint-placeholder-count="2">
+              <button onClick="{{ q.onOpen }}" style="{{ q.cardStyle }}" style-hover="transform:translateY(-1px);box-shadow:0 12px 22px rgba(0,0,0,.16);">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px;">
+                  <span style="font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:{{ t.plotTitle }};line-height:1.15;flex:1;min-width:0;">{{ q.title }}</span>
+                  <span style="{{ q.badgeStyle }}">{{ q.badge }}</span>
+                </div>
+                <div style="font-size:13px;line-height:1.42;color:{{ t.plotText }};margin-bottom:9px;">{{ q.summary }}</div>
+                <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
+                  <span style="display:flex;gap:3px;align-items:center;">
+                    <sc-for list="{{ q.seals }}" as="s" hint-placeholder-count="2">
+                      <span style="{{ s }}"></span>
+                    </sc-for>
+                  </span>
+                  <span style="flex:1;"></span>
+                  <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:{{ t.accent }};">{{ q.sessText }}</span>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
       <div style="text-align:center;padding:6px 0 8px;color:{{ t.accent }};font-size:11px;font-style:italic;">{{ sampleNote }}</div>
     </div>
   </aside>
@@ -160,7 +237,10 @@
         <div style="position:absolute;inset:0;pointer-events:none;">{{ routesSvg }}</div>
 
         <sc-for list="{{ pins }}" as="p" hint-placeholder-count="6">
-          <button onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}"></span></button>
+          <div>
+            <button onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}"></span></button>
+            <div style="{{ p.labelStyle }}">{{ p.labelText }}</div>
+          </div>
         </sc-for>
 
         <sc-if value="{{ hasSelected }}" hint-placeholder-val="{{ false }}">
@@ -353,6 +433,58 @@
       </div>
     </sc-if>
   </aside>
+
+  <!-- TUTORIAL OVERLAY -->
+  <sc-if value="{{ showTutorial }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseTutorial }}" style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(8,5,2,.72);backdrop-filter:blur(3px);animation:chr-pop .2s ease both;">
+      <div onClick="{{ stop }}" style="position:relative;width:min(560px,100%);max-height:90vh;overflow-y:auto;background:{{ t.popupBg }};border:1px solid {{ t.popupBorder }};border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 80px rgba(0,0,0,.6);">
+        <button onClick="{{ onCloseTutorial }}" title="Close" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:9px;border:1px solid {{ t.panelBtnBorder }};background:{{ t.panelBtnBg }};color:{{ t.panelBtnColor }};font-size:15px;line-height:1;cursor:pointer;">✕</button>
+
+        <div style="text-align:center;padding:2px 8px 14px;">
+          <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:{{ t.accent }};padding-left:.42em;">Exandria</div>
+          <div style="font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:27px;line-height:1.1;margin:8px 0 2px;color:{{ t.h1 }};text-shadow:{{ t.h1Shadow }};">How the Chronicle Works</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;color:{{ t.accent }};">
+            <span style="height:1px;width:44px;background:linear-gradient(90deg,transparent,#b58f3e);"></span>
+            <span style="font-size:12px;">✦</span>
+            <span style="height:1px;width:44px;background:linear-gradient(90deg,#b58f3e,transparent);"></span>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:12px;margin-top:6px;">
+          <div style="display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <span style="flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-size:16px;">📜</span>
+            <div style="min-width:0;">
+              <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:{{ t.titleText }};margin-bottom:3px;">The Chronicle · left</div>
+              <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">Toggle party members on and off, search the text, or set a date range. Every entry in the timeline is clickable.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <span style="flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-size:16px;">🗺️</span>
+            <div style="min-width:0;">
+              <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:{{ t.titleText }};margin-bottom:3px;">The Map · center</div>
+              <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">Drag to pan, scroll or pinch to zoom. Each pin marks where an event happened — captioned with its session. Click a pin to read the moment.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <span style="flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-size:16px;">✦</span>
+            <div style="min-width:0;">
+              <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:{{ t.titleText }};margin-bottom:3px;">The Session Log · right</div>
+              <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">Pick any event and the right panel opens its full session: recap, in-game dates, active effects, and the plots in play.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid {{ t.panelCardBorder }};background:{{ t.panelCardBg }};">
+            <span style="flex:none;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;font-size:16px;">⚔️</span>
+            <div style="min-width:0;">
+              <div style="font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:{{ t.titleText }};margin-bottom:3px;">The Quest Log</div>
+              <div style="font-size:13.5px;line-height:1.42;color:{{ t.bodyText }};">Switch the left pane from <em>Chronicle</em> to <em>Quests</em> for every thread of the campaign — in progress and completed. Click a quest to jump to its latest session.</div>
+            </div>
+          </div>
+        </div>
+
+        <button onClick="{{ onCloseTutorial }}" style="width:100%;margin-top:18px;padding:12px;border:1px solid {{ t.resetBorder }};border-radius:11px;background:{{ t.resetBg }};color:{{ t.resetColor }};cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.12em;text-transform:uppercase;font-size:12px;box-shadow:0 8px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.12);" style-hover="filter:brightness(1.1);">Enter the Chronicle</button>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:840},&quot;showRoutes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showLegend&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
@@ -562,6 +694,7 @@ class Component extends DCLogic {
     this.routes = {};
     this.events = [];
     this.sessions = {};
+    this.quests = [];
     this._mq = window.matchMedia("(max-width: 900px)");
     this.state = {
       enabled:{ sorfon:true, ayante:true, mortis:true, ereldra:true },
@@ -575,6 +708,8 @@ class Component extends DCLogic {
       darkMode:true,
       collapsedSessions:{},
       dataError:null,
+      showTutorial:false,
+      viewMode:"chronicle",
     };
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
@@ -601,13 +736,14 @@ class Component extends DCLogic {
     requestAnimationFrame(()=>requestAnimationFrame(this._center));
     [60,200,500,1000].forEach(t=>setTimeout(this._center,t));
     const saved=this.store.load(); if(Object.keys(saved).length) this.setState({docs:saved});
-    Promise.all(["characters","routes","events","sessions"].map(name=>
+    try{ if(!localStorage.getItem("chronicle-tutorial-seen")) this.setState({showTutorial:true}); }catch(e){}
+    Promise.all(["characters","routes","events","sessions","quests"].map(name=>
       fetch(`data/${name}.json`).then(r=>{
         if(!r.ok) throw new Error(`Failed to load ${name}.json`);
         return r.json();
       })
-    )).then(([characters,routes,events,sessions])=>{
-      this.characters=characters; this.routes=routes; this.events=events; this.sessions=sessions;
+    )).then(([characters,routes,events,sessions,quests])=>{
+      this.characters=characters; this.routes=routes; this.events=events; this.sessions=sessions; this.quests=quests;
       this.setState({}); // force re-render now that instance data is populated
     }).catch(err=>{
       console.error(err);
@@ -629,6 +765,9 @@ class Component extends DCLogic {
   setF(key,val)        { this.setState(s=>({filters:{...s.filters,[key]:val},selectedId:null})); }
   toggleSession(sess)  { this.setState(s=>({collapsedSessions:{...s.collapsedSessions,[sess]:!s.collapsedSessions[sess]}})); }
   reset()              { this.setState({filters:{text:"",from:"",to:"",sessionMin:"",sessionMax:""},selectedId:null}); }
+  setView(v)           { this.setState({viewMode:v}); }
+  openTutorial()       { this.setState({showTutorial:true}); }
+  closeTutorial()      { try{ localStorage.setItem("chronicle-tutorial-seen","1"); }catch(e){} this.setState({showTutorial:false}); }
   select(id){
     this.viewport._userTouched=true;
     this.setState(s=>{
@@ -731,10 +870,15 @@ class Component extends DCLogic {
       const idx=evs.findIndex(e=>e.id===selId);
       const next=idx===-1?evs[0]:evs[(idx+1)%evs.length];
       const label=evs.length>1?`${evs.length} events · click to cycle`:this.store.titleOf(this.state.docs,rep);
+      // Session caption shown beneath the pin (counter-scaled to stay a constant size)
+      const sessNos=[...new Set(evs.map(e=>e.session))].sort((a,b)=>a-b);
+      const sessText=sessNos.length>1?`Sessions ${sessNos[0]}–${sessNos[sessNos.length-1]}`:`Session ${sessNos[0]}`;
       return {
         title:label, onSelect:()=>this.select(next.id),
         style:`position:absolute;left:${rep.xp}%;top:${rep.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${outerColor},${outerColor}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
         sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${innerBg};`,
+        labelText:sessText,
+        labelStyle:`position:absolute;left:${rep.xp}%;top:${rep.yp}%;padding:1px 7px;pointer-events:none;white-space:nowrap;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#f7edd0;background:rgba(20,14,6,.62);border-radius:999px;transform:translate(-50%,${18*inv}px) scale(${inv});transform-origin:50% 0;text-shadow:0 1px 2px rgba(0,0,0,.95);z-index:${isSel?5:3};`,
       };
     });
   }
@@ -780,6 +924,32 @@ class Component extends DCLogic {
     };
   }
 
+  _segStyle(active,th){
+    return `flex:1;padding:9px 10px;border:1px solid ${active?th.resetBorder:th.charRowBorderOff};border-radius:9px;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.1em;text-transform:uppercase;font-size:10.5px;color:${active?th.resetColor:th.labelSm};background:${active?th.resetBg:th.charRowBgOff};box-shadow:${active?"0 6px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.1)":"none"};transition:all .16s ease;`;
+  }
+
+  _buildQuests(th){
+    const mapQ=q=>{
+      const done=q.status==="completed";
+      const last=(q.sessions||[]).slice(-1)[0];
+      return {
+        title:q.title, summary:q.summary,
+        giver:q.giver&&q.giver!=="—"?q.giver:"",
+        hasGiver:!!(q.giver&&q.giver!=="—"),
+        sessText:(q.sessions||[]).map(s=>`S${s}`).join(" · "),
+        badge:done?"Completed":"In Progress",
+        seals:(q.characterIds||[]).map(id=>{ const c=this.charById(id); return c?`flex:none;width:22px;height:22px;border-radius:50%;overflow:hidden;background:url(${c.sealImg}) center/cover;border:1.5px solid ${th.panelSealBorder};box-shadow:0 1px 3px rgba(0,0,0,.3);`:null; }).filter(Boolean),
+        onOpen:()=>{ const ev=this.events.find(e=>e.session===last); if(ev) this.select(ev.id); },
+        cardStyle:`display:block;width:100%;text-align:left;cursor:pointer;position:relative;padding:13px 14px;border-radius:13px;border:1px solid ${done?th.completedBorder:th.activePlotBorder};background:${done?th.completedBg:th.activePlotBg};box-shadow:0 6px 14px rgba(0,0,0,.1);transition:transform .16s ease,box-shadow .16s ease;`,
+        badgeStyle:`font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;color:${done?th.completedBadgeColor:th.accent};border:1px solid ${done?th.completedBadgeBorder:"rgba(180,140,60,.4)"};background:${done?th.completedBadgeBg:"rgba(180,140,60,.12)"};`,
+      };
+    };
+    const active=this.quests.filter(q=>q.status!=="completed").map(mapQ);
+    const completed=this.quests.filter(q=>q.status==="completed").map(mapQ);
+    return { active, completed, hasActive:active.length>0, hasCompleted:completed.length>0,
+             activeCount:active.length, completedCount:completed.length };
+  }
+
   // ── renderVals — coordinates builders, owns no logic (SRP) ───────────────
   renderVals(){
     const showRoutes=this.props.showRoutes??true;
@@ -791,8 +961,10 @@ class Component extends DCLogic {
     const MAX=this.viewport.MAX;
     const th=THEMES[darkMode?"dark":"light"];
 
+    const viewMode   = this.state.viewMode;
     const partyRows  = this._buildPartyRows(en,th);
     const timeline   = this._buildTimeline(filtered,selId,ms,th);
+    const quests     = this._buildQuests(th);
     const routesSvg  = this._buildRoutesSvg(filtered,en,showRoutes);
     const pins       = this._buildPins(filtered,en,view,selId,ms);
     const sel        = this._buildPopup(selEv,view,ms,th);
@@ -825,6 +997,13 @@ class Component extends DCLogic {
       onText:e=>this.setF("text",e.target.value), onFrom:e=>this.setF("from",e.target.value), onTo:e=>this.setF("to",e.target.value),
       onReset:()=>this.reset(),
       onThemeToggle:()=>this.setState(s=>({darkMode:!s.darkMode})),
+      showTutorial:this.state.showTutorial,
+      onOpenTutorial:()=>this.openTutorial(), onCloseTutorial:()=>this.closeTutorial(),
+      isChronicle:viewMode==="chronicle", isQuests:viewMode==="quests",
+      onViewChronicle:()=>this.setView("chronicle"), onViewQuests:()=>this.setView("quests"),
+      quests,
+      chronToggleStyle:this._segStyle(viewMode==="chronicle",th),
+      questToggleStyle:this._segStyle(viewMode==="quests",th),
       resultsText:`${filtered.length} / ${this.events.length}`,
       timeline, isEmpty:filtered.length===0,
       routesSvg, pins,

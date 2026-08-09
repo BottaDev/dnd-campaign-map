@@ -1,6 +1,6 @@
 # Campaign Chronicle Map
 
-An interactive campaign map & session log for a D&D party. It shows character routes on a map, a filterable event timeline, and a full session log panel — all in a single static HTML page, no backend or build step required.
+An interactive campaign map & session log for a D&D party. It shows character routes on a map, a filterable event timeline, a campaign quest log, and a full session log panel — all in a single static HTML page, no backend or build step required.
 
 The party name, world name, and other branding text you see on the page are hardcoded strings in `index.html` itself (not data-driven) — edit them there if you want to reuse this for a different campaign.
 
@@ -12,13 +12,16 @@ Open the site and you'll see three areas:
 
 - **Left sidebar**
   - **Party section** — toggle party members on/off. Disabling a character hides their route line and dims their pins/timeline entries.
-  - **Timeline filters** — free-text search (matches event title/summary) and a date range (`From` / `To`). `RESET` clears all filters. The counter shows how many events match out of the total.
-  - **Event timeline** — the full event list, grouped by session, sorted chronologically. Click a session header to collapse/expand it. Click any event card to select it.
-  - `‹` collapses the sidebar; `☀`/`🌙` toggles light/dark theme.
+  - **Chronicle / Quests toggle** — switches the lower part of the sidebar between the event timeline (*Chronicle*) and the campaign quest log (*Quests*). The `Quests` button also shows the current in-progress count.
+  - **Chronicle view**
+    - **Timeline filters** — free-text search (matches event title/summary) and a date range (`From` / `To`). `RESET` clears all filters. The counter shows how many events match out of the total.
+    - **Event timeline** — the full event list, grouped by session, sorted chronologically. Click a session header to collapse/expand it. Click any event card to select it.
+  - **Quests view** — every campaign thread, split into **In Progress** and **Completed**. Each card shows the involved characters' seals, a status badge, who gave it, and which sessions it spans. Click a quest to jump to its latest session's log.
+  - `‹` collapses the sidebar; `☀`/`🌙` toggles light/dark theme; `?` reopens the tutorial (it also opens automatically on your first visit).
 - **Center — the map**
   - Scroll to zoom, click-drag to pan, use the `+`/`–`/reset controls in the corner.
   - Colored route lines show each active character's path across the map.
-  - Diamond-shaped pins mark events; multi-character events show a shared seal. Click a pin to select that event (same effect as clicking it in the timeline).
+  - Diamond-shaped pins mark events; multi-character events show a shared seal. A small caption under each pin shows its session (or session range). Click a pin to select that event (same effect as clicking it in the timeline).
 - **Right panel — session log**
   - Opens automatically when you select an event. Shows that session's start/end location, in-game day markers, ongoing effects, all events logged that session, and the full write-up of active/completed plots (with NPCs and notes).
   - Minimize with the collapse icon, or close with `✕`.
@@ -41,7 +44,7 @@ GitHub Pages serves the repo over HTTPS, so it works exactly like `npx serve` �
 
 ## Configuring the campaign data
 
-All campaign content lives in four JSON files under `data/` and is loaded at runtime — you never need to touch `index.html` to add a session.
+All campaign content lives in five JSON files under `data/` and is loaded at runtime — you never need to touch `index.html` to add a session.
 
 ```
 data/
@@ -49,9 +52,10 @@ data/
   routes.json        — each character's path across the map
   events.json        — individual timeline events / map pins
   sessions.json      — the full session log shown in the right panel
+  quests.json        — campaign quest log shown in the Quests view
 ```
 
-Rules for all four files: valid JSON only — double-quoted keys/strings, no trailing commas, no comments.
+Rules for all files: valid JSON only — double-quoted keys/strings, no trailing commas, no comments.
 
 Map coordinates (`xp`, `yp`) are **percentages of the map image's width/height** (0–100), not pixels. To place something, estimate roughly where it falls on the map image as a percentage from the top-left.
 
@@ -152,12 +156,40 @@ An object keyed by session number (as a JSON string, e.g. `"1"`). Each entry is 
 - `activePlots` / `completedPlots` — same shape; move a plot object from `activePlots` to `completedPlots` (and add a `"closed": "…"` string to it) once it wraps up.
 - Each plot's `npcs` entries support `name` (required), and optional `race`/`role`/`region`.
 
+### `quests.json`
+
+A flat array of campaign-wide quests, shown in the sidebar's **Quests** view.
+
+```json
+[
+  {
+    "id": "north-road",
+    "title": "The Silence on the North Road",
+    "status": "active",
+    "giver": "Old Maren",
+    "summary": "Three caravans have vanished between Millbrook and Ashford. The party agreed to investigate before a fourth goes missing.",
+    "sessions": [1],
+    "characterIds": ["thalon"]
+  }
+]
+```
+
+- `id` — unique string for the quest.
+- `status` — `"active"` (listed under **In Progress**) or `"completed"` (under **Completed**, with a green badge).
+- `giver` — who handed out the quest; use `"—"` (or omit) to hide it.
+- `summary` — one campaign-level description of the quest's current state.
+- `sessions` — the session numbers this quest touches; clicking the quest card jumps to the **latest** one's session log.
+- `characterIds` — whose seals appear on the card.
+
+> **`quests.json` is a separate, campaign-level view — not auto-generated.** The same threads also appear as `activePlots`/`completedPlots` inside `sessions.json`, but those are *per-session snapshots* (evolving text, one per session), whereas `quests.json` is the deduped current-state rollup. The two intentionally overlap; when a quest opens, advances, or closes, update **both** the session's plot and the quest entry. The only link between them is the session numbers in `sessions[]`.
+
 ### Adding a new session
 
 1. Append one object per beat to `data/events.json` (new `id`s, same `session` number).
 2. Add the matching entry to `data/sessions.json`, keyed by that session number.
 3. If the party moved, extend each character's array in `data/routes.json` with the new waypoints.
-4. Validate the JSON (e.g. paste into a linter, or run `node -e "JSON.parse(require('fs').readFileSync('data/events.json'))"`) before committing — a syntax error will make the page load with no data.
+4. Update `data/quests.json` for any quest the session opens, advances, or closes (flip `status` to `"completed"` and add the session number to its `sessions[]`).
+5. Validate the JSON (e.g. paste into a linter, or run `node -e "JSON.parse(require('fs').readFileSync('data/events.json'))"`) before committing — a syntax error will make the page load with no data.
 
 ## Assets
 

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "cassandra",
+    "title": "Bringing Cassandra Back",
+    "status": "active",
+    "giver": "Percival de Rolo",
+    "summary": "Cassandra de Rolo fell to a dragon at Kraghammer and her soul lingers in limbo — about seven days remain. Mortis holds the diamond and has at last found a scroll of Speak with Dead; a cleric able to cast the true resurrection, Pike Trickfoot, is still missing.",
+    "sessions": [8, 10],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "pelor-charge",
+    "title": "Pelor's Charge",
+    "status": "active",
+    "giver": "Pelor",
+    "summary": "Pelor set Sorfon to carry the sealed censer of incense some seven kilometres across Vasselheim, from the Temple of Pelor to the Temple of Sarenrae, and to guard the surviving de Rolos. Ayante must first be proven worthy before he can reach the divine.",
+    "sessions": [8, 10],
+    "characterIds": ["sorfon", "ayante"]
+  },
+  {
+    "id": "raven-queen",
+    "title": "The Raven Queen's Thread",
+    "status": "active",
+    "giver": "The Raven Queen",
+    "summary": "A golden thread from Mortis's patron keeps singling out what he needs — it led him to Greyskull Keep and, in Vasselheim, to the very scroll of Speak with Dead he has hunted since Kraghammer. Where it leads next, and what the Raven Queen ultimately wants, remain open.",
+    "sessions": [2, 8, 10],
+    "characterIds": ["mortis"]
+  },
+  {
+    "id": "hunted",
+    "title": "Hunted and Watched",
+    "status": "active",
+    "giver": "—",
+    "summary": "An invisible imp spying at Ubu's feet named its master: La Toma, the Slayer's Take, a monster-hunter guild quartered in the war district — and they are hunting Mortis. Meanwhile the Archon of Bahamut, the most powerful man in the city this cycle, has turned his eyes on the party.",
+    "sessions": [10],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "ashardalon",
+    "title": "The Patron in the Hoard",
+    "status": "active",
+    "giver": "Ashardalon",
+    "summary": "Mid-crossing the ancient red dragon Ashardalon reached Ereldra from atop a vast hoard, claiming her as patron and demanding to know why the party strayed from Whitestone. She professes loyalty while serving the patron's true objective, bound up with the de Rolo line.",
+    "sessions": [8],
+    "characterIds": ["ereldra"]
+  },
+  {
+    "id": "greyskull-debt",
+    "title": "The Debt to Allura",
+    "status": "active",
+    "giver": "Allura Vysoren",
+    "summary": "After Allura Vysoren bound the ghostly Mortis and named the party his wardens, they owe her a mission to repair the damage done to Greyskull Keep. The nature of that mission has not yet been revealed.",
+    "sessions": [2],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "temple-sarenrae",
+    "title": "The Lost Temple of Sarenrae",
+    "status": "active",
+    "giver": "Sorfon's mother",
+    "summary": "Sorfon came to Tal'Dorei hunting the ancient temple where his mother trained. Sarenrae, angered by his lifelong devotion to Pelor alone, gave only a riddle: 'The temple is just a temple; follow YOUR light.'",
+    "sessions": [1, 2],
+    "characterIds": ["sorfon"]
+  },
+  {
+    "id": "aristeia",
+    "title": "Ayante's Aristeia",
+    "status": "active",
+    "giver": "The metrodidacts of Ilión",
+    "summary": "Sent abroad from Ilión, Ayante seeks the great deed his city will remember, and records every step of the journey in a codex to be delivered home. He believes his aristeia lies somewhere along Sorfon's road.",
+    "sessions": [1],
+    "characterIds": ["ayante"]
+  },
+  {
+    "id": "baruk-kazad",
+    "title": "Delivering the Barûk-Kazad",
+    "status": "completed",
+    "giver": "Kraghammer",
+    "summary": "The party returned the legendary dwarven axe to Kraghammer and escorted Cassandra's body from the ruined palace, claiming both bounties for 4,800 gp. Sorfon was named Emissary of Kraghammer.",
+    "sessions": [8],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "witchs-book",
+    "title": "Caval's Grave and the Witch's Book",
+    "status": "completed",
+    "giver": "—",
+    "summary": "Ereldra found Caval's grave in the crypt and Mortis told her of his betrayer. Above ground the party settled Baba Yaga's book — bound in skin, clasped with teeth — stowing it in the bag of holding rather than burning it back to the witch.",
+    "sessions": [2, 10],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "gilmore-pact",
+    "title": "The Pact Beneath the Sun",
+    "status": "completed",
+    "giver": "—",
+    "summary": "At Gilmore's shop in Emon, Ayante overheard Sorfon asking after an ancient temple. Mockery gave way to respect once he learned Sorfon served Pelor, and the two devotees sealed a pact bare-armed beneath the noon sun.",
+    "sessions": [1],
+    "characterIds": ["ayante", "sorfon"]
+  }
+]
