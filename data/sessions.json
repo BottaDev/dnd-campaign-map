@@ -1,12 +1,121 @@
 {
+  "1": {
+    "dateLabel": "Recorded 25 Feb 2026 · A Pact Beneath the Sun",
+    "startedHere": "Emon, the city of wide stairs — Ayante and his master Diomedes arrive in Tal'Dorei by skyship and take in the city.",
+    "endedHere": "Emon, just past noon — Ayante and Sorfon seal a pact hand-to-hand beneath the sun; Diomedes departs for Stilben and the two set out together.",
+    "ig": {
+      "start": "26 Horisal 867 — arrival at Emon by skyship",
+      "end": "26 Horisal 867 — just past noon, the pact is sealed",
+      "rest": "Aboard the skyship from Damali"
+    },
+    "effects": [
+      "Ayante has bound himself to Sorfon's quest, seeking his aristeia (his great deed).",
+      "Diomedes has left for Stilben, then Wildemount; Ayante is on his own from here."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Sorfon's Search",
+        "qt": "Sorfon, a Dwendalian knight and devotee of Pelor, has come to Tal'Dorei hunting an ancient temple. His mother is a priestess of Sarenrae's temple, where he was raised. Ayante, a fellow Pelor worshipper from Ilión, judged him worthy and swore to join his cause.",
+        "npcs": [
+          {
+            "name": "Sorfon's mother",
+            "role": "a priestess of Sarenrae's temple, where Sorfon was raised"
+          },
+          {
+            "name": "Emon",
+            "region": "capital of Tal'Dorei",
+            "role": "city of wide stairs and mahogany roofs"
+          },
+          {
+            "name": "Sarenrae's faithful",
+            "role": "the order Sorfon's mother served, tied to his search"
+          },
+          {
+            "name": "Tal'Dorei",
+            "role": "the far continent Ilión sent them to"
+          }
+        ],
+        "notes": [
+          "Sorfon seeks an ancient temple of Tal'Dorei; his mother served in the temple of Sarenrae.",
+          "Ayante speaks Zemnian; he overheard Sorfon speaking it with the mage Gilmore.",
+          "Two followers of Pelor, drawn together — Ayante read it as the god lighting two roads into one.",
+          "Diomedes must travel to the port of Stilben, then return to Wildemount."
+        ]
+      },
+      {
+        "name": "Plot B — Ayante's Aristeia",
+        "qt": "Ayante of Ilión was sent abroad with his master to help Ilión reach distant peoples, and to find his own aristeia — the great deed his city will remember. Everything he witnesses is to be written into a codex and delivered to Ilión.",
+        "npcs": [
+          {
+            "name": "The metrodidacts",
+            "region": "Ilión",
+            "role": "the faction whose letter summoned Ayante and Diomedes abroad"
+          },
+          {
+            "name": "Ilión",
+            "role": "Ayante's austere homeland, whose people prize hardship and scorn luxury"
+          },
+          {
+            "name": "Diomedes",
+            "race": "human",
+            "role": "Ayante's master, departing for Stilben then Wildemount"
+          },
+          {
+            "name": "Damali",
+            "role": "the port they sailed from into Tal'Dorei"
+          }
+        ],
+        "notes": [
+          "The codex records the journey for Ilión, so the city remembers what Ayante may forget.",
+          "Ayante seeks his aristeia and believes he may find it following Sorfon.",
+          "The pact was sealed by clasping bare arms beneath the noon sun, armor removed.",
+          "Ilión breeds hardness: the skyship's lavish cabin disgusted Ayante, though he endured it."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "The Meeting at Gilmore's",
+        "closed": "Closed this session",
+        "qt": "In Emon's academic district Ayante found Gilmore's shop, wreathed in magical fireworks. There the mage conjured floating hands to serve water, and Ayante overheard Sorfon asking after an ancient temple. Insults gave way to respect once Ayante learned Sorfon served Pelor, and after finding Diomedes the two sealed their pact.",
+        "npcs": [
+          {
+            "name": "Gilmore",
+            "race": "human",
+            "role": "friendly, deeply learned mage who runs the shop in the academic district"
+          },
+          {
+            "name": "Gilmore's shop",
+            "region": "academic district",
+            "role": "ringed with magical fireworks, mage-hands serve water"
+          },
+          {
+            "name": "Diomedes",
+            "race": "human",
+            "role": "found nearby, had already met Sorfon by chance on a bench"
+          },
+          {
+            "name": "Academic district, Emon",
+            "role": "felt desolate but for Gilmore's shop"
+          }
+        ],
+        "notes": [
+          "The academic district felt desolate; Gilmore's shop was the one lively spot.",
+          "Ayante mocked Sorfon's looks, then changed his mind on learning he served Pelor.",
+          "Diomedes had already met Sorfon by chance — Ayante saw the god's hand in it.",
+          "The farewell to Diomedes was bitter; they will not meet again for a long time."
+        ]
+      }
+    ]
+  },
   "2": {
     "dateLabel": "Recorded 11 Mar 2026 · Ghosts of Greyskull Keep",
     "startedHere": "Emon, a small plaza near Greyskull Keep — Sorfon and Ayante outside as screams erupt from within the locked Keep; Mortis already inside following the Raven Queen's golden thread.",
     "endedHere": "Greyskull Keep, Emon — the party settled in for a long rest; two hours remain before Mortis's bind spell expires.",
     "ig": {
-      "start": "Day 4 — Emon, plaza near Greyskull Keep",
-      "end": "Day 4 — night, Greyskull Keep (long rest taken)",
-      "rest": "Day 4 — end of this session"
+      "start": "29 Horisal 867 — Emon, plaza near Greyskull Keep",
+      "end": "29 Horisal 867 — night, Greyskull Keep (long rest taken)",
+      "rest": "29 Horisal 867 — end of this session"
     },
     "effects": [
       "Mortis is bound to Sorfon's armor by Allura's bind spell — 2 hours remain before expiry.",
@@ -122,9 +231,9 @@
     "startedHere": "Kraghammer, in the ruins of the dwarven palace — moments after the dragon was driven off and Cassandra de Rolo fell. Mortis reaches out to her departing spirit.",
     "endedHere": "At the gates of Vasselheim after the airship crossing — magic items surrendered to the guard, the party racing to revive Cassandra before her soul is lost.",
     "ig": {
-      "start": "Day 1 — Kraghammer, just after the dragon",
-      "end": "Day 4 — arrival at Vasselheim",
-      "rest": "Day 3 — aboard the airship"
+      "start": "32 Horisal 867 — Kraghammer, just after the dragon",
+      "end": "35 Horisal 867 — arrival at Vasselheim",
+      "rest": "34 Horisal 867 — aboard the airship"
     },
     "effects": [
       "Cassandra de Rolo's body lies in limbo — about 10 days remain to bring her back before her soul moves on.",
@@ -263,9 +372,9 @@
     "startedHere": "Pelor's chapel on the High Pass — the custodian hands over the sealed urn of incense while Mortis and Ereldra are still down in the crypt, standing over Caval's grave.",
     "endedHere": "A deep gnome trader's stall off the main avenue — a dead imp spy at their feet, the session ending mid-purchase as the Raven Queen's thread marks a Speak with Dead scroll.",
     "ig": {
-      "start": "Day 7 — ~3:00 PM, Pelor's chapel and the crypt",
-      "end": "Day 7 — ~6:00 PM, the trader's stall",
-      "rest": "Day 7 — that morning, aboard Percy's airship"
+      "start": "38 Horisal 867 — ~3:00 PM, Pelor's chapel and the crypt",
+      "end": "38 Horisal 867 — ~6:00 PM, the trader's stall",
+      "rest": "38 Horisal 867 — that morning, aboard Percy's airship"
     },
     "effects": [
       "Deck of Many Things draws (~8 h): Sorfon +1 to attack and damage; Ereldra disadvantage on initiative; Ayante +2d10 maximum HP; Mortis holds three free castings of Knock.",
