@@ -506,5 +506,176 @@
         ]
       }
     ]
+  },
+  "11": {
+    "dateLabel": "Recorded 23 Aug 2026 · The Redeemed Dampir",
+    "startedHere": "The deep gnome trader's stall off the main avenue — the last of the shopping done, a Deck of Illusions drawn, and Cassandra carried back up toward the High Pass.",
+    "endedHere": "The palace gate at about four in the morning — Sorfon and Ereldra walk away from the Platinum Dragon, who would not take the axe off their hands.",
+    "ig": {
+      "start": "38 Horisal 867 — late afternoon, the trader's stall",
+      "end": "39 Horisal 867 — ~4:00 AM, the palace gate",
+      "rest": "38 Horisal 867 — that morning, aboard Percy's airship"
+    },
+    "effects": [
+      "Cassandra has ~6 days of limbo left after the night's rest; the party now knows Pike Trickfoot can revive her, beneath the Temple of Sarenrae.",
+      "The Baxcazhak (Barûk) stays under guard in Kraghammer, but Ereldra can call it to her hand as her pact weapon — so the party is never truly without it. Bahamut refused to take it, and its whereabouts are revealed to no one.",
+      "Locus is bought free of La Toma for 200 gp, but the contract only lifts once their leader Ocisa (?) is dealt with; La Toma hunts Mortis and now Locus.",
+      "Locus is under a Geas — compelled, and hurt if he acts against it.",
+      "Holy water burns Ereldra; consecration reacts to her condition.",
+      "Sorfon still owes Pelor the incense-run to the Temple of Sarenrae, and must collect his new plate from Tyr in the morning."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Bringing Cassandra Back",
+        "qt": "Mortis prayed to the Raven Queen at the palace shrine, and her shadar-kai answered: Pike is beneath the Temple of Sarenrae and can use the diamond as a catalyst to restore Cassandra's soul. About six days of limbo remain.",
+        "npcs": [
+          {
+            "name": "Pike Trickfoot",
+            "role": "the cleric who can cast the resurrection, found beneath the Temple of Sarenrae"
+          },
+          {
+            "name": "Beneath the Temple of Sarenrae",
+            "role": "where Pike is said to be"
+          },
+          {
+            "name": "The shadar-kai of the Raven Queen",
+            "role": "her hooded faithful, who located Pike for Mortis"
+          },
+          {
+            "name": "The palace shrine of all gods",
+            "role": "where Mortis reached her"
+          }
+        ],
+        "notes": [
+          "The diamond is a catalyst; a caster must drive it through Cassandra's chest to restore her soul.",
+          "Mortis lacks the spell himself; only a cleric like Pike can complete the rite.",
+          "~6 days of limbo remain after the night's rest.",
+          "Her priests reach her by dying willingly; Mortis is spared that."
+        ]
+      },
+      {
+        "name": "Plot B — Pelor's Charge",
+        "qt": "With the pilgrim rites done, the party left Cassandra's body in Pelor's chapel. Holy water splashed on Ereldra burned her. Sorfon still owes Pelor the incense-run to the Temple of Sarenrae, and must collect his armor from Tyr.",
+        "npcs": [
+          {
+            "name": "Marco",
+            "race": "human",
+            "role": "the lone custodian of Pelor's chapel, who granted the rites"
+          },
+          {
+            "name": "Chapel of Pelor, High Pass",
+            "role": "Cassandra's body laid on the third floor"
+          },
+          {
+            "name": "Tyr the smith",
+            "race": "human",
+            "role": "holds Sorfon's new plate, ready the next morning"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "role": "where Pelor's incense must still be carried"
+          }
+        ],
+        "notes": [
+          "Holy water burned Ereldra — her condition reacts to consecration.",
+          "Sorfon swore again to protect Pelor's sacred texts while he lodges in the chapel.",
+          "Pilgrim papers only matter if a guard stops them; a shadar-kai phrase also lets Mortis pass.",
+          "Still to do: deliver the incense, collect Tyr's armor, reach Pike under Sarenrae's temple."
+        ]
+      },
+      {
+        "name": "Plot C — The Redeemed Dampir",
+        "qt": "La Toma caught a white-haired dampir named Locus in the crowd. Sorfon paid the 200 gp bounty to the orc Hungar (?) to claim him, meaning to redeem rather than kill him. Baba Yaga's book reveals Locus is the last living subject of a Strahd / Baba Yaga project to breed vampire monster-hunters, and that he is under a Geas.",
+        "npcs": [
+          {
+            "name": "Locus",
+            "race": "dampir",
+            "role": "white-haired half-vampire and blood-hunter, the last of his kind, under a Geas"
+          },
+          {
+            "name": "The main avenue crowd",
+            "region": "Vasselheim",
+            "role": "where La Toma seized Locus"
+          },
+          {
+            "name": "Hungar (?)",
+            "race": "orc",
+            "role": "bounty-hunter of La Toma, bear-cloaked and blood-eyed, paid off by Sorfon"
+          },
+          {
+            "name": "The war-district enclave of La Toma",
+            "role": "their seat, and their leader Ocisa (?)"
+          }
+        ],
+        "notes": [
+          "Sorfon paid 200 gp for Locus; the contract lifts only once La Toma's leader Ocisa (?) is dealt with.",
+          "Locus is under a Geas — compelled, and hurt if he acts against it (e.g. speaking of the book).",
+          "Baba Yaga's book: Locus is the sole survivor of a Strahd / Baba Yaga dampir blood-hunter line.",
+          "Sorfon means to redeem him; the plan is to slip him out of the city, away from La Toma."
+        ]
+      },
+      {
+        "name": "Plot D — The Axe and the Corrupted Dragon",
+        "qt": "Twice the ancient black dragon Haftifaflmorhen has appeared; the party learns why from Bahamut himself, met at the palace as the \"Archon of Bahamut\". Bahamut would not take the Baxcazhak (Barûk) off their hands — it stays under guard in Kraghammer, but Ereldra can summon it as her pact weapon, so the burden of it is still theirs and its whereabouts are told to no one.",
+        "npcs": [
+          {
+            "name": "Bahamut, the Platinum Dragon",
+            "race": "dragon god",
+            "role": "met disguised as the \"Archon\", declined to take the axe"
+          },
+          {
+            "name": "Haftifaflmorhen",
+            "role": "the ancient black dragon, a corrupted victim who hunts the axe"
+          },
+          {
+            "name": "Torog (?)",
+            "role": "also heard as \"Toro/Luto\" — the betrayer who maddened Haftifaflmorhen, now sealed in his own plane"
+          },
+          {
+            "name": "Cromulus (?)",
+            "role": "Bahamut's old dragon companion, who withdrew after the Calamity"
+          }
+        ],
+        "notes": [
+          "Bahamut refused the axe; it stays in Kraghammer, Ereldra can summon it as her pact weapon, and no one is told where it lies.",
+          "Haftifaflmorhen was tricked by Torog (?) and forced to devour his best friend; he is a victim.",
+          "The axe should return to its maker (Moradin?); the peace only comes when it does.",
+          "Ereldra's patron is Ashardalon, whose plans would be served by the axe — another reason to keep it close."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "The Meeting with Bahamut",
+        "closed": "Closed this session",
+        "qt": "The white-robed man from the crossroads revealed himself as Bahamut, the Platinum Dragon. He explained that Haftifaflmorhen is a corrupted victim of Torog (?), refused to accept the Baxcazhak, and counselled the party to keep its location secret for now.",
+        "npcs": [
+          {
+            "name": "Bahamut, the Platinum Dragon",
+            "race": "dragon god",
+            "role": "the \"Archon\" who governs Vasselheim this cycle"
+          },
+          {
+            "name": "The palace gate",
+            "region": "Vasselheim",
+            "role": "where Sorfon and Ereldra met him pre-dawn"
+          },
+          {
+            "name": "Ereldra",
+            "role": "present with Sorfon alone; she covered her cursed eye at his request"
+          },
+          {
+            "name": "The high peak of the Calamity",
+            "role": "where the Betrayers fought the Primes, as Bahamut recalled"
+          }
+        ],
+        "notes": [
+          "Bahamut declined the axe and said its location should stay hidden for now.",
+          "Haftifaflmorhen is Torog's (?) victim, driven mad and made to devour his best friend.",
+          "Bahamut and Cromulus (?) both fought in the Calamity; Cromulus withdrew, disillusioned, afterward.",
+          "He would not be handed the axe; the party leaves the palace still answerable for it, Ereldra's pact keeping it a summons away."
+        ]
+      }
+    ]
   }
 }

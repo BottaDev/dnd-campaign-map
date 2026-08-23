@@ -4,8 +4,8 @@
     "title": "Bringing Cassandra Back",
     "status": "active",
     "giver": "Percival de Rolo",
-    "summary": "Cassandra de Rolo fell to a dragon at Kraghammer and her soul lingers in limbo — about seven days remain. Mortis holds the diamond and has at last found a scroll of Speak with Dead; a cleric able to cast the true resurrection, Pike Trickfoot, is still missing.",
-    "sessions": [8, 10],
+    "summary": "Cassandra de Rolo fell to a dragon at Kraghammer and her soul lingers in limbo — about six days remain. Her body now rests in Pelor's chapel, and the Raven Queen's shadar-kai have named the cleric who can complete the rite: Pike Trickfoot, beneath the Temple of Sarenrae, who must drive Mortis's diamond through her chest as a catalyst.",
+    "sessions": [8, 10, 11],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -13,8 +13,8 @@
     "title": "Pelor's Charge",
     "status": "active",
     "giver": "Pelor",
-    "summary": "Pelor set Sorfon to carry the sealed censer of incense some seven kilometres across Vasselheim, from the Temple of Pelor to the Temple of Sarenrae, and to guard the surviving de Rolos. Ayante must first be proven worthy before he can reach the divine.",
-    "sessions": [8, 10],
+    "summary": "Pelor set Sorfon to carry the sealed censer of incense some seven kilometres across Vasselheim, from the Temple of Pelor to the Temple of Sarenrae, and to guard the surviving de Rolos. The custodian Marco has granted the party pilgrim rites and taken Cassandra's body in; the incense is still undelivered, and Tyr's new plate is still to be collected.",
+    "sessions": [8, 10, 11],
     "characterIds": ["sorfon", "ayante"]
   },
   {
@@ -22,8 +22,8 @@
     "title": "The Raven Queen's Thread",
     "status": "active",
     "giver": "The Raven Queen",
-    "summary": "A golden thread from Mortis's patron keeps singling out what he needs — it led him to Greyskull Keep and, in Vasselheim, to the very scroll of Speak with Dead he has hunted since Kraghammer. Where it leads next, and what the Raven Queen ultimately wants, remain open.",
-    "sessions": [2, 8, 10],
+    "summary": "A golden thread from Mortis's patron keeps singling out what he needs — it led him to Greyskull Keep and, in Vasselheim, to the scroll of Speak with Dead. Prayed to at the palace shrine of all gods, she answered through her shadar-kai and gave up Pike's hiding place. What she ultimately wants of Mortis remains open; her priests reach her by dying willingly, and he is spared that.",
+    "sessions": [2, 8, 10, 11],
     "characterIds": ["mortis"]
   },
   {
@@ -31,8 +31,26 @@
     "title": "Hunted and Watched",
     "status": "active",
     "giver": "—",
-    "summary": "An invisible imp spying at Ubu's feet named its master: La Toma, the Slayer's Take, a monster-hunter guild quartered in the war district — and they are hunting Mortis. Meanwhile the Archon of Bahamut, the most powerful man in the city this cycle, has turned his eyes on the party.",
-    "sessions": [10],
+    "summary": "An invisible imp spying at Ubu's feet named its master: La Toma, the Slayer's Take, a monster-hunter guild quartered in the war district — and they are hunting Mortis. Since Sorfon bought their dampir prisoner off them, they hunt Locus too; the contract lifts only once their leader Ocisa (?) is dealt with.",
+    "sessions": [10, 11],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "locus",
+    "title": "The Redeemed Dampir",
+    "status": "active",
+    "giver": "—",
+    "summary": "La Toma seized a white-haired dampir named Locus out of the crowd on the main avenue; Sorfon paid the orc Hungar (?) the 200 gp bounty to claim him, meaning to redeem rather than kill him. Baba Yaga's book names him the last living subject of a Strahd and Baba Yaga line bred as vampire monster-hunters, and he is bound by a Geas. The plan is to slip him out of the city.",
+    "sessions": [11],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
+  },
+  {
+    "id": "corrupted-dragon",
+    "title": "The Axe and the Corrupted Dragon",
+    "status": "active",
+    "giver": "Bahamut",
+    "summary": "Bahamut explained why the ancient black dragon Haftifaflmorhen keeps appearing: tricked by Torog (?) and forced to devour his best friend, he is a maddened victim who hunts the Baxcazhak. The Platinum Dragon refused to take the axe off their hands: it stays under guard in Kraghammer, but Ereldra can call it to her as her pact weapon, so the party still answers for it and tells no one where it lies — the more so because her patron Ashardalon would be served by it. Peace comes only when the axe returns to its maker.",
+    "sessions": [11],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -72,11 +90,20 @@
     "characterIds": ["ayante"]
   },
   {
+    "id": "bahamut-meeting",
+    "title": "The Meeting with Bahamut",
+    "status": "completed",
+    "giver": "—",
+    "summary": "The white-robed man from the crossroads, the Archon who governs Vasselheim this cycle, revealed himself at the palace gate as Bahamut, the Platinum Dragon. He named Haftifaflmorhen a victim of Torog (?), recalled the Calamity and his lost companion Cromulus (?), declined to accept the Baxcazhak, and told Sorfon and Ereldra to keep its location secret for now.",
+    "sessions": [10, 11],
+    "characterIds": ["sorfon", "ereldra"]
+  },
+  {
     "id": "baruk-kazad",
     "title": "Delivering the Barûk-Kazad",
     "status": "completed",
     "giver": "Kraghammer",
-    "summary": "The party returned the legendary dwarven axe to Kraghammer and escorted Cassandra's body from the ruined palace, claiming both bounties for 4,800 gp. Sorfon was named Emissary of Kraghammer.",
+    "summary": "The party returned the legendary dwarven axe to Kraghammer and escorted Cassandra's body from the ruined palace, claiming both bounties for 4,800 gp. Sorfon was named Emissary of Kraghammer. The axe stayed behind under guard — though it is Ereldra's pact weapon, and she can summon it to her hand wherever she is.",
     "sessions": [8],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },

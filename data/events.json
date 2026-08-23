@@ -293,5 +293,96 @@
       "mortis",
       "ereldra"
     ]
+  },
+  {
+    "id": "s11_01",
+    "date": "2026-08-23",
+    "session": 11,
+    "igLabel": "Day 38 · The trader's stall",
+    "title": "The Deck of Illusions",
+    "summary": "The party finishes its business at the deep gnome's stall and draws from a Deck of Illusions — reusable cards of pure illusion, not the deadly Deck of Many Things. With the shopping done they take Cassandra up toward the High Pass.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s11_02",
+    "date": "2026-08-23",
+    "session": 11,
+    "igLabel": "Day 38 · The main avenue, Vasselheim",
+    "title": "The Bounty on Locus",
+    "summary": "La Toma seizes a white-haired dampir out of the crowd. Rather than let him be killed, Sorfon pays the 200 gp bounty to Hungar (?), the bear-cloaked orc hunter, and claims Locus for himself — meaning to redeem him. The contract only truly lifts once La Toma's leader, Ocisa (?), is dealt with.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s11_03",
+    "date": "2026-08-23",
+    "session": 11,
+    "igLabel": "Day 38 · Chapel of Pelor, High Pass",
+    "title": "Cassandra Laid in Pelor's Chapel",
+    "summary": "Marco, the lone custodian, grants the party the pilgrim rites and Cassandra's body is laid out on the third floor. Holy water splashed on Ereldra burns her. Sorfon swears again to guard Pelor's sacred texts while they lodge in the chapel.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s11_04",
+    "date": "2026-08-23",
+    "session": 11,
+    "igLabel": "Day 38 · The chapel, that night",
+    "title": "What the Witch's Book Says of Locus",
+    "summary": "Baba Yaga's book gives up Locus's history: he is the last living subject of a Strahd and Baba Yaga project to breed vampire monster-hunters, and he is bound by a Geas — compelled, and hurt if he acts against it, as when he tries to speak of the book.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s11_05",
+    "date": "2026-08-24",
+    "session": 11,
+    "igLabel": "Day 39 · The palace shrine of all gods",
+    "title": "The Shadar-kai's Answer",
+    "summary": "In the small hours Mortis prays to the Raven Queen at the shrine of all gods. Her hooded shadar-kai answer: Pike Trickfoot is beneath the Temple of Sarenrae, and can drive the diamond through Cassandra's chest as a catalyst to call her soul back. About six days of limbo remain.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "mortis"
+    ]
+  },
+  {
+    "id": "s11_06",
+    "date": "2026-08-24",
+    "session": 11,
+    "igLabel": "Day 39 · The palace gate",
+    "title": "Bahamut at the Palace Gate",
+    "summary": "At about four in the morning the white-robed Archon reveals himself as Bahamut, the Platinum Dragon. Haftifaflmorhen is no monster but a victim — maddened by Torog (?) and made to devour his best friend. Bahamut refuses to take the Baxcazhak — left under guard in Kraghammer, yet only a summons away through Ereldra's pact — and counsels the party to keep its location secret; Ereldra covers her cursed eye at his request.",
+    "xp": 29.6,
+    "yp": 25.9,
+    "characterIds": [
+      "sorfon",
+      "ereldra"
+    ]
   }
 ]
