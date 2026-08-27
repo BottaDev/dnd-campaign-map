@@ -4,8 +4,8 @@
     "title": "Bringing Cassandra Back",
     "status": "active",
     "giver": "Percival de Rolo",
-    "summary": "Cassandra de Rolo fell to a dragon at Kraghammer and her soul lingers in limbo — about six days remain. Her body now rests in Pelor's chapel, and the Raven Queen's shadar-kai have named the cleric who can complete the rite: Pike Trickfoot, beneath the Temple of Sarenrae, who must drive Mortis's diamond through her chest as a catalyst.",
-    "sessions": [8, 10, 11],
+    "summary": "Cassandra de Rolo fell to a dragon at Kraghammer and her soul lingers in limbo — about six days remain. The party has taken her body back out of Pelor's chapel, last sacraments given in case the rite fails, and now carries it to Pike Trickfoot beneath the Temple of Sarenrae, who must drive Mortis's diamond through her chest as a catalyst — and then home to Whitestone, which is nothing without her.",
+    "sessions": [8, 10, 11, 12],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -13,8 +13,8 @@
     "title": "Pelor's Charge",
     "status": "active",
     "giver": "Pelor",
-    "summary": "Pelor set Sorfon to carry the sealed censer of incense some seven kilometres across Vasselheim, from the Temple of Pelor to the Temple of Sarenrae, and to guard the surviving de Rolos. The custodian Marco has granted the party pilgrim rites and taken Cassandra's body in; the incense is still undelivered, and Tyr's new plate is still to be collected.",
-    "sessions": [8, 10, 11],
+    "summary": "Pelor set Sorfon to carry the sealed censer of incense some seven kilometres across Vasselheim, from the Temple of Pelor to the Temple of Sarenrae, and to guard the surviving de Rolos. The custodian Marco granted the party pilgrim rites and kept Cassandra's body overnight; Tyr's plate has now been collected, but the incense is still undelivered — the route runs post office, supplies, then the Temple of Sarenrae.",
+    "sessions": [8, 10, 11, 12],
     "characterIds": ["sorfon", "ayante"]
   },
   {
@@ -22,8 +22,8 @@
     "title": "The Raven Queen's Thread",
     "status": "active",
     "giver": "The Raven Queen",
-    "summary": "A golden thread from Mortis's patron keeps singling out what he needs — it led him to Greyskull Keep and, in Vasselheim, to the scroll of Speak with Dead. Prayed to at the palace shrine of all gods, she answered through her shadar-kai and gave up Pike's hiding place. What she ultimately wants of Mortis remains open; her priests reach her by dying willingly, and he is spared that.",
-    "sessions": [2, 8, 10, 11],
+    "summary": "A golden thread from Mortis's patron keeps singling out what he needs — it led him to Greyskull Keep and, in Vasselheim, to the scroll of Speak with Dead. Prayed to at the palace shrine of all gods, she answered through her shadar-kai and gave up Pike's hiding place. Mortis has since died by his own hand to stand before her in the Shadowfell and been raised again: they were lovers when she was mortal and he was Morgas, and she names negating him her one error. She wants the main mission finished first — Cassandra revived, then Whitestone.",
+    "sessions": [2, 8, 10, 11, 12],
     "characterIds": ["mortis"]
   },
   {
@@ -31,8 +31,8 @@
     "title": "Hunted and Watched",
     "status": "active",
     "giver": "—",
-    "summary": "An invisible imp spying at Ubu's feet named its master: La Toma, the Slayer's Take, a monster-hunter guild quartered in the war district — and they are hunting Mortis. Since Sorfon bought their dampir prisoner off them, they hunt Locus too; the contract lifts only once their leader Ocisa (?) is dealt with.",
-    "sessions": [10, 11],
+    "summary": "An invisible imp spying at Ubu's feet named its master: La Toma, the Slayer's Take, a monster-hunter guild quartered in the war district — and they are hunting Mortis. Since Sorfon bought their dampir prisoner off them, they hunt Locus too; the contract lifts only once their leader Ocisa (?) is dealt with. Sarenrae herself has now asked that Locus be got out of the city and away from them.",
+    "sessions": [10, 11, 12],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -40,8 +40,8 @@
     "title": "The Redeemed Dampir",
     "status": "active",
     "giver": "—",
-    "summary": "La Toma seized a white-haired dampir named Locus out of the crowd on the main avenue; Sorfon paid the orc Hungar (?) the 200 gp bounty to claim him, meaning to redeem rather than kill him. Baba Yaga's book names him the last living subject of a Strahd and Baba Yaga line bred as vampire monster-hunters, and he is bound by a Geas. The plan is to slip him out of the city.",
-    "sessions": [11],
+    "summary": "La Toma seized a white-haired dampir named Locus out of the crowd on the main avenue; Sorfon paid the orc Hungar (?) the 200 gp bounty to claim him, meaning to redeem rather than kill him. Baba Yaga's book names him the last living subject of a Strahd and Baba Yaga line bred as vampire monster-hunters, and he is bound by a Geas. Sarenrae, reached by holy-water purification, told Sorfon every soul deserves redemption and asked him to get Locus out of the city and away from La Toma — pointing him toward an old ally and toward the links Ereldra keeps hidden. The Geas blocks Locus's memory and compels him, and lifts only when Strahd, his likely ancestor, is dead. He travels with the party now, and must be kept out of the Shadowfell.",
+    "sessions": [11, 12],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -49,8 +49,8 @@
     "title": "The Axe and the Corrupted Dragon",
     "status": "active",
     "giver": "Bahamut",
-    "summary": "Bahamut explained why the ancient black dragon Haftifaflmorhen keeps appearing: tricked by Torog (?) and forced to devour his best friend, he is a maddened victim who hunts the Baxcazhak. The Platinum Dragon refused to take the axe off their hands: it stays under guard in Kraghammer, but Ereldra can call it to her as her pact weapon, so the party still answers for it and tells no one where it lies — the more so because her patron Ashardalon would be served by it. Peace comes only when the axe returns to its maker.",
-    "sessions": [11],
+    "summary": "Bahamut explained why the ancient black dragon Haftifaflmorhen keeps appearing: tricked by Torog (?) and forced to devour his best friend, he is a maddened victim who hunts the Baxcazhak. The Platinum Dragon refused to take the axe off their hands: it stays under guard in Kraghammer, but Ereldra can call it to her as her pact weapon, so the party still answers for it and tells no one where it lies — the more so because her patron Ashardalon would be served by it. Peace comes only when the axe returns to its maker. Pelor has since named the corrupter: Torog, the Crawling King, the last Betrayer God he cast down, working from his prison in the Far Realm — and counselled that saving or killing Haftifaflmorhen ends the same, since his mind is gone. The party's decision: keep the axe, give it to no dragon, and trap the dragon and grant him rest once they are strong enough.",
+    "sessions": [11, 12],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
@@ -58,9 +58,18 @@
     "title": "The Patron in the Hoard",
     "status": "active",
     "giver": "Ashardalon",
-    "summary": "Mid-crossing the ancient red dragon Ashardalon reached Ereldra from atop a vast hoard, claiming her as patron and demanding to know why the party strayed from Whitestone. She professes loyalty while serving the patron's true objective, bound up with the de Rolo line.",
-    "sessions": [8],
+    "summary": "Mid-crossing the ancient red dragon Ashardalon reached Ereldra from atop a vast hoard, claiming her as patron and demanding to know why the party strayed from Whitestone. She professes loyalty while serving the patron's true objective, bound up with the de Rolo line. In council she has now admitted outright that Ashardalon's plan is genocide, and the party has resolved that he gets no axe from them — while in an old nightmare of Mortis's, Torog offered to take Ashardalon's place at her shoulder.",
+    "sessions": [8, 12],
     "characterIds": ["ereldra"]
+  },
+  {
+    "id": "strahd",
+    "title": "The Vampire of Ravenloft",
+    "status": "active",
+    "giver": "The Raven Queen",
+    "summary": "The Raven Queen told Mortis that Ravenloft and Barovia were torn out of her realm and are held illegitimately by the vampire Strahd von Zarovich — who bred Locus to be his hound and still means to have him. Strahd cannot be reached yet: when the party is ready to cross the Shadowfell they are to seek Vax'ildan, her champion, who will guide them. Until then Locus stays out of the Shadowfell, where Strahd would sense him, and his Geas cannot be broken while Strahd lives.",
+    "sessions": [12],
+    "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
   {
     "id": "greyskull-debt",
@@ -88,6 +97,24 @@
     "summary": "Sent abroad from Ilión, Ayante seeks the great deed his city will remember, and records every step of the journey in a codex to be delivered home. He believes his aristeia lies somewhere along Sorfon's road.",
     "sessions": [1],
     "characterIds": ["ayante"]
+  },
+  {
+    "id": "tyr-forge",
+    "title": "The Forge of Tyr",
+    "status": "completed",
+    "giver": "Tyr the smith",
+    "summary": "The commissions left with Tyr came back finished. Ayante was given the Helm of the Wrathbringer (?) for nothing — it makes foes fear him, so long as his head stays on his shoulders — and Sorfon's old chainmail was reforged into the Plate of Knights' Fellowship (AC 18), stamped with the Dwendalian owl-eyes. A one-eyed soldier's spirit, Aldis (?), is caught in the metal and can be summoned as an ally each fight; he served the Empire and knew a Cousland, and the plate once belonged to Gerard Cousland (?), likely Sorfon's kin.",
+    "sessions": [11, 12],
+    "characterIds": ["sorfon", "ayante"]
+  },
+  {
+    "id": "shadowfell-audience",
+    "title": "The Audience in the Shadowfell",
+    "status": "completed",
+    "giver": "—",
+    "summary": "Mortis died by his own hand to cross into the Shadowfell and stand before the Raven Queen. She named Strahd the thief of Ravenloft and Barovia, named Locus the hound bred for him, and named Vax'ildan the guide who can bring the party across when they are ready — then sent Mortis back with the charge to finish the main mission first.",
+    "sessions": [12],
+    "characterIds": ["mortis"]
   },
   {
     "id": "bahamut-meeting",

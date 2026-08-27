@@ -677,5 +677,183 @@
         ]
       }
     ]
+  },
+  "12": {
+    "dateLabel": "Recorded 27 Aug 2026 · Councils Before the Hunt",
+    "startedHere": "The inn in the small hours — Locus clinging to the ceiling mid-feed, and Sorfon's Everlight talisman burning him awake.",
+    "endedHere": "Pelor's chapel in the High Pass the next morning — Cassandra's body lifted out and shouldered for the road to Pike, with Locus waiting outside the door.",
+    "ig": {
+      "start": "39 Horisal 867 — ~4:00 AM, at the inn",
+      "end": "40 Horisal 867 — morning, the forge and Pelor's chapel",
+      "rest": "39 Horisal 867 — that night, after Mortis died and was raised"
+    },
+    "effects": [
+      "Cassandra has ~6 days of limbo left; the party now carries her body toward Pike, beneath the Temple of Sarenrae, and then on to Whitestone.",
+      "Locus travels with the party and must be kept out of the Shadowfell — there Strahd would sense the hound he made.",
+      "Sorfon wears the Plate of Knights' Fellowship (AC 18) and can summon the spirit Aldis (?) as an ally each fight.",
+      "Ayante wears the Helm of the Wrathbringer (?), which makes foes fear him — so long as his head stays on his shoulders.",
+      "Locus's Geas cannot be lifted until Strahd is dealt with; Vax'ildan is the way across the Shadowfell, when the party is ready.",
+      "Decision taken: the Baxcazhak goes to no dragon, and Haftifaflmorhen is to be trapped and put down once the party is strong enough.",
+      "Sorfon still owes Pelor the incense-run; the route now runs post office, then supplies, then the Temple of Sarenrae."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Bringing Cassandra Back",
+        "qt": "The core mission holds: about six days remain before the resurrection window closes. Pike waits beneath the Temple of Sarenrae, and the party has now taken Cassandra's body out of Pelor's chapel to carry her there, and then on to Whitestone.",
+        "npcs": [
+          {
+            "name": "Cassandra de Rolo",
+            "race": "human",
+            "role": "deceased, ~6 days of limbo left, now carried by the party"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "region": "Vasselheim",
+            "role": "where Pike waits — the next stop"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "role": "the cleric who can cast the resurrection"
+          },
+          {
+            "name": "Whitestone",
+            "role": "Cassandra's seat, her final destination"
+          }
+        ],
+        "notes": [
+          "Pelor's custodian gave the last sacraments over the body, in case the resurrection fails.",
+          "The route: the forge, then the post office, then supplies, then the Temple of Sarenrae.",
+          "Locus cannot enter Pelor's temple, so he waited outside while the body was fetched.",
+          "Whitestone is nothing without Cassandra; reviving her stays the group's first duty."
+        ]
+      },
+      {
+        "name": "Plot B — Redeeming Locus",
+        "qt": "Sorfon performed a holy-water purification and reached Sarenrae, the Everlight, who told him every soul deserves redemption and asked him to help Locus escape the city and La Toma. Locus is the one success of Strahd and Baba Yaga's plan to breed dampir monster-hunters, bound by a Geas, and cannot be freed until Strahd is dealt with.",
+        "npcs": [
+          {
+            "name": "Locus",
+            "race": "dampir",
+            "role": "white-haired half-vampire and monster-hunter, under a Geas, now under the party's protection"
+          },
+          {
+            "name": "Sarenrae, the Everlight",
+            "race": "goddess",
+            "role": "answered Sorfon's ritual and urged redemption for Locus"
+          },
+          {
+            "name": "La Toma (the Slayer's Take)",
+            "region": "Vasselheim, the war district",
+            "role": "the guild hunting Locus, to be escaped"
+          },
+          {
+            "name": "The Monster Jägers of the Dwendalian Empire",
+            "role": "the disbanded blood-hunter order Locus echoes"
+          }
+        ],
+        "notes": [
+          "Locus feeds every few weeks but avoids people and eats animals — a sign of his remaining humanity.",
+          "A Geas blocks his memory and compels him; only killing Strahd, his likely ancestor, can free him.",
+          "The Everlight pointed to an old ally, and to Ereldra's hidden links, as part of the answer.",
+          "Keep Locus out of the Shadowfell, or Strahd would sense the hound he made."
+        ]
+      },
+      {
+        "name": "Plot C — The Axe, the Dragon and Torog",
+        "qt": "Pelor, the Dawnfather, answered Sorfon — after first rebuking him for saving an undead — and named Torog, the Crawling King, the last and most dangerous Betrayer God he cast down, the one who corrupted Haftifaflmorhen. The party resolved to keep the Baxcazhak (Barûk-Kazad), refuse Ashardalon, and set a trap to put the maddened dragon down when they are ready.",
+        "npcs": [
+          {
+            "name": "Pelor, the Dawnfather",
+            "race": "god",
+            "role": "pierced Torog with lances of sunlight in the Calamity; counsels Sorfon"
+          },
+          {
+            "name": "Torog, the Crawling King",
+            "race": "Betrayer God",
+            "role": "corrupted Haftifaflmorhen from his prison in the Far Realm"
+          },
+          {
+            "name": "Haftifaflmorhen",
+            "role": "the ancient black dragon, Torog's maddened victim, who hunts the Baxcazhak"
+          },
+          {
+            "name": "Ashardalon",
+            "race": "red dragon",
+            "role": "Ereldra's patron, who covets the axe and plans a genocide"
+          }
+        ],
+        "notes": [
+          "Pelor: saving or killing Haftifaflmorhen ends the same; his mind is gone, so grant him rest.",
+          "In Mortis's old nightmare, Torog offered to free him and to replace Ashardalon as Ereldra's patron.",
+          "Decision: keep the Baxcazhak, give it to no dragon, and trap Haftifaflmorhen when stronger.",
+          "Ereldra admits her patron's plan is genocide; both dragons have a personal stake in the axe."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "The Forge of Tyr",
+        "closed": "Closed this session",
+        "qt": "At Tyr's forge the party collected their commissions. Ayante received the Helm of the Wrathbringer (?) for free, and Sorfon new plate reforged from his chainmail, bearing the Dwendalian owl-eyes and able to summon a spirit warrior. The armor once belonged to a Cousland ancestor of Sorfon's.",
+        "npcs": [
+          {
+            "name": "Tyr, the master smith",
+            "race": "human",
+            "role": "forged both pieces and refused payment for the helm"
+          },
+          {
+            "name": "Aldis (?)",
+            "race": "spirit",
+            "role": "the one-eyed Dwendalian soldier bound in the armor, summonable in battle"
+          },
+          {
+            "name": "Gerard Cousland (?)",
+            "role": "the old knight who once bore the armor, likely Sorfon's kin (deceased)"
+          },
+          {
+            "name": "Tyr's forge",
+            "region": "High Pass, Vasselheim",
+            "role": "where a soul was caught in the metal"
+          }
+        ],
+        "notes": [
+          "The Helm of the Wrathbringer (?) makes foes fear Ayante, so long as his head stays on his shoulders.",
+          "The Plate of Knights' Fellowship (AC 18) can summon the spirit Aldis (?) as an ally each fight.",
+          "The plate was reforged from Sorfon's old chainmail; Aldis (?) served the Empire and knew a Cousland.",
+          "Aldis (?) directs his thanks to the forge itself; Tyr channels a devotion to the forge of Vasselheim."
+        ]
+      },
+      {
+        "name": "The Raven Queen and Strahd",
+        "closed": "Closed this session",
+        "qt": "Mortis died by his own hand to reach the Shadowfell and his matron, the Raven Queen. She revealed that Ravenloft and Barovia were torn from her realm by the vampire Strahd, that Locus is meant to be Strahd's hound, and that Vax'ildan can one day guide the party through the Shadowfell to Strahd.",
+        "npcs": [
+          {
+            "name": "The Raven Queen",
+            "race": "goddess",
+            "role": "Mortis's matron, once his mortal love, who regrets choosing godhood over him"
+          },
+          {
+            "name": "Strahd von Zarovich",
+            "race": "vampire",
+            "role": "holds Ravenloft and Barovia illegitimately; wants Locus as a hound"
+          },
+          {
+            "name": "Vax'ildan",
+            "role": "the Raven Queen's champion, who can guide the party through the Shadowfell later"
+          },
+          {
+            "name": "Ravenloft / Barovia",
+            "role": "a floating fragment of the Raven Queen's realm, hidden in the Shadowfell"
+          }
+        ],
+        "notes": [
+          "The Raven Queen and Mortis (Morgas) were lovers when she was mortal; she names negating him her one error.",
+          "Keep Locus from the Shadowfell; there Strahd would sense the hound he made.",
+          "Strahd cannot be reached yet — seek Vax'ildan when the party is ready to cross the Shadowfell.",
+          "She urges the party to finish the main mission first: revive Cassandra, then Whitestone."
+        ]
+      }
+    ]
   }
 }

@@ -384,5 +384,105 @@
       "sorfon",
       "ereldra"
     ]
+  },
+  {
+    "id": "s12_01",
+    "date": "2026-08-27",
+    "session": 12,
+    "igLabel": "Day 39 · The inn, the small hours",
+    "title": "Locus Comes Down from the Ceiling",
+    "summary": "Mortis finds Locus clinging to the ceiling mid-feed and coaxes him down. The dampir keeps to animals and shuns people, feeding only every few weeks — the surest sign that something human is left in him to redeem.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "mortis"
+    ]
+  },
+  {
+    "id": "s12_02",
+    "date": "2026-08-27",
+    "session": 12,
+    "igLabel": "Day 39 · The inn, the small hours",
+    "title": "The Everlight's Charge",
+    "summary": "Sorfon wakes with his Everlight talisman burning against his chest. A holy-water purification carries him to Sarenrae, who tells him every soul deserves redemption and asks him to get Locus out of the city and away from La Toma. She points him toward an old ally, and toward the links Ereldra keeps hidden.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "sorfon"
+    ]
+  },
+  {
+    "id": "s12_03",
+    "date": "2026-08-27",
+    "session": 12,
+    "igLabel": "Day 39 · The Shadowfell",
+    "title": "Mortis Dies to Reach the Raven Queen",
+    "summary": "Mortis dies by his own hand to cross into the Shadowfell and stand before his matron. The Raven Queen — his lover once, when she was mortal and he was Morgas — tells him Ravenloft and Barovia were torn out of her realm by the vampire Strahd, that Locus was bred to be Strahd's hound, and that her champion Vax'ildan can one day guide the party across. Then she sends him back.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "mortis"
+    ]
+  },
+  {
+    "id": "s12_04",
+    "date": "2026-08-27",
+    "session": 12,
+    "igLabel": "Day 39 · Vasselheim, before dawn",
+    "title": "Pelor Names Torog",
+    "summary": "Pelor rebukes Sorfon for saving an undead, then answers him: the last and most dangerous Betrayer God he cast down was Torog, the Crawling King, pierced with lances of sunlight and sealed in the Far Realm. From that prison Torog corrupted Haftifaflmorhen. Saving the dragon or killing him ends the same — his mind is gone, so grant him rest.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "sorfon"
+    ]
+  },
+  {
+    "id": "s12_05",
+    "date": "2026-08-27",
+    "session": 12,
+    "igLabel": "Day 39 · The party's council",
+    "title": "The Council on the Axe",
+    "summary": "With both gods' answers in hand the party decides: keep the Baxcazhak, hand it to no dragon, and set a trap for Haftifaflmorhen once they are strong enough to put him down. Ereldra admits outright that her patron Ashardalon's plan is genocide, and Mortis recalls an old nightmare in which Torog offered to free him and take Ashardalon's place at her shoulder.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s12_06",
+    "date": "2026-08-28",
+    "session": 12,
+    "igLabel": "Day 40 · Tyr's forge, High Pass",
+    "title": "The Forge of Tyr",
+    "summary": "The commissions are ready. Tyr gives Ayante the Helm of the Wrathbringer (?) for free — it makes foes fear him, so long as his head stays on his shoulders — and hands Sorfon plate reforged from his old chainmail, stamped with the Dwendalian owl-eyes. A one-eyed soldier's spirit, Aldis (?), is caught in the metal and can be summoned as an ally each fight; the armor once belonged to Gerard Cousland (?), likely Sorfon's kin.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
+  },
+  {
+    "id": "s12_07",
+    "date": "2026-08-28",
+    "session": 12,
+    "igLabel": "Day 40 · Chapel of Pelor, High Pass",
+    "title": "Cassandra Carried Out",
+    "summary": "Pelor's custodian gives Cassandra the last sacraments, in case the resurrection fails, and the party lifts her body to carry it to Pike. Locus cannot set foot in Pelor's temple and waits outside. The route is set — the post office, then supplies, then the Temple of Sarenrae — with about six days of limbo left.",
+    "xp": 29.2,
+    "yp": 25.5,
+    "characterIds": [
+      "sorfon",
+      "ayante",
+      "mortis",
+      "ereldra"
+    ]
   }
 ]
