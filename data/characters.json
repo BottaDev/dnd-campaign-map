@@ -4,7 +4,14 @@
     "name": "Ayante",
     "role": "Fighter · Battle Master",
     "color": "#3D3830",
-    "sealImg": "assets/icon-ayante.jpeg"
+    "sealImg": "assets/icon-ayante.jpeg",
+    "relations": [
+      {
+        "id": "sorfon",
+        "label": "Pact sworn beneath the noon sun",
+        "reverseLabel": "Pact sworn beneath the noon sun"
+      }
+    ]
   },
   {
     "id": "ereldra",
@@ -18,7 +25,10 @@
     "name": "Mortis",
     "role": "Wizard · School of Necromancy / Cleric · Death Domain",
     "color": "#858590",
-    "sealImg": "assets/icon-mortis.jpeg"
+    "sealImg": "assets/icon-mortis.jpeg",
+    "aliases": [
+      "Morgas"
+    ]
   },
   {
     "id": "sorfon",

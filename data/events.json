@@ -3,50 +3,85 @@
     "id": "s1_01",
     "date": "2026-02-25",
     "session": 1,
+    "campaignDay": 26,
+    "igDate": "26 Horisal 867",
     "igLabel": "Day 26 · Emon",
+    "type": "travel",
     "title": "Arrival at Emon",
     "summary": "Ayante and his master Diomedes arrive in Tal'Dorei by skyship, taking in Emon — the city of wide stairs and mahogany roofs.",
+    "locationId": "emon",
     "xp": 42.3,
     "yp": 39.51,
     "characterIds": [
       "ayante"
+    ],
+    "npcIds": [
+      "diomedes"
+    ],
+    "questIds": [
+      "aristeia"
     ]
   },
   {
     "id": "s1_02",
     "date": "2026-02-25",
     "session": 1,
+    "campaignDay": 26,
+    "igDate": "26 Horisal 867",
     "igLabel": "Day 26 · Gilmore's shop, Emon",
+    "type": "encounter",
     "title": "The Meeting at Gilmore's",
     "summary": "In Emon's academic district, Ayante finds Gilmore's shop wreathed in magical fireworks. Overhearing Sorfon ask after an ancient temple, his mockery turns to respect once he learns Sorfon serves Pelor.",
+    "locationId": "gilmores-shop",
     "xp": 42.3,
     "yp": 39.51,
     "characterIds": [
       "ayante",
       "sorfon"
+    ],
+    "npcIds": [
+      "gilmore"
+    ],
+    "questIds": [
+      "gilmore-pact",
+      "temple-sarenrae"
     ]
   },
   {
     "id": "s1_03",
     "date": "2026-02-25",
     "session": 1,
+    "campaignDay": 26,
+    "igDate": "26 Horisal 867",
     "igLabel": "Day 26 · Emon",
+    "type": "decision",
     "title": "A Pact Beneath the Sun",
     "summary": "Bare arms clasped beneath the noon sun, Ayante and Sorfon seal their pact. Diomedes departs for Stilben, and the two devotees of Pelor set out together.",
+    "locationId": "emon",
     "xp": 42.3,
     "yp": 39.51,
     "characterIds": [
       "ayante",
       "sorfon"
+    ],
+    "npcIds": [
+      "diomedes"
+    ],
+    "questIds": [
+      "gilmore-pact"
     ]
   },
   {
     "id": "s2_01",
     "date": "2026-03-11",
     "session": 2,
+    "campaignDay": 29,
+    "igDate": "29 Horisal 867",
     "igLabel": "Day 29 · Emon",
+    "type": "encounter",
     "title": "Screams from Greyskull Keep",
     "summary": "Sorfon and Ayante meet in a small plaza near the locked Keep as screams erupt from inside. Ereldra lingers behind. Mortis is already within, following the Raven Queen's golden thread.",
+    "locationId": "emon",
     "xp": 41.9,
     "yp": 39.3,
     "characterIds": [
@@ -54,41 +89,71 @@
       "ayante",
       "ereldra",
       "mortis"
+    ],
+    "npcIds": [
+      "raven-queen"
+    ],
+    "questIds": [
+      "raven-queen"
     ]
   },
   {
     "id": "s2_02",
     "date": "2026-03-11",
     "session": 2,
+    "campaignDay": 29,
+    "igDate": "29 Horisal 867",
     "igLabel": "Day 29 · Greyskull Keep, Emon",
+    "type": "discovery",
     "title": "The Book of Baba Yaga",
     "summary": "Slipping away from the others, Mortis finds a heavy tome pinned to a hallway shelf by an axe. He pries it open and discovers it belongs to Baba Yaga — grandmother of all witches. It snaps shut before he finishes, and he cannot reopen it.",
+    "locationId": "greyskull-keep",
     "xp": 41.9,
     "yp": 39.3,
     "characterIds": [
       "mortis"
+    ],
+    "npcIds": [
+      "baba-yaga"
+    ],
+    "questIds": [
+      "witchs-book"
     ]
   },
   {
     "id": "s2_03",
     "date": "2026-03-11",
     "session": 2,
+    "campaignDay": 29,
+    "igDate": "29 Horisal 867",
     "igLabel": "Day 29 · Greyskull Keep, Emon",
+    "type": "vision",
     "title": "Sarenrae's Anger",
     "summary": "Sorfon prays in the Keep's chapel and contacts Sarenrae directly. The goddess is angered by his lifelong devotion to Pelor alone, but gives a cryptic clue: 'The temple is just a temple; follow YOUR light.'",
+    "locationId": "greyskull-keep",
     "xp": 41.9,
     "yp": 39.3,
     "characterIds": [
       "sorfon"
+    ],
+    "npcIds": [
+      "sarenrae"
+    ],
+    "questIds": [
+      "temple-sarenrae"
     ]
   },
   {
     "id": "s2_04",
     "date": "2026-03-11",
     "session": 2,
+    "campaignDay": 29,
+    "igDate": "29 Horisal 867",
     "igLabel": "Day 29 · Greyskull Keep, Emon",
+    "type": "encounter",
     "title": "Allura Vysoren Intervenes",
     "summary": "The archmage Allura Vysoren arrives to investigate the disturbance. She freezes Mortis, revealing him as the apparent ghost, then casts a bind spell linking him to Sorfon's armor. The party is named Mortis's wardens and charged with a future mission to repair the damages caused.",
+    "locationId": "greyskull-keep",
     "xp": 41.9,
     "yp": 39.3,
     "characterIds": [
@@ -96,15 +161,25 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "allura"
+    ],
+    "questIds": [
+      "greyskull-debt"
     ]
   },
   {
     "id": "s2_05",
     "date": "2026-03-11",
     "session": 2,
+    "campaignDay": 29,
+    "igDate": "29 Horisal 867",
     "igLabel": "Day 29 · Greyskull Keep, Emon",
+    "type": "downtime",
     "title": "Long Rest at the Keep",
     "summary": "The party settles in for a long rest at Greyskull Keep. Allura confirms that Pike Trickfoot is in Issylra. Two hours remain before Mortis's bind spell expires.",
+    "locationId": "greyskull-keep",
     "xp": 41.9,
     "yp": 39.3,
     "characterIds": [
@@ -112,28 +187,50 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "allura",
+      "pike"
+    ],
+    "questIds": [
+      "greyskull-debt",
+      "temple-sarenrae"
     ]
   },
   {
     "id": "s8_01",
     "date": "2026-06-25",
     "session": 8,
+    "campaignDay": 32,
+    "igDate": "32 Horisal 867",
     "igLabel": "Day 32 · Kraghammer",
+    "type": "quest",
     "title": "The Vigil for Cassandra",
     "summary": "The dragon driven off, Cassandra de Rolo lies fallen in the ruined palace. Mortis reaches for her departing spirit before it slips beyond reach.",
+    "locationId": "kraghammer",
     "xp": 45.6,
     "yp": 33.4,
     "characterIds": [
       "mortis"
+    ],
+    "npcIds": [
+      "cassandra"
+    ],
+    "questIds": [
+      "cassandra"
     ]
   },
   {
     "id": "s8_02",
     "date": "2026-06-25",
     "session": 8,
+    "campaignDay": 32,
+    "igDate": "32 Horisal 867",
     "igLabel": "Day 32 · Kraghammer",
+    "type": "quest",
     "title": "Returning the Barûk-Kazad",
     "summary": "The party restores the legendary dwarven axe to Kraghammer and escorts Cassandra's body from the palace. Both bounties are claimed — 4,800 gp — and Sorfon is named Emissary of Kraghammer.",
+    "locationId": "kraghammer",
     "xp": 45.6,
     "yp": 33.4,
     "characterIds": [
@@ -141,13 +238,23 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "cassandra"
+    ],
+    "questIds": [
+      "baruk-kazad",
+      "cassandra"
     ]
   },
   {
     "id": "s8_03",
     "date": "2026-06-26",
     "session": 8,
+    "campaignDay": 33,
+    "igDate": "33 Horisal 867",
     "igLabel": "Day 33 · The road west",
+    "type": "conversation",
     "title": "Percy's Word",
     "summary": "Through the carriage's communicator, Percy confirms the soul has roughly ten days in limbo — and that a true resurrection is far harder than the party had hoped.",
     "xp": 45.6,
@@ -157,42 +264,73 @@
       "mortis",
       "ereldra",
       "ayante"
+    ],
+    "npcIds": [
+      "percy",
+      "cassandra"
+    ],
+    "questIds": [
+      "cassandra"
     ]
   },
   {
     "id": "s8_04",
     "date": "2026-06-27",
     "session": 8,
+    "campaignDay": 34,
+    "igDate": "34 Horisal 867",
     "igLabel": "Day 34 · The crossing",
+    "type": "vision",
     "title": "The Patron in the Hoard",
     "summary": "Over the Ozmit Sea, the ancient red dragon Ashardalon reaches Ereldra from atop a vast hoard — claiming her as patron and demanding to know why they strayed from Whitestone.",
+    "locationId": "ozmit-sea",
     "xp": 37.6,
     "yp": 29.8,
     "characterIds": [
       "ereldra"
+    ],
+    "npcIds": [
+      "ashardalon"
+    ],
+    "questIds": [
+      "ashardalon"
     ]
   },
   {
     "id": "s8_05",
     "date": "2026-06-27",
     "session": 8,
+    "campaignDay": 34,
+    "igDate": "34 Horisal 867",
     "igLabel": "Day 34 · The crossing",
+    "type": "vision",
     "title": "Pelor's Charge",
     "summary": "Pelor speaks to Sorfon: bear the sun-god's incense from the Temple of Pelor to the Temple of Sarenrae, protect the surviving de Rolos — and first put Ayante to the test.",
+    "locationId": "ozmit-sea",
     "xp": 37.6,
     "yp": 29.8,
     "characterIds": [
       "sorfon",
       "ayante"
+    ],
+    "npcIds": [
+      "pelor"
+    ],
+    "questIds": [
+      "pelor-charge"
     ]
   },
   {
     "id": "s8_06",
     "date": "2026-06-28",
     "session": 8,
+    "campaignDay": 35,
+    "igDate": "35 Horisal 867",
     "igLabel": "Day 35 · Vasselheim",
+    "type": "travel",
     "title": "The Gates of Vasselheim",
     "summary": "Magic items surrendered to the city guard, the party passes the walls — racing to revive Cassandra before her soul moves on.",
+    "locationId": "vasselheim",
     "xp": 30.4,
     "yp": 26.7,
     "characterIds": [
@@ -200,107 +338,188 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "cassandra"
+    ],
+    "questIds": [
+      "cassandra"
     ]
   },
   {
     "id": "s10_01",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · Chapel of Pelor, High Pass",
+    "type": "quest",
     "title": "The Censer of Pelor",
     "summary": "In Pelor's chapel the custodian finally hands over the sealed silver urn of incense. It must now be carried some 7 km across Vasselheim to the Temple of Sarenrae. Sorfon and Ayante swear to guard the chapel's sacred texts and take up pilgrim rights.",
-    "xp": 30.0,
+    "locationId": "chapel-of-pelor",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "sorfon",
       "ayante"
+    ],
+    "npcIds": [
+      "marco"
+    ],
+    "questIds": [
+      "pelor-charge"
+    ],
+    "relatedEventIds": [
+      "s8_05"
     ]
   },
   {
     "id": "s10_02",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The crypt, Low Pass",
+    "type": "discovery",
     "title": "Caval's Grave",
     "summary": "Down in the crypt, Ereldra reads the inscription over a grave — 'Here lies Caval' — written in a shadar-kai dialect. Mortis tells her what he remembers of his betrayer, and the two agree to keep it between them.",
-    "xp": 30.0,
+    "locationId": "low-pass-crypt",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "caval"
+    ],
+    "questIds": [
+      "witchs-book"
     ]
   },
   {
     "id": "s10_03",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · High Pass, Vasselheim",
+    "type": "decision",
     "title": "The Fate of the Witch's Book",
     "summary": "Above ground the party finally argues out what to do with Baba Yaga's book — bound in human skin, clasped with teeth. Burning it would only return it to the witch, so it is stowed in the bag of holding; Mortis vows to warn the others before ever opening it.",
-    "xp": 30.0,
+    "locationId": "high-pass",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "sorfon",
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "baba-yaga"
+    ],
+    "questIds": [
+      "witchs-book"
+    ],
+    "relatedEventIds": [
+      "s2_02"
     ]
   },
   {
     "id": "s10_04",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The main avenue, Vasselheim",
+    "type": "combat",
     "title": "The Imp at Ubu's Feet",
     "summary": "See Invisibility reveals an imp riding at the feet of Ubu, their oblivious Bahamut guard — a familiar spying on the party. Under threat it names its master: La Toma, the Slayer's Take, who hunt Mortis. The party kills it, though a familiar can always be re-summoned.",
-    "xp": 30.0,
+    "locationId": "main-avenue",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "sorfon",
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "ubu",
+      "la-toma"
+    ],
+    "questIds": [
+      "hunted"
     ]
   },
   {
     "id": "s10_05",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The Congress, central path",
+    "type": "encounter",
     "title": "The Archon of Bahamut",
     "summary": "The white-robed man from the crossroads is revealed as the Archon of Bahamut — bald and tall in silver and pale blue, the most powerful man in the city this cycle. Bahamut's faith governs Vasselheim, and his eyes are now on the party.",
-    "xp": 30.0,
+    "locationId": "the-congress",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "sorfon",
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "bahamut"
+    ],
+    "questIds": [
+      "bahamut-meeting"
     ]
   },
   {
     "id": "s10_06",
     "date": "2026-07-01",
     "session": 10,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The trader's stall",
+    "type": "discovery",
     "title": "The Raven Queen's Thread",
     "summary": "At a deep gnome trader's stall a golden thread — the Raven Queen's mark — singles out a single scroll: Speak with Dead, the spell Mortis has hunted since Kraghammer. The session ends mid-purchase, a dead imp still at their feet.",
-    "xp": 30.0,
+    "locationId": "traders-stall",
+    "xp": 30,
     "yp": 26.3,
     "characterIds": [
       "sorfon",
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "raven-queen",
+      "gnome-trader"
+    ],
+    "questIds": [
+      "raven-queen"
+    ],
+    "relatedEventIds": [
+      "s2_01"
     ]
   },
   {
     "id": "s11_01",
     "date": "2026-08-23",
     "session": 11,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The trader's stall",
+    "type": "downtime",
     "title": "The Deck of Illusions",
     "summary": "The party finishes its business at the deep gnome's stall and draws from a Deck of Illusions — reusable cards of pure illusion, not the deadly Deck of Many Things. With the shopping done they take Cassandra up toward the High Pass.",
+    "locationId": "traders-stall",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
@@ -308,15 +527,26 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "gnome-trader",
+      "cassandra"
+    ],
+    "questIds": [
+      "cassandra"
     ]
   },
   {
     "id": "s11_02",
     "date": "2026-08-23",
     "session": 11,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The main avenue, Vasselheim",
+    "type": "decision",
     "title": "The Bounty on Locus",
     "summary": "La Toma seizes a white-haired dampir out of the crowd. Rather than let him be killed, Sorfon pays the 200 gp bounty to Hungar (?), the bear-cloaked orc hunter, and claims Locus for himself — meaning to redeem him. The contract only truly lifts once La Toma's leader, Ocisa (?), is dealt with.",
+    "locationId": "main-avenue",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
@@ -324,15 +554,29 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "la-toma",
+      "hungar",
+      "locus",
+      "ocisa"
+    ],
+    "questIds": [
+      "locus",
+      "hunted"
     ]
   },
   {
     "id": "s11_03",
     "date": "2026-08-23",
     "session": 11,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · Chapel of Pelor, High Pass",
+    "type": "downtime",
     "title": "Cassandra Laid in Pelor's Chapel",
     "summary": "Marco, the lone custodian, grants the party the pilgrim rites and Cassandra's body is laid out on the third floor. Holy water splashed on Ereldra burns her. Sorfon swears again to guard Pelor's sacred texts while they lodge in the chapel.",
+    "locationId": "chapel-of-pelor",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
@@ -340,15 +584,27 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "marco",
+      "cassandra"
+    ],
+    "questIds": [
+      "cassandra",
+      "pelor-charge"
     ]
   },
   {
     "id": "s11_04",
     "date": "2026-08-23",
     "session": 11,
+    "campaignDay": 38,
+    "igDate": "38 Horisal 867",
     "igLabel": "Day 38 · The chapel, that night",
+    "type": "revelation",
     "title": "What the Witch's Book Says of Locus",
     "summary": "Baba Yaga's book gives up Locus's history: he is the last living subject of a Strahd and Baba Yaga project to breed vampire monster-hunters, and he is bound by a Geas — compelled, and hurt if he acts against it, as when he tries to speak of the book.",
+    "locationId": "chapel-of-pelor",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
@@ -356,92 +612,203 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "baba-yaga",
+      "locus",
+      "strahd"
+    ],
+    "questIds": [
+      "locus"
+    ],
+    "relatedEventIds": [
+      "s10_03",
+      "s11_02"
     ]
   },
   {
     "id": "s11_05",
     "date": "2026-08-24",
     "session": 11,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The palace shrine of all gods",
+    "type": "vision",
     "title": "The Shadar-kai's Answer",
     "summary": "In the small hours Mortis prays to the Raven Queen at the shrine of all gods. Her hooded shadar-kai answer: Pike Trickfoot is beneath the Temple of Sarenrae, and can drive the diamond through Cassandra's chest as a catalyst to call her soul back. About six days of limbo remain.",
+    "locationId": "palace-shrine",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
       "mortis"
+    ],
+    "npcIds": [
+      "raven-queen",
+      "shadar-kai",
+      "pike",
+      "cassandra"
+    ],
+    "questIds": [
+      "raven-queen",
+      "cassandra"
+    ],
+    "relatedEventIds": [
+      "s2_05"
     ]
   },
   {
     "id": "s11_06",
     "date": "2026-08-24",
     "session": 11,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The palace gate",
+    "type": "revelation",
     "title": "Bahamut at the Palace Gate",
     "summary": "At about four in the morning the white-robed Archon reveals himself as Bahamut, the Platinum Dragon. Haftifaflmorhen is no monster but a victim — maddened by Torog (?) and made to devour his best friend. Bahamut refuses to take the Baxcazhak — left under guard in Kraghammer, yet only a summons away through Ereldra's pact — and counsels the party to keep its location secret; Ereldra covers her cursed eye at his request.",
+    "locationId": "palace-gate",
     "xp": 29.6,
     "yp": 25.9,
     "characterIds": [
       "sorfon",
       "ereldra"
+    ],
+    "npcIds": [
+      "bahamut",
+      "haftifaflmorhen",
+      "torog"
+    ],
+    "questIds": [
+      "bahamut-meeting",
+      "corrupted-dragon"
+    ],
+    "relatedEventIds": [
+      "s10_05",
+      "s8_02"
     ]
   },
   {
     "id": "s12_01",
     "date": "2026-08-27",
     "session": 12,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The inn, the small hours",
+    "type": "encounter",
     "title": "Locus Comes Down from the Ceiling",
     "summary": "Mortis finds Locus clinging to the ceiling mid-feed and coaxes him down. The dampir keeps to animals and shuns people, feeding only every few weeks — the surest sign that something human is left in him to redeem.",
+    "locationId": "the-inn",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
       "mortis"
+    ],
+    "npcIds": [
+      "locus"
+    ],
+    "questIds": [
+      "locus"
+    ],
+    "relatedEventIds": [
+      "s11_02"
     ]
   },
   {
     "id": "s12_02",
     "date": "2026-08-27",
     "session": 12,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The inn, the small hours",
+    "type": "vision",
     "title": "The Everlight's Charge",
     "summary": "Sorfon wakes with his Everlight talisman burning against his chest. A holy-water purification carries him to Sarenrae, who tells him every soul deserves redemption and asks him to get Locus out of the city and away from La Toma. She points him toward an old ally, and toward the links Ereldra keeps hidden.",
+    "locationId": "the-inn",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
       "sorfon"
+    ],
+    "npcIds": [
+      "sarenrae",
+      "locus",
+      "la-toma"
+    ],
+    "questIds": [
+      "locus",
+      "hunted"
+    ],
+    "relatedEventIds": [
+      "s2_03"
     ]
   },
   {
     "id": "s12_03",
     "date": "2026-08-27",
     "session": 12,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The Shadowfell",
+    "type": "planar",
     "title": "Mortis Dies to Reach the Raven Queen",
     "summary": "Mortis dies by his own hand to cross into the Shadowfell and stand before his matron. The Raven Queen — his lover once, when she was mortal and he was Morgas — tells him Ravenloft and Barovia were torn out of her realm by the vampire Strahd, that Locus was bred to be Strahd's hound, and that her champion Vax'ildan can one day guide the party across. Then she sends him back.",
+    "locationId": "shadowfell",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
       "mortis"
+    ],
+    "npcIds": [
+      "raven-queen",
+      "strahd",
+      "locus",
+      "vaxildan"
+    ],
+    "questIds": [
+      "shadowfell-audience",
+      "raven-queen",
+      "strahd"
+    ],
+    "relatedEventIds": [
+      "s11_04"
     ]
   },
   {
     "id": "s12_04",
     "date": "2026-08-27",
     "session": 12,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · Vasselheim, before dawn",
+    "type": "vision",
     "title": "Pelor Names Torog",
     "summary": "Pelor rebukes Sorfon for saving an undead, then answers him: the last and most dangerous Betrayer God he cast down was Torog, the Crawling King, pierced with lances of sunlight and sealed in the Far Realm. From that prison Torog corrupted Haftifaflmorhen. Saving the dragon or killing him ends the same — his mind is gone, so grant him rest.",
+    "locationId": "vasselheim",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
       "sorfon"
+    ],
+    "npcIds": [
+      "pelor",
+      "torog",
+      "haftifaflmorhen"
+    ],
+    "questIds": [
+      "corrupted-dragon"
+    ],
+    "relatedEventIds": [
+      "s11_06"
     ]
   },
   {
     "id": "s12_05",
     "date": "2026-08-27",
     "session": 12,
+    "campaignDay": 39,
+    "igDate": "39 Horisal 867",
     "igLabel": "Day 39 · The party's council",
+    "type": "decision",
     "title": "The Council on the Axe",
     "summary": "With both gods' answers in hand the party decides: keep the Baxcazhak, hand it to no dragon, and set a trap for Haftifaflmorhen once they are strong enough to put him down. Ereldra admits outright that her patron Ashardalon's plan is genocide, and Mortis recalls an old nightmare in which Torog offered to free him and take Ashardalon's place at her shoulder.",
     "xp": 29.2,
@@ -451,15 +818,32 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "haftifaflmorhen",
+      "ashardalon",
+      "torog"
+    ],
+    "questIds": [
+      "corrupted-dragon",
+      "ashardalon"
+    ],
+    "relatedEventIds": [
+      "s12_04",
+      "s8_04"
     ]
   },
   {
     "id": "s12_06",
     "date": "2026-08-28",
     "session": 12,
+    "campaignDay": 40,
+    "igDate": "40 Horisal 867",
     "igLabel": "Day 40 · Tyr's forge, High Pass",
+    "type": "quest",
     "title": "The Forge of Tyr",
     "summary": "The commissions are ready. Tyr gives Ayante the Helm of the Wrathbringer (?) for free — it makes foes fear him, so long as his head stays on his shoulders — and hands Sorfon plate reforged from his old chainmail, stamped with the Dwendalian owl-eyes. A one-eyed soldier's spirit, Aldis (?), is caught in the metal and can be summoned as an ally each fight; the armor once belonged to Gerard Cousland (?), likely Sorfon's kin.",
+    "locationId": "tyrs-forge",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
@@ -467,15 +851,27 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "tyr",
+      "aldis",
+      "gerard-cousland"
+    ],
+    "questIds": [
+      "tyr-forge"
     ]
   },
   {
     "id": "s12_07",
     "date": "2026-08-28",
     "session": 12,
+    "campaignDay": 40,
+    "igDate": "40 Horisal 867",
     "igLabel": "Day 40 · Chapel of Pelor, High Pass",
+    "type": "travel",
     "title": "Cassandra Carried Out",
     "summary": "Pelor's custodian gives Cassandra the last sacraments, in case the resurrection fails, and the party lifts her body to carry it to Pike. Locus cannot set foot in Pelor's temple and waits outside. The route is set — the post office, then supplies, then the Temple of Sarenrae — with about six days of limbo left.",
+    "locationId": "chapel-of-pelor",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [
@@ -483,6 +879,19 @@
       "ayante",
       "mortis",
       "ereldra"
+    ],
+    "npcIds": [
+      "marco",
+      "cassandra",
+      "locus",
+      "pike"
+    ],
+    "questIds": [
+      "cassandra",
+      "pelor-charge"
+    ],
+    "relatedEventIds": [
+      "s11_03"
     ]
   }
 ]

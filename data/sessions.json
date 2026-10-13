@@ -1,6 +1,8 @@
 {
   "1": {
     "dateLabel": "Recorded 25 Feb 2026 · A Pact Beneath the Sun",
+    "title": "A Pact Beneath the Sun",
+    "playedOn": "2026-02-25",
     "startedHere": "Emon, the city of wide stairs — Ayante and his master Diomedes arrive in Tal'Dorei by skyship and take in the city.",
     "endedHere": "Emon, just past noon — Ayante and Sorfon seal a pact hand-to-hand beneath the sun; Diomedes departs for Stilben and the two set out together.",
     "ig": {
@@ -15,6 +17,7 @@
     "activePlots": [
       {
         "name": "Plot A — Sorfon's Search",
+        "questId": "temple-sarenrae",
         "qt": "Sorfon, a Dwendalian knight and devotee of Pelor, has come to Tal'Dorei hunting an ancient temple. His mother is a priestess of Sarenrae's temple, where he was raised. Ayante, a fellow Pelor worshipper from Ilión, judged him worthy and swore to join his cause.",
         "npcs": [
           {
@@ -44,6 +47,7 @@
       },
       {
         "name": "Plot B — Ayante's Aristeia",
+        "questId": "aristeia",
         "qt": "Ayante of Ilión was sent abroad with his master to help Ilión reach distant peoples, and to find his own aristeia — the great deed his city will remember. Everything he witnesses is to be written into a codex and delivered to Ilión.",
         "npcs": [
           {
@@ -76,6 +80,7 @@
     "completedPlots": [
       {
         "name": "The Meeting at Gilmore's",
+        "questId": "gilmore-pact",
         "closed": "Closed this session",
         "qt": "In Emon's academic district Ayante found Gilmore's shop, wreathed in magical fireworks. There the mage conjured floating hands to serve water, and Ayante overheard Sorfon asking after an ancient temple. Insults gave way to respect once Ayante learned Sorfon served Pelor, and after finding Diomedes the two sealed their pact.",
         "npcs": [
@@ -110,6 +115,8 @@
   },
   "2": {
     "dateLabel": "Recorded 11 Mar 2026 · Ghosts of Greyskull Keep",
+    "title": "Ghosts of Greyskull Keep",
+    "playedOn": "2026-03-11",
     "startedHere": "Emon, a small plaza near Greyskull Keep — Sorfon and Ayante outside as screams erupt from within the locked Keep; Mortis already inside following the Raven Queen's golden thread.",
     "endedHere": "Greyskull Keep, Emon — the party settled in for a long rest; two hours remain before Mortis's bind spell expires.",
     "ig": {
@@ -126,6 +133,7 @@
     "activePlots": [
       {
         "name": "Plot A — Finding Pike / The Temple of Sarenrae",
+        "questId": "temple-sarenrae",
         "qt": "Sorfon's mother is devout to Sarenrae and trained at an ancient temple whose location is now lost. Pike Trickfoot is the only one who knows where it is. This session, Allura confirmed that Pike is currently in Issylra. Sorfon also contacted Sarenrae directly in the Keep's chapel — she is angered by his lifelong neglect of her, but offered a cryptic clue: 'The temple is just a temple; follow YOUR light.'",
         "npcs": [
           {
@@ -162,6 +170,7 @@
       },
       {
         "name": "Plot B — The Raven Queen's Call",
+        "questId": "raven-queen",
         "qt": "In a vision, the Raven Queen appeared to Mortis alongside the illusory image of a Vox Machina member currently in another plane — an emissary of the Raven Queen, connected by the golden thread. Before the vision ended, the Raven Queen warned: 'There is death in Kraghammer.' The golden thread led Mortis to Greyskull Keep.",
         "npcs": [
           {
@@ -185,6 +194,7 @@
       },
       {
         "name": "Plot C — The Book of Baba Yaga",
+        "questId": "witchs-book",
         "qt": "While the party ate in the kitchen, Mortis slipped into the hallway and found a heavy tome pinned to a shelf by an axe. He pried it open and discovered it belongs to Baba Yaga — grandmother of all witches and the fey world's equivalent of the devil. The book deals in her curses. It snapped shut before he finished reading, and he cannot reopen it.",
         "npcs": [
           {
@@ -204,6 +214,7 @@
       },
       {
         "name": "Plot D — Debt to Allura / The Greyskull Mission",
+        "questId": "greyskull-debt",
         "qt": "Allura Vysoren arrived to investigate the disturbance at Greyskull Keep, froze Mortis (revealing him as the apparent ghost), and proposed: the party stays for a day then undertakes a mission to repair the damages caused. The party is now Mortis's wardens.",
         "npcs": [
           {
@@ -228,6 +239,8 @@
   },
   "8": {
     "dateLabel": "Recorded 25 Jun 2026 · The Vigil for Cassandra",
+    "title": "The Vigil for Cassandra",
+    "playedOn": "2026-06-25",
     "startedHere": "Kraghammer, in the ruins of the dwarven palace — moments after the dragon was driven off and Cassandra de Rolo fell. Mortis reaches out to her departing spirit.",
     "endedHere": "At the gates of Vasselheim after the airship crossing — magic items surrendered to the guard, the party racing to revive Cassandra before her soul is lost.",
     "ig": {
@@ -242,6 +255,7 @@
     "activePlots": [
       {
         "name": "Bringing Cassandra Back",
+        "questId": "cassandra",
         "qt": "Cassandra de Rolo died to the ancient black dragon Haftifaflmorhen at Kraghammer, and her soul lingers in limbo for roughly ten days. The party must find someone able to cast a resurrection before the window closes. Mortis now knows the spell Speak with Dead exists but needs a teacher — his patron the Raven Queen, and the cleric Pike, are the most promising paths.",
         "npcs": [
           {
@@ -273,6 +287,7 @@
       },
       {
         "name": "Pelor's Charge",
+        "questId": "pelor-charge",
         "qt": "Pelor, god of the sun, spoke to Sorfon and set a sacred task: carry Pelor's incense from the Temple of Pelor in Vasselheim to the Temple of Sarenrae. Sorfon is also charged with protecting the surviving de Rolo family. Separately, Pelor asked Sorfon to test Ayante's worthiness before Ayante can reach the divine through him.",
         "npcs": [
           {
@@ -303,6 +318,7 @@
       },
       {
         "name": "The Patron in the Hoard",
+        "questId": "ashardalon",
         "qt": "During the airship crossing, the ancient red dragon Ashardalon — seated on a vast hoard — reached Ereldra through a vision, claiming to be her patron and demanding to know why the party had strayed from Whitestone. She professed loyalty, claiming she is earning Percy and Cassandra's trust to serve the patron's true objective, which is tied to the de Rolo family. A hidden agenda now runs beneath the rescue.",
         "npcs": [
           {
@@ -336,6 +352,7 @@
     "completedPlots": [
       {
         "name": "Delivering the Barûk-Kazad",
+        "questId": "baruk-kazad",
         "closed": "Closed this session",
         "qt": "The party returned the legendary dwarven axe to Kraghammer and escorted Cassandra's body from the ruined palace. Both bounties — the axe to Kraghammer and Cassandra to Whitestone — were claimed for 4,800 gp total.",
         "npcs": [
@@ -369,6 +386,8 @@
   },
   "10": {
     "dateLabel": "Recorded 24 Jul 2026 · Watched in Vasselheim",
+    "title": "Watched in Vasselheim",
+    "playedOn": "2026-07-24",
     "startedHere": "Pelor's chapel on the High Pass — the custodian hands over the sealed urn of incense while Mortis and Ereldra are still down in the crypt, standing over Caval's grave.",
     "endedHere": "A deep gnome trader's stall off the main avenue — a dead imp spy at their feet, the session ending mid-purchase as the Raven Queen's thread marks a Speak with Dead scroll.",
     "ig": {
@@ -385,6 +404,7 @@
     "activePlots": [
       {
         "name": "Plot A — Bringing Cassandra Back",
+        "questId": "cassandra",
         "qt": "Cassandra still has about seven days of limbo and Mortis holds the diamond. At a trader's stall a golden thread — the Raven Queen's mark — singled out a scroll of Speak with Dead, the spell Mortis has hunted since Kraghammer. A cleric who can actually cast the resurrection, Pike, is still missing.",
         "npcs": [
           {
@@ -415,6 +435,7 @@
       },
       {
         "name": "Plot B — Pelor's Charge",
+        "questId": "pelor-charge",
         "qt": "The custodian handed over the incense at last. It must now be carried about 7 km across the city to the Temple of Sarenrae. Sorfon and Ayante swore to protect Pelor's sacred texts and hold pilgrim rights; the chapel is now their sworn house.",
         "npcs": [
           {
@@ -444,6 +465,7 @@
       },
       {
         "name": "Plot C — Hunted and Watched",
+        "questId": "hunted",
         "qt": "An invisible imp was riding at Ubu's feet, spying on the party. Smelling of brandy and sulfur, it broke under intimidation: its master is La Toma — the Slayer's Take — the monster-hunter guild quartered in the war district pavilion, and they are hunting Mortis. The party killed it, but a familiar can always be re-summoned. Separately, the white-robed man from the crossroads turned out to be the Archon of Bahamut.",
         "npcs": [
           {
@@ -477,6 +499,7 @@
     "completedPlots": [
       {
         "name": "Caval's Grave and the Witch's Book",
+        "questId": "witchs-book",
         "closed": "Closed this session",
         "qt": "In the crypt Ereldra read the inscription over the grave — 'Here lies Caval' — and Mortis told her what he remembered of the betrayal. They agreed to keep it between them. Above ground the party finally argued out Baba Yaga's book and settled what to do with it.",
         "npcs": [
@@ -509,6 +532,8 @@
   },
   "11": {
     "dateLabel": "Recorded 23 Aug 2026 · The Redeemed Dampir",
+    "title": "The Redeemed Dampir",
+    "playedOn": "2026-08-23",
     "startedHere": "The deep gnome trader's stall off the main avenue — the last of the shopping done, a Deck of Illusions drawn, and Cassandra carried back up toward the High Pass.",
     "endedHere": "The palace gate at about four in the morning — Sorfon and Ereldra walk away from the Platinum Dragon, who would not take the axe off their hands.",
     "ig": {
@@ -527,6 +552,7 @@
     "activePlots": [
       {
         "name": "Plot A — Bringing Cassandra Back",
+        "questId": "cassandra",
         "qt": "Mortis prayed to the Raven Queen at the palace shrine, and her shadar-kai answered: Pike is beneath the Temple of Sarenrae and can use the diamond as a catalyst to restore Cassandra's soul. About six days of limbo remain.",
         "npcs": [
           {
@@ -555,6 +581,7 @@
       },
       {
         "name": "Plot B — Pelor's Charge",
+        "questId": "pelor-charge",
         "qt": "With the pilgrim rites done, the party left Cassandra's body in Pelor's chapel. Holy water splashed on Ereldra burned her. Sorfon still owes Pelor the incense-run to the Temple of Sarenrae, and must collect his armor from Tyr.",
         "npcs": [
           {
@@ -585,6 +612,7 @@
       },
       {
         "name": "Plot C — The Redeemed Dampir",
+        "questId": "locus",
         "qt": "La Toma caught a white-haired dampir named Locus in the crowd. Sorfon paid the 200 gp bounty to the orc Hungar (?) to claim him, meaning to redeem rather than kill him. Baba Yaga's book reveals Locus is the last living subject of a Strahd / Baba Yaga project to breed vampire monster-hunters, and that he is under a Geas.",
         "npcs": [
           {
@@ -616,6 +644,7 @@
       },
       {
         "name": "Plot D — The Axe and the Corrupted Dragon",
+        "questId": "corrupted-dragon",
         "qt": "Twice the ancient black dragon Haftifaflmorhen has appeared; the party learns why from Bahamut himself, met at the palace as the \"Archon of Bahamut\". Bahamut would not take the Baxcazhak (Barûk) off their hands — it stays under guard in Kraghammer, but Ereldra can summon it as her pact weapon, so the burden of it is still theirs and its whereabouts are told to no one.",
         "npcs": [
           {
@@ -647,6 +676,7 @@
     "completedPlots": [
       {
         "name": "The Meeting with Bahamut",
+        "questId": "bahamut-meeting",
         "closed": "Closed this session",
         "qt": "The white-robed man from the crossroads revealed himself as Bahamut, the Platinum Dragon. He explained that Haftifaflmorhen is a corrupted victim of Torog (?), refused to accept the Baxcazhak, and counselled the party to keep its location secret for now.",
         "npcs": [
@@ -680,6 +710,8 @@
   },
   "12": {
     "dateLabel": "Recorded 27 Aug 2026 · Councils Before the Hunt",
+    "title": "Councils Before the Hunt",
+    "playedOn": "2026-08-27",
     "startedHere": "The inn in the small hours — Locus clinging to the ceiling mid-feed, and Sorfon's Everlight talisman burning him awake.",
     "endedHere": "Pelor's chapel in the High Pass the next morning — Cassandra's body lifted out and shouldered for the road to Pike, with Locus waiting outside the door.",
     "ig": {
@@ -699,6 +731,7 @@
     "activePlots": [
       {
         "name": "Plot A — Bringing Cassandra Back",
+        "questId": "cassandra",
         "qt": "The core mission holds: about six days remain before the resurrection window closes. Pike waits beneath the Temple of Sarenrae, and the party has now taken Cassandra's body out of Pelor's chapel to carry her there, and then on to Whitestone.",
         "npcs": [
           {
@@ -729,6 +762,7 @@
       },
       {
         "name": "Plot B — Redeeming Locus",
+        "questId": "locus",
         "qt": "Sorfon performed a holy-water purification and reached Sarenrae, the Everlight, who told him every soul deserves redemption and asked him to help Locus escape the city and La Toma. Locus is the one success of Strahd and Baba Yaga's plan to breed dampir monster-hunters, bound by a Geas, and cannot be freed until Strahd is dealt with.",
         "npcs": [
           {
@@ -760,6 +794,7 @@
       },
       {
         "name": "Plot C — The Axe, the Dragon and Torog",
+        "questId": "corrupted-dragon",
         "qt": "Pelor, the Dawnfather, answered Sorfon — after first rebuking him for saving an undead — and named Torog, the Crawling King, the last and most dangerous Betrayer God he cast down, the one who corrupted Haftifaflmorhen. The party resolved to keep the Baxcazhak (Barûk-Kazad), refuse Ashardalon, and set a trap to put the maddened dragon down when they are ready.",
         "npcs": [
           {
@@ -793,6 +828,7 @@
     "completedPlots": [
       {
         "name": "The Forge of Tyr",
+        "questId": "tyr-forge",
         "closed": "Closed this session",
         "qt": "At Tyr's forge the party collected their commissions. Ayante received the Helm of the Wrathbringer (?) for free, and Sorfon new plate reforged from his chainmail, bearing the Dwendalian owl-eyes and able to summon a spirit warrior. The armor once belonged to a Cousland ancestor of Sorfon's.",
         "npcs": [
@@ -825,6 +861,7 @@
       },
       {
         "name": "The Raven Queen and Strahd",
+        "questId": "shadowfell-audience",
         "closed": "Closed this session",
         "qt": "Mortis died by his own hand to reach the Shadowfell and his matron, the Raven Queen. She revealed that Ravenloft and Barovia were torn from her realm by the vampire Strahd, that Locus is meant to be Strahd's hound, and that Vax'ildan can one day guide the party through the Shadowfell to Strahd.",
         "npcs": [

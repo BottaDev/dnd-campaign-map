@@ -1,0 +1,295 @@
+[
+  {
+    "id": "diomedes",
+    "name": "Diomedes",
+    "category": "person",
+    "race": "human",
+    "relations": [
+      { "id": "ayante", "label": "His student", "reverseLabel": "His master" }
+    ]
+  },
+  {
+    "id": "gilmore",
+    "name": "Gilmore",
+    "category": "person",
+    "race": "human"
+  },
+  {
+    "id": "sorfons-mother",
+    "name": "Sorfon's mother",
+    "category": "person",
+    "race": "human",
+    "factionIds": ["sarenraes-faithful"],
+    "relations": [
+      { "id": "sorfon", "label": "Her son", "reverseLabel": "His mother" }
+    ]
+  },
+  {
+    "id": "pike",
+    "name": "Pike Trickfoot",
+    "aliases": ["Pike"],
+    "category": "person",
+    "race": "gnome"
+  },
+  {
+    "id": "allura",
+    "name": "Allura Vysoren",
+    "aliases": ["Allura"],
+    "category": "person",
+    "race": "human",
+    "relations": [
+      { "id": "mortis", "label": "Bound by her spell", "reverseLabel": "Bound him and named the party his wardens" }
+    ]
+  },
+  {
+    "id": "vox-machina-emissary",
+    "name": "Unknown Vox Machina member",
+    "category": "person",
+    "relations": [
+      { "id": "raven-queen", "label": "Whose emissary they are", "reverseLabel": "Her emissary" }
+    ]
+  },
+  {
+    "id": "cassandra",
+    "name": "Cassandra de Rolo",
+    "aliases": ["Cassandra"],
+    "category": "person",
+    "race": "human",
+    "relations": [
+      { "id": "percy", "label": "Her brother", "reverseLabel": "His sister" }
+    ]
+  },
+  {
+    "id": "percy",
+    "name": "Percival 'Percy' de Rolo",
+    "aliases": ["Percy", "Percival de Rolo"],
+    "category": "person",
+    "race": "human"
+  },
+  {
+    "id": "high-priestess-pelor",
+    "name": "High Priestess of Pelor",
+    "category": "person"
+  },
+  {
+    "id": "warlock-founder",
+    "name": "An ancient warlock founder",
+    "category": "person"
+  },
+  {
+    "id": "iron-fist",
+    "name": "The Iron Fist of Kraghammer",
+    "category": "person",
+    "race": "dwarf"
+  },
+  {
+    "id": "dwarf-engineer",
+    "name": "A mechanical dwarf engineer",
+    "category": "person",
+    "race": "dwarf"
+  },
+  {
+    "id": "gnome-trader",
+    "name": "The gnome trader",
+    "category": "person",
+    "race": "deep gnome"
+  },
+  {
+    "id": "marco",
+    "name": "Marco",
+    "aliases": ["The custodian of Pelor's chapel"],
+    "category": "person",
+    "race": "human"
+  },
+  {
+    "id": "ubu",
+    "name": "Ubu",
+    "category": "person",
+    "race": "human",
+    "relations": [
+      { "id": "bahamut", "label": "Whose guard he is", "reverseLabel": "One of his guards" }
+    ]
+  },
+  {
+    "id": "caval",
+    "name": "Caval",
+    "category": "person",
+    "relations": [
+      { "id": "mortis", "label": "The one he betrayed", "reverseLabel": "His betrayer" }
+    ]
+  },
+  {
+    "id": "tyr",
+    "name": "Tyr the smith",
+    "aliases": ["Tyr, the master smith", "Tyr"],
+    "category": "person",
+    "race": "human"
+  },
+  {
+    "id": "locus",
+    "name": "Locus",
+    "category": "person",
+    "race": "dampir",
+    "relations": [
+      { "id": "sorfon", "label": "Paid his bounty to redeem him", "reverseLabel": "Claimed from La Toma's bounty" }
+    ]
+  },
+  {
+    "id": "hungar",
+    "name": "Hungar (?)",
+    "aliases": ["Hungar"],
+    "category": "person",
+    "race": "orc",
+    "factionIds": ["la-toma"]
+  },
+  {
+    "id": "ocisa",
+    "name": "Ocisa (?)",
+    "aliases": ["Ocisa"],
+    "category": "person",
+    "factionIds": ["la-toma"]
+  },
+  {
+    "id": "gerard-cousland",
+    "name": "Gerard Cousland (?)",
+    "aliases": ["Gerard Cousland"],
+    "category": "person",
+    "relations": [
+      { "id": "sorfon", "label": "Likely kin", "reverseLabel": "Likely kin" }
+    ]
+  },
+  {
+    "id": "vaxildan",
+    "name": "Vax'ildan",
+    "category": "person",
+    "relations": [
+      { "id": "raven-queen", "label": "The goddess he serves as champion", "reverseLabel": "Her champion" }
+    ]
+  },
+  {
+    "id": "strahd",
+    "name": "Strahd von Zarovich",
+    "aliases": ["Strahd"],
+    "category": "creature",
+    "race": "vampire",
+    "relations": [
+      { "id": "locus", "label": "Bred to be his hound", "reverseLabel": "Wants him as his hound" },
+      { "id": "raven-queen", "label": "Robbed of Ravenloft and Barovia", "reverseLabel": "Tore Ravenloft and Barovia from her realm" }
+    ]
+  },
+  {
+    "id": "aldis",
+    "name": "Aldis (?)",
+    "aliases": ["Aldis"],
+    "category": "creature",
+    "race": "spirit",
+    "relations": [
+      { "id": "sorfon", "label": "Bound in the plate he wears", "reverseLabel": "Spirit caught in his plate" }
+    ]
+  },
+  {
+    "id": "ashardalon",
+    "name": "Ashardalon",
+    "category": "creature",
+    "race": "red dragon",
+    "relations": [
+      { "id": "ereldra", "label": "His warlock", "reverseLabel": "Her patron" }
+    ]
+  },
+  {
+    "id": "haftifaflmorhen",
+    "name": "Haftifaflmorhen",
+    "category": "creature",
+    "race": "ancient black dragon"
+  },
+  {
+    "id": "pelor",
+    "name": "Pelor",
+    "aliases": ["Pelor, the Dawnfather"],
+    "category": "deity",
+    "race": "god",
+    "relations": [
+      { "id": "sorfon", "label": "His devotee", "reverseLabel": "His god" },
+      { "id": "ayante", "label": "His devotee", "reverseLabel": "His god" },
+      { "id": "torog", "label": "The Betrayer God he cast down", "reverseLabel": "Cast him down" }
+    ]
+  },
+  {
+    "id": "sarenrae",
+    "name": "Sarenrae",
+    "aliases": ["Sarenrae, the Everlight"],
+    "category": "deity",
+    "race": "goddess"
+  },
+  {
+    "id": "raven-queen",
+    "name": "The Raven Queen",
+    "category": "deity",
+    "race": "goddess",
+    "relations": [
+      { "id": "mortis", "label": "Her devotee; once her mortal lover", "reverseLabel": "His matron; once his mortal lover" }
+    ]
+  },
+  {
+    "id": "bahamut",
+    "name": "Bahamut, the Platinum Dragon",
+    "aliases": ["Bahamut", "The Archon of Bahamut"],
+    "category": "deity",
+    "race": "dragon god",
+    "relations": [
+      { "id": "cromulus", "label": "His old dragon companion", "reverseLabel": "His old companion" }
+    ]
+  },
+  {
+    "id": "cromulus",
+    "name": "Cromulus (?)",
+    "aliases": ["Cromulus"],
+    "category": "creature",
+    "race": "dragon"
+  },
+  {
+    "id": "torog",
+    "name": "Torog, the Crawling King",
+    "aliases": ["Torog (?)", "Torog"],
+    "category": "deity",
+    "race": "Betrayer God",
+    "relations": [
+      { "id": "haftifaflmorhen", "label": "The dragon he corrupted", "reverseLabel": "His corrupter" }
+    ]
+  },
+  {
+    "id": "baba-yaga",
+    "name": "Baba Yaga",
+    "category": "person"
+  },
+  {
+    "id": "sarenraes-faithful",
+    "name": "Sarenrae's faithful",
+    "category": "faction"
+  },
+  {
+    "id": "metrodidacts",
+    "name": "The metrodidacts",
+    "aliases": ["The metrodidacts of Ilión"],
+    "category": "faction"
+  },
+  {
+    "id": "la-toma",
+    "name": "La Toma (the Slayer's Take)",
+    "aliases": ["La Toma", "The Slayer's Take"],
+    "category": "faction"
+  },
+  {
+    "id": "shadar-kai",
+    "name": "The shadar-kai of the Raven Queen",
+    "category": "faction",
+    "relations": [
+      { "id": "raven-queen", "label": "The goddess they serve", "reverseLabel": "Her hooded faithful" }
+    ]
+  },
+  {
+    "id": "monster-jagers",
+    "name": "The Monster Jägers of the Dwendalian Empire",
+    "category": "faction"
+  }
+]
