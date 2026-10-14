@@ -12,8 +12,8 @@ The app has six sections. On desktop and tablet they are tabs in the top bar; on
 
 | Section | What it shows |
 |---|---|
-| **Chronicle** (home) | Every event, in in-world order, as a narrative timeline grouped by campaign day (or by session). Free-text search (in both languages, ignoring accents and case) plus filters for party member, NPC/deity/faction, quest, session, event type, place, in-world period (campaign days) and real-world play date — all combinable. Typing a search also lists matching people, quests, places and sessions. |
-| **Sessions** | The sessions played, in order (first or latest first), with gaps for sessions that were never written up. Each session page has the real date it was played, the in-world days it covered, where it started and ended, its events, the quests in play, the people and places involved, active effects and unresolved threads. |
+| **Chronicle** (home) | Every event as a narrative timeline grouped by campaign day (or by session), **latest first** by default (one tap switches to oldest first; inside a day the events keep their recorded order). Each card shows the event's type as an icon, colour and label. Free-text search (in both languages, ignoring accents and case) plus filters for party member, NPC/deity/faction, quest, session, event type, place, in-world period (campaign days) and real-world play date — all combinable. Typing a search also lists matching people, quests, places and sessions. |
+| **Sessions** | The sessions played, **oldest first** by default (or latest first), in numeric order with gaps for sessions that were never written up. Each session page has the real date it was played, the in-world days it covered, where it started and ended, its events, the quests in play, the people and places involved, active effects and unresolved threads. |
 | **Quests** | Every quest by status. A quest page shows where it stands now and *the story so far*: session by session, the events that advanced it and the session-log snapshot of the thread. |
 | **Characters** | The party and every NPC, deity and faction recorded in the session logs: relationships (both directions), factions/members, appearances, quests, places, and everything the session logs noted about them. |
 | **Places** | The places of the campaign as a tree (continent › city › district › site, plus other planes), with what happened in each. |
@@ -21,7 +21,7 @@ The app has six sections. On desktop and tablet they are tabs in the top bar; on
 
 Opening anything (an event, session, quest, person or place) shows its full page: beside the list on wide screens, full-screen with a **Back** button on phones. Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept. An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically. Characters and places that also exist in Critical Role's Exandria end with a folded **Lore of Exandria** section — a short, spoiler-free summary and a link to the source article (see [`lore.json`](#lorejson--lore-of-exandria)); our own story always comes first.
 
-Keyboard: `/` jumps to the search box, `Esc` closes the open page. The `☀`/`☾` button toggles light/dark (remembered), `?` reopens the guide (also shown on the first visit). **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
+Keyboard: `/` jumps to the search box, `Esc` closes the open page. `?` reopens the guide (also shown on the first visit; under **More** on a phone). The app has a single dark theme. The Chronicle and Sessions orders are remembered separately, but only once you change them — until then each opens on its default. **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
 
 Every page has a shareable URL (the language is a personal preference, never part of the link, so the same URL works for everyone), e.g. `#/chronicle/event/s8_04`, `#/sessions/session/12`, `#/quests/quest/cassandra`, `#/characters/character/locus`, `#/places/place/vasselheim`, `#/map/at/s11_06`.
 
@@ -46,8 +46,10 @@ npm run test:browser  # real-browser checks (run npm install once; drives the in
 - `tests/routes.test.js` — routes: order and revisits, independent and shared legs, breaks, incomplete data, filters that must not create connections, the real `routes.json` untouched.
 - `tests/markers.test.js` — one pin per exact coordinate, zoom-dependent clusters, no event lost, invalid coordinates, popups kept on screen.
 - `tests/i18n.test.js` — default language, persistence, every key used by `index.html` exists in both dictionaries, content translation and fallback, bilingual accent-insensitive search, localized dates, identical ids/relations in both languages.
+- `tests/order.test.js` — default orders (Chronicle latest first, Sessions oldest first), explicit choices kept per section, legacy preferences migrated, numeric session order with gaps, stable same-day order, undated events last, independent of language and filters.
+- `tests/design.test.js` — every event type has its own icon and a colour family with a token, every quest status an icon and a tone; one dark theme only (no light tokens, toggle or theme strings; an old preference is discarded; dark before the app boots).
 - `tests/lore.test.js` — Lore of Exandria: one, several or no references, invalid/unsafe URLs, new-tab `rel`, summaries with and without translation, facts, unsourced lore rejected, the real `lore.json` (sourced, https, bilingual, reviewed), and campaign data identical with and without lore.
-- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px; the lore section (collapsed by default, folds again on the next entry, opens the article in a new tab without `window.opener` — Fandom is stubbed, never contacted —, ES ↔ EN, Chronicle → entry → Back, tap targets and readability at 320/360/390/430 px, light theme). Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
+- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px; the lore section (collapsed by default, folds again on the next entry, opens the article in a new tab without `window.opener` — Fandom is stubbed, never contacted —, ES ↔ EN, Chronicle → entry → Back, tap targets and readability at 320/360/390/430 px); dark-only theme (an old light preference is removed, no light flash, map controls and panels dark); default orders and their toggles (kept per section, across reloads and languages, with filters); every event card with its type icon, label and family colour, title larger than metadata, compact height. Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
 
 `node_modules/` and `test-results/` are git-ignored; GitHub Pages never needs them.
 
@@ -138,7 +140,7 @@ Nothing requires an exact date: an event with no day inherits the day of its nei
 ```
 
 - Required: `id` (unique; convention `s<session>_<nn>`), `session`, `title`, `summary`. Everything else is optional.
-- `type` — one of `encounter`, `conversation`, `revelation`, `vision` (divine vision), `dream`, `decision`, `discovery`, `combat`, `quest` (quest milestone), `travel`, `planar` (another plane), `downtime` (rest & rites). Missing or unknown types show as a generic “Event”.
+- `type` — one of `encounter`, `conversation`, `revelation`, `vision` (divine vision), `dream`, `decision`, `discovery`, `combat`, `quest` (quest milestone), `travel`, `planar` (another plane), `downtime` (rest & rites). Each has its own icon and colour (see [Visual language](#visual-language-icons-colours-and-type)). Missing or unknown types show as a generic “Event”.
 - `xp` / `yp` — map position as a **percentage** of the map image (0–100). **Optional**: leave both out for events that have no place on the map (a dream, a vision, another plane). Such events appear normally in the chronicle and never create a pin.
 - `characterIds` are party members only; NPCs, deities and factions go in `npcIds`.
 - `relatedEventIds` — list a connection once (usually on the later event); it shows on both events.
@@ -299,6 +301,33 @@ Background on the **wider world** (Critical Role's Exandria), kept apart from wh
 4. Add the Spanish version under `lore` in `data/i18n/es-AR.json`, then run `npm test`.
 
 Current coverage (reviewed 2026-10-14, all from the Critical Role Wiki): places Tal'Dorei, Emon, Greyskull Keep, Gilmore's shop (*Gilmore's Glorious Goods*), Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the Shadowfell, the Far Realm; deities Pelor, Sarenrae, the Raven Queen, Bahamut, Torog; factions La Toma (*Slayer's Take*) and the shadar-kai; people Gilmore, Pike Trickfoot, Allura Vysoren, Cassandra and Percival de Rolo, Vax'ildan. Without a wiki article (left without lore on purpose): Strahd, Ashardalon, Baba Yaga, Ravenloft/Barovia, the Monster Jägers, Haftifaflmorhen, Cromulus, Ilión, Damali, and every DM-original NPC and place.
+
+## Visual language: icons, colours and type
+
+There is **one dark theme** (no light mode, no toggle): ink-brown surfaces, parchment text and gold for what you can press. The page is painted dark before any script runs (`color-scheme: dark`, `theme-color`, an inline style in `<head>`); an old `chronicle-theme` preference from earlier versions is ignored and deleted. All colours are CSS custom properties on `.cc-app` in `index.html` — use the tokens, never a raw colour in a component.
+
+**Kinds of event.** Every event type has one icon, one label and a colour *family*. The colour says which kind of moment it is, the icon says exactly which type, and the label is always written beside it — colour is never the only cue. Colour only tints the icon and the card's left edge; cards stay neutral so the title stays the strongest thing on them.
+
+| Family (token) | Colour | Types → icon |
+|---|---|---|
+| `conflict` (`--ev-conflict`) | terracotta | combat → crossed swords |
+| `social` (`--ev-social`) | blue | encounter → a figure and "!" · conversation → speech bubbles |
+| `arcane` (`--ev-arcane`) | violet | revelation → sparkles · planar (other plane) → a doorway holding a star |
+| `vision` (`--ev-vision`) | soft violet | vision (divine vision) → radiant eye · dream → moon and star |
+| `discovery` (`--ev-discovery`) | teal | discovery → compass |
+| `journey` (`--ev-journey`) | sage | travel (journey) → signpost · downtime (rest & rites) → campfire |
+| `turning` (`--ev-turning`) | amber | decision → scales · quest (quest milestone) → the quest flag |
+| `neutral` (`--ev-neutral`) | parchment grey | other / unknown type → plain lozenge |
+
+The family lives in `EVENT_TYPES` (`js/chronicle-model.js`, `ev.typeFamily`); the icons in `EVENT_ICON_SHAPES` (`index.html`, 24 px stroke paths in the same style as the navigation icons). **A new event type** needs: an entry in `EVENT_TYPES` with its `family` (reuse a family — add a new colour only for a genuinely new kind of moment), an icon in `EVENT_ICON_SHAPES`, and its label in both `locales/*.js` under `eventType`. `npm test` fails if a type has no icon, a family has no token, or two types share a drawing.
+
+**Quest status** uses its own tokens, always with an icon and the status text: in progress `--st-active` (gold, half-filled circle), completed `--st-done` (green, check), pending `--st-pending` (amber, hourglass), failed `--st-failed` (red, cross). Open session-log threads are ruled in the active colour, closed ones in the done colour.
+
+**Lore of Exandria** — background from Critical Role's world — is set apart from the campaign by a cool slate tone (`--lore`) on its heading, icon and source links.
+
+**Type.** *Cinzel* only for headings (brand, section titles, page titles, day headers); *EB Garamond* for everything you read — titles of cards and rows, summaries, prose; the system UI face for data and controls (dates, types, filters, buttons, navigation, status chips). No forced capitals or wide letter-spacing on small text; small text is never below 12.5 px.
+
+**Cards** read in three levels: ① kind — icon + type (+ the day or session only when the group header does not already say it), ② title and a two-line summary, ③ a quiet chevron. People, places and quests of an event are on its page, not on the card.
 
 ## The party-member filter
 

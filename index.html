@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#140f08">
+<meta name="color-scheme" content="dark">
 <title>Crónica de Exandria</title>
+<!-- One dark theme only: paint the page dark before any script or font loads (no light flash). -->
+<style>html,body{background:#0c0a06;color:#ddc89a;color-scheme:dark;}</style>
 <script src="./js/chronicle-model.js"></script>
 <script src="./js/chronicle-map.js"></script>
 <script src="./js/i18n.js"></script>
@@ -19,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  html,body{height:100%;margin:0;background:#0c0a06;}
+  html,body{height:100%;margin:0;background:#0c0a06;color-scheme:dark;}
   *{box-sizing:border-box;}
   ::selection{background:rgba(199,162,75,.35);}
   @keyframes chr-flicker{0%,100%{opacity:.14;transform:translate(0,0)}50%{opacity:.22;transform:translate(2px,-1px)}}
@@ -28,78 +31,76 @@
   @keyframes cc-up{0%{transform:translateY(24px);opacity:0}100%{transform:none;opacity:1}}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 
-  /* ── Theme tokens (values carried over from the original THEMES object) ── */
-  .cc-app.theme-dark{color-scheme:dark;
+  /* ── Design tokens — one dark theme (there is no light mode) ──
+     Structure: ink-brown surfaces, parchment text, gold for what you can press.
+     Meaning:   --ev-* (kind of event) and --st-* (quest status) only tint icons, card edges and
+                small chips — never a filled surface — and always sit next to a text label.  */
+  .cc-app{color-scheme:dark;
     --app-bg:linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 26% 16%,#1e1610,#141008);
     --panel-bg:linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 74% 16%,#1e1610,#141008);
     --bar-bg:linear-gradient(180deg,rgba(24,17,8,.98),rgba(16,11,5,.98));
     --sticky-bg:rgba(17,12,6,.93);
     --border:rgba(180,140,60,.18); --bar-shadow:0 10px 30px rgba(0,0,0,.45); --detail-shadow:-14px 0 40px rgba(0,0,0,.6);
-    --text:#ddc89a; --h1:#f0e4c8; --h1-shadow:0 1px 0 rgba(0,0,0,.8);
-    --accent:#c4a040; --section:#c8a86a; --tagline:#9a8060;
-    --body:#b89868; --body2:#c4a87a; --muted:#9a8060; --muted2:#8a7050; --title:#ede2c4;
-    --input-bg:rgba(255,255,255,.07); --input-border:rgba(180,140,60,.24); --input-color:#e0d0aa; --option-bg:#1e180e;
-    --line:rgba(200,160,60,.25); --line-faint:rgba(200,160,60,.15);
-    --tl-line:linear-gradient(180deg,rgba(180,130,40,.45),rgba(180,130,40,.12));
-    --card-bg:rgba(255,255,255,.04); --card-border:rgba(180,140,60,.18); --card-border-hover:rgba(199,162,75,.45); --card-shadow:0 4px 10px rgba(0,0,0,.25);
-    --card-bg-sel:linear-gradient(180deg,rgba(50,36,14,.95),rgba(42,30,10,.9)); --card-border-sel:rgba(199,162,75,.85); --card-shadow-sel:0 14px 28px rgba(0,0,0,.4),inset 0 0 0 1px rgba(199,162,75,.3);
-    --btn-bg:linear-gradient(180deg,#3a2810,#2a1e08); --btn-border:rgba(180,140,60,.35); --btn-color:#d7b257;
-    --chip-bg:linear-gradient(180deg,rgba(40,28,12,.95),rgba(30,20,8,.92)); --chip-soft:rgba(255,255,255,.05); --chip-border:rgba(180,140,60,.3); --chip-color:#c4a87a;
-    --popup-bg:linear-gradient(180deg,#1e180e,#282010); --popup-border:rgba(180,140,60,.35);
+    /* text, strongest → quietest (all ≥ 4.5:1 on the cards) */
+    --h1:#f0e4c8; --h1-shadow:0 1px 0 rgba(0,0,0,.8); --title:#efe4c8; --text:#ddc89a;
+    --body2:#cdb588; --body:#bfa173; --section:#cfae6c; --muted:#a68d6b;
+    /* interaction: links, the current tab, buttons, focus */
+    --accent:#d0ab4c;
+    --line:rgba(200,160,60,.25); --line-faint:rgba(200,160,60,.13);
+    --input-bg:rgba(255,255,255,.06); --input-border:rgba(180,140,60,.28); --input-color:#e6d6b0; --option-bg:#1e180e;
+    --card-bg:rgba(255,255,255,.035); --card-bg-hover:rgba(255,255,255,.06); --card-border-hover:rgba(199,162,75,.42);
+    --card-bg-sel:linear-gradient(180deg,rgba(50,36,14,.95),rgba(42,30,10,.9)); --card-border-sel:rgba(199,162,75,.8); --card-shadow-sel:0 10px 24px rgba(0,0,0,.35),inset 0 0 0 1px rgba(199,162,75,.25);
+    --btn-bg:linear-gradient(180deg,#3a2810,#2a1e08); --btn-border:rgba(180,140,60,.38); --btn-color:#e2bf63;
+    --chip-bg:rgba(40,28,12,.92); --chip-soft:rgba(255,255,255,.045); --chip-border:rgba(180,140,60,.3); --chip-color:#d6ba88;
+    --popup-bg:linear-gradient(180deg,#1e180e,#282010); --popup-top:#1e180e; --popup-bottom:#282010; --popup-border:rgba(180,140,60,.38);
+    --float-bg:rgba(22,15,7,.9);                                  /* controls floating over the map image */
     --row-bg:rgba(255,255,255,.04); --row-border:rgba(180,140,60,.14);
-    --done-bg:linear-gradient(180deg,rgba(14,26,18,.8),rgba(12,22,16,.65)); --done-border:rgba(47,133,87,.35); --done-color:#3da66a; --done-badge-bg:rgba(47,133,87,.15); --done-badge-border:rgba(47,133,87,.45);
-    --failed:#d0707f; --effect-bullet:#c4607a; --seal-border:rgba(255,252,244,.35); --node-border:rgba(255,252,244,.25);
-    --glow:rgba(255,222,140,.5);
+    --seal-border:rgba(255,252,244,.35); --glow:rgba(255,222,140,.5);
+    /* kinds of event (EVENT_TYPES[type].family in js/chronicle-model.js) */
+    --ev-conflict:#cc8273; --ev-social:#82a6cd; --ev-arcane:#a993d4; --ev-vision:#c3b3e0;
+    --ev-discovery:#6fb3a4; --ev-journey:#98b072; --ev-turning:#d2ae64; --ev-neutral:#a68d6b;
+    /* quest status (QUEST_STATUS[status].tone) */
+    --st-active:#d6b25c; --st-pending:#de9858; --st-done:#7dbb8e; --st-failed:#e07f89;
+    /* Lore of Exandria: the wider world, set apart from the campaign's gold */
+    --lore:#97b4c6;
+    /* type: Cinzel for headings, Garamond for reading, the system face for data and controls */
+    --font-display:'Cinzel Decorative','Cinzel',serif;
+    --font-head:'Cinzel',serif;
+    --font-read:'EB Garamond',Georgia,serif;
+    --font-ui:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   }
-  .cc-app.theme-light{color-scheme:light;
-    --app-bg:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 26% 16%,#f5ead0,#e6d0a0);
-    --panel-bg:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,252,244,.66)),radial-gradient(900px 760px at 74% 16%,#f5ead0,#e6d0a0);
-    --bar-bg:linear-gradient(180deg,#f7eed4,#ead7ab);
-    --sticky-bg:rgba(247,238,214,.94);
-    --border:rgba(70,45,15,.35); --bar-shadow:0 10px 26px rgba(60,40,10,.18); --detail-shadow:-14px 0 40px rgba(60,40,10,.2);
-    --text:#2a1b0c; --h1:#1d1106; --h1-shadow:0 1px 0 rgba(255,255,255,.5);
-    --accent:#8a6a26; --section:#1e1208; --tagline:#6a5435;
-    --body:#5a4830; --body2:#43331c; --muted:#7a6240; --muted2:#7d6646; --title:#231408;
-    --input-bg:rgba(255,255,255,.6); --input-border:rgba(70,45,15,.4); --input-color:#2a1b0c; --option-bg:#f7eed4;
-    --line:rgba(42,27,12,.4); --line-faint:rgba(42,27,12,.2);
-    --tl-line:linear-gradient(180deg,rgba(120,85,30,.55),rgba(120,85,30,.18));
-    --card-bg:rgba(255,255,255,.5); --card-border:rgba(70,45,15,.3); --card-border-hover:rgba(140,100,30,.6); --card-shadow:0 8px 16px rgba(0,0,0,.07);
-    --card-bg-sel:linear-gradient(180deg,rgba(255,248,228,.95),rgba(250,238,210,.9)); --card-border-sel:rgba(199,162,75,.85); --card-shadow-sel:0 14px 28px rgba(120,85,30,.22),inset 0 0 0 1px rgba(199,162,75,.3);
-    --btn-bg:linear-gradient(180deg,#fdedc6,#d6b46b); --btn-border:rgba(70,45,15,.55); --btn-color:#1f1409;
-    --chip-bg:linear-gradient(180deg,rgba(255,250,238,.9),rgba(231,210,164,.85)); --chip-soft:rgba(255,255,255,.45); --chip-border:rgba(70,45,15,.38); --chip-color:#4a3a22;
-    --popup-bg:linear-gradient(180deg,#f7eed4,#ead7ab); --popup-border:rgba(70,45,15,.55);
-    --row-bg:rgba(255,253,247,.5); --row-border:rgba(70,45,15,.22);
-    --done-bg:linear-gradient(180deg,rgba(238,247,240,.7),rgba(228,240,230,.55)); --done-border:rgba(47,133,87,.4); --done-color:#2f8557; --done-badge-bg:rgba(47,133,87,.1); --done-badge-border:rgba(47,133,87,.45);
-    --failed:#a5384c; --effect-bullet:#b8447e; --seal-border:rgba(255,252,244,.7); --node-border:#f5ead0;
-    --glow:rgba(255,222,140,.7);
-  }
+  .ev-conflict{--ev:var(--ev-conflict);} .ev-social{--ev:var(--ev-social);} .ev-arcane{--ev:var(--ev-arcane);} .ev-vision{--ev:var(--ev-vision);}
+  .ev-discovery{--ev:var(--ev-discovery);} .ev-journey{--ev:var(--ev-journey);} .ev-turning{--ev:var(--ev-turning);} .ev-neutral{--ev:var(--ev-neutral);}
+  .tone-active{--tone:var(--st-active);} .tone-pending{--tone:var(--st-pending);} .tone-done{--tone:var(--st-done);} .tone-failed{--tone:var(--st-failed);} .tone-other{--tone:var(--muted);}
 
   /* ── Shell ── */
-  .cc-app{position:fixed;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;font-family:'EB Garamond',Georgia,serif;color:var(--text);background:var(--app-bg);overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}
+  .cc-app{position:fixed;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;font-family:var(--font-read);color:var(--text);background:var(--app-bg);overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;}
   .cc-app::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;background-image:radial-gradient(1.5px 1.5px at 12% 22%,rgba(60,40,10,.6) 40%,transparent 42%),radial-gradient(1.5px 1.5px at 78% 64%,rgba(60,40,10,.5) 40%,transparent 42%),radial-gradient(1px 1px at 46% 88%,rgba(60,40,10,.5) 40%,transparent 42%);background-size:24px 24px,30px 30px,18px 18px;}
   :where(.cc-app) a{color:inherit;text-decoration:none;}
   :where(.cc-app) button{font:inherit;color:inherit;}
   .cc-app :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .cc-ico{width:20px;height:20px;flex:none;display:block;}
   .cc-flex{flex:1;min-width:0;}
+  .cc-scroll{scrollbar-color:#8c6d22 transparent;}
   .cc-scroll::-webkit-scrollbar{width:11px;}
-  .cc-scroll::-webkit-scrollbar-track{background:rgba(70,45,15,.10);}
-  .cc-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b9923f,#8c6d22);border-radius:8px;border:2px solid rgba(243,231,201,.6);}
+  .cc-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.02);}
+  .cc-scroll::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#a2803a,#7a5f1f);border-radius:8px;border:3px solid #15100a;}
   .cc-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
   .cc-top{position:relative;z-index:20;display:flex;align-items:center;gap:14px;padding:8px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left));padding-top:calc(8px + env(safe-area-inset-top));background:var(--bar-bg);border-bottom:1px solid var(--border);box-shadow:var(--bar-shadow);}
   .cc-brand{display:flex;flex-direction:column;line-height:1;min-width:0;flex:none;padding:2px 4px;}
-  .cc-brand-k{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.38em;text-transform:uppercase;color:var(--accent);}
-  .cc-brand-t{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:21px;color:var(--h1);text-shadow:var(--h1-shadow);margin-top:3px;}
+  .cc-brand-k{font-family:var(--font-head);font-size:9.5px;letter-spacing:.38em;text-transform:uppercase;color:var(--accent);}
+  .cc-brand-t{font-family:var(--font-display);font-weight:900;font-size:21px;color:var(--h1);text-shadow:var(--h1-shadow);margin-top:3px;}
   .cc-tabs{flex:1;display:flex;justify-content:center;justify-content:safe center;gap:4px;min-width:0;overflow:hidden;}
-  .cc-tab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 13px;border-radius:10px;border:1px solid transparent;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap;transition:background .15s ease,color .15s ease;}
-  .cc-tab:hover{color:var(--title);background:var(--card-bg);}
-  .cc-tab.is-on{color:var(--btn-color);background:var(--btn-bg);border-color:var(--btn-border);box-shadow:0 6px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.1);}
+  .cc-tab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 13px;border-radius:10px;border:1px solid transparent;font-family:var(--font-ui);font-size:14.5px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s ease,color .15s ease;}
+  .cc-tab:hover{color:var(--title);background:var(--card-bg-hover);}
+  .cc-tab.is-on{color:var(--btn-color);background:var(--btn-bg);border-color:var(--btn-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);}
   .cc-tab .cc-ico{width:18px;height:18px;}
-  .cc-actions{display:flex;gap:8px;flex:none;margin-left:auto;}
-  .cc-iconbtn{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:11px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);cursor:pointer;font-family:'Cinzel',serif;font-size:16px;line-height:1;box-shadow:0 4px 10px rgba(0,0,0,.18);transition:filter .12s ease,transform .12s ease;}
-  .cc-iconbtn:hover{filter:brightness(1.1);}
+  .cc-actions{display:flex;gap:8px;flex:none;}
+  .cc-iconbtn{width:44px;height:44px;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:11px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);cursor:pointer;font-family:var(--font-ui);font-size:17px;font-weight:600;line-height:1;transition:filter .12s ease,border-color .12s ease;}
+  .cc-iconbtn:hover{border-color:var(--card-border-hover);color:var(--title);}
   .cc-iconbtn.sm{width:40px;height:40px;font-size:18px;}
+  .cc-iconbtn .cc-ico{width:19px;height:19px;}
   @media (max-width:1100px){ .cc-tab{padding:0 10px;} .cc-tab:not(.is-on) .cc-tab-label{display:none;} }
 
   .cc-body{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);}
@@ -120,183 +121,203 @@
   .cc-bottom{display:none;}
   @media (max-width:719px){
     .cc-tabs{display:none;}
-    .cc-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px;}
+    .cc-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px;min-height:50px;justify-content:space-between;}
     .cc-brand-t{font-size:19px;}
-    .cc-top{min-height:50px;}
-    .cc-top .cc-actions{display:none;}                 /* theme + guide live in the More sheet on phones */
+    .cc-top .cc-actions{display:none;}                 /* the guide lives in the More sheet on phones */
     .cc-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:20;background:var(--bar-bg);border-top:1px solid var(--border);box-shadow:0 -10px 24px rgba(0,0,0,.25);padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
   }
-  .cc-bn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:6px 2px;border:0;background:none;color:var(--muted);font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+  .cc-bn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:6px 2px;border:0;background:none;color:var(--muted);font-family:var(--font-ui);font-size:12px;font-weight:500;cursor:pointer;}
   .cc-bn .cc-ico{width:23px;height:23px;}
-  .cc-bn.is-on{color:var(--accent);}
+  .cc-bn.is-on{color:var(--accent);font-weight:600;}
   .cc-bn.is-on::before{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;border-radius:0 0 3px 3px;background:var(--accent);}
 
-  .cc-sheet-back{position:fixed;inset:0;z-index:50;background:rgba(8,5,2,.55);animation:chr-pop .15s ease both;}
+  .cc-sheet-back{position:fixed;inset:0;z-index:50;background:rgba(8,5,2,.6);animation:chr-pop .15s ease both;}
   .cc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;padding:10px max(16px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--popup-bg);border-top:1px solid var(--popup-border);border-radius:18px 18px 0 0;box-shadow:0 -20px 50px rgba(0,0,0,.5);animation:cc-up .2s ease both;}
   .cc-sheet-grip{width:44px;height:4px;border-radius:4px;background:var(--line);margin:2px auto 12px;}
   .cc-sheet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .cc-sheet-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:84px;padding:12px 6px;border-radius:14px;border:1px solid var(--card-border);background:var(--card-bg);font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--title);cursor:pointer;}
+  .cc-sheet-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:84px;padding:12px 6px;border-radius:14px;border:1px solid rgba(180,140,60,.2);background:var(--card-bg);font-family:var(--font-ui);font-size:14px;font-weight:500;color:var(--title);cursor:pointer;}
   .cc-sheet-item .cc-ico{width:26px;height:26px;color:var(--accent);}
   .cc-sheet-item.is-on{border-color:var(--card-border-sel);background:var(--card-bg-sel);}
+  .cc-sheet-item.wide{grid-column:1/-1;flex-direction:row;min-height:52px;}
+  .cc-sheet-item.wide .cc-ico{width:22px;height:22px;}
 
   /* ── Typography blocks ── */
   .cc-hero{position:relative;text-align:center;padding:12px 6px 16px;}
-  .cc-hero-glow{position:absolute;top:-40px;left:0;right:0;height:240px;pointer-events:none;background:radial-gradient(420px 260px at 50% 22%,var(--glow),transparent 60%);animation:chr-flicker 7s ease-in-out infinite;}
-  .cc-kicker{position:relative;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);padding-left:.42em;}
-  .cc-h1{position:relative;font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:44px;line-height:1;margin:8px 0 2px;color:var(--h1);text-shadow:var(--h1-shadow);}
+  .cc-kicker{position:relative;font-family:var(--font-head);font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);padding-left:.42em;}
+  .cc-h1{position:relative;font-family:var(--font-display);font-weight:900;font-size:44px;line-height:1;margin:8px 0 2px;color:var(--h1);text-shadow:var(--h1-shadow);}
   .cc-flourish{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;color:var(--accent);font-size:13px;}
   .cc-flourish::before,.cc-flourish::after{content:"";height:1px;width:54px;background:linear-gradient(90deg,transparent,#b58f3e);}
   .cc-flourish::after{background:linear-gradient(90deg,#b58f3e,transparent);}
-  .cc-tagline{position:relative;font-style:italic;font-size:16px;color:var(--tagline);margin:10px auto 0;max-width:470px;line-height:1.4;}
-  @media (max-width:719px){ .cc-hero{padding:2px 4px 10px;} .cc-hero>.cc-kicker,.cc-hero>.cc-h1{display:none;} .cc-h1{font-size:30px;} .cc-tagline{font-size:15px;margin-top:6px;} .cc-flourish{margin-top:2px;} }
+  @media (max-width:719px){ .cc-h1{font-size:30px;} }
 
   .cc-sechead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:6px 0 16px;}
-  .cc-sec-h{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:34px;line-height:1.05;margin:0;color:var(--h1);text-shadow:var(--h1-shadow);}
-  .cc-sec-sub{flex-basis:100%;margin:0;font-style:italic;font-size:16px;color:var(--tagline);}
+  .cc-sec-h{font-family:var(--font-display);font-weight:900;font-size:34px;line-height:1.05;margin:0;color:var(--h1);text-shadow:var(--h1-shadow);}
+  .cc-sec-sub{flex-basis:100%;margin:0;font-style:italic;font-size:16.5px;color:var(--muted);}
   @media (max-width:719px){ .cc-sec-h{font-size:24px;} .cc-sec-sub{display:none;} .cc-sechead{margin:4px 0 12px;} }
   /* Section headings: Cinzel's lower case is already small caps, so no forced upper case / wide tracking. */
-  .cc-h2{display:flex;align-items:baseline;gap:8px;margin:30px 0 10px;font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--section);}
-  .cc-h2 .n{font-family:'EB Garamond',serif;font-size:15px;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:0;}
-  .cc-muted{color:var(--muted);font-style:italic;font-size:16px;line-height:1.45;}
+  .cc-h2{display:flex;align-items:center;gap:8px;margin:30px 0 10px;font-family:var(--font-head);font-size:16px;font-weight:600;letter-spacing:.03em;color:var(--section);}
+  .cc-h2 .n{font-family:var(--font-ui);font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0;}
+  .cc-h2>.cc-ico{width:19px;height:19px;color:var(--tone,var(--accent));}
+  .cc-muted{color:var(--muted);font-style:italic;font-size:16.5px;line-height:1.45;}
   .cc-a{color:var(--title);text-decoration:underline!important;text-decoration-color:var(--line)!important;text-underline-offset:3px;}
   .cc-a:hover{text-decoration-color:var(--accent)!important;}
   .cc-strong{color:var(--title);}
-  .cc-pill{display:inline-block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#f5ead0;background:linear-gradient(180deg,#3a2a14,#241608);padding:5px 12px;border-radius:999px;box-shadow:0 4px 9px rgba(0,0,0,.25);white-space:nowrap;}
-  .cc-badge{display:inline-block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid rgba(180,140,60,.4);background:rgba(180,140,60,.12);color:var(--accent);white-space:nowrap;}
-  .cc-badge.tone-done{color:var(--done-color);border-color:var(--done-badge-border);background:var(--done-badge-bg);}
-  .cc-badge.tone-failed{color:var(--failed);border-color:var(--failed);background:transparent;}
-  .cc-badge.tone-pending,.cc-badge.tone-other{color:var(--muted);border-color:var(--line);background:transparent;}
+  /* Status chips: icon + label in the status colour, a faint tint behind (colour is never the only cue) */
+  .cc-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-ui);font-size:12.5px;font-weight:600;line-height:1.2;padding:3px 9px 3px 8px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--tone,var(--accent));white-space:nowrap;}
+  .cc-badge{border-color:color-mix(in srgb,var(--tone,var(--accent)) 45%,transparent);background:color-mix(in srgb,var(--tone,var(--accent)) 12%,transparent);}
+  .cc-badge .cc-ico{width:14px;height:14px;}
 
   /* ── Buttons, inputs, chips ── */
-  .cc-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 15px;border-radius:11px;border:1px solid var(--btn-border);background:var(--btn-bg);color:var(--btn-color);font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 16px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.12);white-space:nowrap;transition:filter .12s ease,transform .12s ease;}
-  .cc-btn:hover{filter:brightness(1.08);}
-  .cc-btn.ghost{background:var(--chip-bg);border-color:var(--chip-border);color:var(--chip-color);box-shadow:none;}
-  .cc-btn.is-on{border-color:var(--card-border-sel);}
+  .cc-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 15px;border-radius:11px;border:1px solid var(--btn-border);background:var(--btn-bg);color:var(--btn-color);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);white-space:nowrap;transition:filter .12s ease,border-color .12s ease;}
+  .cc-btn:hover{filter:brightness(1.1);}
+  .cc-btn:active{filter:brightness(.95);}
+  .cc-btn.ghost{background:var(--chip-soft);border-color:var(--chip-border);color:var(--chip-color);box-shadow:none;}
+  .cc-btn.ghost:hover{border-color:var(--card-border-hover);color:var(--title);filter:none;}
+  .cc-btn.is-on{border-color:var(--card-border-sel);color:var(--btn-color);background:var(--btn-bg);}
   .cc-btn .cc-ico{width:18px;height:18px;}
-  .cc-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:#1a1208;font-family:'EB Garamond',serif;font-size:13px;letter-spacing:0;font-weight:600;}
+  .cc-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:#1a1208;font-family:var(--font-ui);font-size:12.5px;font-weight:700;}
   .cc-btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px;}
 
   .cc-search{position:relative;flex:1;min-width:0;display:flex;align-items:center;}
-  .cc-search-ico{position:absolute;left:12px;color:var(--accent);pointer-events:none;}
-  .cc-input{width:100%;height:46px;padding:0 14px;border:1px solid var(--input-border);border-radius:12px;font-family:'EB Garamond',serif;font-size:17px;color:var(--input-color);background:var(--input-bg);outline:none;-webkit-appearance:none;appearance:none;}
-  .cc-input::placeholder{color:var(--muted);opacity:.85;}
+  .cc-search-ico{position:absolute;left:12px;color:var(--muted);pointer-events:none;}
+  .cc-input{width:100%;height:46px;padding:0 14px;border:1px solid var(--input-border);border-radius:12px;font-family:var(--font-ui);font-size:16px;color:var(--input-color);background:var(--input-bg);outline:none;-webkit-appearance:none;appearance:none;}
+  .cc-input::placeholder{color:var(--muted);opacity:.9;}
   .cc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(199,162,75,.18);}
-  .cc-search .cc-input{padding:0 44px 0 40px;}
+  .cc-search .cc-input{padding:0 44px 0 42px;}
   .cc-input[type=search]::-webkit-search-cancel-button{display:none;}
+  .cc-input::-webkit-calendar-picker-indicator{filter:invert(.8) sepia(.4);}
   .cc-search-x{position:absolute;right:3px;width:40px;height:40px;border:0;border-radius:9px;background:none;color:var(--muted);cursor:pointer;font-size:15px;}
-  .cc-select{width:100%;height:44px;padding:0 34px 0 12px;border:1px solid var(--input-border);border-radius:10px;font-family:'EB Garamond',serif;font-size:16px;color:var(--input-color);background:var(--input-bg);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;}
+  .cc-select{width:100%;height:44px;padding:0 34px 0 12px;border:1px solid var(--input-border);border-radius:10px;font-family:var(--font-ui);font-size:16px;color:var(--input-color);background:var(--input-bg);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;}
+  .cc-select:focus{border-color:var(--accent);}
   .cc-select option{background:var(--option-bg);color:var(--input-color);}
   .cc-selwrap{position:relative;display:block;}
   .cc-selwrap::after{content:"\25BE";position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--accent);font-size:13px;}
-  .cc-date{height:44px;font-size:16px;padding:0 10px;}
+  .cc-date{height:44px;padding:0 10px;}
 
   .cc-chips{display:flex;flex-wrap:wrap;gap:8px;}
-  .cc-chip{display:inline-flex;align-items:center;gap:9px;min-height:44px;max-width:100%;padding:4px 14px 4px 4px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--title);font-size:16px;line-height:1.15;transition:border-color .15s ease,background .15s ease;}
-  .cc-chip:hover{border-color:var(--card-border-hover);}
+  .cc-chip{display:inline-flex;align-items:center;gap:9px;min-height:44px;max-width:100%;padding:4px 14px 4px 4px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--title);font-size:16.5px;line-height:1.15;transition:border-color .15s ease,background .15s ease;}
+  .cc-chip:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
   .cc-chip.plain{padding-left:14px;}
   .cc-chip-l{min-width:0;overflow:hidden;text-overflow:ellipsis;}
-  .cc-chip-sub{font-size:13px;font-style:italic;color:var(--muted);white-space:nowrap;}
-  .cc-seal{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;background-size:cover;background-position:center;border:1.5px solid var(--seal-border);box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.2);font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:#f5ead0;}
-  .cc-seal.mono{background-image:linear-gradient(160deg,#6a5028,#2e1f0b);}
-  .cc-seal.mono-deity{background-image:linear-gradient(160deg,#b8902e,#5a3f0e);}
-  .cc-seal.mono-faction{background-image:linear-gradient(160deg,#7a3a32,#2e130e);}
-  .cc-seal.mono-creature{background-image:linear-gradient(160deg,#3e5a4a,#14241b);}
+  .cc-chip-sub{font-family:var(--font-ui);font-size:12.5px;color:var(--muted);white-space:nowrap;}
+  .cc-seal{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;background-size:cover;background-position:center;border:1.5px solid var(--seal-border);box-shadow:0 2px 6px rgba(0,0,0,.3);font-family:var(--font-head);font-weight:700;font-size:15px;color:#f5ead0;}
+  .cc-seal.mono{background-image:linear-gradient(160deg,#5c4524,#2e1f0b);}
+  .cc-seal.mono-deity{background-image:linear-gradient(160deg,#9c7a2a,#4e370d);}
+  .cc-seal.mono-faction{background-image:linear-gradient(160deg,#6e3830,#2e130e);}
+  .cc-seal.mono-creature{background-image:linear-gradient(160deg,#3a5446,#14241b);}
   .cc-seal.mono-type{background-image:linear-gradient(160deg,#4a3a20,#241608);color:#e6c97a;font-size:14px;}
   .cc-seal.sm{width:24px;height:24px;font-size:11px;}
   .cc-seal.lg{width:72px;height:72px;font-size:30px;border-width:2px;}
-  .cc-seals{display:inline-flex;align-items:center;padding-right:6px;}
-  .cc-seals .cc-seal{width:26px;height:26px;margin-right:-6px;font-size:11px;}
+
+  /* Event-type icon in a list row: the icon alone, in its family colour (the label sits beside it) */
+  .cc-evico{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;color:var(--ev,var(--ev-neutral));background:rgba(255,255,255,.04);}
+  .cc-evico .cc-ico{width:19px;height:19px;}
+  .cc-evico.sm{width:26px;height:26px;border-radius:8px;}
+  .cc-evico.sm .cc-ico{width:17px;height:17px;}
+  /* "Kind" line: icon in the family colour + the type in quiet text (+ day/session when the header doesn't say it) */
+  .cc-kind{display:flex;align-items:center;gap:6px;min-width:0;font-family:var(--font-ui);font-size:13.5px;line-height:1.3;color:var(--muted);}
+  .cc-kind .cc-ico{width:17px;height:17px;color:var(--ev,var(--ev-neutral));}
+  .cc-kind-l{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* A quiet "opens" chevron on cards */
+  .cc-go{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);opacity:.65;transition:color .15s ease,opacity .15s ease;}
+  .cc-go .cc-ico{width:18px;height:18px;}
 
   /* ── Chronicle ── */
   /* "Latest session" — one quiet line, not a card */
   .cc-latest{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;min-height:44px;padding:0 2px;color:var(--title);}
-  .cc-latest-k{flex:none;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
-  .cc-latest-t{min-width:0;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-latest-k{flex:none;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--accent);}
+  .cc-latest-t{min-width:0;font-size:16.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-latest-t i{color:var(--muted);}
   .cc-latest:hover .cc-latest-t{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
-  .cc-chev{flex:none;color:var(--accent);font-size:22px;line-height:1;}
+  .cc-chev{flex:none;color:var(--accent);}
+  .cc-chev .cc-ico{width:18px;height:18px;}
   @media (max-width:719px){ .cc-chead .cc-sec-h{display:none;} .cc-chead{margin:0 0 2px;} .cc-chead .cc-flex{display:none;} }
 
   .cc-toolbar{position:sticky;top:0;z-index:5;margin:0 -24px;padding:10px 24px;background:var(--sticky-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-faint);}
   @media (max-width:719px){ .cc-toolbar{margin:0 -16px;padding:8px 16px;} .cc-hide-xs{display:none;} }
   .cc-searchrow{display:flex;gap:8px;align-items:center;}
-  .cc-filters{margin-top:10px;padding:14px;border-radius:14px;border:1px solid var(--card-border);background:var(--popup-bg);box-shadow:0 14px 30px rgba(0,0,0,.25);max-height:min(70vh,640px);overflow-y:auto;}
-  .cc-flabel{display:block;margin-bottom:6px;font-size:14px;letter-spacing:.04em;color:var(--body);font-variant:small-caps;}
+  .cc-filters{margin-top:10px;padding:14px;border-radius:14px;border:1px solid var(--popup-border);background:var(--popup-bg);box-shadow:0 14px 30px rgba(0,0,0,.3);max-height:min(70vh,640px);overflow-y:auto;}
+  .cc-flabel{display:block;margin-bottom:6px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);}
   .cc-fsec{margin-bottom:12px;}
   .cc-fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 12px;}
   .cc-fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .cc-field{display:block;min-width:0;}
   .cc-factions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap;}
   .cc-pcchips{display:flex;flex-wrap:wrap;gap:8px;}
-  .cc-pcchip{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--body2);cursor:pointer;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em;opacity:.75;transition:all .15s ease;}
-  .cc-pcchip.is-on{opacity:1;border-color:var(--card-border-sel);background:var(--card-bg-sel);color:var(--title);box-shadow:0 6px 14px rgba(0,0,0,.2);}
+  .cc-pcchip{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--body2);cursor:pointer;font-family:var(--font-ui);font-size:14px;font-weight:500;opacity:.8;transition:all .15s ease;}
+  .cc-pcchip.is-on{opacity:1;border-color:var(--card-border-sel);background:var(--card-bg-sel);color:var(--title);}
   .cc-actives{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center;}
-  .cc-active{display:inline-flex;align-items:center;gap:6px;min-height:44px;max-width:100%;padding:0 5px 0 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-size:15px;cursor:pointer;}
+  .cc-active{display:inline-flex;align-items:center;gap:6px;min-height:44px;max-width:100%;padding:0 5px 0 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-family:var(--font-ui);font-size:14px;cursor:pointer;}
   .cc-active-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-active-x{flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.14);font-size:12px;}
-  .cc-linkbtn{border:0;background:none;padding:8px 6px;min-height:44px;color:var(--accent);font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
-  /* Count + grouping/sort: scrolls away with the page, so the sticky bar stays one row tall */
+  .cc-active-x{flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.2);font-size:12px;}
+  .cc-linkbtn{border:0;background:none;padding:8px 6px;min-height:44px;color:var(--accent);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;}
+  .cc-linkbtn:hover{text-decoration:underline;text-underline-offset:3px;}
+  /* Count + grouping/order: scrolls away with the page, so the sticky bar stays one row tall */
   .cc-results{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
-  .cc-results-t{font-size:15px;font-style:italic;color:var(--muted);}
+  .cc-results-t{font-family:var(--font-ui);font-size:14px;color:var(--muted);}
   .cc-seg{display:inline-flex;border:1px solid var(--chip-border);border-radius:10px;overflow:hidden;background:var(--chip-soft);}
-  .cc-seg button{min-height:44px;padding:0 12px;border:0;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.04em;cursor:pointer;white-space:nowrap;}
+  .cc-seg button{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:0;background:transparent;color:var(--muted);font-family:var(--font-ui);font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap;}
+  .cc-seg button:hover{color:var(--title);}
   .cc-seg button+button{border-left:1px solid var(--chip-border);}
-  .cc-seg button.is-on{background:var(--btn-bg);color:var(--btn-color);}
-  @media (max-width:719px){ .cc-seg button{padding:0 10px;} .cc-results{gap:6px;} }
+  .cc-seg button.is-on{background:var(--btn-bg);color:var(--btn-color);font-weight:600;}
+  .cc-seg .cc-ico{width:17px;height:17px;}
+  /* Phones: the count on its own short line, both controls together on the next */
+  @media (max-width:719px){ .cc-seg button{padding:0 10px;} .cc-results{gap:6px;} .cc-results-t{flex-basis:100%;} .cc-results>.cc-flex{display:none;} }
 
   .cc-quick{margin:14px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line-faint);}
   .cc-quick-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:8px;}
-  .cc-quick-k{min-width:70px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em;color:var(--section);}
+  .cc-quick-k{min-width:70px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--section);}
 
-  .cc-empty{text-align:center;padding:26px 14px;margin-top:18px;color:var(--muted);font-style:italic;font-size:16px;border:1px dashed var(--card-border);border-radius:12px;}
-  /* Chronological groups: the day/session marker is the strongest element of the list, cards sit under it */
-  .cc-group{margin-top:18px;content-visibility:auto;contain-intrinsic-size:auto 600px;}
-  .cc-ghead{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0;border:0;background:none;cursor:pointer;text-align:left;}
-  .cc-gsub{font-size:15px;font-style:italic;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-empty{text-align:center;padding:26px 14px;margin-top:18px;color:var(--muted);font-style:italic;font-size:16.5px;border:1px dashed var(--line);border-radius:12px;}
+  /* Chronological groups: the day/session heading is the strongest element of the list, cards sit under it */
+  .cc-group{margin-top:22px;content-visibility:auto;contain-intrinsic-size:auto 600px;}
+  .cc-ghead{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 2px;border:0;background:none;cursor:pointer;text-align:left;}
+  .cc-glabel{flex:none;font-family:var(--font-head);font-size:19px;font-weight:700;line-height:1.1;color:var(--h1);}
+  .cc-gsub{font-family:var(--font-ui);font-size:13.5px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cc-gline{flex:1;height:1px;min-width:12px;background:linear-gradient(90deg,var(--line),transparent);}
-  .cc-gcount{font-size:14px;font-style:italic;color:var(--muted);}
+  .cc-gcount{font-family:var(--font-ui);font-size:13px;color:var(--muted);}
   .cc-caret{color:var(--accent);font-size:13px;transition:transform .2s ease;}
   .cc-group.is-closed .cc-caret{transform:rotate(-90deg);}
-  .cc-tl{position:relative;padding-left:34px;margin-top:6px;}
-  .cc-tl::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:2px;background:var(--tl-line);}
-  .cc-card{position:relative;display:block;padding:11px 14px 12px;margin-bottom:8px;border-radius:12px;border:1px solid transparent;background:var(--card-bg);transition:border-color .16s ease,background .16s ease;cursor:pointer;}
-  .cc-card:hover{border-color:var(--card-border-hover);}
+  .cc-evlist{display:grid;gap:8px;margin-top:6px;}
+  /* Event card — ① kind (icon + type) ② title and two lines of summary ③ a quiet chevron.
+     The family colour marks the left edge and the icon only; the card itself stays neutral. */
+  .cc-card{position:relative;display:block;padding:11px 38px 13px 18px;border-radius:12px;border:1px solid transparent;background:var(--card-bg);transition:border-color .16s ease,background .16s ease;cursor:pointer;}
+  .cc-card::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--ev,var(--ev-neutral));opacity:.85;}
+  .cc-card:hover,.cc-card:active{background:var(--card-bg-hover);border-color:var(--card-border-hover);}
+  .cc-card:hover .cc-go{color:var(--accent);opacity:1;}
   .cc-card.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
-  .cc-node{position:absolute;left:-34px;top:12px;width:26px;height:26px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;border:2px solid var(--node-border);box-shadow:0 2px 5px rgba(0,0,0,.45);z-index:1;font-size:13px;line-height:1;color:#e6c97a;background-color:#2a1c0a;}
-  .cc-card.is-sel .cc-node{border-color:#c7a24b;box-shadow:0 0 0 3px rgba(199,162,75,.4);}
-  .cc-meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);line-height:1.3;}
-  .cc-meta-l{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-dot{width:3px;height:3px;border-radius:50%;background:#b89a5a;flex:none;}
-  .cc-sesstag{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;font-family:'EB Garamond',serif;font-size:14.5px;font-style:italic;letter-spacing:0;text-transform:none;color:var(--muted);}
-  .cc-sesstag b{font-family:'Cinzel',serif;font-style:normal;font-weight:400;font-size:20px;line-height:.8;color:var(--accent);}
-  .cc-card-t{display:block;font-family:'Cinzel',serif;font-size:17.5px;font-weight:600;color:var(--title);line-height:1.22;margin-bottom:4px;}
-  .cc-card-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;line-height:1.45;color:var(--body);}
-  .cc-endnote{text-align:center;padding:18px 0 4px;color:var(--accent);font-size:14px;font-style:italic;}
+  .cc-card .cc-kind{margin-bottom:5px;}
+  .cc-card-t{display:block;font-family:var(--font-read);font-size:20px;font-weight:600;line-height:1.22;color:var(--title);margin-bottom:3px;overflow-wrap:break-word;}
+  .cc-card-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16.5px;line-height:1.42;color:var(--body);}
+  @media (max-width:719px){ .cc-card{padding:10px 32px 12px 15px;} .cc-card-t{font-size:19px;} .cc-card-s{font-size:16px;} .cc-go{right:6px;} }
+  .cc-endnote{text-align:center;padding:20px 0 4px;color:var(--muted);font-family:var(--font-ui);font-size:13.5px;}
 
   /* ── Lists: sessions, quests, people, places ── */
   .cc-list{display:grid;gap:8px;}
   .cc-scard,.cc-qcard,.cc-pcard,.cc-row{position:relative;display:flex;gap:14px;padding:12px 14px;border-radius:12px;border:1px solid transparent;background:var(--card-bg);transition:border-color .15s ease,background .15s ease;}
-  .cc-scard:hover,.cc-qcard:hover,.cc-pcard:hover,.cc-row:hover{border-color:var(--card-border-hover);}
+  .cc-scard:hover,.cc-qcard:hover,.cc-pcard:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
+  .cc-scard:hover .cc-go,.cc-qcard:hover .cc-go{color:var(--accent);opacity:1;}
   .cc-scard.is-sel,.cc-qcard.is-sel,.cc-pcard.is-sel,.cc-row.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
-  .cc-scard{align-items:flex-start;}
-  .cc-scard-no{flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-top:2px;border-radius:50%;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;box-shadow:0 3px 7px rgba(0,0,0,.25);font-family:'Cinzel',serif;font-size:19px;font-weight:600;}
+  .cc-scard{align-items:flex-start;padding-right:36px;}
+  .cc-scard-no{flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-top:2px;border-radius:50%;background:linear-gradient(180deg,#3a2a14,#241608);border:1px solid rgba(199,162,75,.35);color:#f5ead0;font-family:var(--font-head);font-size:19px;font-weight:600;}
+  @media (max-width:719px){ .cc-scard{gap:12px;} .cc-scard-no{width:38px;height:38px;font-size:17px;} }
   .cc-cbody{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
-  .cc-ctitle{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--title);line-height:1.22;}
-  .cc-cmeta{font-size:15px;font-style:italic;color:var(--muted);}
-  .cc-ctext{font-size:16px;line-height:1.45;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .cc-gap{display:flex;align-items:center;gap:10px;padding:2px 6px;color:var(--muted);font-style:italic;font-size:15px;}
+  .cc-ctitle{font-family:var(--font-read);font-size:19.5px;font-weight:600;color:var(--title);line-height:1.22;overflow-wrap:break-word;}
+  .cc-cmeta{font-family:var(--font-ui);font-size:13.5px;line-height:1.35;color:var(--muted);}
+  .cc-ctext{font-size:16.5px;line-height:1.42;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .cc-gap{display:flex;align-items:center;gap:10px;padding:2px 6px;color:var(--muted);font-family:var(--font-ui);font-size:13px;}
   .cc-gap::before,.cc-gap::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 11px);}
-  .cc-qcard{flex-direction:column;gap:3px;padding-left:18px;}
-  .cc-qcard::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);}
-  .cc-qcard.tone-done::before{background:var(--done-color);}
+  .cc-qcard{flex-direction:column;gap:3px;padding-left:18px;padding-right:36px;}
+  .cc-qcard::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--tone,var(--accent));}
   .cc-qcard.tone-done .cc-ctitle{color:var(--body2);}
   .cc-statusbar{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 6px;}
-  .cc-statusbar .cc-btn{padding:0 11px;gap:6px;font-size:12.5px;letter-spacing:.03em;text-transform:none;box-shadow:none;}
-  .cc-statusbar .cc-count{min-width:20px;height:20px;font-size:12.5px;}
+  .cc-statusbar .cc-btn{padding:0 12px;gap:6px;font-weight:500;}
+  .cc-statusbar .cc-btn .cc-ico{width:17px;height:17px;color:var(--tone,currentColor);}
+  .cc-statusbar .cc-count{min-width:20px;height:20px;font-size:12px;}
   .cc-party{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
   .cc-pcard{align-items:center;padding:12px 14px;}
   .cc-pcard .cc-seal{width:64px;height:64px;font-size:24px;border-width:2px;border-color:var(--pc-color,var(--seal-border));}
-  .cc-pcard .cc-ctitle{font-size:18.5px;}
+  .cc-pcard .cc-ctitle{font-family:var(--font-head);font-size:18.5px;}
   @media (max-width:719px){
     .cc-party{grid-template-columns:1fr 1fr;}
     .cc-pcard{flex-direction:column;gap:8px;text-align:center;padding:14px 10px 12px;}
@@ -307,141 +328,147 @@
   .cc-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));column-gap:20px;}
   .cc-row{align-items:center;gap:12px;padding:6px 8px;min-height:56px;border-radius:10px;background:none;}
   .cc-people .cc-row,.cc-tree .cc-prow{border-bottom:1px solid var(--line-faint);border-radius:0;}
-  .cc-row:hover{background:var(--card-bg);border-color:transparent;}
+  .cc-row:hover{background:var(--card-bg-hover);border-color:transparent;}
   .cc-people .cc-row.is-sel,.cc-tree .cc-row.is-sel{border-radius:10px;}
-  .cc-row .cc-ctitle{font-size:16px;}
-  .cc-row-sub{font-size:15px;font-style:italic;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-row .cc-ctitle{font-size:17.5px;}
+  .cc-row .cc-cbody{gap:1px;}
+  .cc-row-sub{font-family:var(--font-ui);font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-tree{display:grid;}
   .cc-prow{display:flex;align-items:center;gap:4px;}
-  .cc-prow .cc-row{flex:1;min-width:0;}
-  .cc-prow-map{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;color:var(--accent);}
-  .cc-prow-map:hover{background:var(--card-bg);}
+  .cc-prow.is-nested{border-left:1px solid var(--line-faint);}
+  .cc-prow .cc-row{flex:1;min-width:0;min-height:52px;padding-left:12px;}
+  .cc-prow-map{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;color:var(--muted);}
+  .cc-prow-map:hover{background:var(--card-bg-hover);color:var(--accent);}
   .cc-prow-map .cc-ico{width:19px;height:19px;}
 
   /* ── Detail documents ── */
   .cc-doc{max-width:720px;margin:0 auto;padding:0 max(26px,env(safe-area-inset-right)) 48px max(26px,env(safe-area-inset-left));}
   .cc-docbar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;margin:0 -26px 4px;padding:8px 26px;background:var(--sticky-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-faint);}
-  .cc-back{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 14px 0 8px;border-radius:11px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
-  .cc-dockind{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.06em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .cc-back{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 14px 0 8px;border-radius:11px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;}
+  .cc-back:hover{border-color:var(--card-border-hover);color:var(--title);}
+  .cc-dockind{font-family:var(--font-ui);font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
   .cc-docbar .cc-iconbtn.sm{width:44px;height:44px;}
-  .cc-docmap{flex:none;padding:0 12px 0 10px;gap:6px;color:var(--accent);}
-  .cc-docmap .cc-ico{width:18px;height:18px;}
+  .cc-docmap{flex:none;padding:0 12px 0 10px;gap:6px;}
+  .cc-docmap .cc-ico{width:18px;height:18px;color:var(--accent);}
   @media (max-width:719px){ .cc-doc{padding:0 max(16px,env(safe-area-inset-right)) 36px max(16px,env(safe-area-inset-left));} .cc-docbar{margin:0 -16px 4px;padding:6px 16px;gap:6px;} }
   @media (max-width:359px){ .cc-dockind{display:none;} }
-  /* Document header: one kicker line, the title, one byline — then the story */
-  .cc-kick{display:flex;align-items:center;gap:6px 9px;flex-wrap:wrap;margin-top:18px;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);line-height:1.4;}
-  .cc-kick .cc-badge{font-size:11px;}
-  .cc-kick .cc-a{color:var(--accent);}
-  .cc-doc-h{font-family:'Cinzel',serif;font-weight:700;font-size:31px;line-height:1.15;color:var(--h1);margin:6px 0 8px;text-shadow:var(--h1-shadow);outline:none;}
-  @media (max-width:719px){ .cc-doc-h{font-size:25px;} }
-  .cc-byline{margin:0 0 18px;font-size:16.5px;font-style:italic;line-height:1.5;color:var(--muted);}
+  /* Document header: one kind line, the title, one byline — then the story */
+  .cc-kick{display:flex;align-items:center;gap:6px 9px;flex-wrap:wrap;margin-top:18px;font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--muted);}
+  .cc-kick>.cc-ico{width:19px;height:19px;color:var(--ev,var(--accent));}
+  .cc-kick .cc-a{color:var(--body2);}
+  .cc-dot{width:3px;height:3px;border-radius:50%;background:var(--muted);flex:none;}
+  .cc-app .cc-doc-h:focus,.cc-app .cc-doc-h:focus-visible{outline:none;}
+  .cc-doc-h{font-family:var(--font-head);font-weight:700;font-size:30px;line-height:1.16;color:var(--h1);margin:6px 0 8px;text-shadow:var(--h1-shadow);outline:none;overflow-wrap:break-word;}
+  @media (max-width:719px){ .cc-doc-h{font-size:24px;} }
+  .cc-byline{margin:0 0 18px;font-family:var(--font-ui);font-size:14.5px;line-height:1.55;color:var(--muted);}
   .cc-byline .cc-a{color:var(--body2);}
-  .cc-sep{padding:0 .35em;color:var(--accent);font-style:normal;}
+  .cc-sep{padding:0 .4em;color:var(--muted);font-style:normal;}
   .cc-actrow{display:flex;flex-wrap:wrap;gap:4px 14px;margin:-10px 0 14px;}
-  .cc-act{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 2px;border:0;background:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.06em;color:var(--accent);}
+  .cc-act{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 2px;border:0;background:none;cursor:pointer;font-family:var(--font-ui);font-size:14px;font-weight:600;color:var(--accent);}
   .cc-act:hover{text-decoration:underline;text-underline-offset:3px;}
   .cc-act .cc-ico{width:18px;height:18px;}
   /* Facts: a quiet definition list with hairlines, not a stack of boxes */
   .cc-facts{display:grid;margin:0 0 16px;padding:0;}
   .cc-fact{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line-faint);}
   .cc-fact:first-child{padding-top:2px;}
-  .cc-fact dt{flex:none;width:118px;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--muted);}
-  .cc-fact dd{margin:0;min-width:0;font-size:16.5px;line-height:1.45;color:var(--body2);}
-  .cc-fact .sub{display:block;margin-top:2px;font-size:15px;font-style:italic;color:var(--muted);}
+  .cc-fact dt{flex:none;width:118px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);}
+  .cc-fact dd{margin:0;min-width:0;font-size:17px;line-height:1.45;color:var(--body2);}
+  .cc-fact .sub{display:block;margin-top:2px;font-family:var(--font-ui);font-size:13px;color:var(--muted);}
   @media (max-width:480px){ .cc-fact{flex-direction:column;gap:2px;} .cc-fact dt{width:auto;} }
   .cc-lead{font-size:20px;line-height:1.6;color:var(--body2);margin:6px 0 10px;max-width:38em;}
-  .cc-lead.drop::first-letter{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:2.7em;float:left;line-height:.86;margin:5px 9px 0 0;color:var(--accent);}
+  .cc-lead.drop::first-letter{font-family:var(--font-display);font-weight:900;font-size:2.7em;float:left;line-height:.86;margin:5px 9px 0 0;color:var(--accent);}
   .cc-prose{font-size:18px;line-height:1.65;color:var(--body2);white-space:pre-line;max-width:38em;}
   @media (max-width:719px){ .cc-lead{font-size:18px;} .cc-prose{font-size:17.5px;} }
   .cc-bullets{display:grid;gap:8px;margin:0;padding:0;list-style:none;}
-  .cc-bullets li{display:flex;gap:10px;font-size:16.5px;line-height:1.5;color:var(--body2);}
-  .cc-bullets li::before{content:"\2726";flex:none;color:var(--effect-bullet);margin-top:1px;}
-  .cc-bullets.notes li::before{content:"\203A";color:#b89a5a;font-size:20px;line-height:1;}
+  .cc-bullets li{display:flex;gap:10px;font-size:17px;line-height:1.5;color:var(--body2);}
+  .cc-bullets li::before{content:"\2726";flex:none;color:var(--accent);margin-top:1px;font-size:14px;}
+  .cc-bullets.notes li::before{content:"\203A";color:var(--muted);font-size:20px;line-height:1;}
   /* Related rows (events, quests, relations): one list, hairline separators, hover tint */
   .cc-rows{display:grid;}
   .cc-rows>*+*{border-top:1px solid var(--line-faint);}
   .cc-evrow,.cc-relrow{display:flex;gap:12px;align-items:center;min-height:52px;padding:9px 8px;border-radius:0;transition:background .15s ease;}
   .cc-evrow{align-items:flex-start;}
-  .cc-evrow:hover,.cc-relrow:hover{background:var(--card-bg);}
+  .cc-evrow:hover,.cc-relrow:hover{background:var(--card-bg-hover);}
   .cc-evrow.is-sel{background:var(--card-bg-sel);}
-  .cc-evrow .cc-seal{width:28px;height:28px;margin-top:2px;}
+  .cc-evrow .cc-evico{margin-top:1px;}
   .cc-evrow-b{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .cc-evrow-m{font-size:14.5px;font-style:italic;color:var(--muted);}
-  .cc-evrow-t{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);line-height:1.25;}
-  .cc-evrow-s{font-size:15.5px;line-height:1.45;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .cc-evrow-m{font-family:var(--font-ui);font-size:13px;line-height:1.35;color:var(--muted);}
+  .cc-evrow-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;color:var(--title);line-height:1.25;overflow-wrap:break-word;}
+  .cc-evrow-s{font-size:16px;line-height:1.45;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .cc-relrow-b{display:flex;flex-direction:column;min-width:0;}
-  .cc-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  @media (max-width:560px){ .cc-two{grid-template-columns:1fr;} }
   .cc-note{padding:2px 0 2px 14px;border-left:2px solid var(--line);}
   .cc-rows>.cc-note{border-top:0;margin-top:14px;}
   .cc-rows>.cc-note:first-child{margin-top:0;}
-  .cc-note-k{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--accent);margin-bottom:3px;}
-  .cc-note-t{font-size:16.5px;line-height:1.5;color:var(--body2);}
-  .cc-note-r{font-size:14.5px;font-style:italic;color:var(--muted);margin-top:3px;}
+  .cc-note-k{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);margin-bottom:3px;}
+  .cc-note-k a{color:var(--accent);}
+  .cc-note-t{font-size:17px;line-height:1.5;color:var(--body2);}
+  .cc-note-r{font-family:var(--font-ui);font-size:13px;color:var(--muted);margin-top:3px;}
   /* Disclosures: a hairline and a caret — secondary material stays one tap away */
   .cc-disc{margin-top:22px;border-top:1px solid var(--line-faint);border-bottom:1px solid var(--line-faint);}
   .cc-disc+.cc-disc{margin-top:0;border-top:0;}
-  .cc-disc>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px;cursor:pointer;font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--section);}
+  .cc-disc>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px;cursor:pointer;font-family:var(--font-head);font-size:15.5px;font-weight:600;letter-spacing:.03em;color:var(--section);}
   .cc-disc>summary::-webkit-details-marker{display:none;}
   .cc-disc>summary::after{content:"\25BE";margin-left:auto;color:var(--accent);transition:transform .2s ease;}
   .cc-disc:not([open])>summary::after{transform:rotate(-90deg);}
-  .cc-disc>summary .cc-ico{width:18px;height:18px;color:var(--accent);}
-  .cc-disc>summary .n{font-family:'EB Garamond',serif;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:0;}
+  .cc-disc>summary .cc-ico{width:19px;height:19px;color:var(--accent);}
+  .cc-disc>summary .n{font-family:var(--font-ui);font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0;}
   .cc-disc-b{padding:2px 4px 18px;}
   .cc-disc-b>.cc-h2:first-child{margin-top:4px;}
-  /* Lore of Exandria: background from the wider world — folded away, below our own story */
-  .cc-lore{margin-top:30px;}
-  .cc-lore>summary{padding:8px 4px;}
-  .cc-lore-h{display:flex;flex-direction:column;gap:1px;min-width:0;}
-  .cc-lore-hint{font-family:'EB Garamond',Georgia,serif;font-weight:400;font-style:italic;font-size:15px;letter-spacing:0;line-height:1.35;color:var(--muted);}
+  /* Lore of Exandria: background from the wider world — folded away, below our own story, in its own cool tone */
+  .cc-lore{margin-top:30px;border-top-color:color-mix(in srgb,var(--lore) 35%,transparent);}
+  .cc-lore>summary{padding:8px 4px;color:var(--lore);}
+  .cc-lore>summary .cc-ico{color:var(--lore);}
+  .cc-lore>summary::after{color:var(--lore);}
+  .cc-lore-h{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .cc-lore-hint{font-family:var(--font-ui);font-weight:400;font-size:13px;letter-spacing:0;line-height:1.35;color:var(--muted);}
   .cc-lore-p{font-size:17px;line-height:1.6;color:var(--body2);margin:2px 0 12px;max-width:38em;}
-  .cc-lore-note{font-size:14.5px;font-style:italic;color:var(--muted);margin:-6px 0 12px;}
+  .cc-lore-note{font-family:var(--font-ui);font-size:13px;color:var(--muted);margin:-6px 0 12px;}
   .cc-lore .cc-facts{margin-bottom:14px;}
   .cc-lore-refs{display:grid;gap:8px;}
-  .cc-extlink{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 14px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);transition:border-color .15s ease;}
-  .cc-extlink:hover{border-color:var(--card-border-hover);}
+  .cc-extlink{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 14px;border-radius:12px;border:1px solid color-mix(in srgb,var(--lore) 30%,transparent);background:var(--card-bg);transition:border-color .15s ease,background .15s ease;}
+  .cc-extlink:hover{border-color:var(--lore);background:var(--card-bg-hover);}
   .cc-extlink-b{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
-  .cc-extlink-t{font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;line-height:1.3;color:var(--title);overflow-wrap:anywhere;}
-  .cc-extlink-s{font-size:14.5px;font-style:italic;color:var(--muted);}
-  .cc-extlink .cc-ico{width:18px;height:18px;color:var(--accent);}
-  .cc-lore-warn{display:flex;gap:8px;margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--body2);}
-  .cc-lore-warn::before{content:"\26A0\FE0E";flex:none;color:var(--effect-bullet);}
-  .cc-lore-foot{margin:12px 0 0;font-size:14px;line-height:1.5;font-style:italic;color:var(--muted);}
-  /* Session-log plots: a ruled paragraph; NPC lists and notes fold away */
-  .cc-plot{position:relative;padding:2px 0 2px 16px;border-left:2px solid var(--accent);}
+  .cc-extlink-t{font-family:var(--font-read);font-size:17px;font-weight:600;line-height:1.3;color:var(--title);overflow-wrap:anywhere;}
+  .cc-extlink-s{font-family:var(--font-ui);font-size:13px;color:var(--muted);}
+  .cc-extlink .cc-ico{width:18px;height:18px;color:var(--lore);}
+  .cc-lore-warn{display:flex;gap:8px;margin:10px 0 0;font-family:var(--font-ui);font-size:14px;line-height:1.45;color:var(--body2);}
+  .cc-lore-warn::before{content:"\26A0\FE0E";flex:none;color:var(--st-pending);}
+  .cc-lore-foot{margin:12px 0 0;font-family:var(--font-ui);font-size:13px;line-height:1.5;color:var(--muted);}
+  /* Session-log plots: a ruled paragraph (open thread = active, closed = done); NPC lists and notes fold away */
+  .cc-plot{position:relative;padding:2px 0 2px 16px;border-left:2px solid var(--st-active);}
   .cc-plot+.cc-plot{margin-top:20px;}
-  .cc-plot.done{border-left-color:var(--done-color);}
+  .cc-plot.done{border-left-color:var(--st-done);}
   .cc-plot-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
-  .cc-plot-n{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);}
+  .cc-plot-n{font-family:var(--font-read);font-size:18px;font-weight:600;color:var(--title);}
   .cc-plot-h a.cc-badge{position:relative;}
   .cc-plot-h a.cc-badge::after{content:"";position:absolute;inset:-11px -6px;}   /* 44px touch target around the small badge */
-  .cc-plot-q{font-size:16.5px;line-height:1.5;color:var(--body2);margin:0 0 4px;}
-  .cc-plot-more>summary{list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;cursor:pointer;font-size:15px;font-style:italic;color:var(--accent);}
+  .cc-plot-q{font-size:17px;line-height:1.5;color:var(--body2);margin:0 0 4px;}
+  .cc-plot-more>summary{list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;cursor:pointer;font-family:var(--font-ui);font-size:13.5px;font-weight:600;color:var(--accent);}
   .cc-plot-more>summary::-webkit-details-marker{display:none;}
-  .cc-plot-more>summary::before{content:"\25B8";font-style:normal;font-size:12px;transition:transform .2s ease;}
+  .cc-plot-more>summary::before{content:"\25B8";font-size:12px;transition:transform .2s ease;}
   .cc-plot-more[open]>summary::before{transform:rotate(90deg);}
-  .cc-plot-k{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--accent);margin:6px 0 5px;}
+  .cc-plot-k{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);margin:6px 0 5px;}
   .cc-plot-npcs{display:grid;gap:5px;margin:0 0 6px;padding:0;list-style:none;}
-  .cc-plot-npcs li{position:relative;padding-left:14px;font-size:15.5px;line-height:1.45;color:var(--body2);}
-  .cc-plot-npcs li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;background:#b89a5a;border-radius:50%;}
+  .cc-plot-npcs li{position:relative;padding-left:14px;font-size:16px;line-height:1.45;color:var(--body2);}
+  .cc-plot-npcs li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;background:var(--muted);border-radius:50%;}
   .cc-steps{position:relative;padding-left:26px;}
-  .cc-steps::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--tl-line);}
+  .cc-steps::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,rgba(180,130,40,.45),rgba(180,130,40,.12));}
   .cc-step{position:relative;margin-bottom:22px;}
   .cc-step::before{content:"";position:absolute;left:-24px;top:7px;width:14px;height:14px;border-radius:50%;background:#2a1c0a;border:2px solid #c7a24b;box-shadow:0 0 0 3px rgba(199,162,75,.18);}
   .cc-step-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
-  .cc-step-h a{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);}
-  .cc-step-h span{font-size:15px;font-style:italic;color:var(--muted);}
+  .cc-step-h a{font-family:var(--font-read);font-size:18.5px;font-weight:600;color:var(--title);}
+  .cc-step-h>span{font-family:var(--font-ui);font-size:13.5px;color:var(--muted);}
   .cc-step .cc-rows{margin-bottom:12px;}
   .cc-prevnext{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;padding-top:18px;border-top:1px solid var(--line-faint);}
-  .cc-pn{display:flex;flex-direction:column;gap:3px;min-height:58px;padding:10px 13px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);min-width:0;}
-  .cc-pn:hover{border-color:var(--card-border-hover);}
+  .cc-pn{display:flex;flex-direction:column;gap:3px;min-height:58px;padding:10px 13px;border-radius:12px;border:1px solid rgba(180,140,60,.18);background:var(--card-bg);min-width:0;}
+  .cc-pn:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
   .cc-pn.next{text-align:right;grid-column:2;}
-  .cc-pn-k{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);}
-  .cc-pn-t{font-family:'Cinzel',serif;font-size:14px;color:var(--title);line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cc-pn-k{font-family:var(--font-ui);font-size:12.5px;font-weight:600;color:var(--muted);}
+  .cc-pn-t{font-family:var(--font-read);font-size:16.5px;font-weight:600;color:var(--title);line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
   .cc-phead{display:flex;align-items:center;gap:16px;margin:14px 0 14px;}
   .cc-phead .cc-doc-h{margin:4px 0 0;}
-  .cc-psub{font-size:16px;font-style:italic;color:var(--muted);}
-  .cc-crumbs{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;font-size:15px;color:var(--muted);}
+  .cc-phead .cc-kick{margin-top:0;}
+  .cc-psub{font-family:var(--font-ui);font-size:14px;line-height:1.4;color:var(--muted);}
   .cc-notfound{padding:40px 10px;text-align:center;}
 
   /* ── Mini-map (contextual) ── */
@@ -449,9 +476,9 @@
   .cc-minimap img{position:absolute;max-width:none;height:auto;display:block;user-select:none;-webkit-user-drag:none;}
   .cc-minimap::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 50%,transparent 55%,rgba(18,11,3,.55) 100%);}
   .cc-minipin{position:absolute;z-index:2;width:22px;height:22px;transform:translate(-50%,-50%) rotate(-45deg);border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,#d9b86f,#8c6d22);border:2px solid #f5ead0;animation:chr-pulse 1.8s ease-in-out infinite;}
-  .cc-mini-cap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:14.5px;font-style:italic;color:var(--muted);}
+  .cc-mini-cap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-family:var(--font-ui);font-size:13.5px;color:var(--muted);}
 
-  /* ── Full map ── */
+  /* ── Full map ── (the map image is the only light surface; every control over it is dark) */
   .cc-mapwrap{position:absolute;inset:0;background:#0f0c07;}
   .cc-vp{position:absolute;inset:12px;border-radius:6px;overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;box-shadow:inset 0 0 0 1px rgba(199,162,75,.35),inset 0 0 0 9px rgba(20,14,6,.92),inset 0 0 0 10px rgba(199,162,75,.3),0 30px 80px rgba(0,0,0,.6);background:#11100c;}
   @media (max-width:719px){ .cc-vp{inset:0;border-radius:0;} }
@@ -462,76 +489,80 @@
   .cc-mapbar{position:absolute;top:22px;left:22px;right:22px;z-index:12;display:flex;align-items:flex-start;gap:8px;pointer-events:none;}
   .cc-mapbar>*{pointer-events:auto;}
   @media (max-width:719px){ .cc-mapbar{top:10px;left:10px;right:10px;} }
-  .cc-mapchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 6px 0 14px;border-radius:999px;border:1px solid rgba(70,45,15,.6);background:rgba(20,14,6,.82);color:#f3e7c9;font-size:15px;box-shadow:0 8px 18px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);max-width:100%;}
-  .cc-mapchip .cc-linkbtn{color:#e6c97a;}
-  .cc-mapbtn{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(70,45,15,.6);background:linear-gradient(180deg,#f7eed4,#d9b86f);color:#1f1409;font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.45);white-space:nowrap;}
+  .cc-mapbtn{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--btn-border);background:var(--float-bg);color:var(--btn-color);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);white-space:nowrap;}
+  .cc-mapbtn:hover{border-color:var(--card-border-sel);}
   .cc-mapbtn .cc-ico{width:18px;height:18px;}
   .cc-zoom{position:absolute;left:24px;bottom:24px;z-index:12;display:flex;align-items:flex-end;gap:10px;}
   @media (max-width:719px){ .cc-zoom{left:12px;bottom:12px;} }
-  .cc-zoomgrp{display:flex;flex-direction:column;border-radius:12px;overflow:hidden;border:1px solid rgba(70,45,15,.6);box-shadow:0 8px 18px rgba(0,0,0,.45);}
-  .cc-zbtn{width:44px;height:44px;border:none;background:linear-gradient(180deg,#f7eed4,#d9b86f);color:#1f1409;font-family:'Cinzel',serif;font-size:21px;line-height:1;cursor:pointer;}
-  .cc-zoomgrp .cc-zbtn+.cc-zbtn{border-top:1px solid rgba(70,45,15,.4);}
-  .cc-zbtn.solo{border-radius:12px;border:1px solid rgba(70,45,15,.6);box-shadow:0 8px 18px rgba(0,0,0,.45);font-size:17px;}
-  .cc-zlabel{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(243,231,201,.85);text-shadow:0 1px 3px rgba(0,0,0,.85);padding-bottom:12px;pointer-events:none;}
+  .cc-zoomgrp{display:flex;flex-direction:column;border-radius:12px;overflow:hidden;border:1px solid var(--btn-border);box-shadow:0 8px 18px rgba(0,0,0,.45);}
+  .cc-zbtn{width:44px;height:44px;border:none;background:var(--float-bg);color:var(--btn-color);font-family:var(--font-ui);font-size:22px;font-weight:500;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+  .cc-zbtn:hover{color:var(--title);}
+  .cc-zoomgrp .cc-zbtn+.cc-zbtn{border-top:1px solid var(--btn-border);}
+  .cc-zbtn.solo{border-radius:12px;border:1px solid var(--btn-border);box-shadow:0 8px 18px rgba(0,0,0,.45);font-size:18px;}
+  .cc-zlabel{margin-bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(20,14,6,.72);font-family:var(--font-ui);font-size:12px;color:rgba(243,231,201,.92);pointer-events:none;}
   @media (max-width:420px){ .cc-zlabel{display:none;} }
   .cc-mappanel{position:absolute;top:76px;left:22px;z-index:13;width:min(330px,calc(100% - 44px));max-height:calc(100% - 170px);overflow-y:auto;padding:14px;border-radius:14px;border:1px solid var(--popup-border);background:var(--popup-bg);box-shadow:0 22px 46px rgba(0,0,0,.5);animation:chr-pop .15s ease both;}
   @media (max-width:719px){ .cc-mappanel{top:62px;left:10px;width:calc(100% - 20px);max-height:calc(100% - 140px);} }
-  .cc-mp-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--section);}
+  .cc-mp-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-family:var(--font-head);font-size:15px;font-weight:600;letter-spacing:.03em;color:var(--section);}
   .cc-partyrow{display:flex;align-items:center;gap:11px;width:100%;min-height:52px;padding:8px 11px;margin-bottom:8px;border-radius:12px;cursor:pointer;text-align:left;border:1px solid var(--chip-border);background:var(--card-bg);transition:all .16s ease;}
+  .cc-partyrow:hover{border-color:var(--card-border-hover);}
   .cc-partyrow.is-off{opacity:.5;}
   .cc-partyrow.is-off .cc-seal{filter:grayscale(.7);}
-  .cc-partyrow-n{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.04em;color:var(--title);line-height:1.1;}
-  .cc-partyrow-r{font-size:13px;font-style:italic;color:var(--muted);line-height:1.15;}
-  .cc-check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:16px;color:var(--body2);cursor:pointer;}
-  .cc-check input{width:20px;height:20px;accent-color:#c4a040;}
-  .cc-popup-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
-  .cc-popup-x{margin-left:auto;width:30px;height:30px;border:none;background:none;cursor:pointer;color:var(--accent);font-size:15px;line-height:1;padding:0;}
-  .cc-popup-t{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--title);line-height:1.2;margin-bottom:5px;}
-  .cc-popup-s{font-size:14px;line-height:1.42;color:var(--body);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+  .cc-partyrow-n{font-family:var(--font-read);font-size:17px;font-weight:600;color:var(--title);line-height:1.15;}
+  .cc-partyrow-r{font-family:var(--font-ui);font-size:12.5px;color:var(--muted);line-height:1.25;}
+  .cc-check{display:flex;align-items:center;gap:10px;min-height:44px;font-family:var(--font-ui);font-size:14.5px;color:var(--body2);cursor:pointer;}
+  .cc-check input{width:20px;height:20px;accent-color:var(--accent);}
+  .cc-popup-meta{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-family:var(--font-ui);font-size:12.5px;line-height:1.3;color:var(--muted);}
+  .cc-popup-meta .cc-evico{width:24px;height:24px;border-radius:7px;}
+  .cc-popup-meta .cc-evico .cc-ico{width:16px;height:16px;}
+  .cc-popup-x{margin-left:auto;flex:none;width:32px;height:32px;border:none;background:none;cursor:pointer;color:var(--muted);font-size:15px;line-height:1;padding:0;}
+  .cc-popup-x:hover{color:var(--title);}
+  .cc-popup-t{font-family:var(--font-read);font-size:18px;font-weight:600;color:var(--title);line-height:1.22;margin-bottom:5px;}
+  .cc-popup-s{font-size:15px;line-height:1.42;color:var(--body);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
   .cc-popup-a{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-  .cc-popup-a .cc-btn{min-height:34px;padding:0 10px;font-size:10px;}
-  .cc-popup-n{margin-top:7px;font-size:12px;font-style:italic;color:var(--muted);}
+  .cc-popup-a .cc-btn{flex:1 1 auto;min-height:40px;padding:0 11px;font-size:13px;}
+  .cc-popup-n{margin-top:7px;font-family:var(--font-ui);font-size:12.5px;color:var(--muted);}
+  .cc-marker:focus-visible{outline:2px solid #f5ead0;outline-offset:2px;}
 
   /* ── Tutorial & status overlays ── */
   .cc-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom));background:rgba(8,5,2,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:chr-pop .2s ease both;}
   .cc-modal{position:relative;width:min(580px,100%);max-height:100%;overflow-y:auto;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:18px;padding:26px 22px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
   .cc-tut{display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid var(--row-border);background:var(--row-bg);}
   .cc-tut+.cc-tut{margin-top:10px;}
-  .cc-tut-i{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;}
-  .cc-tut-t{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--title);margin-bottom:3px;}
-  .cc-tut-d{font-size:15.5px;line-height:1.42;color:var(--body);}
-  .cc-banner{margin:16px auto;max-width:720px;padding:14px 16px;border-radius:12px;border:1px solid var(--failed);color:var(--title);background:rgba(160,40,60,.12);font-size:16px;}
+  .cc-tut-i{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:var(--accent);}
+  .cc-tut-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;color:var(--title);margin-bottom:3px;}
+  .cc-tut-d{font-size:16px;line-height:1.45;color:var(--body);}
+  .cc-banner{margin:16px auto;max-width:720px;padding:14px 16px;border-radius:12px;border:1px solid var(--st-failed);color:var(--title);background:rgba(160,40,60,.12);font-size:16px;}
   .cc-loading{padding:80px 20px;text-align:center;font-style:italic;font-size:18px;color:var(--muted);}
 
-  /* ── Language switch (ES / EN): a small seal-like segmented control, visible on phones too ── */
+  /* ── Language switch (ES / EN): a small segmented control, visible on phones too ── */
   .cc-lang{display:inline-flex;flex:none;border:1px solid var(--chip-border);border-radius:10px;overflow:hidden;background:var(--chip-soft);}
-  .cc-lang button{min-width:40px;min-height:40px;padding:0 9px;border:0;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;letter-spacing:.12em;cursor:pointer;}
+  .cc-lang button{min-width:40px;min-height:40px;padding:0 9px;border:0;background:transparent;color:var(--muted);font-family:var(--font-ui);font-size:13px;font-weight:600;letter-spacing:.06em;cursor:pointer;}
   .cc-lang button+button{border-left:1px solid var(--chip-border);}
   .cc-lang button.is-on{background:var(--btn-bg);color:var(--btn-color);}
   .cc-lang button:not(.is-on):hover{color:var(--title);}
-  @media (max-width:719px){ .cc-top{justify-content:space-between;} .cc-lang{margin-left:auto;} .cc-lang button{min-height:38px;min-width:42px;font-size:11px;} }
-  @media (min-width:720px){ .cc-lang{align-self:center;} }
+  @media (max-width:719px){ .cc-lang{margin-left:auto;} .cc-lang button{min-height:38px;min-width:42px;} }
+  @media (min-width:720px){ .cc-lang{align-self:center;margin-left:auto;} }
 
   /* ── Map: route legend + grouped-marker list ── */
   .cc-swatch{flex:none;display:inline-flex;align-items:center;margin-left:auto;}
   .cc-swatch svg{display:block;}
-  .cc-legend-row{display:flex;align-items:center;gap:10px;min-height:36px;font-size:14.5px;line-height:1.3;color:var(--body2);}
+  .cc-legend-row{display:flex;align-items:center;gap:10px;min-height:36px;font-family:var(--font-ui);font-size:13.5px;line-height:1.35;color:var(--body2);}
   .cc-legend-row .cc-swatch{margin-left:0;}
-  .cc-mp-note{margin:4px 0 6px;font-size:14px!important;line-height:1.4;}
+  .cc-mp-note{margin:4px 0 6px;font-size:15px!important;line-height:1.4;}
   .cc-plist{display:grid;max-height:300px;overflow-y:auto;overscroll-behavior:contain;margin:0 -6px;-webkit-overflow-scrolling:touch;}
   .cc-plist-i{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:48px;padding:7px 6px;border:0;border-top:1px solid var(--line-faint);background:none;text-align:left;cursor:pointer;border-radius:0;}
   .cc-plist-i:first-child{border-top:0;}
-  .cc-plist-i:hover{background:var(--card-bg);}
-  .cc-plist-i .cc-seal{margin-top:2px;}
+  .cc-plist-i:hover{background:var(--card-bg-hover);}
+  .cc-plist-i .cc-evico{margin-top:2px;}
   .cc-plist-b{display:flex;flex-direction:column;gap:1px;min-width:0;}
-  .cc-plist-m{font-size:12.5px;font-style:italic;color:var(--muted);line-height:1.3;}
-  .cc-plist-t{font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:var(--title);line-height:1.25;}
+  .cc-plist-m{font-family:var(--font-ui);font-size:12.5px;color:var(--muted);line-height:1.3;}
+  .cc-plist-t{font-family:var(--font-read);font-size:16px;font-weight:600;color:var(--title);line-height:1.25;}
   .cc-popup-nav{display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid var(--line-faint);}
   .cc-popup-nav .cc-popup-n{margin:0;}
-  .cc-popup-nav .cc-linkbtn{min-height:36px;padding:4px;font-size:11px;}
+  .cc-popup-nav .cc-linkbtn{min-height:36px;padding:4px;font-size:13px;}
   .cc-popup-step{width:36px;height:36px;border:1px solid var(--chip-border);border-radius:9px;background:var(--chip-soft);color:var(--accent);font-size:18px;line-height:1;cursor:pointer;padding:0;}
   @media (max-width:719px){ .cc-mapwrap.has-popup .cc-zoom{display:none;} }   /* the popup needs the whole phone screen */
-  .cc-marker:focus-visible{outline:2px solid #f5ead0;outline-offset:2px;}
 </style>
 </helmet>
 <div class="{{ appCls }}">
@@ -548,7 +579,6 @@
       <sc-for list="{{ langs }}" as="lg"><button class="{{ lg.cls }}" onClick="{{ lg.onClick }}" aria-pressed="{{ lg.on }}" lang="{{ lg.lang }}" title="{{ lg.title }}" aria-label="{{ lg.title }}">{{ lg.short }}</button></sc-for>
     </div>
     <div class="cc-actions">
-      <button class="cc-iconbtn" onClick="{{ onThemeToggle }}" title="{{ themeTitle }}" aria-label="{{ themeTitle }}">{{ themeIcon }}</button>
       <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}">?</button>
     </div>
   </header>
@@ -569,7 +599,7 @@
             <a class="cc-latest" href="{{ c.latest.href }}" title="{{ c.latest.sub }}">
               <span class="cc-latest-k">{{ t.chronicle.latest }}</span>
               <span class="cc-latest-t">{{ c.latest.label }} <i>· {{ c.latest.title }}</i></span>
-              <span class="cc-chev">›</span>
+              <span class="cc-chev">{{ icons.next }}</span>
             </a>
           </sc-if>
         </div>
@@ -630,7 +660,7 @@
             <button class="{{ c.byDayCls }}" onClick="{{ onGroupDay }}" aria-pressed="{{ c.byDay }}" title="{{ t.chronicle.groupDayTitle }}">{{ t.chronicle.groupDay }}</button>
             <button class="{{ c.bySessCls }}" onClick="{{ onGroupSession }}" aria-pressed="{{ c.bySession }}" title="{{ t.chronicle.groupSessionTitle }}">{{ t.chronicle.groupSession }}</button>
           </div>
-          <div class="cc-seg"><button onClick="{{ onToggleSort }}" title="{{ c.sortTitle }}" aria-label="{{ c.sortTitle }}">{{ c.sortLabel }}</button></div>
+          <div class="cc-seg"><button onClick="{{ onToggleSort }}" title="{{ c.sortTitle }}" aria-label="{{ c.sortTitle }}">{{ icons.sort }}{{ c.sortLabel }}</button></div>
         </div>
 
         <sc-if value="{{ c.hasActives }}">
@@ -663,16 +693,16 @@
         <sc-for list="{{ c.groups }}" as="g">
           <section class="{{ g.cls }}" aria-label="{{ g.aria }}">
             <button class="cc-ghead" onClick="{{ g.onToggle }}" aria-expanded="{{ g.isOpen }}">
-              <span class="cc-pill">{{ g.label }}</span><span class="cc-gsub">{{ g.sub }}</span><span class="cc-gline"></span><span class="cc-gcount">{{ g.count }}</span><span class="cc-caret">▾</span>
+              <span class="cc-glabel">{{ g.label }}</span><span class="cc-gsub">{{ g.sub }}</span><span class="cc-gline"></span><span class="cc-gcount" aria-label="{{ g.countAria }}">{{ g.count }}</span><span class="cc-caret" aria-hidden="true">▾</span>
             </button>
             <sc-if value="{{ g.isOpen }}">
-              <div class="cc-tl">
+              <div class="cc-evlist">
                 <sc-for list="{{ g.events }}" as="ev">
                   <a class="{{ ev.cls }}" href="{{ ev.href }}" data-ev="{{ ev.id }}">
-                    <span class="{{ ev.nodeCls }}" style="{{ ev.nodeStyle }}">{{ ev.nodeText }}</span>
-                    <span class="cc-meta"><span class="cc-meta-l">{{ ev.meta }}</span><span class="cc-sesstag">{{ ev.sessTag }}<b aria-hidden="true">›</b></span></span>
+                    <span class="cc-kind">{{ ev.icon }}<span class="cc-kind-l">{{ ev.meta }}</span></span>
                     <span class="cc-card-t">{{ ev.title }}</span>
                     <span class="cc-card-s">{{ ev.summary }}</span>
+                    <span class="cc-go">{{ icons.next }}</span>
                   </a>
                 </sc-for>
               </div>
@@ -690,8 +720,8 @@
           <h1 class="cc-sec-h">{{ t.sessions.title }}</h1>
           <span class="cc-flex"></span>
           <div class="cc-seg" role="group" aria-label="{{ t.sessions.orderAria }}">
-            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}">{{ t.sessions.first }}</button>
-            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}">{{ t.sessions.latest }}</button>
+            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}" aria-pressed="{{ sl.isAsc }}" title="{{ t.sessions.oldestTitle }}">{{ t.sessions.oldest }}</button>
+            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}" aria-pressed="{{ sl.isDesc }}" title="{{ t.sessions.latestTitle }}">{{ t.sessions.latest }}</button>
           </div>
           <p class="cc-sec-sub">{{ sl.sub }}</p>
         </div>
@@ -706,6 +736,7 @@
                   <span class="cc-cmeta">{{ it.meta }}</span>
                   <sc-if value="{{ it.opening }}"><span class="cc-ctext">{{ it.opening }}</span></sc-if>
                 </span>
+                <span class="cc-go">{{ icons.next }}</span>
               </a>
             </sc-if>
           </sc-for>
@@ -721,16 +752,17 @@
           <p class="cc-sec-sub">{{ ql.sub }}</p>
         </div>
         <div class="cc-statusbar" role="group" aria-label="{{ t.quests.statusAria }}">
-          <sc-for list="{{ ql.tabs }}" as="tb"><button class="{{ tb.cls }}" onClick="{{ tb.onClick }}" aria-pressed="{{ tb.on }}">{{ tb.label }} <span class="cc-count">{{ tb.count }}</span></button></sc-for>
+          <sc-for list="{{ ql.tabs }}" as="tb"><button class="{{ tb.cls }}" onClick="{{ tb.onClick }}" aria-pressed="{{ tb.on }}">{{ tb.icon }}{{ tb.label }} <span class="cc-count">{{ tb.count }}</span></button></sc-for>
         </div>
         <sc-for list="{{ ql.groups }}" as="grp">
-          <h2 class="cc-h2">{{ grp.label }} <span class="n">{{ grp.count }}</span></h2>
+          <h2 class="{{ grp.cls }}">{{ grp.icon }}{{ grp.label }} <span class="n">{{ grp.count }}</span></h2>
           <div class="cc-list">
             <sc-for list="{{ grp.items }}" as="q">
               <a class="{{ q.cls }}" href="{{ q.href }}">
                 <span class="cc-ctitle">{{ q.title }}</span>
                 <span class="cc-ctext">{{ q.summary }}</span>
                 <sc-if value="{{ q.foot }}"><span class="cc-cmeta">{{ q.foot }}</span></sc-if>
+                <span class="cc-go">{{ icons.next }}</span>
               </a>
             </sc-for>
           </div>
@@ -785,9 +817,8 @@
         </div>
         <div class="cc-tree">
           <sc-for list="{{ pll.items }}" as="p">
-            <div class="cc-prow" style="{{ p.indent }}">
+            <div class="{{ p.rowCls }}" style="{{ p.indent }}">
               <a class="{{ p.cls }}" href="{{ p.href }}">
-                <span class="cc-seal mono-type mono sm">{{ p.glyph }}</span>
                 <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><span class="cc-row-sub">{{ p.sub }}</span></span>
               </a>
               <sc-if value="{{ p.mapHref }}"><a class="cc-prow-map" href="{{ p.mapHref }}" title="{{ p.mapTitle }}" aria-label="{{ p.mapTitle }}">{{ icons.target }}</a></sc-if>
@@ -815,7 +846,7 @@
             <sc-if value="{{ mp.hasSel }}">
               <div data-nopan="1" data-popup="{{ mp.sel.key }}" onMouseDown="{{ stop }}" style="{{ mp.sel.style }}">
                 <div style="{{ mp.sel.arrowStyle }}"></div>
-                <div class="cc-popup-meta"><span class="cc-seal sm" style="{{ mp.sel.seal }}"></span><span>{{ mp.sel.meta }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseSel }}" aria-label="{{ t.common.close }}">✕</button></div>
+                <div class="cc-popup-meta"><span class="{{ mp.sel.icoCls }}">{{ mp.sel.icon }}</span><span>{{ mp.sel.meta }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseSel }}" aria-label="{{ t.common.close }}">✕</button></div>
                 <div class="cc-popup-t">{{ mp.sel.title }}</div>
                 <div class="cc-popup-s">{{ mp.sel.summary }}</div>
                 <div class="cc-popup-a"><a class="cc-btn" href="{{ mp.sel.readHref }}">{{ t.map.readEntry }}</a><a class="cc-btn ghost" href="{{ mp.sel.sessionHref }}">{{ mp.sel.sessionLabel }}</a></div>
@@ -836,7 +867,7 @@
                 <div class="cc-popup-meta"><span>{{ mp.list.title }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseList }}" aria-label="{{ t.common.close }}">✕</button></div>
                 <sc-if value="{{ mp.list.sub }}"><div class="cc-popup-n" style="margin:0 0 6px;">{{ mp.list.sub }}</div></sc-if>
                 <div class="cc-plist cc-scroll" style="{{ mp.list.listStyle }}">
-                  <sc-for list="{{ mp.list.items }}" as="it"><button class="cc-plist-i" onClick="{{ it.onSelect }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-plist-b"><span class="cc-plist-m">{{ it.meta }}</span><span class="cc-plist-t">{{ it.title }}</span></span></button></sc-for>
+                  <sc-for list="{{ mp.list.items }}" as="it"><button class="cc-plist-i" onClick="{{ it.onSelect }}"><span class="{{ it.icoCls }}">{{ it.icon }}</span><span class="cc-plist-b"><span class="cc-plist-m">{{ it.meta }}</span><span class="cc-plist-t">{{ it.title }}</span></span></button></sc-for>
                 </div>
                 <sc-if value="{{ mp.list.canZoom }}"><div class="cc-popup-a"><button class="cc-btn ghost" onClick="{{ mp.list.onZoom }}">{{ icons.search }}{{ t.map.zoomToSeparate }}</button></div></sc-if>
               </div>
@@ -893,8 +924,8 @@
           <span class="cc-dockind">{{ d.kindLabel }}</span>
           <span class="cc-flex"></span>
           <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="{{ t.common.viewOnMap }}">{{ icons.target }}<span>{{ t.common.map }}</span></a></sc-if>
-          <sc-if value="{{ d.prevHref }}"><a class="cc-iconbtn sm" href="{{ d.prevHref }}" title="{{ d.prevTitle }}" aria-label="{{ d.prevTitle }}">‹</a></sc-if>
-          <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">›</a></sc-if>
+          <sc-if value="{{ d.prevHref }}"><a class="cc-iconbtn sm" href="{{ d.prevHref }}" title="{{ d.prevTitle }}" aria-label="{{ d.prevTitle }}">{{ icons.back }}</a></sc-if>
+          <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">{{ icons.next }}</a></sc-if>
           <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}">✕</button>
         </div>
 
@@ -902,7 +933,7 @@
 
         <!-- EVENT -->
         <sc-if value="{{ d.event }}">
-          <div class="cc-kick"><span>{{ e.typeLabel }}</span><span class="cc-dot"></span><span>{{ e.kickWhen }}</span></div>
+          <div class="{{ e.kickCls }}">{{ e.icon }}<span>{{ e.typeLabel }}</span><span class="cc-dot"></span><span>{{ e.kickWhen }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ e.title }}</h1>
           <p class="cc-byline"><a class="cc-a" href="{{ e.sessionHref }}">{{ e.sessionLabel }}{{ e.sessionTitle }}</a><sc-if value="{{ e.place }}"><span class="cc-sep">·</span><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a></sc-if><sc-if value="{{ e.placeOnly }}"><span class="cc-sep">·</span>{{ e.placeOnly }}</sc-if></p>
           <p class="cc-lead drop">{{ e.summary }}</p>
@@ -920,13 +951,13 @@
           <sc-if value="{{ e.hasQuests }}">
             <h2 class="cc-h2">{{ t.event.quests }}</h2>
             <div class="cc-rows">
-              <sc-for list="{{ e.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for>
+              <sc-for list="{{ e.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for>
             </div>
           </sc-if>
           <sc-if value="{{ e.hasRelated }}">
             <h2 class="cc-h2">{{ t.event.connected }}</h2>
             <div class="cc-rows">
-              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
+              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
             </div>
           </sc-if>
           <details class="cc-disc">
@@ -952,7 +983,7 @@
               <div class="cc-disc-b">
                 <sc-for list="{{ e.plots }}" as="p">
                   <div class="{{ p.cls }}">
-                    <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.closed }}"><span class="cc-badge tone-done">{{ p.closed }}</span></sc-if></div>
+                    <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.closed }}"><span class="cc-badge tone-done">{{ icons.check }}{{ p.closed }}</span></sc-if></div>
                     <p class="cc-plot-q">{{ p.qt }}</p>
                     <sc-if value="{{ p.hasNotes }}"><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
                   </div>
@@ -979,7 +1010,7 @@
           <h2 class="cc-h2">{{ t.session.whatHappened }} <span class="n">{{ s.eventCount }}</span></h2>
           <sc-if value="{{ s.noEvents }}"><p class="cc-muted">{{ t.session.noEvents }}</p></sc-if>
           <div class="cc-rows">
-            <sc-for list="{{ s.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for>
+            <sc-for list="{{ s.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for>
           </div>
           <sc-if value="{{ s.hasEffects }}">
             <h2 class="cc-h2">{{ t.session.effects }}</h2>
@@ -988,7 +1019,7 @@
           <sc-if value="{{ s.hasQuests }}">
             <h2 class="cc-h2">{{ t.session.questsInPlay }}</h2>
             <div class="cc-rows">
-              <sc-for list="{{ s.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for>
+              <sc-for list="{{ s.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for>
             </div>
           </sc-if>
           <sc-if value="{{ s.hasActive }}">
@@ -1010,7 +1041,7 @@
             <h2 class="cc-h2">{{ t.session.closedThis }}</h2>
             <sc-for list="{{ s.completedPlots }}" as="p">
               <div class="{{ p.cls }}">
-                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><span class="cc-badge tone-done">{{ p.closed }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">{{ t.common.questLink }}</a></sc-if></div>
+                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><span class="cc-badge tone-done">{{ icons.check }}{{ p.closed }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">{{ t.common.questLink }}</a></sc-if></div>
                 <p class="cc-plot-q">{{ p.qt }}</p>
                 <sc-if value="{{ p.hasMore }}">
                   <details class="cc-plot-more"><summary>{{ p.moreLabel }}</summary>
@@ -1034,7 +1065,7 @@
 
         <!-- QUEST -->
         <sc-if value="{{ d.quest }}">
-          <div class="cc-kick"><span class="{{ q.badgeCls }}">{{ q.badge }}</span><span>{{ q.tableText }}</span></div>
+          <div class="cc-kick"><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span><span>{{ q.tableText }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ q.title }}</h1>
           <sc-if value="{{ q.hasByline }}"><p class="cc-byline"><sc-if value="{{ q.giver }}">{{ t.quest.givenBy }} <sc-if value="{{ q.giverHref }}"><a class="cc-a" href="{{ q.giverHref }}">{{ q.giver }}</a></sc-if><sc-if value="{{ q.giverPlain }}">{{ q.giver }}</sc-if></sc-if><sc-if value="{{ q.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ q.dayText }}">{{ q.dayText }}</sc-if></p></sc-if>
           <div class="cc-actrow"><button class="cc-act" onClick="{{ q.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div>
@@ -1056,10 +1087,10 @@
             <sc-for list="{{ q.steps }}" as="st">
               <div class="cc-step">
                 <div class="cc-step-h"><a href="{{ st.href }}">{{ st.label }}</a><span>{{ st.sub }}</span></div>
-                <sc-if value="{{ st.hasEvents }}"><div class="cc-rows"><sc-for list="{{ st.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div></sc-if>
+                <sc-if value="{{ st.hasEvents }}"><div class="cc-rows"><sc-for list="{{ st.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div></sc-if>
                 <sc-for list="{{ st.plots }}" as="p">
                   <div class="{{ p.cls }}">
-                    <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.closed }}"><span class="cc-badge tone-done">{{ p.closed }}</span></sc-if></div>
+                    <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.closed }}"><span class="cc-badge tone-done">{{ icons.check }}{{ p.closed }}</span></sc-if></div>
                     <p class="cc-plot-q">{{ p.qt }}</p>
                     <sc-if value="{{ p.hasNotes }}"><details class="cc-plot-more"><summary>{{ p.notesLabel }}</summary><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></details></sc-if>
                   </div>
@@ -1102,11 +1133,11 @@
           </sc-if>
           <sc-if value="{{ p.hasQuests }}">
             <h2 class="cc-h2">{{ t.person.quests }}</h2>
-            <div class="cc-rows"><sc-for list="{{ p.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for></div>
+            <div class="cc-rows"><sc-for list="{{ p.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasEvents }}">
             <h2 class="cc-h2">{{ t.person.appearances }} <span class="n">{{ p.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasPlaces }}">
             <h2 class="cc-h2">{{ t.person.places }}</h2>
@@ -1124,7 +1155,7 @@
           <sc-if value="{{ pp.planarNote }}"><p class="cc-muted">{{ pp.planarNote }}</p></sc-if>
           <sc-if value="{{ pp.hasEvents }}">
             <h2 class="cc-h2">{{ t.place.happened }} <span class="n">{{ pp.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasChildren }}">
             <h2 class="cc-h2">{{ t.place.within }}</h2>
@@ -1132,7 +1163,7 @@
           </sc-if>
           <sc-if value="{{ pp.hasQuests }}">
             <h2 class="cc-h2">{{ t.place.quests }}</h2>
-            <div class="cc-rows"><sc-for list="{{ pp.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for></div>
+            <div class="cc-rows"><sc-for list="{{ pp.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasPeople }}">
             <h2 class="cc-h2">{{ t.place.seen }}</h2>
@@ -1187,8 +1218,7 @@
       <div class="cc-sheet-grip"></div>
       <div class="cc-sheet-grid">
         <sc-for list="{{ moreItems }}" as="n"><a class="{{ n.cls }}" href="{{ n.href }}">{{ n.icon }}<span>{{ n.label }}</span></a></sc-for>
-        <button class="cc-sheet-item" onClick="{{ onThemeToggle }}"><span class="cc-ico" style="font-size:22px;line-height:26px;height:26px;text-align:center;color:var(--accent);">{{ themeIcon }}</span><span>{{ themeShort }}</span></button>
-        <button class="cc-sheet-item" onClick="{{ onOpenTutorial }}"><span class="cc-ico" style="font-family:Cinzel,serif;font-size:22px;line-height:26px;height:26px;text-align:center;color:var(--accent);">?</span><span>{{ t.guide.short }}</span></button>
+        <button class="cc-sheet-item wide" onClick="{{ onOpenTutorial }}">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
       </div>
     </div>
   </sc-if>
@@ -1338,10 +1368,43 @@ const ICON_SHAPES = {
   layers:   ["M12 4 3.5 8.5 12 13l8.5-4.5z","M3.5 12.5 12 17l8.5-4.5","M3.5 16.5 12 21l8.5-4.5"],
   lore:     ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M3.5 12h17","M12 3.5c2.4 2.3 3.6 5.1 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.1-3.6-8.5s1.2-6.2 3.6-8.5z"],
   external: ["M14 4.5h5.5V10","M19.5 4.5 11 13","M17.5 13.5v5a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1h5"],
+  next:     ["M9.5 5.5 16 12l-6.5 6.5"],
+  sort:     ["M7.5 4.5v15","M4 8l3.5-3.5L11 8","M16.5 19.5v-15","M13 16l3.5 3.5L20 16"],
+  check:    ["M5 12.5l4.5 4.5L19 7.5"],
+  help:     ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.7","M12 16.8v.3"],
 };
-const ICONS = Object.fromEntries(Object.entries(ICON_SHAPES).map(([k,ds])=>[k,
-  h("svg",{className:"cc-ico",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:k==="more"?3:1.7,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",focusable:"false"},
-    ds.map((d,i)=>h("path",{key:i,d})))]));
+// Event types — exactly one icon per type of ChronicleModel.EVENT_TYPES, always shown with the
+// type's label and tinted with its family colour (--ev-<family>). Same 24px stroke style as above.
+const EVENT_ICON_SHAPES = {
+  combat:       ["M14.5 17.5 3 6V3h3l11.5 11.5","M13 19l6-6","M16 16l4 4","M19 21l2-2","M14.5 6.5 18 3h3v3l-3.5 3.5","M5 14l4 4","M7 17l-3 3","M3 19l2 2"],          // crossed swords
+  encounter:    ["M10 10.5a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5z","M3.5 20c.6-3.7 3.2-6.2 6.5-6.2s5.9 2.5 6.5 6.2","M19.5 4.5V11","M19.5 14.3v.4"], // someone appears
+  conversation: ["M4.5 4h9a2 2 0 0 1 2 2v5.5a2 2 0 0 1-2 2H8.5L5 16.5v-3h-.5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z","M15.5 8.5h4a2 2 0 0 1 2 2V16a2 2 0 0 1-2 2H19v3l-3.5-3H11a2 2 0 0 1-2-2v-.5"], // speech bubbles
+  revelation:   ["M10 2.5c.6 4 2.9 6.4 7 7.5-4.1 1.1-6.4 3.5-7 7.5-.6-4-2.9-6.4-7-7.5 4.1-1.1 6.4-3.5 7-7.5z","M18.5 14.5c.3 1.6 1.2 2.6 2.8 3-1.6.4-2.5 1.4-2.8 3-.3-1.6-1.2-2.6-2.8-3 1.6-.4 2.5-1.4 2.8-3z","M19 3v3","M17.5 4.5h3"], // sparkles
+  vision:       ["M2.5 13.5s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z","M12 16.25a2.75 2.75 0 1 0 0-5.5 2.75 2.75 0 0 0 0 5.5z","M12 2.5V5","M5.6 4.6l1.5 1.9","M18.4 4.6l-1.5 1.9"], // radiant eye
+  dream:        ["M19.5 14.6A7.8 7.8 0 1 1 9.4 4.5a6.3 6.3 0 0 0 10.1 10.1z","M17 3.5v3","M15.5 5h3"],                                                  // moon and star
+  decision:     ["M12 3.5v17","M8.5 20.5h7","M5 7h14","M5 7l-2.5 6.5","M5 7l2.5 6.5","M2.5 13.5h5a2.5 2.5 0 0 1-5 0z","M19 7l-2.5 6.5","M19 7l2.5 6.5","M16.5 13.5h5a2.5 2.5 0 0 1-5 0z"], // scales
+  discovery:    ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z","M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"],                                                         // compass
+  quest:        ["M6 21V4","M6 4.5h11l-2.5 4 2.5 4H6"],                                                                                                 // the quest flag (same concept as the Quests section)
+  travel:       ["M12 3v18","M12 5.5h6.5l2 2-2 2H12","M12 12H5.5l-2 2 2 2H12","M9.5 21h5"],                                                             // signpost
+  planar:       ["M5.5 20.5V10a6.5 6.5 0 0 1 13 0v10.5","M3.5 20.5h17","M12 9.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"],                         // portal: a doorway holding a star
+  downtime:     ["M12 3c2.8 2.7 4.3 4.9 4.3 7.3a4.3 4.3 0 0 1-8.6 0c0-1.5.6-2.7 1.7-3.8.3 1.2 1 2 2 2.3-.5-2.2-.2-3.9.6-5.8z","M4.5 20.5l15-4","M19.5 20.5l-15-4"], // campfire
+  other:        ["M12 3.5 19 12l-7 8.5L5 12z","M12 13.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4z"],                                                       // plain lozenge
+};
+// Quest status, by tone (ChronicleModel.QUEST_STATUS[status].tone) — always next to the status label.
+const STATUS_ICON_SHAPES = {
+  active:  ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z",{fill:"M12 7a5 5 0 0 1 0 10z"}],                      // half-filled: under way
+  pending: ["M7 3.5h10","M7 20.5h10","M8 3.5c0 4.5 4 5.5 4 8.5s-4 4-4 8.5","M16 3.5c0 4.5-4 5.5-4 8.5s4 4 4 8.5"],  // hourglass
+  done:    ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M8.3 12.4l2.5 2.5 5-5.4"],                          // check
+  failed:  ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M9.2 9.2l5.6 5.6","M14.8 9.2l-5.6 5.6"],             // cross
+  other:   ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z",{fill:"M12 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"}],
+};
+// Decorative: every icon is aria-hidden; its meaning is always also given as text (label, title or aria-label).
+const svgIcon = (ds,sw) => h("svg",{className:"cc-ico",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:sw,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",focusable:"false"},
+  ds.map((d,i)=>typeof d==="string"?h("path",{key:i,d}):h("path",{key:i,d:d.fill,fill:"currentColor",stroke:"none"})));
+const iconSet = (shapes,sw) => Object.fromEntries(Object.entries(shapes).map(([k,ds])=>[k,svgIcon(ds,typeof sw==="function"?sw(k):sw)]));
+const ICONS = iconSet(ICON_SHAPES,k=>k==="more"?3:1.7);
+const EVENT_ICONS = iconSet(EVENT_ICON_SHAPES,1.6);
+const STATUS_ICONS = iconSet(STATUS_ICON_SHAPES,1.8);
 
 // ── Route line styles: one colour + dash pattern per party member (party order) ─
 const ROUTE_DASHES = ["8 4", "2 4", "11 4 2 4", "5 3 1 3"];
@@ -1386,8 +1449,11 @@ class Component extends DCLogic {
     this.raw=null; this._content={}; this._models={}; this._ts={};
     this._mqMobile=window.matchMedia("(max-width: 719px)");
     this._mqWide=window.matchMedia("(min-width: 1024px)");
-    const prefs=Prefs.get("chronicle-prefs",{})||{};
-    const theme=Prefs.get("chronicle-theme",null);
+    // Only explicit choices are kept (see ChronicleModel.normalizePrefs); legacy keys are migrated once.
+    const prefs=M.normalizePrefs(Prefs.get("chronicle-prefs",null)), order=M.sortOrders(prefs);
+    Prefs.set("chronicle-prefs",prefs);
+    // There is a single dark theme: a light-mode choice saved by an older version is simply discarded.
+    try{ localStorage.removeItem("chronicle-theme"); }catch(e){}
     const savedFilters=Prefs.getS("chronicle-filters",null);
     const lang=I18N.loadLocale(safeStorage());
     this.t=this._translator(lang);
@@ -1397,8 +1463,8 @@ class Component extends DCLogic {
       filters:{...M.EMPTY_FILTERS, pcs:[], ...(savedFilters&&typeof savedFilters==="object"?savedFilters:{})},
       filtersOpen:false,
       groupBy:prefs.groupBy==="session"?"session":"day",
-      sortDesc:!!prefs.sortDesc,
-      sessionsDesc:!!prefs.sessionsDesc,
+      sortDesc:order.chronicle==="desc",             // Chronicle: latest first unless the user chose otherwise
+      sessionsDesc:order.sessions==="desc",          // Sessions: oldest first unless the user chose otherwise
       collapsedGroups:{},
       questStatus:"all",
       peopleQuery:"",
@@ -1406,7 +1472,6 @@ class Component extends DCLogic {
       view:{ scale:1, x:0, y:0 },
       mapSelId:null, mapList:null, mapPanelOpen:false, hiLoaded:false,
       isMobile:this._mqMobile.matches, isWide:this._mqWide.matches,
-      darkMode:theme==null?true:theme==="dark",
       docs:{}, dataError:null, loaded:false,
       showTutorial:false, moreOpen:false,
     };
@@ -1629,9 +1694,11 @@ class Component extends DCLogic {
   reset()              { const filters={...M.EMPTY_FILTERS,pcs:[]}; Prefs.setS("chronicle-filters",filters); this.setState({filters,mapList:null}); }
   filterBy(key,val)    { const filters={...M.EMPTY_FILTERS,pcs:[],[key]:val}; Prefs.setS("chronicle-filters",filters); this._scroll.chronicle=0; this.setState({filters,filtersOpen:false}); this.navigate("#/chronicle"); }
   toggleGroup(key)     { this.setState(s=>({collapsedGroups:{...s.collapsedGroups,[key]:!s.collapsedGroups[key]}})); }
-  savePrefs()          { const {groupBy,sortDesc,sessionsDesc}=this.state; Prefs.set("chronicle-prefs",{groupBy,sortDesc,sessionsDesc}); }
-  setPref(patch)       { this.setState(patch,()=>this.savePrefs()); }
-  toggleTheme()        { this.setState(s=>{ Prefs.set("chronicle-theme",s.darkMode?"light":"dark"); return {darkMode:!s.darkMode}; }); }
+  // Grouping/order preferences: each control stores only its own explicit choice.
+  savePref(patch)      { Prefs.set("chronicle-prefs",M.normalizePrefs({...M.normalizePrefs(Prefs.get("chronicle-prefs",null)),...patch})); }
+  setGroupBy(groupBy)  { this.setState({groupBy}); this.savePref({groupBy}); }
+  setChronicleOrder(desc){ this.setState({sortDesc:desc}); this.savePref({chronicleOrder:desc?"desc":"asc"}); }
+  setSessionsOrder(desc) { this.setState({sessionsDesc:desc}); this.savePref({sessionsOrder:desc?"desc":"asc"}); }
   openTutorial()       { this.setState({showTutorial:true,moreOpen:false}); }
   closeTutorial()      { try{ localStorage.setItem("chronicle-tutorial-seen","1"); }catch(e){} this.setState({showTutorial:false}); }
 
@@ -1648,27 +1715,17 @@ class Component extends DCLogic {
   seal(p)         { return p&&p.sealImg?`background-image:url("${p.sealImg}");`:""; }
   sealCls(p,extra){ return "cc-seal"+(p&&!p.sealImg?` mono mono-${p.category}`:"")+(extra?" "+extra:""); }
   mono(p)         { return p&&!p.sealImg?((p.name.replace(/^(the|an?|el|la|los|las|un|una)\s+/i,"").match(/[A-Za-zÀ-ÿ]/)||["?"])[0].toUpperCase()):""; }
-  multiSeal()     { return `background-image:url("assets/icon-bund-der-vier.png");`; }
-  // Seal for an event: the shared party seal for several PCs, a portrait for one, else the type glyph.
-  evSeal(ev){
-    const pcs=ev.characterIds;
-    if(pcs.length>1) return {cls:"cc-seal",style:this.multiSeal(),mono:""};
-    const p=pcs.length?this.model.personById.get(pcs[0]):null;
-    if(p) return {cls:this.sealCls(p),style:this.seal(p),mono:this.mono(p)};
-    return {cls:"cc-seal mono mono-type",style:"",mono:ev.typeGlyph};
-  }
-  // Timeline/list marker: a portrait only when it says something (a lone party member's scene);
-  // otherwise the event-type glyph, so the marker tells events apart instead of repeating the party seal.
-  evNode(ev){
-    const pcs=ev.characterIds, p=pcs.length===1?this.model.personById.get(pcs[0]):null;
-    if(p&&p.sealImg) return {cls:this.sealCls(p),style:this.seal(p),mono:""};
-    return {cls:"cc-seal mono mono-type",style:"",mono:ev.typeGlyph};
-  }
+  // Every event is identified the same way everywhere (cards, rows, map popups): its type icon,
+  // tinted by the type's family (.ev-<family> → --ev), next to the type label.
+  evIcon(ev)      { return EVENT_ICONS[ev.type]||EVENT_ICONS.other; }
+  evFamily(ev)    { return "ev-"+(ev.typeFamily||"neutral"); }
+  evIco(ev,size)  { return { icoCls:`cc-evico ${this.evFamily(ev)}${size?" "+size:""}`, icon:this.evIcon(ev) }; }
+  statusIcon(tone){ return STATUS_ICONS[tone]||STATUS_ICONS.other; }
   personChip(p,sub){ return { href:this.href("character",p.id), label:p.name, sub:sub||"", cls:"cc-chip", hasSeal:true, sealCls:this.sealCls(p), seal:this.seal(p), mono:this.mono(p) }; }
-  questRow(q)     { return { href:this.href("quest",q.id), title:q.title, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}` }; }
+  questRow(q)     { return { href:this.href("quest",q.id), title:q.title, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`, badgeIcon:this.statusIcon(q.statusTone) }; }
   placeChip(pl)   { return { href:this.href("place",pl.id), label:pl.name, sub:pl.kindLabel }; }
-  evRow(ev)       { const s=this.evNode(ev); return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:this.dayText(ev), session:ev.session, sessionLabel:this.sessLabel(ev.session), glyph:ev.typeGlyph,
-                      cls:"cc-evrow"+(this.isOpen("event",ev.id)?" is-sel":""), sealCls:s.cls, seal:s.style, mono:s.mono }; }
+  evRow(ev)       { return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:`${ev.typeLabel} · ${this.dayText(ev)}`, session:ev.session, sessionLabel:this.sessLabel(ev.session),
+                      cls:"cc-evrow"+(this.isOpen("event",ev.id)?" is-sel":""), ...this.evIco(ev) }; }
   plotVm(p){
     const t=this.t;
     const npcs=(p.npcs||[]).map(n=>{
@@ -1686,6 +1743,7 @@ class Component extends DCLogic {
       moreLabel:[npcs.length?t("session.npcsN",{count:npcs.length}):"", notes.length?t("session.notesN",{count:notes.length}):""].filter(Boolean).join(" · ") };
   }
   sessionSub(s){ return [s.playedLabel?this.t("common.played",{date:s.playedLabel}):"", s.dayText].filter(Boolean).join(" · "); }
+  metaLine(parts){ return parts.filter(Boolean).map(p=>String(p).replace(/ /g," ")).join(" · "); }
   options(list,anyLabel){ return [h("option",{key:"_",value:""},anyLabel),...list.map(o=>h("option",{key:o.value,value:o.value},o.label))]; }
   _memoize(slot,key,fn){ const m=this._memo[slot]; if(m&&m.key===key) return m.val; const val=fn(); this._memo[slot]={key,val}; return val; }
 
@@ -1693,13 +1751,8 @@ class Component extends DCLogic {
   _buildChronicle(){
     const m=this.model, f=this.state.filters, st=this.state, t=this.t;
     const evs=M.filterEvents(m,f);
-    const ordered=st.sortDesc?evs.slice().reverse():evs;
-    const groups=[], byKey={};
-    ordered.forEach(ev=>{
-      const key=st.groupBy==="session"?`s${ev.session}`:(ev.campaignDay!=null?`d${ev.campaignDay}`:"d?");
-      if(!byKey[key]){ byKey[key]={key,evs:[]}; groups.push(byKey[key]); }
-      byKey[key].evs.push(ev);
-    });
+    // Latest first reverses the days/sessions; each one still reads in its recorded order.
+    const groups=M.chronicleGroups(evs,{groupBy:st.groupBy,order:st.sortDesc?"desc":"asc"}).map(g=>({key:g.key,evs:g.events}));
     const vm=groups.map(g=>{
       const first=g.evs[0], isOpen=!st.collapsedGroups[g.key];
       let label, sub;
@@ -1714,19 +1767,15 @@ class Component extends DCLogic {
       // Cards only carry what the group header doesn't already say: the day when grouped by session,
       // the session only when one day spans several. People, place, quests and map live in the entry.
       const multiSession=st.groupBy==="day"&&new Set(g.evs.map(e=>e.session)).size>1;
+      const count=t("common.events",{count:g.evs.length});
       return {
-        key:g.key, label, sub, aria:`${label} — ${sub}`, count:g.evs.length, isOpen, cls:"cc-group"+(isOpen?"":" is-closed"),
+        key:g.key, label, sub, aria:`${label} — ${sub} — ${count}`, count:g.evs.length, countAria:count, isOpen, cls:"cc-group"+(isOpen?"":" is-closed"),
         onToggle:()=>this.toggleGroup(g.key),
-        events:isOpen?g.evs.map(ev=>{
-          const s=this.evNode(ev);
-          return {
-            id:ev.id, href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary,
-            meta:st.groupBy==="session"?`${this.dayText(ev)} · ${ev.typeLabel}`:ev.typeLabel,
-            sessTag:multiSession?this.sessLabel(ev.session):"",
-            cls:"cc-card"+(this.isOpen("event",ev.id)?" is-sel":""),
-            nodeCls:"cc-node", nodeStyle:s.style, nodeText:s.mono,
-          };
-        }):[],
+        events:isOpen?g.evs.map(ev=>({
+          id:ev.id, href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, icon:this.evIcon(ev),
+          meta:[ev.typeLabel, st.groupBy==="session"?this.dayText(ev):"", multiSession?this.sessLabel(ev.session):""].filter(Boolean).join(" · "),
+          cls:`cc-card ${this.evFamily(ev)}`+(this.isOpen("event",ev.id)?" is-sel":""),
+        })):[],
       };
     });
 
@@ -1737,7 +1786,7 @@ class Component extends DCLogic {
       npc:this.options(m.npcs.filter(withEvents).sort(byName).map(p=>({value:p.id,label:p.name})),t("chronicle.anyone")),
       quest:this.options(m.quests.filter(withEvents).slice().sort((a,b)=>a.statusOrder-b.statusOrder||this.cmp(a.title,b.title)).map(q=>({value:q.id,label:`${q.title}${q.status==="completed"?" ✓":""}`})),t("chronicle.anyQuest")),
       session:this.options(m.sessions.filter(s=>s.eventIds.length).map(s=>({value:String(s.no),label:`${this.sessLabel(s.no)}${s.title?` — ${s.title}`:""}`})),t("chronicle.anySession")),
-      type:this.options(Object.entries(M.EVENT_TYPES).filter(([k])=>m.events.some(e=>e.type===k)).map(([k,ty])=>({value:k,label:`${ty.glyph} ${t(`eventType.${k}`)}`})),t("chronicle.anyType")),
+      type:this.options(Object.entries(M.EVENT_TYPES).filter(([k])=>m.events.some(e=>e.type===k)).map(([k])=>({value:k,label:t(`eventType.${k}`)})),t("chronicle.anyType")),
       place:this.options(this._placeOrder().filter(p=>p.allEventIds.length).map(p=>({value:p.id,label:`${" ".repeat(p.depth)}${p.name}`})),t("chronicle.anywhere")),
       dayFrom:this.options(dayOpt("chronicle.fromDay"),t("chronicle.fromBeginning")),
       dayTo:this.options(dayOpt("chronicle.toDay"),t("chronicle.toLatest")),
@@ -1782,6 +1831,7 @@ class Component extends DCLogic {
       resultsText:evs.length===m.events.length?t("chronicle.resultsAll",{count:m.events.length}):t("chronicle.resultsSome",{count:evs.length,total:m.events.length}),
       byDay:st.groupBy==="day", bySession:st.groupBy==="session",
       byDayCls:st.groupBy==="day"?"is-on":"", bySessCls:st.groupBy==="session"?"is-on":"",
+      // The order button names the order on screen; its title/aria-label says what a tap switches to.
       sortLabel:st.sortDesc?t("chronicle.newest"):t("chronicle.oldest"), sortTitle:st.sortDesc?t("chronicle.newestTitle"):t("chronicle.oldestTitle"),
       latest:last?{href:this.href("session",last.no),label:this.sessLabel(last.no),title:last.title||"",sub:this.sessionSub(last)}:null,
     };
@@ -1797,35 +1847,35 @@ class Component extends DCLogic {
   // ── Section lists ─────────────────────────────────────────────────────────
   _buildSessions(){
     const m=this.model, desc=this.state.sessionsDesc, t=this.t;
-    const asc=m.sessions, items=[];
-    asc.forEach((s,i)=>{
-      const prev=asc[i-1];
-      if(prev&&s.no-prev.no>1){ const a=prev.no+1,b=s.no-1; items.push({isGap:true,text:a===b?t("sessions.gapOne",{n:a}):t("sessions.gapRange",{a,b})}); }
+    // Numeric session order (oldest first by default), with a marker for every unchronicled run.
+    const items=M.sessionListItems(m,{order:desc?"desc":"asc"}).map(it=>{
+      if(it.gap) return { isGap:true, text:it.from===it.to?t("sessions.gapOne",{n:it.from}):t("sessions.gapRange",{a:it.from,b:it.to}) };
+      const s=it.session;
       // Number, title, when, and the opening line; who took part and which quests moved are in the log.
-      items.push({ isSession:true, no:s.no, aria:this.sessLabel(s.no), href:this.href("session",s.no), title:s.title||this.sessLabel(s.no),
-        meta:[this.sessionSub(s)||t("sessions.noDate"), s.eventIds.length?t("common.events",{count:s.eventIds.length}):""].filter(Boolean).join(" · "),
+      return { isSession:true, no:s.no, aria:this.sessLabel(s.no), href:this.href("session",s.no), title:s.title||this.sessLabel(s.no),
+        meta:this.metaLine([s.playedLabel?t("common.played",{date:s.playedLabel}):"", s.dayText])||t("sessions.noDate"),
         opening:s.startedHere||(s.isStub?t("sessions.noLogYet"):""),
-        cls:"cc-scard"+(this.isOpen("session",s.no)?" is-sel":"") });
+        cls:"cc-scard"+(this.isOpen("session",s.no)?" is-sel":"") };
     });
-    if(desc) items.reverse();
     const played=m.sessions.filter(s=>!s.isStub).length;
     return { items, sub:t("sessions.sub",{count:played}),
-      ascCls:desc?"":"is-on", descCls:desc?"is-on":"",
-      onAsc:()=>this.setPref({sessionsDesc:false}), onDesc:()=>this.setPref({sessionsDesc:true}) };
+      isAsc:!desc, isDesc:desc, ascCls:desc?"":"is-on", descCls:desc?"is-on":"",
+      onAsc:()=>this.setSessionsOrder(false), onDesc:()=>this.setSessionsOrder(true) };
   }
   _buildQuests(){
     const m=this.model, sel=this.state.questStatus, t=this.t;
     const statuses=[...new Set(m.quests.map(q=>q.status))].sort((a,b)=>(m.quests.find(q=>q.status===a).statusOrder)-(m.quests.find(q=>q.status===b).statusOrder));
     const labelOf=st=>m.quests.find(q=>q.status===st).statusLabel;
-    const tabs=[{key:"all",label:t("quests.all"),count:m.quests.length},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length}))]
-      .map(tb=>({...tb,on:sel===tb.key,cls:"cc-btn ghost"+(sel===tb.key?" is-on":""),onClick:()=>this.setState({questStatus:tb.key})}));
-    // Status is carried by the group heading and the card's edge colour, so no badge per card;
-    // the cast, places and events of each quest stay in its page.
+    const toneOf=st=>m.quests.find(q=>q.status===st).statusTone;
+    const tabs=[{key:"all",label:t("quests.all"),count:m.quests.length,tone:""},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length,tone:toneOf(st)}))]
+      .map(tb=>({...tb,on:sel===tb.key,icon:tb.tone?this.statusIcon(tb.tone):null,cls:"cc-btn ghost"+(tb.tone?` tone-${tb.tone}`:"")+(sel===tb.key?" is-on":""),onClick:()=>this.setState({questStatus:tb.key})}));
+    // Status is carried by the group heading (icon + label) and the card's edge colour, so no badge
+    // per card; the cast, places and events of each quest stay in its page.
     const card=q=>({ href:this.href("quest",q.id), title:q.title, summary:q.summary,
-      cls:"cc-qcard"+(q.statusTone==="done"?" tone-done":"")+(this.isOpen("quest",q.id)?" is-sel":""),
-      foot:[q.giver?t("quests.givenBy",{name:q.giver}):"", q.lastSession!=null?t("quests.lastIn",{n:q.lastSession}):""].filter(Boolean).join(" · ") });
+      cls:`cc-qcard tone-${q.statusTone}`+(this.isOpen("quest",q.id)?" is-sel":""),
+      foot:this.metaLine([q.giver?t("quests.givenBy",{name:q.giver}):"", q.lastSession!=null?t("quests.lastIn",{n:q.lastSession}):""]) });
     const recent=(a,b)=>(b.lastSession||0)-(a.lastSession||0)||this.cmp(a.title,b.title);
-    const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st).sort(recent).map(card); return {label:labelOf(st),count:items.length,items}; });
+    const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st).sort(recent).map(card); return {label:labelOf(st),count:items.length,items,icon:this.statusIcon(toneOf(st)),cls:`cc-h2 tone-${toneOf(st)}`}; });
     const active=m.quests.filter(q=>q.status==="active").length;
     return { tabs, groups, sub:t("quests.sub",{active,total:m.quests.length}) };
   }
@@ -1846,10 +1896,9 @@ class Component extends DCLogic {
       party, hasParty:party.length>0, groups, isEmpty:!party.length&&!groups.length };
   }
   _buildPlaces(){
-    const KIND_GLYPH={continent:"◐",region:"◑",sea:"≈",city:"♜",district:"▦",site:"⌂",plane:"◈"};
-    // Name + kind; the map stays one tap away for every place that has a pin.
-    return { items:this._placeOrder().map(p=>({ href:this.href("place",p.id), name:p.name, glyph:KIND_GLYPH[p.kind]||"✦",
-      sub:p.kindLabel, indent:`margin-left:${Math.min(p.depth,4)*(this.state.isMobile?12:18)}px;`,
+    // Name + kind, indented under its parent like an index; the map stays one tap away for every place with a pin.
+    return { items:this._placeOrder().map(p=>({ href:this.href("place",p.id), name:p.name,
+      sub:p.kindLabel, indent:`margin-left:${Math.min(p.depth,4)*(this.state.isMobile?12:18)}px;`, rowCls:"cc-prow"+(p.depth?" is-nested":""),
       mapHref:this.placeMapHref(p), mapTitle:this.t("places.onMap",{name:p.name}),
       cls:"cc-row"+(this.isOpen("place",p.id)?" is-sel":"") })) };
   }
@@ -1908,7 +1957,7 @@ class Component extends DCLogic {
     if(ev.campaignDay!=null) worldParts.push(t(ev.dayApprox?"common.aboutDay":"common.day",{n:ev.campaignDay}));
     if(ev.igDate) worldParts.push(ev.igDate);
     return {
-      title:this.title(ev), summary:ev.summary, description:ev.description, glyph:ev.typeGlyph, typeLabel:ev.typeLabel,
+      title:this.title(ev), summary:ev.summary, description:ev.description, typeLabel:ev.typeLabel, icon:this.evIcon(ev), kickCls:`cc-kick ${this.evFamily(ev)}`,
       kickWhen:this.dayText(ev), placeOnly:!pl&&ev.placeLabel?ev.placeLabel:"",
       session:ev.session, sessionLabel:this.sessLabel(ev.session), sessionHref:this.href("session",ev.session), sessionTitle:s&&s.title?` — ${s.title}`:"",
       playedText:s&&s.playedLabel?t("common.played",{date:s.playedLabel}):"",
@@ -1936,7 +1985,7 @@ class Component extends DCLogic {
       // Where the session began and ended, with the in-game clock beside each — one block instead of two.
       startedHere:s.startedHere||t("common.notRecorded"), endedHere:s.endedHere||t("common.notRecorded"), igStart:s.igStart||"", igEnd:s.igEnd||"", igRest:s.igRest||"",
       hasStart, hasEnd, hasTime:hasStart||hasEnd||!!s.igRest,
-      events:evs.map(ev=>({...this.evRow(ev),summary:ev.summary,when:`${this.dayText(ev)} · ${ev.typeLabel}${ev.placeLabel?` · ${ev.placeLabel}`:""}`})),
+      events:evs.map(ev=>({...this.evRow(ev),summary:ev.summary,when:`${ev.typeLabel} · ${this.dayText(ev)}${ev.placeLabel?` · ${ev.placeLabel}`:""}`})),
       eventCount:evs.length, noEvents:evs.length===0,
       quests:s.questIds.map(id=>m.questById.get(id)).sort((a,b)=>a.statusOrder-b.statusOrder).map(q=>this.questRow(q)), hasQuests:s.questIds.length>0,
       people:people.map(id=>this.personChip(m.personById.get(id))), hasPeople:people.length>0,
@@ -1954,13 +2003,13 @@ class Component extends DCLogic {
                   ...q.npcIds.filter(id=>!q.characterIds.includes(id)).map(id=>{ const p=m.personById.get(id); return this.personChip(p,p.id===q.giverId?t("quest.gaveQuest"):""); })];
     const steps=q.progress.map(stp=>{
       const s=m.sessionByNo.get(stp.session);
-      const events=stp.eventIds.map(id=>{ const ev=m.eventById.get(id); return {...this.evRow(ev),when:`${this.dayText(ev)} · ${ev.typeLabel}`}; });
+      const events=stp.eventIds.map(id=>this.evRow(m.eventById.get(id)));
       const plots=stp.plots.map(p=>this.plotVm(p));
       return { session:stp.session, label:this.sessLabel(stp.session), href:this.href("session",stp.session), sub:[s&&s.title, s&&s.playedLabel?t("common.playedLower",{date:s.playedLabel}):""].filter(Boolean).join(" · "),
         events, hasEvents:events.length>0, plots, isEmpty:!events.length&&!plots.length };
     });
     return {
-      title:q.title, summary:q.summary, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`,
+      title:q.title, summary:q.summary, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`, badgeIcon:this.statusIcon(q.statusTone),
       sessText:q.sessionNos.length?q.sessionNos.map(n=>t("common.sessionShort",{n})).join(" · "):"",
       giver:q.giver, giverHref:giver?this.href("character",giver.id):null, giverPlain:!giver,
       hasByline:!!(q.giver||q.dayText), bothByline:!!(q.giver&&q.dayText),
@@ -1998,7 +2047,7 @@ class Component extends DCLogic {
   }
   _placeVm(pl){
     const m=this.model, t=this.t, same=(a,b)=>M.fold(a)===M.fold(b);
-    const events=pl.allEventIds.map(id=>{ const ev=m.eventById.get(id), sub=ev.locationId!==pl.id&&m.placeById.get(ev.locationId); return {...this.evRow(ev),when:`${this.dayText(ev)}${sub?` · ${sub.name}`:""}`}; });
+    const events=pl.allEventIds.map(id=>{ const ev=m.eventById.get(id), sub=ev.locationId!==pl.id&&m.placeById.get(ev.locationId); const row=this.evRow(ev); return {...row,when:`${row.when}${sub?` · ${sub.name}`:""}`}; });
     const notes=pl.notes.map(n=>({ session:n.session, sessionLabel:this.sessLabel(n.session), href:this.href("session",n.session), plot:n.plot, text:n.text||t("place.mentioned"),
       recordedAs:n.recordedAs&&!same(n.recordedAs,pl.nameEn)&&!same(n.recordedAs,pl.name)?t("person.recordedAs",{name:n.recordedAs}):"" }));
     const people=pl.personIds.map(id=>m.personById.get(id)).sort((a,b)=>(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)).map(p=>this.personChip(p));
@@ -2136,7 +2185,7 @@ class Component extends DCLogic {
       style:`position:absolute;left:${anchor.xp}%;top:${anchor.yp}%;width:${W}px;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:13px;padding:12px 14px 13px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);z-index:8;${below
         ?`transform:translate(${tx},${((40+dy)*inv).toFixed(2)}px) scale(${inv});transform-origin:50% 0;`
         :`transform:translate(${tx},calc(-100% - ${((20-dy)*inv).toFixed(2)}px)) scale(${inv});transform-origin:50% 100%;`}animation:chr-pop .18s ease both;cursor:default;`,
-      arrowStyle:dy?"display:none;":`position:absolute;left:${arrowLeft}px;${below?"top":"bottom"}:-7px;width:14px;height:14px;background:${st.darkMode?(below?"#1e180e":"#282010"):(below?"#f7eed4":"#ead7ab")};border-${below?"left":"right"}:1px solid var(--popup-border);border-${below?"top":"bottom"}:1px solid var(--popup-border);transform:translateX(-50%) rotate(45deg);`,
+      arrowStyle:dy?"display:none;":`position:absolute;left:${arrowLeft}px;${below?"top":"bottom"}:-7px;width:14px;height:14px;background:var(${below?"--popup-top":"--popup-bottom"});border-${below?"left":"right"}:1px solid var(--popup-border);border-${below?"top":"bottom"}:1px solid var(--popup-border);transform:translateX(-50%) rotate(45deg);`,
     };
   }
   _buildMap(){
@@ -2160,18 +2209,16 @@ class Component extends DCLogic {
       const frame=this._popupFrame(mk,view,chrome+Math.min(items.length*58,listMax),`list|${listIds.join(",")}|${st.lang}|${mt.vw}`);
       list={ ...frame, listStyle:`max-height:${listMax}px;`, title:spots>1?t("map.listNear",{count:items.length,spots}):t("map.listHere",{count:items.length}),
         sub:spots>1&&!fullSep?t("map.listNearSub"):"",
-        items:items.map(ev=>{ const s=this.evNode(ev); return { title:this.title(ev), meta:`${this.dayText(ev)} · ${this.sessLabel(ev.session)} · ${ev.typeLabel}`,
-          sealCls:s.cls+" sm", seal:s.style, mono:s.mono, onSelect:()=>this.selectPin(ev.id,{keep:true}) }; }),
+        items:items.map(ev=>({ title:this.title(ev), meta:`${ev.typeLabel} · ${this.dayText(ev)} · ${this.sessLabel(ev.session)}`,
+          ...this.evIco(ev,"sm"), onSelect:()=>this.selectPin(ev.id,{keep:true}) })),
         canZoom:!!sep, onZoom:()=>sep&&this.zoomTo({xp:mk.xp,yp:mk.yp},sep.scale) };
     }
     const selEv=!hasListOpen&&selId&&evs.find(e=>e.id===selId)||null;
     if(selEv){
       const mk=markerOf(selEv.id), group=mk?mk.events:[selEv], gi=group.findIndex(e=>e.id===selEv.id);
-      const s=this.evSeal(selEv);
       const step=d=>()=>this.selectPin(group[(gi+d+group.length)%group.length].id,{keep:true});
       sel={ ...this._popupFrame(mk||selEv,view,group.length>1?290:236,`sel|${selEv.id}|${group.length}|${st.lang}|${this._mapMetrics().vw}`), title:this.title(selEv), summary:selEv.summary,
-        meta:`${this.dayText(selEv)} · ${this.sessLabel(selEv.session)}`,
-        seal:s.style||"background:linear-gradient(160deg,#4a3a20,#241608);",
+        meta:`${selEv.typeLabel} · ${this.dayText(selEv)} · ${this.sessLabel(selEv.session)}`, ...this.evIco(selEv),
         readHref:`#/map/event/${enc(selEv.id)}`, sessionHref:`#/map/session/${selEv.session}`, sessionLabel:t("map.sessionLog",{n:selEv.session}),
         hasGroup:group.length>1, groupNote:t("map.nOfM",{i:gi+1,n:group.length}),
         onPrev:step(-1), onNext:step(1), listLabel:t("map.showList",{count:group.length}), onList:()=>this.openList(group.map(e=>e.id)) };
@@ -2190,7 +2237,7 @@ class Component extends DCLogic {
     if(m.hasUnassigned){ const on=!pcs.length||pcs.includes(M.NO_CHARACTER);
       party.push({ name:t("map.unassignedRow"), sub:"", on, cls:"cc-partyrow"+(on?"":" is-off"), sealCls:"cc-seal mono mono-type", seal:"", mono:"❦", swatch:null, onToggle:()=>this.toggleVisiblePc(M.NO_CHARACTER) }); }
     const sharedMembers=[...new Set(routes.layers.shared.flatMap(l=>l.memberIds))].map(id=>m.personById.get(id).name);
-    const pinsKey=[view.scale.toFixed(4),selId||"",(listIds||[]).join(","),st.lang,st.darkMode].join("|");
+    const pinsKey=[view.scale.toFixed(4),selId||"",(listIds||[]).join(","),st.lang].join("|");
     const pins=(this._memo.pins&&this._memo.pins.markers===markers&&this._memo.pins.key===pinsKey)?this._memo.pins.val
       :(this._memo.pins={markers,key:pinsKey,val:this._buildPins(markers,view,selId,hasListOpen?listIds:null)}).val;
     return {
@@ -2233,14 +2280,12 @@ class Component extends DCLogic {
               characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map" };
     return {
       t:t.dict, htmlLang:t.meta.htmlLang, langs,
-      appCls:`cc-app theme-${st.darkMode?"dark":"light"}`,
+      appCls:"cc-app",
       bodyCls:"cc-body"+(hasDetail?" has-detail":""),
       mainCls:"cc-main cc-scroll"+(sec==="map"?" is-map":""),
       icons:ICONS, nav, bottomNav,
       moreItems:secondary.map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
       moreOpen:st.moreOpen, onOpenMore:()=>this.setState(s=>({moreOpen:!s.moreOpen})), onCloseMore:()=>this.setState({moreOpen:false}),
-      themeIcon:st.darkMode?"☀":"☾", themeTitle:st.darkMode?t("theme.toLight"):t("theme.toDark"), themeShort:st.darkMode?t("theme.light"):t("theme.dark"),
-      onThemeToggle:()=>this.toggleTheme(),
       showTutorial:st.showTutorial, onOpenTutorial:()=>this.openTutorial(), onCloseTutorial:()=>this.closeTutorial(),
       dataError:st.dataError, loading:!ready&&!st.dataError,
       v, f:st.filters,
@@ -2256,8 +2301,8 @@ class Component extends DCLogic {
       onDayFrom:e=>this.setF("dayFrom",e.target.value), onDayTo:e=>this.setF("dayTo",e.target.value),
       onPlayedFrom:e=>this.setF("playedFrom",e.target.value), onPlayedTo:e=>this.setF("playedTo",e.target.value),
       onReset:()=>this.reset(), onToggleFilters:()=>this.setState(s=>({filtersOpen:!s.filtersOpen})),
-      onGroupDay:()=>this.setPref({groupBy:"day"}), onGroupSession:()=>this.setPref({groupBy:"session"}),
-      onToggleSort:()=>this.setPref({sortDesc:!st.sortDesc}),
+      onGroupDay:()=>this.setGroupBy("day"), onGroupSession:()=>this.setGroupBy("session"),
+      onToggleSort:()=>this.setChronicleOrder(!st.sortDesc),
       mainRef:this.mainRef, detailRef:this.detailRef, searchRef:this.searchRef, headRef:this.headRef, vpRef:this.vpRef,
       stop:e=>e.stopPropagation(),
       sampleNote:t("chronicle.endnote",{n:lastSess}),

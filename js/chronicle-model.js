@@ -20,20 +20,22 @@
 
   // ── Vocabularies (English defaults; localized labels come from opts.t) ────
   // ︎ forces text (not emoji) presentation so glyphs match the parchment UI.
+  // `family` is the colour group the interface uses (index.html: --ev-<family> tokens). The
+  // colour says which kind of moment it is; each type keeps its own icon and label.
   const EVENT_TYPES = {
-    encounter:    { label: "Encounter",       glyph: "☉" },
-    conversation: { label: "Conversation",    glyph: "❝" },
-    revelation:   { label: "Revelation",      glyph: "✶" },
-    vision:       { label: "Divine vision",   glyph: "☀︎" },
-    dream:        { label: "Dream",           glyph: "☾" },
-    decision:     { label: "Decision",        glyph: "⚖︎" },
-    discovery:    { label: "Discovery",       glyph: "✦" },
-    combat:       { label: "Combat",          glyph: "⚔︎" },
-    quest:        { label: "Quest milestone", glyph: "⚑" },
-    travel:       { label: "Journey",         glyph: "➶" },
-    planar:       { label: "Other plane",     glyph: "◈" },
-    downtime:     { label: "Rest & rites",    glyph: "⌂" },
-    other:        { label: "Event",           glyph: "❦" },
+    encounter:    { label: "Encounter",       glyph: "☉",  family: "social" },
+    conversation: { label: "Conversation",    glyph: "❝",  family: "social" },
+    revelation:   { label: "Revelation",      glyph: "✶",  family: "arcane" },
+    vision:       { label: "Divine vision",   glyph: "☀︎", family: "vision" },
+    dream:        { label: "Dream",           glyph: "☾",  family: "vision" },
+    decision:     { label: "Decision",        glyph: "⚖︎", family: "turning" },
+    discovery:    { label: "Discovery",       glyph: "✦",  family: "discovery" },
+    combat:       { label: "Combat",          glyph: "⚔︎", family: "conflict" },
+    quest:        { label: "Quest milestone", glyph: "⚑",  family: "turning" },
+    travel:       { label: "Journey",         glyph: "➶",  family: "journey" },
+    planar:       { label: "Other plane",     glyph: "◈",  family: "arcane" },
+    downtime:     { label: "Rest & rites",    glyph: "⌂",  family: "journey" },
+    other:        { label: "Event",           glyph: "❦",  family: "neutral" },
   };
 
   const QUEST_STATUS = {
@@ -451,7 +453,7 @@
         title: pickStr(tr, "title", str(e.title) || e.id), titleEn: str(e.title) || e.id,
         summary: pickStr(tr, "summary", str(e.summary)), description: pickStr(tr, "description", str(e.description)),
         consequences: pickArr(tr, "consequences", arr(e.consequences)),
-        type: typeKey, typeLabel: L(`eventType.${typeKey}`, EVENT_TYPES[typeKey].label), typeGlyph: EVENT_TYPES[typeKey].glyph,
+        type: typeKey, typeLabel: L(`eventType.${typeKey}`, EVENT_TYPES[typeKey].label), typeGlyph: EVENT_TYPES[typeKey].glyph, typeFamily: EVENT_TYPES[typeKey].family,
         characterIds: arr(e.characterIds), npcIds: arr(e.npcIds), questIds: arr(e.questIds),
         locationId: e.locationId || null, relatedIds: arr(e.relatedEventIds),
         igLabel, igDate: str(e.igDate), whenLabel: ig.when, placeLabel: ig.where,
@@ -702,6 +704,59 @@
     return Object.keys(EMPTY_FILTERS).filter(k => k !== "text" && (Array.isArray(f[k]) ? f[k].length : f[k] !== "" && f[k] != null)).length;
   }
 
+  // ── Presentation order (never stored in the data) ─────────────────────────
+  // Defaults: the Chronicle opens on the latest events, Sessions on the first session.
+  // Only an explicit choice is persisted ("chronicleOrder" / "sessionsOrder": "asc" | "desc"),
+  // so a default is never frozen into storage. Legacy prefs: `sessionsDesc: true` could only
+  // come from the user (the old default was false) and is kept; the old `sortDesc` / a false
+  // `sessionsDesc` were written along with any other preference, so they are dropped.
+  const DEFAULT_ORDER = Object.freeze({ chronicle: "desc", sessions: "asc" });
+  const isOrder = v => v === "asc" || v === "desc";
+
+  function normalizePrefs(stored) {
+    const p = stored && typeof stored === "object" ? stored : {};
+    const out = {};
+    if (p.groupBy === "day" || p.groupBy === "session") out.groupBy = p.groupBy;
+    if (isOrder(p.chronicleOrder)) out.chronicleOrder = p.chronicleOrder;
+    if (isOrder(p.sessionsOrder)) out.sessionsOrder = p.sessionsOrder;
+    else if (p.sessionsDesc === true) out.sessionsOrder = "desc";
+    return out;
+  }
+
+  function sortOrders(prefs) {
+    const p = normalizePrefs(prefs);
+    return { chronicle: p.chronicleOrder || DEFAULT_ORDER.chronicle, sessions: p.sessionsOrder || DEFAULT_ORDER.sessions };
+  }
+
+  // Chronicle groups (by campaign day or by session) in the chosen order. `events` must be in
+  // chronological order (model.events / filterEvents). Only the groups are reversed for "desc":
+  // inside a day or session the entries keep their recorded narrative order (day → session →
+  // `order` → file order), so a day still reads from its first scene to its last. Events with
+  // no campaign day form one "undated" group, always listed last.
+  function chronicleGroups(events, { groupBy = "day", order = DEFAULT_ORDER.chronicle } = {}) {
+    const groups = [], byKey = new Map();
+    events.forEach(ev => {
+      const key = groupBy === "session" ? `s${ev.session}` : (ev.campaignDay != null ? `d${ev.campaignDay}` : "d?");
+      if (!byKey.has(key)) { const g = { key, events: [] }; byKey.set(key, g); groups.push(g); }
+      byKey.get(key).events.push(ev);
+    });
+    if (order !== "desc") return groups;
+    const undated = groups.filter(g => g.key === "d?");
+    return [...groups.filter(g => g.key !== "d?").reverse(), ...undated];
+  }
+
+  // The Sessions list: sessions by number (numeric, never by label), with a gap marker for
+  // every run of session numbers that has no entry. "desc" reverses the whole list.
+  function sessionListItems(model, { order = DEFAULT_ORDER.sessions } = {}) {
+    const asc = model.sessions.slice().sort((a, b) => a.no - b.no), items = [];
+    asc.forEach((s, i) => {
+      const prev = asc[i - 1];
+      if (prev && s.no - prev.no > 1) items.push({ gap: true, from: prev.no + 1, to: s.no - 1 });
+      items.push({ gap: false, session: s });
+    });
+    return order === "desc" ? items.reverse() : items;
+  }
+
   // Party members a character filter shows (pcs empty → everyone), in party order.
   function selectedCharacterIds(model, pcs) {
     if (!pcs || !pcs.length) return model.pcs.map(p => p.id);
@@ -735,6 +790,7 @@
   }
 
   return { build, filterEvents, search, activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
+    chronicleGroups, sessionListItems, normalizePrefs, sortOrders, DEFAULT_ORDER,
     checkTranslations, normalizeRoutes, normalizeLore, safeExternalUrl, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
     EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, LORE_FACTS, fmtDate, parseDay, parseRecorded, splitIgLabel };
 });

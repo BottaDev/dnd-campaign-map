@@ -326,18 +326,131 @@ for (const w of [320, 360, 390, 430]) {
   });
 }
 
-await check("lore · light theme renders the section with the parchment tokens", async () => {
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); localStorage.setItem("chronicle-theme", JSON.stringify("light")); } catch (e) {} });
+// ── One dark theme ──────────────────────────────────────────────────────────
+const lum = rgb => { const [r, g, b] = rgb.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+await check("theme · always dark: no toggle, an old light preference is ignored and removed, dark browser chrome", async () => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, colorScheme: "light" });
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); if (!sessionStorage.getItem("seeded")) { localStorage.setItem("chronicle-theme", JSON.stringify("light")); sessionStorage.setItem("seeded", "1"); } } catch (e) {} });
   const page = await ctx.newPage();
-  page.on("pageerror", e => errors.push(`light: ${e.message}`));
+  page.on("pageerror", e => errors.push(`theme: ${e.message}`));
   await page.goto(BASE + "#/places/place/vasselheim");
   await page.waitForSelector(".cc-lore");
-  assert(await page.locator(".cc-app.theme-light").count(), "light theme");
+  eq(await page.locator(".theme-light, .theme-dark").count(), 0, "no theme classes");
+  eq(await page.evaluate(() => localStorage.getItem("chronicle-theme")), null, "old preference removed");
+  eq(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme), "dark", "color-scheme");
+  eq(await page.getAttribute("meta[name=theme-color]", "content"), "#140f08", "theme-color");
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  assert(lum(bg) < 0.02, `body background ${bg}`);
+  // The reading pane fills the phone screen; go back to a list to reach the bottom bar's More sheet.
+  await page.evaluate(() => { location.hash = "#/places"; });
+  await page.locator("button.cc-bn").tap();                    // "More" (labelled with the current secondary section)
+  await page.waitForSelector(".cc-sheet");
+  const sheet = (await page.textContent(".cc-sheet")).toLowerCase();
+  assert(!/modo|claro|oscuro|tema/.test(sheet), `sheet: ${sheet}`);
+  eq(await page.locator(".cc-sheet-item").count(), 4, "Characters, Places, Map + guide");
+  await page.keyboard.press("Escape");
+  // Secondary surfaces use the dark tokens: lore text, popup panels, map controls.
+  await page.evaluate(() => { location.hash = "#/places/place/vasselheim"; });
+  await page.waitForSelector(".cc-lore");
   await page.locator(".cc-lore summary").tap();
-  await page.locator(".cc-lore").screenshot({ path: path.join(OUT, "lore-light-390.png") });
-  const color = await page.$eval(".cc-lore-p", el => getComputedStyle(el).color);
-  eq(color, "rgb(67, 51, 28)", "body text uses --body2 of the light theme");
+  eq(await page.$eval(".cc-lore-p", el => getComputedStyle(el).color), "rgb(205, 181, 136)", "lore text uses --body2");
+  await page.screenshot({ path: path.join(OUT, "theme-dark-390.png") });
+  await page.evaluate(() => { location.hash = "#/map"; });
+  await page.waitForSelector(".cc-mapbtn");
+  for (const sel of [".cc-mapbtn", ".cc-zbtn"]) {
+    const c = await page.$eval(sel, el => getComputedStyle(el).backgroundColor);
+    assert(lum(c) < 0.05, `${sel} background ${c} is dark`);
+  }
+  await page.reload();
+  await page.waitForSelector(".cc-mapwrap");
+  eq(await page.evaluate(() => localStorage.getItem("chronicle-theme")), null, "still no theme after reload");
+  await ctx.close();
+});
+
+await check("theme · no light flash: the document is dark before the app boots", async () => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "light" });
+  const page = await ctx.newPage();
+  let release;
+  const held = new Promise(r => { release = r; });
+  await page.route("**/support.js", async r => { await held; await r.continue(); });
+  const nav = page.goto(BASE + "#/chronicle", { waitUntil: "commit" });
+  await nav;
+  await page.waitForFunction(() => !!document.documentElement && !!document.head && !!document.querySelector("head style"));
+  const bg = await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+  release();
+  assert(lum(bg) < 0.02, `html background before the runtime: ${bg}`);
+  await ctx.close();
+});
+
+// ── Default orders ──────────────────────────────────────────────────────────
+await check("order · Chronicle opens latest first, Sessions oldest first; both reversible, kept apart, kept across languages", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle");
+  const days = () => page.$$eval(".cc-glabel", els => els.map(e => parseInt(e.textContent.replace(/\D+/g, ""), 10)));
+  const d0 = await days();
+  assert(d0.length > 3 && d0.every((d, i) => !i || d < d0[i - 1]), `latest day first: ${d0}`);
+  const day39 = await page.$$eval(".cc-group", gs => { const g = gs.find(x => /39/.test(x.querySelector(".cc-glabel").textContent)); return [...g.querySelectorAll("a[data-ev]")].map(a => a.dataset.ev); });
+  eq(day39.slice(0, 2), ["s11_05", "s11_06"], "inside a day, the recorded order (session 11 before 12)");
+  const sortBtn = ".cc-results .cc-seg:last-child button";
+  eq((await page.textContent(sortBtn)).trim(), "Recientes primero", "label");
+  await page.click(sortBtn);
+  const d1 = await days();
+  eq(d1, d0.slice().reverse(), "oldest first after one tap");
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("chronicle-prefs")).chronicleOrder), "asc", "explicit choice saved");
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForFunction(() => document.documentElement.lang === "en");
+  eq(await days(), d1, "language switch keeps the order");
+  eq((await page.textContent(sortBtn)).trim(), "Oldest first", "English label");
+  // Sessions: its own default, its own preference.
+  await page.evaluate(() => { location.hash = "#/sessions"; });
+  await page.waitForSelector(".cc-scard");
+  const nos = () => page.$$eval(".cc-scard-no", els => els.map(e => +e.textContent));
+  const s0 = await nos();
+  eq(s0, s0.slice().sort((a, b) => a - b), "Sessions oldest first by default (numeric: 10 after 8)");
+  await page.click(".cc-sechead .cc-seg button:last-child");
+  eq(await nos(), s0.slice().reverse(), "latest first");
+  await page.reload();
+  await page.waitForSelector(".cc-scard");
+  eq(await nos(), s0.slice().reverse(), "Sessions choice kept after reload");
+  await page.evaluate(() => { location.hash = "#/chronicle"; });
+  await page.waitForSelector(".cc-glabel");
+  eq(await days(), d1, "the Chronicle choice is independent and kept too");
+  await ctx.close();
+});
+
+await check("order · filters work with both orders (same entries, reversed days)", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle");
+  await page.fill("input[type=search]", "pelor");
+  await page.waitForTimeout(150);
+  const evs = () => page.$$eval("a[data-ev]", as => as.map(a => a.dataset.ev));
+  const desc = await evs(), count = await page.textContent(".cc-results-t");
+  await page.click(".cc-results .cc-seg:last-child button");
+  const asc = await evs();
+  eq(asc.slice().sort(), desc.slice().sort(), "same entries");
+  eq(await page.textContent(".cc-results-t"), count, "same count");
+  assert(asc[0] !== desc[0], "different first entry");
+  await ctx.close();
+});
+
+// ── Event cards: icon + label, three levels, compact ────────────────────────
+await check("cards · every event card has its type icon (family colour) and label; title outranks metadata", async () => {
+  const { ctx, page } = await open({ viewport: { width: 360, height: 740 }, hasTouch: true, isMobile: true }, "#/chronicle");
+  const cards = await page.$$eval("a.cc-card", as => as.map(a => {
+    const svg = a.querySelector(".cc-kind svg"), t = a.querySelector(".cc-card-t"), meta = a.querySelector(".cc-kind-l");
+    const fam = [...a.classList].find(c => c.startsWith("ev-"));
+    return { fam, svg: !!svg && svg.getAttribute("aria-hidden") === "true", label: meta && meta.textContent.trim(), iconColor: svg && getComputedStyle(svg).color,
+      titlePx: parseFloat(getComputedStyle(t).fontSize), metaPx: parseFloat(getComputedStyle(meta).fontSize), h: a.getBoundingClientRect().height };
+  }));
+  eq(cards.length, 33, "all cards");
+  for (const c of cards) {
+    assert(c.fam && c.svg && c.label, `card ${JSON.stringify(c)}`);
+    assert(c.titlePx >= 18 && c.metaPx >= 13 && c.titlePx > c.metaPx + 4, `hierarchy ${c.titlePx}/${c.metaPx}`);
+    assert(c.h <= 180, `compact card (${c.h}px)`);
+  }
+  const byFam = {};
+  cards.forEach(c => { (byFam[c.fam] = byFam[c.fam] || new Set()).add(c.iconColor); });
+  Object.entries(byFam).forEach(([f, cs]) => eq(cs.size, 1, `one colour for ${f}`));
+  eq(new Set(Object.values(byFam).map(s => [...s][0])).size, Object.keys(byFam).length, "families have distinct colours");
+  await page.screenshot({ path: path.join(OUT, "cards-360.png") });
   await ctx.close();
 });
 
