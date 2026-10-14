@@ -543,7 +543,7 @@
     },
     "effects": [
       "Cassandra has ~6 days of limbo left after the night's rest; the party now knows Pike Trickfoot can revive her, beneath the Temple of Sarenrae.",
-      "The Baxcazhak (Barûk) stays under guard in Kraghammer, but Ereldra can call it to her hand as her pact weapon — so the party is never truly without it. Bahamut refused to take it, and its whereabouts are revealed to no one.",
+      "The Barûk-Kazad stays under guard in Kraghammer, but Ereldra can call it to her hand as her pact weapon — so the party is never truly without it. Bahamut refused to take it, and its whereabouts are revealed to no one.",
       "Locus is bought free of La Toma for 200 gp, but the contract only lifts once their leader Ocisa (?) is dealt with; La Toma hunts Mortis and now Locus.",
       "Locus is under a Geas — compelled, and hurt if he acts against it.",
       "Holy water burns Ereldra; consecration reacts to her condition.",
@@ -645,7 +645,7 @@
       {
         "name": "Plot D — The Axe and the Corrupted Dragon",
         "questId": "corrupted-dragon",
-        "qt": "Twice the ancient black dragon Haftifaflmorhen has appeared; the party learns why from Bahamut himself, met at the palace as the \"Archon of Bahamut\". Bahamut would not take the Baxcazhak (Barûk) off their hands — it stays under guard in Kraghammer, but Ereldra can summon it as her pact weapon, so the burden of it is still theirs and its whereabouts are told to no one.",
+        "qt": "Twice the ancient black dragon Haftifaflmorhen has appeared; the party learns why from Bahamut himself, met at the palace as the \"Archon of Bahamut\". Bahamut would not take the Barûk-Kazad off their hands — it stays under guard in Kraghammer, but Ereldra can summon it as her pact weapon, so the burden of it is still theirs and its whereabouts are told to no one.",
         "npcs": [
           {
             "name": "Bahamut, the Platinum Dragon",
@@ -678,7 +678,7 @@
         "name": "The Meeting with Bahamut",
         "questId": "bahamut-meeting",
         "closed": "Closed this session",
-        "qt": "The white-robed man from the crossroads revealed himself as Bahamut, the Platinum Dragon. He explained that Haftifaflmorhen is a corrupted victim of Torog (?), refused to accept the Baxcazhak, and counselled the party to keep its location secret for now.",
+        "qt": "The white-robed man from the crossroads revealed himself as Bahamut, the Platinum Dragon. He explained that Haftifaflmorhen is a corrupted victim of Torog (?), refused to accept the Barûk-Kazad, and counselled the party to keep its location secret for now.",
         "npcs": [
           {
             "name": "Bahamut, the Platinum Dragon",
@@ -725,7 +725,7 @@
       "Sorfon wears the Plate of Knights' Fellowship (AC 18) and can summon the spirit Aldis (?) as an ally each fight.",
       "Ayante wears the Helm of the Wrathbringer (?), which makes foes fear him — so long as his head stays on his shoulders.",
       "Locus's Geas cannot be lifted until Strahd is dealt with; Vax'ildan is the way across the Shadowfell, when the party is ready.",
-      "Decision taken: the Baxcazhak goes to no dragon, and Haftifaflmorhen is to be trapped and put down once the party is strong enough.",
+      "Decision taken: the Barûk-Kazad goes to no dragon, and Haftifaflmorhen is to be trapped and put down once the party is strong enough.",
       "Sorfon still owes Pelor the incense-run; the route now runs post office, then supplies, then the Temple of Sarenrae."
     ],
     "activePlots": [
@@ -795,7 +795,7 @@
       {
         "name": "Plot C — The Axe, the Dragon and Torog",
         "questId": "corrupted-dragon",
-        "qt": "Pelor, the Dawnfather, answered Sorfon — after first rebuking him for saving an undead — and named Torog, the Crawling King, the last and most dangerous Betrayer God he cast down, the one who corrupted Haftifaflmorhen. The party resolved to keep the Baxcazhak (Barûk-Kazad), refuse Ashardalon, and set a trap to put the maddened dragon down when they are ready.",
+        "qt": "Pelor, the Dawnfather, answered Sorfon — after first rebuking him for saving an undead — and named Torog, the Crawling King, the last and most dangerous Betrayer God he cast down, the one who corrupted Haftifaflmorhen. The party resolved to keep the Barûk-Kazad, refuse Ashardalon, and set a trap to put the maddened dragon down when they are ready.",
         "npcs": [
           {
             "name": "Pelor, the Dawnfather",
@@ -809,7 +809,7 @@
           },
           {
             "name": "Haftifaflmorhen",
-            "role": "the ancient black dragon, Torog's maddened victim, who hunts the Baxcazhak"
+            "role": "the ancient black dragon, Torog's maddened victim, who hunts the Barûk-Kazad"
           },
           {
             "name": "Ashardalon",
@@ -820,7 +820,7 @@
         "notes": [
           "Pelor: saving or killing Haftifaflmorhen ends the same; his mind is gone, so grant him rest.",
           "In Mortis's old nightmare, Torog offered to free him and to replace Ashardalon as Ereldra's patron.",
-          "Decision: keep the Baxcazhak, give it to no dragon, and trap Haftifaflmorhen when stronger.",
+          "Decision: keep the Barûk-Kazad, give it to no dragon, and trap Haftifaflmorhen when stronger.",
           "Ereldra admits her patron's plan is genocide; both dragons have a personal stake in the axe."
         ]
       }

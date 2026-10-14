@@ -665,7 +665,7 @@
     "igLabel": "Day 39 · The palace gate",
     "type": "revelation",
     "title": "Bahamut at the Palace Gate",
-    "summary": "At about four in the morning the white-robed Archon reveals himself as Bahamut, the Platinum Dragon. Haftifaflmorhen is no monster but a victim — maddened by Torog (?) and made to devour his best friend. Bahamut refuses to take the Baxcazhak — left under guard in Kraghammer, yet only a summons away through Ereldra's pact — and counsels the party to keep its location secret; Ereldra covers her cursed eye at his request.",
+    "summary": "At about four in the morning the white-robed Archon reveals himself as Bahamut, the Platinum Dragon. Haftifaflmorhen is no monster but a victim — maddened by Torog (?) and made to devour his best friend. Bahamut refuses to take the Barûk-Kazad — left under guard in Kraghammer, yet only a summons away through Ereldra's pact — and counsels the party to keep its location secret; Ereldra covers her cursed eye at his request.",
     "locationId": "palace-gate",
     "xp": 29.6,
     "yp": 25.9,
@@ -810,7 +810,7 @@
     "igLabel": "Day 39 · The party's council",
     "type": "decision",
     "title": "The Council on the Axe",
-    "summary": "With both gods' answers in hand the party decides: keep the Baxcazhak, hand it to no dragon, and set a trap for Haftifaflmorhen once they are strong enough to put him down. Ereldra admits outright that her patron Ashardalon's plan is genocide, and Mortis recalls an old nightmare in which Torog offered to free him and take Ashardalon's place at her shoulder.",
+    "summary": "With both gods' answers in hand the party decides: keep the Barûk-Kazad, hand it to no dragon, and set a trap for Haftifaflmorhen once they are strong enough to put him down. Ereldra admits outright that her patron Ashardalon's plan is genocide, and Mortis recalls an old nightmare in which Torog offered to free him and take Ashardalon's place at her shoulder.",
     "xp": 29.2,
     "yp": 25.5,
     "characterIds": [

@@ -53,7 +53,7 @@
     "status": "active",
     "giver": "Bahamut",
     "giverId": "bahamut",
-    "summary": "Bahamut explained why the ancient black dragon Haftifaflmorhen keeps appearing: tricked by Torog (?) and forced to devour his best friend, he is a maddened victim who hunts the Baxcazhak. The Platinum Dragon refused to take the axe off their hands: it stays under guard in Kraghammer, but Ereldra can call it to her as her pact weapon, so the party still answers for it and tells no one where it lies — the more so because her patron Ashardalon would be served by it. Peace comes only when the axe returns to its maker. Pelor has since named the corrupter: Torog, the Crawling King, the last Betrayer God he cast down, working from his prison in the Far Realm — and counselled that saving or killing Haftifaflmorhen ends the same, since his mind is gone. The party's decision: keep the axe, give it to no dragon, and trap the dragon and grant him rest once they are strong enough.",
+    "summary": "Bahamut explained why the ancient black dragon Haftifaflmorhen keeps appearing: tricked by Torog (?) and forced to devour his best friend, he is a maddened victim who hunts the Barûk-Kazad. The Platinum Dragon refused to take the axe off their hands: it stays under guard in Kraghammer, but Ereldra can call it to her as her pact weapon, so the party still answers for it and tells no one where it lies — the more so because her patron Ashardalon would be served by it. Peace comes only when the axe returns to its maker. Pelor has since named the corrupter: Torog, the Crawling King, the last Betrayer God he cast down, working from his prison in the Far Realm — and counselled that saving or killing Haftifaflmorhen ends the same, since his mind is gone. The party's decision: keep the axe, give it to no dragon, and trap the dragon and grant him rest once they are strong enough.",
     "sessions": [11, 12],
     "characterIds": ["sorfon", "ayante", "mortis", "ereldra"]
   },
@@ -131,7 +131,7 @@
     "title": "The Meeting with Bahamut",
     "status": "completed",
     "giver": "—",
-    "summary": "The white-robed man from the crossroads, the Archon who governs Vasselheim this cycle, revealed himself at the palace gate as Bahamut, the Platinum Dragon. He named Haftifaflmorhen a victim of Torog (?), recalled the Calamity and his lost companion Cromulus (?), declined to accept the Baxcazhak, and told Sorfon and Ereldra to keep its location secret for now.",
+    "summary": "The white-robed man from the crossroads, the Archon who governs Vasselheim this cycle, revealed himself at the palace gate as Bahamut, the Platinum Dragon. He named Haftifaflmorhen a victim of Torog (?), recalled the Calamity and his lost companion Cromulus (?), declined to accept the Barûk-Kazad, and told Sorfon and Ereldra to keep its location secret for now.",
     "sessions": [10, 11],
     "characterIds": ["sorfon", "ereldra"]
   },

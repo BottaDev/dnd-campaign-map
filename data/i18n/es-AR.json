@@ -128,7 +128,7 @@
     },
     "s11_06": {
       "title": "Bahamut en la puerta del palacio",
-      "summary": "Cerca de las cuatro de la mañana, el Arconte de túnica blanca se revela como Bahamut, el Dragón de Platino. Haftifaflmorhen no es un monstruo sino una víctima: enloquecido por Torog (?) y obligado a devorar a su mejor amigo. Bahamut se niega a tomar el Baxcazhak —dejado bajo custodia en Kraghammer, pero a solo una invocación de distancia gracias al pacto de Ereldra— y aconseja al grupo mantener en secreto su ubicación; Ereldra se cubre el ojo maldito a pedido de él.",
+      "summary": "Cerca de las cuatro de la mañana, el Arconte de túnica blanca se revela como Bahamut, el Dragón de Platino. Haftifaflmorhen no es un monstruo sino una víctima: enloquecido por Torog (?) y obligado a devorar a su mejor amigo. Bahamut se niega a tomar el Barûk-Kazad —dejado bajo custodia en Kraghammer, pero a solo una invocación de distancia gracias al pacto de Ereldra— y aconseja al grupo mantener en secreto su ubicación; Ereldra se cubre el ojo maldito a pedido de él.",
       "igLabel": "Día 39 · La puerta del palacio"
     },
     "s12_01": {
@@ -153,7 +153,7 @@
     },
     "s12_05": {
       "title": "El consejo sobre el hacha",
-      "summary": "Con las respuestas de ambos dioses en la mano, el grupo decide: conservar el Baxcazhak, no entregárselo a ningún dragón y tenderle una trampa a Haftifaflmorhen cuando sean lo bastante fuertes para acabar con él. Ereldra admite abiertamente que el plan de su patrón Ashardalon es un genocidio, y Mortis recuerda una vieja pesadilla en la que Torog se ofrecía a liberarlo y a ocupar el lugar de Ashardalon junto a ella.",
+      "summary": "Con las respuestas de ambos dioses en la mano, el grupo decide: conservar el Barûk-Kazad, no entregárselo a ningún dragón y tenderle una trampa a Haftifaflmorhen cuando sean lo bastante fuertes para acabar con él. Ereldra admite abiertamente que el plan de su patrón Ashardalon es un genocidio, y Mortis recuerda una vieja pesadilla en la que Torog se ofrecía a liberarlo y a ocupar el lugar de Ashardalon junto a ella.",
       "igLabel": "Día 39 · El consejo del grupo"
     },
     "s12_06": {
@@ -656,7 +656,7 @@
       },
       "effects": [
         "A Cassandra le quedan ~6 días de limbo tras el descanso nocturno; el grupo ahora sabe que Pike Trickfoot puede revivirla, debajo del Templo de Sarenrae.",
-        "El Baxcazhak (Barûk) sigue bajo custodia en Kraghammer, pero Ereldra puede llamarlo a su mano como su arma de pacto — así que el grupo nunca está realmente sin él. Bahamut se negó a tomarlo, y su paradero no se le revela a nadie.",
+        "El Barûk-Kazad sigue bajo custodia en Kraghammer, pero Ereldra puede llamarlo a su mano como su arma de pacto — así que el grupo nunca está realmente sin él. Bahamut se negó a tomarlo, y su paradero no se le revela a nadie.",
         "Locus queda liberado de La Toma por 200 po, pero el contrato solo se levanta una vez que se resuelva lo de su líder Ocisa (?); La Toma caza a Mortis y ahora a Locus.",
         "Locus está bajo un Geas — obligado, y herido si actúa en su contra.",
         "El agua bendita quema a Ereldra; la consagración reacciona a su condición.",
@@ -750,7 +750,7 @@
         },
         {
           "name": "Trama D — El hacha y el dragón corrompido",
-          "qt": "Dos veces apareció el dragón negro anciano Haftifaflmorhen; el grupo se entera del porqué por boca del propio Bahamut, al que encuentran en el palacio como el \"arconte de Bahamut\". Bahamut no quiso quitarles el Baxcazhak (Barûk) de las manos — sigue bajo custodia en Kraghammer, pero Ereldra puede invocarlo como su arma de pacto, así que esa carga sigue siendo de ellos y su paradero no se le dice a nadie.",
+          "qt": "Dos veces apareció el dragón negro anciano Haftifaflmorhen; el grupo se entera del porqué por boca del propio Bahamut, al que encuentran en el palacio como el \"arconte de Bahamut\". Bahamut no quiso quitarles el Barûk-Kazad de las manos — sigue bajo custodia en Kraghammer, pero Ereldra puede invocarlo como su arma de pacto, así que esa carga sigue siendo de ellos y su paradero no se le dice a nadie.",
           "npcs": [
             {
               "name": "Bahamut, el Dragón de Platino",
@@ -779,7 +779,7 @@
         {
           "name": "El encuentro con Bahamut",
           "closed": "Cerrada en esta sesión",
-          "qt": "El hombre de túnica blanca del cruce de caminos se reveló como Bahamut, el Dragón de Platino. Explicó que Haftifaflmorhen es una víctima corrompida de Torog (?), se negó a aceptar el Baxcazhak y le aconsejó al grupo mantener en secreto su ubicación por ahora.",
+          "qt": "El hombre de túnica blanca del cruce de caminos se reveló como Bahamut, el Dragón de Platino. Explicó que Haftifaflmorhen es una víctima corrompida de Torog (?), se negó a aceptar el Barûk-Kazad y le aconsejó al grupo mantener en secreto su ubicación por ahora.",
           "npcs": [
             {
               "name": "Bahamut, el Dragón de Platino",
@@ -823,7 +823,7 @@
         "Sorfon viste la Armadura de la Hermandad de los Caballeros (CA 18) y puede invocar al espíritu Aldis (?) como aliado en cada combate.",
         "Ayante lleva el Yelmo del Portador de la Ira (?), que hace que los enemigos le teman, siempre que su cabeza siga sobre sus hombros.",
         "El Geas de Locus no puede levantarse hasta que se resuelva lo de Strahd; Vax'ildan es el camino para cruzar el Páramo Sombrío, cuando el grupo esté listo.",
-        "Decisión tomada: el Baxcazhak no va a ningún dragón, y a Haftifaflmorhen hay que atraparlo y darle fin en cuanto el grupo sea lo bastante fuerte.",
+        "Decisión tomada: el Barûk-Kazad no va a ningún dragón, y a Haftifaflmorhen hay que atraparlo y darle fin en cuanto el grupo sea lo bastante fuerte.",
         "Sorfon todavía le debe a Pelor el encargo del incienso; la ruta ahora es la oficina de correos, luego las provisiones, luego el Templo de Sarenrae."
       ],
       "activePlots": [
@@ -885,7 +885,7 @@
         },
         {
           "name": "Trama C — El hacha, el dragón y Torog",
-          "qt": "Pelor, el Padre del Alba, le respondió a Sorfon —después de reprenderlo primero por salvar a un no muerto— y nombró a Torog, el Rey Reptante, el último y más peligroso Dios Traidor que derribó, el que corrompió a Haftifaflmorhen. El grupo resolvió quedarse con el Baxcazhak (Barûk-Kazad), rechazar a Ashardalon y tender una trampa para darle fin al dragón enloquecido cuando estén listos.",
+          "qt": "Pelor, el Padre del Alba, le respondió a Sorfon —después de reprenderlo primero por salvar a un no muerto— y nombró a Torog, el Rey Reptante, el último y más peligroso Dios Traidor que derribó, el que corrompió a Haftifaflmorhen. El grupo resolvió quedarse con el Barûk-Kazad, rechazar a Ashardalon y tender una trampa para darle fin al dragón enloquecido cuando estén listos.",
           "npcs": [
             {
               "name": "Pelor, el Padre del Alba",
@@ -898,7 +898,7 @@
               "role": "corrompió a Haftifaflmorhen desde su prisión en el Reino Lejano"
             },
             {
-              "role": "el dragón negro anciano, víctima enloquecida de Torog, que caza el Baxcazhak"
+              "role": "el dragón negro anciano, víctima enloquecida de Torog, que caza el Barûk-Kazad"
             },
             {
               "race": "dragón rojo",
@@ -908,7 +908,7 @@
           "notes": [
             "Pelor: salvar o matar a Haftifaflmorhen termina igual; su mente ya no está, así que hay que concederle descanso.",
             "En la vieja pesadilla de Mortis, Torog se ofreció a liberarlo y a reemplazar a Ashardalon como patrón de Ereldra.",
-            "Decisión: quedarse con el Baxcazhak, no dárselo a ningún dragón y atrapar a Haftifaflmorhen cuando sean más fuertes.",
+            "Decisión: quedarse con el Barûk-Kazad, no dárselo a ningún dragón y atrapar a Haftifaflmorhen cuando sean más fuertes.",
             "Ereldra admite que el plan de su patrón es un genocidio; ambos dragones tienen un interés personal en el hacha."
           ]
         }
@@ -999,7 +999,7 @@
     },
     "corrupted-dragon": {
       "title": "El hacha y el dragón corrompido",
-      "summary": "Bahamut explicó por qué el dragón negro anciano Haftifaflmorhen sigue apareciendo: engañado por Torog (?) y obligado a devorar a su mejor amigo, es una víctima enloquecida que persigue el Baxcazhak. El Dragón de Platino se negó a hacerse cargo del hacha: queda bajo custodia en Kraghammer, pero Ereldra puede llamarla a su lado como su arma de pacto, así que el grupo sigue respondiendo por ella y no le dice a nadie dónde está, más aún porque le serviría a su patrón Ashardalon. La paz solo llegará cuando el hacha vuelva a su creador. Desde entonces, Pelor nombró al corruptor: Torog, el Rey Reptante, el último Dios Traidor que derribó, que actúa desde su prisión en el Reino Lejano; y aconsejó que salvar o matar a Haftifaflmorhen termina igual, ya que su mente ya no está. La decisión del grupo: conservar el hacha, no dársela a ningún dragón, y tenderle una trampa al dragón y concederle descanso cuando sean lo bastante fuertes."
+      "summary": "Bahamut explicó por qué el dragón negro anciano Haftifaflmorhen sigue apareciendo: engañado por Torog (?) y obligado a devorar a su mejor amigo, es una víctima enloquecida que persigue el Barûk-Kazad. El Dragón de Platino se negó a hacerse cargo del hacha: queda bajo custodia en Kraghammer, pero Ereldra puede llamarla a su lado como su arma de pacto, así que el grupo sigue respondiendo por ella y no le dice a nadie dónde está, más aún porque le serviría a su patrón Ashardalon. La paz solo llegará cuando el hacha vuelva a su creador. Desde entonces, Pelor nombró al corruptor: Torog, el Rey Reptante, el último Dios Traidor que derribó, que actúa desde su prisión en el Reino Lejano; y aconsejó que salvar o matar a Haftifaflmorhen termina igual, ya que su mente ya no está. La decisión del grupo: conservar el hacha, no dársela a ningún dragón, y tenderle una trampa al dragón y concederle descanso cuando sean lo bastante fuertes."
     },
     "ashardalon": {
       "title": "El patrón en el tesoro",
@@ -1035,7 +1035,7 @@
     },
     "bahamut-meeting": {
       "title": "El encuentro con Bahamut",
-      "summary": "El hombre de túnica blanca de la encrucijada, el Arconte que gobierna Vasselheim en este ciclo, se reveló en la puerta del palacio como Bahamut, el Dragón de Platino. Señaló a Haftifaflmorhen como víctima de Torog (?), recordó la Calamidad y a su compañero perdido Cromulus (?), declinó aceptar el Baxcazhak y les dijo a Sorfon y Ereldra que mantuvieran su ubicación en secreto por ahora."
+      "summary": "El hombre de túnica blanca de la encrucijada, el Arconte que gobierna Vasselheim en este ciclo, se reveló en la puerta del palacio como Bahamut, el Dragón de Platino. Señaló a Haftifaflmorhen como víctima de Torog (?), recordó la Calamidad y a su compañero perdido Cromulus (?), declinó aceptar el Barûk-Kazad y les dijo a Sorfon y Ereldra que mantuvieran su ubicación en secreto por ahora."
     },
     "baruk-kazad": {
       "title": "La entrega del Barûk-Kazad",
