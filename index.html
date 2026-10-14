@@ -8,8 +8,16 @@
 <title>Crónica de Exandria</title>
 <!-- One dark theme only: paint the page dark before any script or font loads (no light flash). -->
 <style>html,body{background:#0c0a06;color:#ddc89a;color-scheme:dark;}</style>
+<!-- Installable, readable offline after one visit (sw.js: network first, the cache is only a fallback). -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/app-icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Crónica">
+<meta name="mobile-web-app-capable" content="yes">
+<script>if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("[chronicle] offline copy unavailable:",e&&e.message);});});</script>
 <script src="./js/chronicle-model.js"></script>
 <script src="./js/chronicle-map.js"></script>
+<script src="./js/chronicle-library.js"></script>
 <script src="./js/i18n.js"></script>
 <script src="./locales/en.js"></script>
 <script src="./locales/es-AR.js"></script>
@@ -351,7 +359,7 @@
   .cc-docmap{flex:none;padding:0 12px 0 10px;gap:6px;}
   .cc-docmap .cc-ico{width:18px;height:18px;color:var(--accent);}
   @media (max-width:719px){ .cc-doc{padding:0 max(16px,env(safe-area-inset-right)) 36px max(16px,env(safe-area-inset-left));} .cc-docbar{margin:0 -16px 4px;padding:6px 16px;gap:6px;} }
-  @media (max-width:359px){ .cc-dockind{display:none;} }
+  @media (max-width:359px){ .cc-dockind{display:none;} .cc-docbar{gap:4px;} .cc-back{padding-right:10px;} }
   /* Document header: one kind line, the title, one byline — then the story */
   .cc-kick{display:flex;align-items:center;gap:6px 9px;flex-wrap:wrap;margin-top:18px;font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--muted);}
   .cc-kick>.cc-ico{width:19px;height:19px;color:var(--ev,var(--accent));}
@@ -526,12 +534,128 @@
 
   /* ── Tutorial & status overlays ── */
   .cc-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom));background:rgba(8,5,2,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:chr-pop .2s ease both;}
-  .cc-modal{position:relative;width:min(580px,100%);max-height:100%;overflow-y:auto;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:18px;padding:26px 22px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
-  .cc-tut{display:flex;gap:13px;padding:13px 14px;border-radius:13px;border:1px solid var(--row-border);background:var(--row-bg);}
-  .cc-tut+.cc-tut{margin-top:10px;}
-  .cc-tut-i{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,#3a2a14,#241608);color:var(--accent);}
-  .cc-tut-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;color:var(--title);margin-bottom:3px;}
-  .cc-tut-d{font-size:16px;line-height:1.45;color:var(--body);}
+  .cc-modal{position:relative;width:min(580px,100%);max-height:100%;overflow-y:auto;overscroll-behavior:contain;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:18px;padding:26px 22px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
+  /* Guide: three short steps, each with a real example from the chronicle; the glossary is its second tab */
+  .cc-guide{width:min(560px,100%);padding:14px 20px 16px;}
+  .cc-guide-top{display:flex;align-items:center;gap:10px;}
+  .cc-guide-k{flex:1;min-width:0;font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--accent);}
+  .cc-guide-tabs{margin-top:8px;display:flex;}
+  .cc-guide-tabs button{flex:1 1 0;justify-content:center;}
+  .cc-guide-ill{margin:14px 0 2px;padding:12px;border-radius:14px;border:1px solid var(--line-faint);background:rgba(0,0,0,.2);display:flex;flex-direction:column;gap:8px;min-height:158px;justify-content:center;}
+  .cc-guide-ex{font-family:var(--font-ui);font-size:12.5px;font-weight:600;color:var(--muted);}
+  .cc-guide-ill .cc-card{cursor:default;}
+  .cc-guide-ill .cc-card:hover{background:var(--card-bg);border-color:transparent;}
+  .cc-guide-n{margin:14px 0 2px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--accent);}
+  .cc-guide-h{margin:0 0 6px;font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1.15;color:var(--h1);outline:none;}
+  .cc-guide-d{margin:0 0 8px;font-size:17.5px;line-height:1.5;color:var(--body2);}
+  .cc-guide-pts{display:grid;gap:6px;margin:0 0 4px;padding:0;list-style:none;}
+  .cc-guide-pts li{display:flex;gap:10px;font-size:16px;line-height:1.45;color:var(--body);}
+  .cc-guide-pts li .cc-ico{width:18px;height:18px;margin-top:3px;color:var(--accent);}
+  .cc-guide-nav{display:flex;align-items:center;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-faint);}
+  .cc-guide-nav .cc-btn{min-width:96px;}
+  .cc-guide-nav .cc-btn[disabled]{opacity:.4;cursor:default;filter:none;}
+  .cc-gdots{display:flex;margin:0 auto;}
+  .cc-gdot{display:inline-flex;align-items:center;justify-content:center;width:30px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
+  .cc-gdot::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--line);transition:transform .15s ease,background .15s ease;}
+  .cc-gdot.is-on::before{background:var(--accent);transform:scale(1.3);}
+  .cc-guide-foot{display:flex;justify-content:center;margin-top:2px;}
+  @media (max-width:419px){
+    .cc-guide-nav{flex-wrap:wrap;justify-content:space-between;padding-top:4px;}
+    .cc-guide-nav .cc-btn{min-width:0;}
+    .cc-gdots{order:-1;flex-basis:100%;justify-content:center;}
+  }
+  .cc-gsearch{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--accent);background:var(--input-bg);box-shadow:0 0 0 3px rgba(199,162,75,.16);font-family:var(--font-ui);font-size:16px;color:var(--input-color);}
+  .cc-gsearch .cc-ico{color:var(--muted);}
+  .cc-gres{display:grid;}
+  .cc-gres-r{display:flex;align-items:center;gap:10px;min-height:38px;font-family:var(--font-ui);font-size:14px;color:var(--body2);}
+  .cc-gres-r .cc-hitico{width:26px;height:26px;}
+  .cc-gres-r .cc-hitico .cc-ico{width:17px;height:17px;}
+  .cc-gres-r .n{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap;}
+  .cc-gmap{display:block;width:100%;height:auto;border-radius:10px;}
+  /* Glossary */
+  .cc-gl-intro{margin:14px 0 4px;font-size:16.5px;line-height:1.5;color:var(--body);}
+  .cc-gl-h{margin:20px 0 6px;font-family:var(--font-head);font-size:16px;font-weight:600;letter-spacing:.03em;color:var(--section);}
+  .cc-gl-fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:2px 18px;}
+  .cc-gl-fam{padding:6px 0 4px;}
+  .cc-gl-famh{display:flex;align-items:center;gap:8px;margin-bottom:2px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--ev);}
+  .cc-gl-famh::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--ev);}
+  .cc-gl-row{display:flex;align-items:center;gap:10px;min-height:38px;font-family:var(--font-ui);font-size:14.5px;color:var(--body2);}
+  .cc-gl-badges{display:flex;flex-wrap:wrap;gap:8px;}
+  .cc-gl-mrow{display:flex;align-items:center;gap:12px;min-height:46px;padding:4px 0;font-family:var(--font-ui);font-size:14px;line-height:1.4;color:var(--body2);}
+  .cc-gl-mrow+.cc-gl-mrow{border-top:1px solid var(--line-faint);}
+  .cc-gl-sym{flex:none;display:inline-flex;align-items:center;justify-content:center;width:46px;min-height:34px;color:var(--accent);}
+  .cc-gl-sym .cc-ico{width:20px;height:20px;}
+  .cc-gl-approx{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;}
+  .cc-gl-lore{width:22px;height:22px;color:var(--lore);}
+  /* First visit: a quiet invitation inside the Chronicle, never a window in the way */
+  .cc-invite{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;padding:6px 6px 6px 12px;border-radius:12px;border:1px solid var(--chip-border);background:var(--chip-soft);font-family:var(--font-ui);font-size:14.5px;line-height:1.4;color:var(--body2);}
+  .cc-invite>.cc-ico{color:var(--accent);}
+  .cc-invite-t{flex:1 1 200px;min-width:0;}
+  .cc-invite-a{display:flex;align-items:center;gap:4px;margin-left:auto;}
+  .cc-invite .cc-btn{min-height:40px;padding:0 13px;font-size:13.5px;}
+  /* Universal search: a palette over the page (desktop), a full screen of its own (phones) */
+  .cc-sov{align-items:flex-start;padding:max(9vh,20px) 16px 20px;z-index:70;}
+  .cc-spanel{position:relative;display:flex;flex-direction:column;width:min(680px,100%);max-height:min(80vh,760px);overflow:hidden;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
+  .cc-shead{display:flex;align-items:center;gap:6px;padding:10px;border-bottom:1px solid var(--line-faint);}
+  .cc-shead .cc-search{flex:1;}
+  .cc-sback{display:none!important;}
+  .cc-sbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 8px 14px;}
+  .cc-sintro{margin:12px 10px 6px;font-family:var(--font-ui);font-size:14px;line-height:1.45;color:var(--muted);}
+  .cc-stries{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 10px 6px;}
+  .cc-stries .cc-flabel{margin:0 4px 0 0;}
+  .cc-stry{min-height:40px;padding:0 13px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--title);font-family:var(--font-ui);font-size:14px;cursor:pointer;}
+  .cc-stry:hover{border-color:var(--card-border-hover);}
+  .cc-sgroup{margin-top:8px;}
+  .cc-sgh{display:flex;align-items:center;gap:8px;padding:8px 10px 4px;font-family:var(--font-head);font-size:14.5px;font-weight:600;letter-spacing:.03em;color:var(--section);}
+  .cc-sgh .cc-ico{width:17px;height:17px;color:var(--accent);}
+  .cc-sgh .n{font-family:var(--font-ui);font-size:12.5px;font-weight:500;letter-spacing:0;color:var(--muted);}
+  .cc-hit{display:flex;align-items:center;gap:12px;min-height:52px;padding:7px 10px;border-radius:10px;color:var(--title);cursor:pointer;scroll-margin:8px;}
+  .cc-hit:hover{background:var(--card-bg-hover);}
+  .cc-hit.is-active{background:var(--card-bg-sel);box-shadow:inset 0 0 0 1px var(--card-border-sel);}
+  .cc-hit-b{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;}
+  .cc-hit-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;line-height:1.25;color:var(--title);overflow-wrap:break-word;}
+  .cc-hit-s{font-family:var(--font-ui);font-size:13px;line-height:1.35;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-hit mark{padding:0 1px;border-radius:3px;background:rgba(208,171,76,.3);color:inherit;}
+  .cc-hit .cc-seal{width:30px;height:30px;font-size:13px;}
+  .cc-hit-more{min-height:44px;color:var(--accent);font-family:var(--font-ui);font-size:14px;font-weight:600;}
+  .cc-hit-more .cc-hitico{background:none;}
+  .cc-hitico{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.04);color:var(--tone,var(--accent));}
+  .cc-hitico .cc-ico{width:19px;height:19px;}
+  .cc-hitno{flex:none;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,#3a2a14,#241608);border:1px solid rgba(199,162,75,.35);color:#f5ead0;font-family:var(--font-head);font-size:14px;font-weight:600;}
+  .cc-snone{padding:30px 16px 18px;text-align:center;}
+  .cc-snone p{margin:0 0 6px;}
+  .cc-sfoot{padding:8px 14px;border-top:1px solid var(--line-faint);font-family:var(--font-ui);font-size:12.5px;color:var(--muted);}
+  .cc-searchbtn{width:auto;gap:8px;padding:0 12px;font-size:14px;font-weight:500;color:var(--muted);}
+  .cc-searchbtn-l,.cc-kbd{display:none;}
+  .cc-kbd{margin-left:auto;padding:2px 6px;border-radius:6px;border:1px solid var(--chip-border);font-family:var(--font-ui);font-size:11.5px;font-weight:600;color:var(--muted);}
+  @media (min-width:1100px){ .cc-searchbtn{min-width:170px;justify-content:flex-start;} .cc-searchbtn-l,.cc-kbd{display:inline-flex;} }
+  @media (max-width:1099px){ .cc-searchbtn{width:44px;padding:0;} }
+  @media (max-width:719px){
+    .cc-sov{padding:0;background:var(--app-bg);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .cc-spanel{width:100%;height:100%;max-height:none;border:0;border-radius:0;box-shadow:none;}
+    .cc-shead{padding:calc(8px + env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));}
+    .cc-sback{display:inline-flex!important;}
+    .cc-sclose,.cc-sfoot{display:none;}
+    .cc-sbody{padding:2px max(8px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));}
+    .cc-guide{padding:12px 16px 14px;}
+    .cc-guide-h{font-size:22px;}
+    .cc-guide-d{font-size:17px;}
+  }
+  /* "Previously on…": where the party was left, set apart like a margin note */
+  .cc-where{margin:2px 0 18px;padding:2px 0 2px 14px;border-left:2px solid var(--accent);}
+  .cc-where-k{margin-bottom:3px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--accent);}
+  .cc-where-t{margin:0;font-size:17.5px;line-height:1.55;color:var(--body2);}
+  .cc-plot-q.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  /* Saved: favourites and history (rows like the search results) */
+  .cc-hits{display:grid;}
+  .cc-savedrow{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--line-faint);}
+  .cc-savedrow .cc-hit{flex:1;min-width:0;}
+  .cc-iconbtn.is-on,.cc-favbtn.is-on{border-color:var(--card-border-sel);color:var(--accent);}
+  .cc-favbtn.is-on .cc-ico{fill:currentColor;}
+  @media (max-width:419px){ .cc-docmap{width:44px;padding:0;justify-content:center;} .cc-docmap span{display:none;} }
+  /* Offline: a small dismissible note, above the bottom bar on phones */
+  .cc-offline{position:fixed;left:50%;bottom:20px;z-index:45;display:flex;align-items:center;gap:8px;width:max-content;max-width:calc(100% - 32px);padding:6px 6px 6px 14px;transform:translateX(-50%);border-radius:12px;border:1px solid var(--popup-border);background:var(--popup-bg);box-shadow:0 14px 30px rgba(0,0,0,.45);font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--body2);}
+  @media (max-width:719px){ .cc-offline{bottom:calc(72px + env(safe-area-inset-bottom));} }
   .cc-banner{margin:16px auto;max-width:720px;padding:14px 16px;border-radius:12px;border:1px solid var(--st-failed);color:var(--title);background:rgba(160,40,60,.12);font-size:16px;}
   .cc-loading{padding:80px 20px;text-align:center;font-style:italic;font-size:18px;color:var(--muted);}
 
@@ -541,8 +665,8 @@
   .cc-lang button+button{border-left:1px solid var(--chip-border);}
   .cc-lang button.is-on{background:var(--btn-bg);color:var(--btn-color);}
   .cc-lang button:not(.is-on):hover{color:var(--title);}
-  @media (max-width:719px){ .cc-lang{margin-left:auto;} .cc-lang button{min-height:38px;min-width:42px;} }
-  @media (min-width:720px){ .cc-lang{align-self:center;margin-left:auto;} }
+  @media (max-width:719px){ .cc-searchbtn{margin-left:auto;} .cc-lang button{min-height:38px;min-width:42px;} .cc-top{gap:10px;} }
+  @media (min-width:720px){ .cc-lang{align-self:center;} }
 
   /* ── Map: route legend + grouped-marker list ── */
   .cc-swatch{flex:none;display:inline-flex;align-items:center;margin-left:auto;}
@@ -575,11 +699,13 @@
         <a class="{{ n.cls }}" href="{{ n.href }}" aria-current="{{ n.current }}" title="{{ n.label }}">{{ n.icon }}<span class="cc-tab-label">{{ n.label }}</span></a>
       </sc-for>
     </nav>
+    <button class="cc-iconbtn cc-searchbtn" onClick="{{ onOpenSearch }}" title="{{ searchTitle }}" aria-label="{{ t.search.dialogAria }}" aria-haspopup="dialog" aria-keyshortcuts="{{ searchKeys }}">{{ icons.search }}<span class="cc-searchbtn-l">{{ t.search.open }}</span><kbd class="cc-kbd">{{ searchKbd }}</kbd></button>
     <div class="cc-lang" role="group" aria-label="{{ t.lang.label }}">
       <sc-for list="{{ langs }}" as="lg"><button class="{{ lg.cls }}" onClick="{{ lg.onClick }}" aria-pressed="{{ lg.on }}" lang="{{ lg.lang }}" title="{{ lg.title }}" aria-label="{{ lg.title }}">{{ lg.short }}</button></sc-for>
     </div>
     <div class="cc-actions">
-      <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}">?</button>
+      <a class="{{ savedBtnCls }}" href="#/saved" title="{{ t.saved.open }}" aria-label="{{ t.saved.open }}" aria-current="{{ savedCurrent }}">{{ icons.star }}</a>
+      <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}" aria-haspopup="dialog">?</button>
     </div>
   </header>
 
@@ -595,14 +721,21 @@
         <div class="cc-sechead cc-chead">
           <h1 class="cc-sec-h">{{ t.chronicle.title }}</h1>
           <span class="cc-flex"></span>
-          <sc-if value="{{ c.latest }}">
-            <a class="cc-latest" href="{{ c.latest.href }}" title="{{ c.latest.sub }}">
-              <span class="cc-latest-k">{{ t.chronicle.latest }}</span>
-              <span class="cc-latest-t">{{ c.latest.label }} <i>· {{ c.latest.title }}</i></span>
+          <sc-if value="{{ recapEntry }}">
+            <a class="cc-latest" href="{{ recapEntry.href }}" title="{{ recapEntry.sub }}" aria-label="{{ recapEntry.aria }}">
+              <span class="cc-latest-k">{{ t.recap.entry }}</span>
+              <span class="cc-latest-t">{{ recapEntry.label }} <i>{{ recapEntry.title }}</i></span>
               <span class="cc-chev">{{ icons.next }}</span>
             </a>
           </sc-if>
         </div>
+
+        <sc-if value="{{ c.invite }}">
+          <div class="cc-invite" role="note">
+            {{ icons.help }}<span class="cc-invite-t">{{ t.guide.inviteText }}</span>
+            <span class="cc-invite-a"><button class="cc-btn" onClick="{{ onOpenTutorial }}" aria-haspopup="dialog">{{ t.guide.inviteOpen }}</button><button class="cc-linkbtn" onClick="{{ onDismissInvite }}" aria-label="{{ t.guide.inviteDismissAria }}">{{ t.guide.inviteDismiss }}</button></span>
+          </div>
+        </sc-if>
 
         <div class="cc-toolbar">
           <div class="cc-searchrow">
@@ -725,6 +858,13 @@
           </div>
           <p class="cc-sec-sub">{{ sl.sub }}</p>
         </div>
+        <sc-if value="{{ recapEntry }}">
+          <a class="cc-latest" href="{{ recapEntry.href }}" title="{{ recapEntry.sub }}" aria-label="{{ recapEntry.aria }}" style="margin:-6px 0 8px;">
+            <span class="cc-latest-k">{{ t.recap.entry }}</span>
+            <span class="cc-latest-t">{{ recapEntry.label }} <i>{{ recapEntry.title }}</i></span>
+            <span class="cc-chev">{{ icons.next }}</span>
+          </a>
+        </sc-if>
         <div class="cc-list">
           <sc-for list="{{ sl.items }}" as="it">
             <sc-if value="{{ it.isGap }}"><div class="cc-gap">{{ it.text }}</div></sc-if>
@@ -828,6 +968,35 @@
       </div>
       </sc-if>
 
+      <!-- ═══ SAVED (favourites + recently viewed; this browser only) ═══ -->
+      <sc-if value="{{ v.saved }}">
+      <div class="cc-page">
+        <div class="cc-sechead">
+          <h1 class="cc-sec-h">{{ t.saved.title }}</h1>
+          <p class="cc-sec-sub">{{ t.saved.sub }}</p>
+        </div>
+        <sc-if value="{{ sv.noStorage }}"><p class="cc-lore-warn" style="margin:0 0 6px;">{{ t.saved.noStorage }}</p></sc-if>
+        <h2 class="cc-h2" style="margin-top:14px;">{{ icons.star }}{{ t.saved.favorites }} <span class="n">{{ sv.favCount }}</span></h2>
+        <sc-if value="{{ sv.noFav }}"><p class="cc-muted" style="margin:0;">{{ t.saved.noFavorites }}</p></sc-if>
+        <div class="cc-hits">
+          <sc-for list="{{ sv.favorites }}" as="it">
+            <div class="cc-savedrow">
+              <a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.icoCls }}" style="{{ it.icoStyle }}">{{ it.icon }}</span><span class="cc-hit-b"><span class="cc-hit-t">{{ it.title }}</span><span class="cc-hit-s">{{ it.sub }}</span></span></a>
+              <button class="cc-iconbtn sm cc-favbtn is-on" onClick="{{ it.onRemove }}" title="{{ it.removeLabel }}" aria-label="{{ it.removeLabel }}">{{ icons.star }}</button>
+            </div>
+          </sc-for>
+        </div>
+        <h2 class="cc-h2">{{ icons.recent }}{{ t.saved.recent }}<span class="cc-flex"></span><sc-if value="{{ sv.hasRecent }}"><button class="cc-linkbtn" onClick="{{ sv.onClearRecent }}">{{ t.saved.clearRecent }}</button></sc-if></h2>
+        <sc-if value="{{ sv.noRecent }}"><p class="cc-muted" style="margin:0;">{{ t.saved.noRecent }}</p></sc-if>
+        <div class="cc-hits">
+          <sc-for list="{{ sv.recent }}" as="it">
+            <div class="cc-savedrow"><a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.icoCls }}" style="{{ it.icoStyle }}">{{ it.icon }}</span><span class="cc-hit-b"><span class="cc-hit-t">{{ it.title }}</span><span class="cc-hit-s">{{ it.sub }}</span></span></a></div>
+          </sc-for>
+        </div>
+        <p class="cc-lore-foot" style="margin-top:22px;">{{ t.saved.localNote }}</p>
+      </div>
+      </sc-if>
+
       <!-- ═══ MAP ═══ -->
       <sc-if value="{{ v.map }}">
       <div class="{{ mp.wrapCls }}">
@@ -923,7 +1092,8 @@
           <button class="cc-back" onClick="{{ d.onBack }}">{{ icons.back }}<span>{{ t.common.back }}</span></button>
           <span class="cc-dockind">{{ d.kindLabel }}</span>
           <span class="cc-flex"></span>
-          <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="{{ t.common.viewOnMap }}">{{ icons.target }}<span>{{ t.common.map }}</span></a></sc-if>
+          <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="{{ t.common.viewOnMap }}" aria-label="{{ t.common.viewOnMap }}">{{ icons.target }}<span>{{ t.common.map }}</span></a></sc-if>
+          <sc-if value="{{ fav.can }}"><button class="{{ fav.cls }}" onClick="{{ fav.onToggle }}" aria-pressed="{{ fav.on }}" title="{{ fav.label }}" aria-label="{{ fav.label }}">{{ icons.star }}</button></sc-if>
           <sc-if value="{{ d.prevHref }}"><a class="cc-iconbtn sm" href="{{ d.prevHref }}" title="{{ d.prevTitle }}" aria-label="{{ d.prevTitle }}">{{ icons.back }}</a></sc-if>
           <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">{{ icons.next }}</a></sc-if>
           <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}">✕</button>
@@ -941,6 +1111,10 @@
           <sc-if value="{{ e.hasConsequences }}">
             <h2 class="cc-h2">{{ t.event.consequences }}</h2>
             <ul class="cc-bullets"><sc-for list="{{ e.consequences }}" as="x"><li>{{ x }}</li></sc-for></ul>
+          </sc-if>
+          <sc-if value="{{ e.hasUnresolved }}">
+            <h2 class="cc-h2">{{ t.event.unresolved }}</h2>
+            <ul class="cc-bullets notes"><sc-for list="{{ e.unresolved }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ e.hasPeople }}">
             <h2 class="cc-h2">{{ t.event.who }}</h2>
@@ -1176,6 +1350,55 @@
           <sc-if value="{{ pp.isSparse }}"><p class="cc-muted">{{ t.place.sparse }}</p></sc-if>
         </sc-if>
 
+        <!-- PREVIOUSLY ON… (recap of one session — the latest from the Chronicle and Sessions):
+             only what was recorded; highlights only when an editor chose them (sessions.json recap). -->
+        <sc-if value="{{ d.recap }}">
+          <div class="cc-kick">{{ icons.recap }}<span>{{ t.recap.kicker }}</span><sc-if value="{{ rc.isLatest }}"><span class="cc-badge">{{ t.common.latest }}</span></sc-if></div>
+          <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ rc.title }}</h1>
+          <p class="cc-byline"><a class="cc-a" href="{{ rc.sessionHref }}">{{ rc.sessionLabel }}{{ rc.sessionTitle }}</a><sc-if value="{{ rc.when }}"><span class="cc-sep">·</span>{{ rc.when }}</sc-if></p>
+          <sc-if value="{{ rc.summary }}"><p class="cc-lead" lang="{{ rc.summaryLang }}">{{ rc.summary }}</p></sc-if>
+          <sc-if value="{{ rc.summaryFallback }}"><p class="cc-lore-note">{{ t.recap.inEnglish }}</p></sc-if>
+          <sc-if value="{{ rc.isStub }}"><p class="cc-muted">{{ t.recap.noLog }}</p></sc-if>
+          <sc-if value="{{ rc.endedHere }}"><div class="cc-where"><div class="cc-where-k">{{ t.recap.where }}</div><p class="cc-where-t">{{ rc.endedHere }}</p></div></sc-if>
+          <h2 class="cc-h2">{{ rc.eventsHeading }} <span class="n">{{ rc.eventCount }}</span></h2>
+          <sc-if value="{{ rc.noEvents }}"><p class="cc-muted">{{ t.recap.noEvents }}</p></sc-if>
+          <div class="cc-rows"><sc-for list="{{ rc.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for></div>
+          <sc-if value="{{ rc.hasDecisions }}">
+            <h2 class="cc-h2">{{ t.recap.decisions }}</h2>
+            <div class="cc-rows"><sc-for list="{{ rc.decisions }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ rc.hasPending }}">
+            <h2 class="cc-h2">{{ t.recap.pending }} <span class="n">{{ rc.pendingCount }}</span></h2>
+            <sc-for list="{{ rc.pending }}" as="p">
+              <div class="{{ p.cls }}" style="margin-bottom:16px;">
+                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">{{ t.common.questLink }}</a></sc-if></div>
+                <p class="cc-plot-q clamp">{{ p.qt }}</p>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ rc.hasUnresolved }}">
+            <h2 class="cc-h2">{{ t.recap.fromEvents }}</h2>
+            <div class="cc-rows"><sc-for list="{{ rc.unresolved }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">{{ n.event }}</a></div><div class="cc-note-t">{{ n.text }}</div></div></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ rc.hasClosed }}">
+            <h2 class="cc-h2">{{ t.recap.closed }}</h2>
+            <ul class="cc-bullets"><sc-for list="{{ rc.closed }}" as="x"><li>{{ x }}</li></sc-for></ul>
+          </sc-if>
+          <sc-if value="{{ rc.hasQuests }}">
+            <details class="cc-disc" key="{{ rc.questsKey }}">
+              <summary>{{ icons.quests }}{{ t.recap.quests }} <span class="n">{{ rc.questCount }}</span></summary>
+              <div class="cc-disc-b"><div class="cc-rows"><sc-for list="{{ rc.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for></div></div>
+            </details>
+          </sc-if>
+          <sc-if value="{{ rc.hasEffects }}">
+            <details class="cc-disc">
+              <summary>{{ icons.sessions }}{{ t.recap.effects }} <span class="n">{{ rc.effectCount }}</span></summary>
+              <div class="cc-disc-b"><ul class="cc-bullets"><sc-for list="{{ rc.effects }}" as="x"><li>{{ x }}</li></sc-for></ul></div>
+            </details>
+          </sc-if>
+          <div class="cc-btnrow" style="margin-top:22px;"><a class="cc-btn" href="{{ rc.sessionHref }}">{{ icons.sessions }}{{ t.recap.fullSession }}</a><sc-if value="{{ rc.canFilter }}"><button class="cc-btn ghost" onClick="{{ rc.onFilter }}">{{ icons.chronicle }}{{ t.recap.inChronicle }}</button></sc-if></div>
+        </sc-if>
+
         <!-- LORE OF EXANDRIA (characters, places): curated background, collapsed, after our own story.
              key = entity, so it starts folded again on every entry; the language switch keeps it open. -->
         <sc-if value="{{ lo.has }}">
@@ -1218,29 +1441,128 @@
       <div class="cc-sheet-grip"></div>
       <div class="cc-sheet-grid">
         <sc-for list="{{ moreItems }}" as="n"><a class="{{ n.cls }}" href="{{ n.href }}">{{ n.icon }}<span>{{ n.label }}</span></a></sc-for>
-        <button class="cc-sheet-item wide" onClick="{{ onOpenTutorial }}">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
+      </div>
+      <div class="cc-sheet-grid" style="margin-top:10px;">
+        <a class="{{ savedSheetCls }}" href="#/saved">{{ icons.star }}<span>{{ t.nav.saved }}</span></a>
+        <button class="cc-sheet-item" onClick="{{ onOpenTutorial }}" aria-haspopup="dialog">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
+        <button class="cc-sheet-item" onClick="{{ onOpenGlossary }}" aria-haspopup="dialog">{{ icons.legend }}<span>{{ t.guide.tabGlossary }}</span></button>
       </div>
     </div>
   </sc-if>
 
-  <!-- ═══ TUTORIAL ═══ -->
-  <sc-if value="{{ showTutorial }}">
-    <div class="cc-overlay" onClick="{{ onCloseTutorial }}">
-      <div class="cc-modal cc-scroll" onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="{{ t.guide.dialogAria }}">
-        <button class="cc-iconbtn sm" onClick="{{ onCloseTutorial }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}" style="position:absolute;top:12px;right:12px;">✕</button>
-        <div class="cc-hero" style="padding-top:0;">
-          <div class="cc-kicker">{{ t.guide.kicker }}</div>
-          <div class="cc-h1" style="font-size:26px;line-height:1.1;">{{ t.guide.title }}</div>
-          <div class="cc-flourish">✦</div>
+  <!-- ═══ GUIDE: three steps with real examples + the glossary of icons and colours ═══ -->
+  <sc-if value="{{ gd.open }}">
+    <div class="cc-overlay" onClick="{{ gd.onClose }}">
+      <div class="cc-modal cc-guide cc-scroll" onClick="{{ stop }}" onKeyDown="{{ gd.onKey }}" role="dialog" aria-modal="true" aria-label="{{ t.guide.dialogAria }}" data-dialog="guide">
+        <div class="cc-guide-top">
+          <span class="cc-guide-k">{{ t.guide.kicker }}</span>
+          <button class="cc-iconbtn sm" onClick="{{ gd.onClose }}" title="{{ t.guide.closeAria }}" aria-label="{{ t.guide.closeAria }}">✕</button>
         </div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.chronicle }}</span><div><div class="cc-tut-t">{{ t.guide.chronicleT }}</div><div class="cc-tut-d">{{ t.guide.chronicleD }}</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.quests }}</span><div><div class="cc-tut-t">{{ t.guide.sectionsT }}</div><div class="cc-tut-d">{{ t.guide.sectionsD }}</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.map }}</span><div><div class="cc-tut-t">{{ t.guide.mapT }}</div><div class="cc-tut-d">{{ t.guide.mapD }}</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.search }}</span><div><div class="cc-tut-t">{{ t.guide.tableT }}</div><div class="cc-tut-d">{{ t.guide.tableD }}</div></div></div>
-        <button class="cc-btn" onClick="{{ onCloseTutorial }}" style="width:100%;margin-top:16px;">{{ t.guide.enter }}</button>
+        <div class="cc-seg cc-guide-tabs" role="group" aria-label="{{ t.guide.tabsAria }}">
+          <button class="{{ gd.tabGuideCls }}" onClick="{{ gd.onTabGuide }}" aria-pressed="{{ gd.isSteps }}">{{ icons.help }}{{ t.guide.tabGuide }}</button>
+          <button class="{{ gd.tabGlossaryCls }}" onClick="{{ gd.onTabGlossary }}" aria-pressed="{{ gd.isGlossary }}">{{ icons.legend }}{{ t.guide.tabGlossary }}</button>
+        </div>
+
+        <sc-if value="{{ gd.isSteps }}">
+          <div class="cc-guide-ill">
+            <span class="cc-guide-ex">{{ gd.exampleLabel }}</span>
+            <sc-if value="{{ gd.s1 }}">
+              <sc-if value="{{ gd.ex.day }}"><div class="cc-ghead" style="cursor:default;min-height:30px;"><span class="cc-glabel" style="font-size:17px;">{{ gd.ex.day }}</span><span class="cc-gsub">{{ gd.ex.daySub }}</span><span class="cc-gline"></span></div></sc-if>
+              <div class="{{ gd.ex.cls }}">
+                <span class="cc-kind">{{ gd.ex.icon }}<span class="cc-kind-l">{{ gd.ex.meta }}</span></span>
+                <span class="cc-card-t">{{ gd.ex.title }}</span>
+                <span class="cc-card-s">{{ gd.ex.summary }}</span>
+                <span class="cc-go">{{ icons.next }}</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ gd.s2 }}">
+              <div class="cc-gsearch" aria-hidden="true">{{ icons.search }}<span>{{ gd.sx.query }}</span></div>
+              <div class="cc-gres"><sc-for list="{{ gd.sx.rows }}" as="r"><div class="cc-gres-r"><span class="{{ r.icoCls }}" style="{{ r.icoStyle }}">{{ r.icon }}</span><span>{{ r.label }}</span><span class="n">{{ r.count }}</span></div></sc-for></div>
+            </sc-if>
+            <sc-if value="{{ gd.s3 }}">{{ gd.mapSketch }}</sc-if>
+          </div>
+          <p class="cc-guide-n" aria-live="polite">{{ gd.stepLabel }}</p>
+          <h2 class="cc-guide-h" tabIndex="-1" ref="{{ guideHeadRef }}">{{ gd.title }}</h2>
+          <p class="cc-guide-d">{{ gd.text }}</p>
+          <ul class="cc-guide-pts"><sc-for list="{{ gd.points }}" as="pt"><li>{{ pt.icon }}<span>{{ pt.text }}</span></li></sc-for></ul>
+          <sc-if value="{{ gd.tryLabel }}"><button class="cc-act" onClick="{{ gd.onTry }}">{{ gd.tryIcon }}{{ gd.tryLabel }}</button></sc-if>
+          <div class="cc-guide-nav">
+            <button class="cc-btn ghost" onClick="{{ gd.onPrev }}" disabled="{{ gd.isFirst }}">{{ icons.back }}{{ t.guide.prev }}</button>
+            <div class="cc-gdots" role="group" aria-label="{{ t.guide.tabGuide }}"><sc-for list="{{ gd.dots }}" as="dt"><button class="{{ dt.cls }}" onClick="{{ dt.onClick }}" aria-label="{{ dt.label }}" aria-current="{{ dt.current }}"></button></sc-for></div>
+            <button class="cc-btn" onClick="{{ gd.onNext }}">{{ gd.nextLabel }}<sc-if value="{{ gd.notLast }}">{{ icons.next }}</sc-if></button>
+          </div>
+          <sc-if value="{{ gd.notLast }}"><div class="cc-guide-foot"><button class="cc-linkbtn" onClick="{{ gd.onSkip }}">{{ t.guide.skip }}</button></div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ gd.isGlossary }}">
+          <h2 class="cc-guide-h" tabIndex="-1" ref="{{ guideHeadRef }}" style="margin-top:16px;">{{ t.glossary.title }}</h2>
+          <p class="cc-gl-intro" style="margin-top:0;">{{ t.glossary.intro }}</p>
+          <h3 class="cc-gl-h">{{ t.glossary.events }}</h3>
+          <div class="cc-gl-fams">
+            <sc-for list="{{ gl.families }}" as="fm">
+              <div class="{{ fm.cls }}">
+                <div class="cc-gl-famh">{{ fm.label }}</div>
+                <sc-for list="{{ fm.types }}" as="ty"><div class="cc-gl-row"><span class="{{ ty.icoCls }}">{{ ty.icon }}</span><span>{{ ty.label }}</span></div></sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <h3 class="cc-gl-h">{{ t.glossary.quests }}</h3>
+          <div class="cc-gl-badges"><sc-for list="{{ gl.statuses }}" as="b"><span class="{{ b.cls }}">{{ b.icon }}{{ b.label }}</span></sc-for></div>
+          <h3 class="cc-gl-h">{{ t.glossary.map }}</h3>
+          <div><sc-for list="{{ gl.map }}" as="mr"><div class="cc-gl-mrow"><span class="cc-gl-sym">{{ mr.sym }}</span><span>{{ mr.text }}</span></div></sc-for></div>
+          <h3 class="cc-gl-h">{{ t.glossary.other }}</h3>
+          <div>
+            <div class="cc-gl-mrow"><span class="cc-gl-sym"><span class="cc-gl-approx">{{ gl.approx }}</span></span><span>{{ t.glossary.approx }}</span></div>
+            <div class="cc-gl-mrow"><span class="cc-gl-sym"><span class="cc-gl-lore">{{ icons.lore }}</span></span><span><span style="color:var(--lore);">{{ t.lore.heading }}</span> — {{ t.glossary.lore }}</span></div>
+            <div class="cc-gl-mrow"><span class="cc-gl-sym cc-favbtn is-on">{{ icons.star }}</span><span>{{ t.glossary.star }}</span></div>
+            <div class="cc-gl-mrow"><span class="cc-gl-sym"><span class="cc-badge">{{ t.common.latest }}</span></span><span>{{ t.glossary.latest }}</span></div>
+          </div>
+        </sc-if>
       </div>
     </div>
   </sc-if>
+
+  <!-- ═══ UNIVERSAL SEARCH (Ctrl/⌘ K, the magnifier in the top bar) ═══ -->
+  <sc-if value="{{ sr.open }}">
+    <div class="cc-overlay cc-sov" onClick="{{ sr.onClose }}">
+      <div class="cc-spanel" onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="{{ t.search.dialogAria }}" data-dialog="search">
+        <div class="cc-shead">
+          <button class="cc-iconbtn sm cc-sback" onClick="{{ sr.onClose }}" title="{{ t.search.close }}" aria-label="{{ t.search.close }}">{{ icons.back }}</button>
+          <div class="cc-search">
+            <span class="cc-search-ico">{{ icons.search }}</span>
+            <input class="cc-input" ref="{{ searchAllRef }}" type="search" value="{{ sr.q }}" onChange="{{ sr.onInput }}" onKeyDown="{{ sr.onKey }}" placeholder="{{ t.search.placeholder }}" aria-label="{{ t.search.inputAria }}" role="combobox" aria-expanded="{{ sr.expanded }}" aria-controls="cc-sresults" aria-autocomplete="list" aria-activedescendant="{{ sr.activeId }}" enterKeyHint="search" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" />
+            <sc-if value="{{ sr.q }}"><button class="cc-search-x" onClick="{{ sr.onClear }}" aria-label="{{ t.search.clear }}">✕</button></sc-if>
+          </div>
+          <button class="cc-linkbtn cc-sclose" onClick="{{ sr.onClose }}" aria-label="{{ t.search.close }}">{{ t.search.closeShort }}</button>
+        </div>
+        <div class="cc-sbody cc-scroll" ref="{{ searchBodyRef }}">
+          <p class="cc-sr" aria-live="polite">{{ sr.status }}</p>
+          <sc-if value="{{ sr.isEmpty }}">
+            <p class="cc-sintro">{{ t.search.intro }}</p>
+            <div class="cc-stries"><span class="cc-flabel">{{ t.search.tryLabel }}</span><sc-for list="{{ sr.tries }}" as="tq"><button class="cc-stry" onClick="{{ tq.onClick }}">{{ tq.label }}</button></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ sr.none }}"><div class="cc-snone"><p class="cc-strong">{{ sr.noneText }}</p><p class="cc-muted">{{ t.search.noneHint }}</p></div></sc-if>
+          <div id="cc-sresults" role="listbox" aria-label="{{ t.search.resultsAria }}">
+            <sc-for list="{{ sr.groups }}" as="g">
+              <div class="cc-sgroup" role="group" aria-labelledby="{{ g.hid }}">
+                <div class="cc-sgh" id="{{ g.hid }}">{{ g.icon }}{{ g.label }} <span class="n">{{ g.count }}</span></div>
+                <sc-for list="{{ g.items }}" as="it">
+                  <a class="{{ it.cls }}" id="{{ it.domId }}" href="{{ it.href }}" onClick="{{ it.onClick }}" role="option" aria-selected="{{ it.active }}" tabIndex="-1"><span class="{{ it.icoCls }}" style="{{ it.icoStyle }}">{{ it.icon }}</span><span class="cc-hit-b"><span class="cc-hit-t">{{ it.titleNode }}</span><sc-if value="{{ it.sub }}"><span class="cc-hit-s">{{ it.sub }}</span></sc-if></span></a>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ sr.isEmpty }}"><sc-if value="{{ sr.hasRecent }}"><p class="cc-sintro" style="margin-top:4px;"><a class="cc-a" href="#/saved" onClick="{{ sr.onSaved }}">{{ t.search.savedLink }} ›</a></p></sc-if></sc-if>
+        </div>
+        <div class="cc-sfoot" aria-hidden="true">{{ t.search.keys }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ offlineNote }}">
+    <div class="cc-offline" role="status">{{ t.offline.note }}<button class="cc-linkbtn" onClick="{{ onHideOffline }}" style="min-height:40px;">{{ t.offline.dismiss }}</button></div>
+  </sc-if>
+  <div class="cc-sr" aria-live="polite">{{ liveMsg }}</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:840},&quot;showRoutes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showLegend&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
@@ -1372,6 +1694,10 @@ const ICON_SHAPES = {
   sort:     ["M7.5 4.5v15","M4 8l3.5-3.5L11 8","M16.5 19.5v-15","M13 16l3.5 3.5L20 16"],
   check:    ["M5 12.5l4.5 4.5L19 7.5"],
   help:     ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M9.6 9.4a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.7","M12 16.8v.3"],
+  star:     ["M12 3.6l2.55 5.25 5.75.85-4.15 4.05.98 5.75L12 16.8l-5.13 2.7.98-5.75L3.7 9.7l5.75-.85z"],   // favourite (filled by CSS when on)
+  recent:   ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M12 7.5V12l3.2 2"],
+  legend:   ["M4 6.5h3","M10 6.5h10","M4 12h3","M10 12h10","M4 17.5h3","M10 17.5h10"],
+  recap:    ["M11.5 6 5.5 12l6 6","M18.5 6l-6 6 6 6"],
 };
 // Event types — exactly one icon per type of ChronicleModel.EVENT_TYPES, always shown with the
 // type's label and tinted with its family colour (--ev-<family>). Same 24px stroke style as above.
@@ -1426,10 +1752,19 @@ const SECTIONS = [
   { id:"characters", icon:"characters" },
   { id:"places",     icon:"places" },
   { id:"map",        icon:"map" },
+  { id:"saved",      icon:"star", hidden:true },     // favourites + history: the star in the top bar / More, never a tab
 ];
 const SECTION_IDS = SECTIONS.map(s=>s.id);
-// Detail kinds open the reading pane; "at" (map only) just focuses a pin.
-const KINDS = { event:1, session:1, quest:1, character:1, place:1 };
+// Detail kinds open the reading pane; "at" (map only) just focuses a pin. "recap" = "Previously on…" for a session.
+const KINDS = { event:1, session:1, quest:1, character:1, place:1, recap:1 };
+const FAV_KINDS = { event:1, session:1, quest:1, character:1, place:1 };
+const GUIDE_KEY = "chronicle-tutorial-seen";       // "done" | "dismissed" ("1" from older versions): the invitation is not shown again
+const GUIDE_STEPS = 3;
+const guideSeen = ()=>{ try{ return !!localStorage.getItem(GUIDE_KEY); }catch(e){ return true; } };   // no storage: never nag
+const SEARCH_LIMIT = 5;                            // results per group before "show more"
+const RECENT_DWELL = 1200;                         // ms an entry stays open before it counts as viewed
+const IS_MAC = /Mac|iPhone|iPad/.test((navigator.platform||"")+(navigator.userAgent||""));
+const GROUP_ICON = { character:"characters", event:"chronicle", quest:"quests", place:"places", session:"sessions", recent:"recent" };
 const enc = s => encodeURIComponent(s);
 const HI_RES_MAP = "assets/exandria-map.jpeg";
 function parseHash(hash){
@@ -1473,12 +1808,19 @@ class Component extends DCLogic {
       mapSelId:null, mapList:null, mapPanelOpen:false, hiLoaded:false,
       isMobile:this._mqMobile.matches, isWide:this._mqWide.matches,
       docs:{}, dataError:null, loaded:false,
-      showTutorial:false, moreOpen:false,
+      moreOpen:false,
+      guide:null,                                    // { view:"steps"|"glossary", step } while the guide is open
+      inviteSeen:guideSeen(),                        // the first-visit invitation (never a window in the way)
+      search:{ open:false, q:"", active:0, more:{} },
+      libRev:0, liveMsg:"",
+      servedOffline:false, netOffline:navigator.onLine===false, offlineHidden:false,
     };
     if(!Array.isArray(this.state.filters.pcs)) this.state.filters.pcs=[];
     this._applyDocLang(lang);
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
+    this.lib      = window.ChronicleLibrary.createLibrary(safeStorage());   // favourites + recently viewed (this browser only)
+    this._overlay=null; this._returnFocus=null; this._recentTimer=null;
     this._stack=[routeHash(this.state.route)];
     this._scroll={}; this._dscroll={}; this._interact=0; this._mapCentered=false; this._memo={};
 
@@ -1507,6 +1849,10 @@ class Component extends DCLogic {
     };
     this.searchRef = el=>{ this._searchEl=el; };
     this.headRef   = el=>{ this._headEl=el; };
+    this.guideHeadRef = el=>{ this._guideHead=el; };
+    this.searchBodyRef = el=>{ this._sBody=el; };
+    // The search field takes the focus as soon as the panel mounts (inside the tap, so phones open the keyboard).
+    this.searchAllRef = el=>{ this._sInput=el; if(el&&this._focusSearchInput){ this._focusSearchInput=false; el.focus({preventScroll:true}); if(el.value) el.select(); } };
     this._onMainScroll = ()=>{ const el=this._mainEl; if(this._restoring||!el||!el.clientHeight) return; this._scroll[this.state.route.section]=el.scrollTop; };
     this._onDetailScroll = ()=>{ const el=this._detailEl; if(this._restoring||!el||!el.clientHeight) return; this._dscroll[routeHash(this.state.route)]=el.scrollTop; };
     this.reflow = ()=>{ const r=()=>{ if(this._vpEl&&this._vpEl.clientWidth) this.setState(s=>({view:this.viewport.clamp(s.view)})); }; requestAnimationFrame(()=>requestAnimationFrame(r)); setTimeout(r,320); };
@@ -1520,12 +1866,23 @@ class Component extends DCLogic {
     window.addEventListener("hashchange",this._onHash);
     this._onKey=e=>this._handleKey(e);
     document.addEventListener("keydown",this._onKey);
+    // Back (browser button, Android gesture) closes an open guide or search instead of leaving the page.
+    this._onPop=()=>this._overlayPopped();
+    window.addEventListener("popstate",this._onPop);
+    // Favourites/history changed in another tab.
+    this._onStorage=e=>{ if(e.key===window.ChronicleLibrary.FAV_KEY||e.key===window.ChronicleLibrary.RECENT_KEY){ this.lib.reload(); this.setState(s=>({libRev:s.libRev+1})); } };
+    window.addEventListener("storage",this._onStorage);
+    this._onNet=()=>this.setState({netOffline:navigator.onLine===false,offlineHidden:false});
+    window.addEventListener("online",this._onNet); window.addEventListener("offline",this._onNet);
     const saved=this.store.load(); if(Object.keys(saved).length) this.setState({docs:saved});
-    try{ if(!localStorage.getItem("chronicle-tutorial-seen")) this.setState({showTutorial:true}); }catch(e){}
+    // A reload while an overlay was open leaves its history entry behind: it no longer opens anything.
+    try{ if(history.state&&history.state.ccOverlay) history.replaceState(null,"",location.href); }catch(e){}
     if(!location.hash) history.replaceState(null,"",routeHash(this.state.route));
 
     // Required files fail loudly; npcs/locations/lore are optional (a 404 simply means "none yet").
+    // sw.js marks a response it had to take from the offline copy (x-chronicle-offline) — then a note says so.
     const load=(file,name,optional)=>fetch(file).then(r=>{
+      if(r.headers&&r.headers.get("x-chronicle-offline")==="1") this._servedOffline=true;
       if(!r.ok){ if(optional) return null; throw new Error(this.t("status.failedFile",{name})); }
       return r.json().catch(err=>{ throw new Error(this.t("status.invalidJson",{name,error:err.message})); });
     });
@@ -1540,13 +1897,18 @@ class Component extends DCLogic {
         contents.forEach(([code,c])=>{ if(c&&typeof c==="object") this._content[code]=c; });
         this.model=this._modelFor(this.state.lang);
         if(this.model.issues.length) console.warn("[chronicle] data issues:\n"+this.model.issues.map(i=>`${i.level}: ${i.msg}`).join("\n"));
-        this.setState({loaded:true},()=>this._afterRoute(null,this.state.route));
+        // Favourites/history pointing at entries that no longer exist are dropped — but never against an
+        // older offline copy, which may simply not have the newest entries yet.
+        if(!this._servedOffline) this.lib.prune(ref=>!!M.resolveRef(this.model,ref.kind,ref.id));
+        this.setState({loaded:true,servedOffline:!!this._servedOffline},()=>this._afterRoute(null,this.state.route));
       }).catch(err=>{
         console.error(err);
         this.setState({dataError:String(err&&err.message||err)});
       });
   }
   componentDidUpdate(){
+    // Keyboard navigation in the search results keeps the active one in view.
+    if(this._scrollActive){ this._scrollActive=false; const el=document.getElementById(`cc-opt-${this.state.search.active}`); if(el&&el.scrollIntoView) el.scrollIntoView({block:"nearest"}); }
     // Map popups are placed from an estimated height on their first frame; once rendered, their real
     // height is measured and, if it differs, they are placed again (one extra render, no loop).
     const pop=this._vpEl&&this._vpEl.querySelector("[data-popup]");
@@ -1567,6 +1929,10 @@ class Component extends DCLogic {
     window.removeEventListener("resize",this.reflow);
     window.removeEventListener("hashchange",this._onHash);
     document.removeEventListener("keydown",this._onKey);
+    window.removeEventListener("popstate",this._onPop);
+    window.removeEventListener("storage",this._onStorage);
+    window.removeEventListener("online",this._onNet); window.removeEventListener("offline",this._onNet);
+    clearTimeout(this._recentTimer);
   }
 
   // ── Language ──────────────────────────────────────────────────────────────
@@ -1605,7 +1971,8 @@ class Component extends DCLogic {
     else if(st[st.length-1]!==hash) st.push(hash);
     if(st.length>60) st.splice(0,st.length-60);
     const prev=this.state.route;
-    this.setState({route:r,moreOpen:false},()=>this._afterRoute(prev,r));
+    this._overlay=null;                                            // any route change closes the guide and the search
+    this.setState(s=>({route:r,moreOpen:false,guide:null,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._afterRoute(prev,r));
   }
   canGoBack(){ return this._stack.length>1; }
   goBack(){
@@ -1626,22 +1993,129 @@ class Component extends DCLogic {
       const card=main.querySelector(`[data-ev="${(window.CSS&&CSS.escape)?CSS.escape(r.id):r.id}"]`);
       if(card){ const a=card.getBoundingClientRect(), b=main.getBoundingClientRect(); if(a.top<b.top+120||a.bottom>b.bottom) card.scrollIntoView({block:"center"}); }
     }
-    // On phones the reading pane replaces the list: move focus to its heading for screen readers.
-    if(r.kind&&r.kind in KINDS&&!this.state.isWide&&this._headEl&&(!prev||routeHash(prev)!==routeHash(r))) this._headEl.focus({preventScroll:true});
+    // On phones the reading pane replaces the list: move focus to its heading for screen readers
+    // (and on every screen when the entry was opened from the search or the guide).
+    const focusHead=this._focusHeadNext; this._focusHeadNext=false;
+    if(r.kind&&r.kind in KINDS&&(focusHead||!this.state.isWide)&&this._headEl&&(focusHead||!prev||routeHash(prev)!==routeHash(r))) this._headEl.focus({preventScroll:true});
     if(r.section==="map") this._syncMap(prev,false);
     if(prev&&(!!(prev.kind in KINDS))!==(!!(r.kind in KINDS))) this.reflow();
+    // Recently viewed: an entry counts once it has stayed open a moment (quick flips through
+    // Earlier/Later or an accidental tap are not history); reopening moves it to the top.
+    clearTimeout(this._recentTimer);
+    if(r.kind in FAV_KINDS&&M.resolveRef(this.model,r.kind,r.id)){
+      const hash=routeHash(r);
+      this._recentTimer=setTimeout(()=>{ if(routeHash(this.state.route)===hash&&this.lib.addRecent({kind:r.kind,id:String(r.id)})) this.setState(s=>({libRev:s.libRev+1})); },RECENT_DWELL);
+    }
   }
   _handleKey(e){
     const typing=/^(INPUT|SELECT|TEXTAREA)$/.test((e.target&&e.target.tagName)||"");
+    // Ctrl+K / ⌘K: the universal search, from anywhere (again to close it).
+    if((e.ctrlKey||e.metaKey)&&!e.altKey&&!e.shiftKey&&(e.key==="k"||e.key==="K")){ e.preventDefault(); return this.state.search.open?this.closeSearch():this.openSearch(); }
+    if(e.key==="Tab"&&(this.state.search.open||this.state.guide)) return this._trapFocus(e);
     if(e.key==="Escape"){
-      if(this.state.showTutorial) return this.closeTutorial();
+      if(this.state.search.open) return this.closeSearch();
+      if(this.state.guide) return this.closeGuide("dismissed");
       if(this.state.moreOpen) return this.setState({moreOpen:false});
       if(this.state.filtersOpen) return this.setState({filtersOpen:false});
       if(this.state.mapList) return this.setState({mapList:null});
       if(!typing&&this.state.route.kind) return this.closeDetail();
     }
-    if(e.key==="/"&&!typing&&!e.ctrlKey&&!e.metaKey){ e.preventDefault(); this.focusSearch(); }
+    if(e.key==="/"&&!typing&&!e.ctrlKey&&!e.metaKey&&!this.state.search.open&&!this.state.guide){ e.preventDefault(); this.focusSearch(); }
   }
+  // Keyboard focus stays inside an open dialog (guide, search) until it is closed.
+  _trapFocus(e){
+    const dlg=document.querySelector("[data-dialog]"); if(!dlg) return;
+    const all=[...dlg.querySelectorAll('a[href]:not([tabindex="-1"]),button:not([disabled]),input,summary,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);
+    if(!all.length) return;
+    const first=all[0], last=all[all.length-1], cur=document.activeElement;
+    if(!dlg.contains(cur)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey&&cur===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey&&cur===last){ e.preventDefault(); first.focus(); }
+  }
+
+  // ── Overlays (guide, search) ──────────────────────────────────────────────
+  // An open overlay owns one history entry (same URL), so Back — the browser button or Android's
+  // gesture — closes it instead of leaving the page. Closing it with ✕/Esc consumes that entry;
+  // following a link from it replaces the entry with the destination (no dead Back press).
+  _pushOverlay(name){
+    if(!this._overlay){ try{ history.pushState({ccOverlay:name},"",location.href); }catch(e){} }
+    this._overlay=name;
+  }
+  _popOverlay(){
+    const had=this._overlay; this._overlay=null;
+    if(had&&history.state&&history.state.ccOverlay){ this._ignorePop=true; history.back(); }
+  }
+  _overlayPopped(){
+    if(this._ignorePop){ this._ignorePop=false; return; }
+    if(!this._overlay) return;
+    this._overlay=null;
+    this.setState(s=>({guide:null,search:{...s.search,open:false}}),()=>this._restoreFocus());
+  }
+  _goFromOverlay(hash){
+    const inOverlay=this._overlay&&history.state&&history.state.ccOverlay;
+    this._focusHeadNext=true;
+    if(inOverlay&&hash!==location.hash){ this._overlay=null; history.replaceState(null,"",hash); this._routeChanged(); }
+    else { this._popOverlay(); this.setState(s=>({guide:null,search:{...s.search,open:false}})); this.navigate(hash); }
+  }
+  _keepFocus(){ const a=document.activeElement; this._returnFocus=a&&a!==document.body?a:null; }
+  _restoreFocus(){ const el=this._returnFocus; this._returnFocus=null; if(el&&el.isConnected&&el.focus) requestAnimationFrame(()=>el.focus({preventScroll:true})); }
+
+  // ── Guide ─────────────────────────────────────────────────────────────────
+  openGuide(view){
+    if(!this.state.guide) this._keepFocus();
+    this._pushOverlay("guide");
+    this.setState(s=>({guide:{view:view==="glossary"?"glossary":"steps",step:0},moreOpen:false,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._focusGuideHead());
+  }
+  _focusGuideHead(){ if(this._guideHead) this._guideHead.focus({preventScroll:true}); }
+  // Finishing or dismissing it once is remembered: the first-visit invitation does not come back.
+  _markGuideSeen(how){ try{ localStorage.setItem(GUIDE_KEY,how); }catch(e){} if(!this.state.inviteSeen) this.setState({inviteSeen:true}); }
+  closeGuide(how){ this._markGuideSeen(how||"dismissed"); this._popOverlay(); this.setState({guide:null},()=>this._restoreFocus()); }
+  guideStep(n){ const g=this.state.guide; if(!g) return; const step=Math.max(0,Math.min(GUIDE_STEPS-1,n)); if(step!==g.step) this.setState({guide:{...g,step}},()=>this._focusGuideHead()); }
+  guideView(view){ const g=this.state.guide; if(g&&g.view!==view) this.setState({guide:{...g,view}},()=>this._focusGuideHead()); }
+  _guideKey(e){
+    const g=this.state.guide; if(!g||g.view!=="steps"||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if(e.key==="ArrowRight"){ e.preventDefault(); this.guideStep(g.step+1); }
+    else if(e.key==="ArrowLeft"){ e.preventDefault(); this.guideStep(g.step-1); }
+  }
+  // "Try it": each step's example does the real thing — opens the event, runs the search, opens the map.
+  guideTry(step){
+    const ex=this.model?M.guideExamples(this.model):{};
+    this._markGuideSeen("done");
+    if(step===1&&ex.person){ this._overlay="search"; this._focusSearchInput=true; this.setState({guide:null,search:{open:true,q:ex.person.name,active:0,more:{}}}); return; }
+    this.setState({guide:null});
+    if(step===0&&ex.event) return this._goFromOverlay(`#/chronicle/event/${enc(ex.event.id)}`);
+    this._goFromOverlay("#/map");
+  }
+
+  // ── Universal search ──────────────────────────────────────────────────────
+  openSearch(q){
+    if(!this.state.search.open&&!this.state.guide) this._keepFocus();
+    this._pushOverlay("search");
+    this._focusSearchInput=true;
+    this.setState(s=>({search:{open:true,q:q!=null?q:s.search.q,active:0,more:{}},guide:null,moreOpen:false}),()=>{ if(this._sInput&&document.activeElement!==this._sInput){ this._sInput.focus({preventScroll:true}); this._focusSearchInput=false; } });
+  }
+  closeSearch(){ this._popOverlay(); this.setState(s=>({search:{...s.search,open:false}}),()=>this._restoreFocus()); }
+  setSearchQ(q){ if(this._sBody) this._sBody.scrollTop=0; this.setState(s=>({search:{...s.search,q,active:0,more:{}}})); }
+  _searchKey(e){
+    const n=(this._searchOptions||[]).length, cur=Math.min(this.state.search.active,Math.max(0,n-1));
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+      e.preventDefault(); if(!n) return;
+      const active=e.key==="ArrowDown"?Math.min(n-1,cur+1):Math.max(0,cur-1);
+      this._scrollActive=true; this.setState(s=>({search:{...s.search,active}}));
+    } else if(e.key==="Enter"){
+      e.preventDefault();
+      const opt=(this._searchOptions||[])[cur]; if(opt) opt.run();
+    }
+  }
+  _searchMemo(q){ const c=this._memo.search; if(c&&c.model===this.model&&c.q===q) return c.val; const val=M.searchAll(this.model,q); this._memo.search={model:this.model,q,val}; return val; }
+
+  // ── Favourites + history ──────────────────────────────────────────────────
+  _say(msg){ this.setState(s=>({liveMsg:s.liveMsg===msg?msg+" ":msg})); }
+  toggleFav(ref){ const on=this.lib.toggleFavorite(ref); this.setState(s=>({libRev:s.libRev+1})); this._say(this.t(on?"saved.added":"saved.removed")); }
+  removeFav(ref){ if(this.lib.removeFavorite(ref)){ this.setState(s=>({libRev:s.libRev+1})); this._say(this.t("saved.removed")); } }
+  clearRecent(){ this.lib.clearRecent(); this.setState(s=>({libRev:s.libRev+1})); }
+  // Stored references → live entries (current language); references without an entry are skipped.
+  _resolveRefs(list){ return list.map(ref=>({ref,ent:M.resolveRef(this.model,ref.kind,ref.id)})).filter(x=>x.ent); }
   focusSearch(){
     if(this.state.route.section!=="chronicle"||(this.state.route.kind&&!this.state.isWide)) this.navigate("#/chronicle");
     setTimeout(()=>{ if(this._searchEl) this._searchEl.focus(); },60);
@@ -1692,15 +2166,13 @@ class Component extends DCLogic {
   // Map rows: show / hide a party member — same filter, seen as visibility (everyone on = no filter).
   toggleVisiblePc(id)  { this.setF("pcs",M.toggleVisibleCharacter(this.model,this.state.filters.pcs,id)); }
   reset()              { const filters={...M.EMPTY_FILTERS,pcs:[]}; Prefs.setS("chronicle-filters",filters); this.setState({filters,mapList:null}); }
-  filterBy(key,val)    { const filters={...M.EMPTY_FILTERS,pcs:[],[key]:val}; Prefs.setS("chronicle-filters",filters); this._scroll.chronicle=0; this.setState({filters,filtersOpen:false}); this.navigate("#/chronicle"); }
+  filterBy(key,val)    { const filters={...M.EMPTY_FILTERS,pcs:[],[key]:val}; Prefs.setS("chronicle-filters",filters); this._scroll.chronicle=0; this.setState({filters,filtersOpen:false}); if(this._overlay) this._goFromOverlay("#/chronicle"); else this.navigate("#/chronicle"); }
   toggleGroup(key)     { this.setState(s=>({collapsedGroups:{...s.collapsedGroups,[key]:!s.collapsedGroups[key]}})); }
   // Grouping/order preferences: each control stores only its own explicit choice.
   savePref(patch)      { Prefs.set("chronicle-prefs",M.normalizePrefs({...M.normalizePrefs(Prefs.get("chronicle-prefs",null)),...patch})); }
   setGroupBy(groupBy)  { this.setState({groupBy}); this.savePref({groupBy}); }
   setChronicleOrder(desc){ this.setState({sortDesc:desc}); this.savePref({chronicleOrder:desc?"desc":"asc"}); }
   setSessionsOrder(desc) { this.setState({sessionsDesc:desc}); this.savePref({sessionsOrder:desc?"desc":"asc"}); }
-  openTutorial()       { this.setState({showTutorial:true,moreOpen:false}); }
-  closeTutorial()      { try{ localStorage.setItem("chronicle-tutorial-seen","1"); }catch(e){} this.setState({showTutorial:false}); }
 
   // ── Link + presentation helpers ───────────────────────────────────────────
   href(kind,id)   { return `#/${this.state.route.section}/${kind}/${enc(id)}`; }
@@ -1820,11 +2292,11 @@ class Component extends DCLogic {
       if(r.sessions.length) quick.push({label:t("chronicle.quickSessions"),items:r.sessions.map(s=>chip(this.href("session",s.no),this.sessLabel(s.no),s.title))});
     }
 
-    const last=m.sessions.filter(s=>!s.isStub).slice(-1)[0];
     const activeCount=M.activeFilterCount(f);
     return {
       groups:vm, count:evs.length, isEmpty:evs.length===0, opt, pcChips, actives, hasActives:actives.length>0, activeCount,
       quick, hasQuick:quick.length>0, filtersOpen:st.filtersOpen,
+      invite:!st.inviteSeen&&!st.guide,
       filterBtnCls:"cc-btn ghost"+(st.filtersOpen||activeCount?" is-on":""),
       filterLabel:activeCount?t("chronicle.filtersActive",{count:activeCount}):t("chronicle.filters"),
       showLabel:t("chronicle.showEvents",{count:evs.length}),
@@ -1833,7 +2305,6 @@ class Component extends DCLogic {
       byDayCls:st.groupBy==="day"?"is-on":"", bySessCls:st.groupBy==="session"?"is-on":"",
       // The order button names the order on screen; its title/aria-label says what a tap switches to.
       sortLabel:st.sortDesc?t("chronicle.newest"):t("chronicle.oldest"), sortTitle:st.sortDesc?t("chronicle.newestTitle"):t("chronicle.oldestTitle"),
-      latest:last?{href:this.href("session",last.no),label:this.sessLabel(last.no),title:last.title||"",sub:this.sessionSub(last)}:null,
     };
   }
   _placeOrder(){
@@ -1903,6 +2374,192 @@ class Component extends DCLogic {
       cls:"cc-row"+(this.isOpen("place",p.id)?" is-sel":"") })) };
   }
 
+  // ── One row per entry, everywhere (search results, favourites, history, guide) ──
+  // Type icon (event kind / status / portrait / session number), the name, and one quiet context line.
+  hl(text,q){
+    const r=q?M.highlightRanges(text,q):[]; if(!r.length) return text;
+    const out=[]; let at=0;
+    r.forEach(([a,b],i)=>{ if(a>at) out.push(text.slice(at,a)); out.push(h("mark",{key:i},text.slice(a,b))); at=b; });
+    if(at<text.length) out.push(text.slice(at));
+    return h("span",null,...out);
+  }
+  entityRow(kind,ent,q){
+    const m=this.model, t=this.t, id=kind==="session"?ent.no:ent.id;
+    let title, sub, ico;
+    if(kind==="event"){ title=this.title(ent); sub=this.metaLine([ent.typeLabel,this.dayText(ent),this.sessLabel(ent.session)]); ico=this.evIco(ent); }
+    else if(kind==="character"){ title=ent.name;
+      sub=this.metaLine(ent.kind==="pc"?[t("kinds.partyMember"),ent.role]:[ent.categoryLabel,ent.race?cap(ent.race):"",ent.memberIds.length?t("search.subMembers",{count:ent.memberIds.length}):""]);
+      ico={ icoCls:this.sealCls(ent), icoStyle:this.seal(ent), icon:this.mono(ent) }; }
+    else if(kind==="quest"){ title=ent.title; sub=this.metaLine([ent.statusLabel,ent.lastSession!=null?t("search.subLast",{n:ent.lastSession}):""]);
+      ico={ icoCls:`cc-hitico tone-${ent.statusTone}`, icon:this.statusIcon(ent.statusTone) }; }
+    else if(kind==="place"){ const parent=ent.parentId&&m.placeById.get(ent.parentId); title=ent.name; sub=this.metaLine([ent.kindLabel,parent?parent.name:""]);
+      ico={ icoCls:"cc-hitico", icon:ICONS.places }; }
+    else { title=ent.title||this.sessLabel(ent.no); sub=this.metaLine([this.sessLabel(ent.no),ent.playedLabel?t("common.played",{date:ent.playedLabel}):"",ent.dayText]);
+      ico={ icoCls:"cc-hitno", icon:String(ent.no) }; }
+    return { kind, id:String(id), key:`${kind}:${id}`, href:this.href(kind,id), title, titleNode:this.hl(title,q), sub, icoStyle:"", ...ico, cls:"cc-hit" };
+  }
+
+  _buildSearch(){
+    const st=this.state.search, m=this.model, t=this.t;
+    if(!st.open||!m){ this._searchOptions=[]; return { open:false }; }
+    const q=st.q, trimmed=q.trim(), groups=[], options=[];
+    // Every result is an option of one flat list (↑ ↓ Enter); which one is active is settled once all are built.
+    const option=(row,run)=>{ const i=options.length, opt={ ...row, domId:`cc-opt-${i}`, active:false, baseCls:row.cls||"cc-hit", cls:row.cls||"cc-hit",
+        onClick:e=>{ if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button>0) return; e.preventDefault(); run(); } };
+      options.push({run,opt}); return opt; };
+    const go=row=>()=>this._goFromOverlay(row.href);
+    let total=0, tries=[];
+    if(!trimmed){
+      // Nothing typed yet: what you opened lately, one tap away; and a few real names to try.
+      const rec=this._resolveRefs(this.lib.recent());
+      if(rec.length) groups.push({ kind:"recent", label:t("search.recent"), items:rec.map(({ref,ent})=>{ const row=this.entityRow(ref.kind,ent,""); return option(row,go(row)); }) });
+      const ex=M.guideExamples(m), place=m.places.slice().sort((a,b)=>b.allEventIds.length-a.allEventIds.length)[0], last=M.latestSession(m);
+      tries=[ex.person&&ex.person.name, place&&place.name, last&&this.sessLabel(last.no)].filter(Boolean).map(label=>({ label, onClick:()=>{ this.setSearchQ(label); if(this._sInput) this._sInput.focus(); } }));
+    } else {
+      const r=this._searchMemo(q); total=r.total;
+      r.groups.forEach(g=>{
+        const open=!!st.more[g.kind], shown=open?g.items:g.items.slice(0,SEARCH_LIMIT), extra=g.items.length-shown.length;
+        const items=shown.map(it=>{ const row=this.entityRow(it.kind,it.entity,q); return option(row,go(row)); });
+        if(g.kind==="event"&&g.items.length>SEARCH_LIMIT){
+          // Many events: the Chronicle shows them all, with its days and filters (same text filter, same count).
+          const filters={...M.EMPTY_FILTERS,pcs:[],...M.chronicleFilterFor(m,q)}, n=M.filterEvents(m,filters).length;
+          items.push(option({ cls:"cc-hit cc-hit-more", title:"", titleNode:t("search.allInChronicle",{count:n}), sub:"", icoCls:"cc-hitico", icon:ICONS.chronicle, href:"#/chronicle" },
+            ()=>{ Prefs.setS("chronicle-filters",filters); this._scroll.chronicle=0; this.setState({filters,filtersOpen:false}); this._goFromOverlay("#/chronicle"); }));
+        } else if(extra>0){
+          items.push(option({ cls:"cc-hit cc-hit-more", title:"", titleNode:t("search.more",{count:extra}), sub:"", icoCls:"cc-hitico", icon:ICONS.next, href:"#" },
+            ()=>this.setState(s=>({search:{...s.search,more:{...s.search.more,[g.kind]:true}}}))));
+        }
+        groups.push({ kind:g.kind, label:t(`search.group.${g.kind}`), count:String(g.items.length), items });
+      });
+    }
+    this._searchOptions=options;
+    const active=options.length?Math.min(st.active,options.length-1):-1;
+    if(active>=0){ const o=options[active].opt; o.active=true; o.cls=`${o.baseCls} is-active`; }
+    return {
+      open:true, q, isEmpty:!trimmed, none:!!trimmed&&!total, noneText:t("search.none",{q:trimmed}), tries,
+      groups:groups.map((g,i)=>({ ...g, hid:`cc-sg-${i}`, icon:ICONS[GROUP_ICON[g.kind]], count:g.count||"" })),
+      hasRecent:!trimmed&&groups.length>0, expanded:options.length>0, activeId:active>=0?`cc-opt-${active}`:undefined,
+      status:trimmed?(total?t("search.status",{count:total}):t("search.statusNone")):"",
+      onInput:e=>this.setSearchQ(e.target.value), onKey:e=>this._searchKey(e),
+      onClear:()=>{ this.setSearchQ(""); if(this._sInput) this._sInput.focus(); }, onClose:()=>this.closeSearch(),
+      onSaved:e=>{ e.preventDefault(); this._goFromOverlay("#/saved"); },
+    };
+  }
+
+  // ── Guide + glossary ──────────────────────────────────────────────────────
+  _buildGuide(){
+    const g=this.state.guide, t=this.t, m=this.model;
+    if(!g) return { open:false };
+    const isGlossary=g.view==="glossary";
+    const base={ open:true, isSteps:!isGlossary, isGlossary,
+      tabGuideCls:isGlossary?"":"is-on", tabGlossaryCls:isGlossary?"is-on":"",
+      onTabGuide:()=>this.guideView("steps"), onTabGlossary:()=>this.guideView("glossary"),
+      onClose:()=>this.closeGuide("dismissed"), onKey:e=>this._guideKey(e) };
+    if(isGlossary) return base;
+    const n=g.step, ex=m?M.guideExamples(m):{}, key=`s${n+1}`;
+    const titles=[1,2,3].map(i=>t(`guide.s${i}T`));
+    const pointIcons=[[ICONS.sort,EVENT_ICONS.combat,ICONS.next],[ICONS.lore,ICONS.characters,ICONS.star],[ICONS.pin,ICONS.layers,ICONS.back]][n];
+    const name=ex.person?ex.person.name:"";
+    const out={ ...base, s1:n===0, s2:n===1, s3:n===2, isFirst:n===0, notLast:n<GUIDE_STEPS-1,
+      stepLabel:t("guide.step",{n:n+1,total:GUIDE_STEPS}), title:titles[n], text:t(`guide.${key}D`),
+      points:["a","b","c"].map((x,i)=>({ text:t(`guide.${key}${x}`,{name}), icon:pointIcons[i] })),
+      exampleLabel:t("guide.example"),
+      nextLabel:n<GUIDE_STEPS-1?t("guide.next"):t("guide.done"),
+      onPrev:()=>this.guideStep(n-1), onNext:()=>n<GUIDE_STEPS-1?this.guideStep(n+1):this.closeGuide("done"), onSkip:()=>this.closeGuide("dismissed"),
+      dots:titles.map((ti,i)=>({ cls:"cc-gdot"+(i===n?" is-on":""), label:t("guide.stepAria",{n:i+1,title:ti}), current:i===n?"step":undefined, onClick:()=>this.guideStep(i) })),
+      onTry:()=>this.guideTry(n), tryIcon:[ICONS.chronicle,ICONS.search,ICONS.map][n],
+      tryLabel:n===0?(ex.event?t("guide.s1Try"):""):n===1?(name?t("guide.s2Try",{name}):""):t("guide.s3Try"),
+      ex:{}, sx:{rows:[]}, mapSketch:null };
+    if(n===0&&ex.event){
+      const ev=ex.event;
+      out.ex={ day:ev.campaignDay!=null?t("common.day",{n:ev.campaignDay}):"", daySub:[m.dayLabels[ev.campaignDay]||"",this.sessLabel(ev.session)].filter(Boolean).join(" · "),
+        cls:`cc-card ${this.evFamily(ev)}`, icon:this.evIcon(ev), meta:ev.typeLabel, title:this.title(ev), summary:ev.summary };
+    }
+    if(n===1&&ex.person){
+      // The real result groups for that name — the same search the magnifier runs.
+      const r=this._searchMemo(name);
+      out.sx={ query:name, rows:r.groups.map(gr=>{
+        const top=gr.items[0];
+        if(gr.kind==="character"&&top.entity===ex.person) return { icoCls:this.sealCls(top.entity,"sm"), icoStyle:this.seal(top.entity), icon:this.mono(top.entity), label:top.entity.name, count:t("kinds.partyMember") };
+        return { icoCls:"cc-hitico", icoStyle:"", icon:ICONS[GROUP_ICON[gr.kind]], label:t(`search.group.${gr.kind}`), count:t("guide.s2Count",{count:gr.items.length}) };
+      }) };
+    }
+    if(n===2) out.mapSketch=this._mapSketch();
+    return out;
+  }
+  // A small drawing of the map (no image download): two pins, a group of nearby places, journeys
+  // in the party's colours and a shared one — the same marks the real map uses.
+  _mapSketch(){
+    if(this._memo.sketch&&this._memo.sketch.lang===this.state.lang) return this._memo.sketch.val;
+    const pcs=this.model?this.model.pcs:[], c=i=>routeStyle(pcs[i],i);
+    const line=(key,pts,stroke,w,dash)=>h("polyline",{key,points:pts,fill:"none",stroke,strokeWidth:w,strokeDasharray:dash,strokeLinecap:"round",strokeLinejoin:"round"});
+    const pin=(key,x,y,fill)=>h("g",{key,transform:`translate(${x} ${y})`},h("path",{d:"M0 0c-6-7-9-11-9-15a9 9 0 0 1 18 0c0 4-3 8-9 15z",fill,stroke:"#f5ead0",strokeWidth:1.6}),h("circle",{cx:0,cy:-15,r:3.4,fill:"#f5ead0"}));
+    const shared="40,96 92,78 150,86", a="150,86 196,58 248,46", b="150,86 206,104 262,100";
+    const val=h("svg",{className:"cc-gmap",viewBox:"0 0 300 136",role:"img","aria-label":this.t("guide.mapAria")},
+      h("rect",{key:"bg",width:300,height:136,rx:10,fill:"#1a140b"}),
+      h("path",{key:"land",d:"M14 40C52 16 104 22 136 38S204 54 236 28 296 34 290 70 254 124 206 122 122 130 86 112 22 122 12 90Z",fill:"#2b2113",stroke:"rgba(208,171,76,.4)",strokeWidth:1.2}),
+      line("c1",shared,ROUTE_CASING,6), line("c2",a,ROUTE_CASING,4.6), line("c3",b,ROUTE_CASING,4.6),
+      line("s",shared,SHARED_INK,2.8,"7 5"), line("a",a,c(2).color,2.2,c(2).dash), line("b",b,c(3).color,2.2,c(3).dash),
+      pin("p1",40,96,"#b58f3e"), pin("p2",248,46,c(2).color), pin("p3",262,100,c(3).color),
+      h("g",{key:"cl",transform:"translate(150 86)"},h("circle",{r:12,fill:"#2a1c0c",stroke:"#d6b46b",strokeWidth:2}),h("text",{y:5,textAnchor:"middle",fill:"#f5ead0",fontSize:13,fontWeight:700,fontFamily:"Cinzel, serif"},"3")));
+    this._memo.sketch={lang:this.state.lang,val};
+    return val;
+  }
+  _buildGlossary(){
+    const t=this.t, m=this.model;
+    // Families in a fixed reading order; any family not listed here still appears (at the end).
+    const order=["conflict","social","arcane","vision","discovery","journey","turning","neutral"];
+    const fams=[...new Set([...order,...Object.values(M.EVENT_TYPES).map(x=>x.family)])];
+    const families=fams.map(f=>({ cls:`cc-gl-fam ev-${f}`, label:t(`glossary.family.${f}`),
+      types:Object.keys(M.EVENT_TYPES).filter(k=>M.EVENT_TYPES[k].family===f).map(k=>({ label:t(`eventType.${k}`), icoCls:`cc-evico ev-${f}`, icon:EVENT_ICONS[k] })) })).filter(f=>f.types.length);
+    const statuses=Object.keys(M.QUEST_STATUS).map(k=>{ const tone=M.QUEST_STATUS[k].tone; return { label:t(`questStatus.${k}`), cls:`cc-badge tone-${tone}`, icon:this.statusIcon(tone) }; });
+    const pc=m&&m.pcs[0], pinEl=(bg,ring)=>h("span",{style:{display:"inline-block",width:22,height:22,borderRadius:"50% 50% 50% 0",transform:"rotate(-45deg)",border:"2px solid rgba(255,252,244,.9)",background:ring,boxShadow:"0 2px 5px rgba(0,0,0,.5)"}},
+      h("span",{style:{display:"block",width:"100%",height:"100%",borderRadius:"50%",transform:"rotate(45deg)",background:bg}}));
+    const seal=pc&&pc.sealImg?`url("${pc.sealImg}") center/cover`:"#4a3a20";
+    const gap=h("svg",{width:34,height:12,viewBox:"0 0 34 12","aria-hidden":"true"},h("line",{x1:2,y1:6,x2:12,y2:6,stroke:SHARED_INK,strokeWidth:3,strokeDasharray:"4 3",strokeLinecap:"round"}),h("line",{x1:22,y1:6,x2:32,y2:6,stroke:SHARED_INK,strokeWidth:3,strokeDasharray:"4 3",strokeLinecap:"round"}),
+      h("line",{x1:2,y1:6,x2:12,y2:6,stroke:ROUTE_CASING,strokeWidth:1,opacity:.5}),h("line",{x1:22,y1:6,x2:32,y2:6,stroke:ROUTE_CASING,strokeWidth:1,opacity:.5}));
+    const map=[
+      { sym:pinEl(seal,(pc&&pc.color)||"#4a3a20"), text:t("glossary.mapPin") },
+      { sym:pinEl(`url("assets/icon-bund-der-vier.png") center/cover`,"#4a3a20"), text:t("glossary.mapSeal") },
+      { sym:h("span",{style:{position:"relative",display:"inline-block"}},pinEl(`url("assets/icon-bund-der-vier.png") center/cover`,"#4a3a20"),h("span",{style:{position:"absolute",top:-8,right:-12,minWidth:18,height:18,padding:"0 5px",borderRadius:9,background:"#c4a040",color:"#1a1208",border:"1.5px solid #f5ead0",font:"600 12px/15px 'EB Garamond',serif",textAlign:"center"}},"2")), text:t("glossary.mapCount") },
+      { sym:h("span",{style:{display:"inline-flex",alignItems:"center",justifyContent:"center",width:30,height:30,borderRadius:"50%",background:"radial-gradient(circle at 38% 30%,#4a3a20,#1e140a)",border:"2px solid rgba(214,180,107,.95)",color:"#f5ead0",font:"700 14px Cinzel,serif"}},"3"), text:t("glossary.mapCluster") },
+      { sym:swatch(routeStyle(pc,0)), text:t("glossary.mapRoute") },
+      { sym:swatch(null,true), text:t("glossary.mapShared") },
+      { sym:gap, text:t("glossary.mapGap") },
+    ];
+    return { families, statuses, map, approx:t("common.dayApprox",{n:12}) };
+  }
+
+  // ── Saved: favourites (newest first) + the last few entries opened ──────────
+  _buildSaved(){
+    const t=this.t;
+    const favorites=this._resolveRefs(this.lib.favorites()).map(({ref,ent})=>{ const row=this.entityRow(ref.kind,ent,""); return { ...row, removeLabel:t("saved.removeNamed",{name:row.title}), onRemove:()=>this.removeFav(ref) }; });
+    const recent=this._resolveRefs(this.lib.recent()).map(({ref,ent})=>this.entityRow(ref.kind,ent,""));
+    return { favorites, favCount:String(favorites.length), noFav:!favorites.length, recent, hasRecent:recent.length>0, noRecent:!recent.length,
+      onClearRecent:()=>this.clearRecent(), noStorage:!this.lib.persistent };
+  }
+
+  // ── "Previously on…" for one session ────────────────────────────────────────
+  _recapVm(no){
+    const m=this.model, t=this.t, rc=M.recapOf(m,no), s=rc.session;
+    const row=ev=>({ ...this.evRow(ev), summary:ev.summary, when:this.metaLine([ev.typeLabel,this.dayText(ev),ev.placeLabel]) });
+    const shown=rc.curated?rc.highlights:rc.events;
+    return {
+      title:t("recap.title",{party:t("characters.partyName")}), isLatest:rc.isLatest, isStub:s.isStub,
+      sessionHref:this.href("session",s.no), sessionLabel:this.sessLabel(s.no), sessionTitle:s.title?` — ${s.title}`:"", when:this.sessionSub(s),
+      summary:rc.summary, summaryLang:rc.summaryFallback?"en":t.meta.htmlLang, summaryFallback:rc.summaryFallback,
+      endedHere:rc.endedHere,
+      eventsHeading:rc.curated?t("recap.highlights"):t("recap.recorded"), eventCount:String(shown.length), events:shown.map(row), noEvents:!shown.length,
+      decisions:rc.decisions.map(row), hasDecisions:rc.decisions.length>0,
+      pending:rc.pending.map(p=>this.plotVm(p)), hasPending:rc.pending.length>0, pendingCount:String(rc.pending.length),
+      unresolved:rc.unresolved.map(u=>({ text:u.text, href:this.href("event",u.eventId), event:this.title(m.eventById.get(u.eventId)) })), hasUnresolved:rc.unresolved.length>0,
+      closed:rc.closed.map(p=>p.name), hasClosed:rc.closed.length>0,
+      quests:rc.quests.map(q=>this.questRow(q)), hasQuests:rc.quests.length>0, questCount:String(rc.quests.length), questsKey:`rq:${s.no}`,
+      effects:rc.effects, hasEffects:rc.effects.length>0, effectCount:String(rc.effects.length),
+      canFilter:s.eventIds.length>0, onFilter:()=>this.filterBy("session",String(s.no)),
+    };
+  }
+
   // ── Detail pane ───────────────────────────────────────────────────────────
   _buildDetail(){
     const r=this.state.route, st=this.state;
@@ -1930,6 +2587,11 @@ class Component extends DCLogic {
     if(r.kind==="quest"){ const q=m.questById.get(r.id); return q?[{...base,quest:true},this._questVm(q)]:[notFound,{}]; }
     if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?t("kinds.partyMember"):p.categoryLabel,lore:this._loreVm(p,r.kind)},this._personVm(p)]:[notFound,{}]; }
     if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true,mapHref:this.placeMapHref(p),lore:this._loreVm(p,r.kind)},this._placeVm(p)]:[notFound,{}]; }
+    if(r.kind==="recap"){
+      const s=m.sessionByNo.get(Number(r.id)); if(!s) return [notFound,{}];
+      const pn=n=>n!=null&&this.href("recap",n), pl=n=>n!=null&&this.sessLabel(n);
+      return [{...base,recap:true,...this._pn(pn(s.prevNo),pl(s.prevNo),pn(s.nextNo),pl(s.nextNo),t("recap.prev"),t("recap.next"))},this._recapVm(s.no)];
+    }
     return [{open:false},{}];
   }
   _pn(prevHref,prevName,nextHref,nextName,prevKind,nextKind){
@@ -1966,6 +2628,7 @@ class Component extends DCLogic {
       place:pl?{href:this.href("place",pl.id),name:pl.name,trail:pl.ancestorIds.slice().reverse().map(id=>m.placeById.get(id).name).join(" › ")}:null,
       mapHref:this.mapHref(ev), hasCoords:ev.hasCoords, mini:mini||{},
       consequences:ev.consequences, hasConsequences:ev.consequences.length>0,
+      unresolved:ev.unresolved, hasUnresolved:ev.unresolved.length>0,
       people, hasPeople:people.length>0,
       quests:ev.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:ev.questIds.length>0,
       related:ev.relatedIds.map(id=>this.evRow(m.eventById.get(id))), hasRelated:ev.relatedIds.length>0,
@@ -1974,7 +2637,7 @@ class Component extends DCLogic {
   }
   _sessionVm(s){
     const m=this.model, t=this.t, evs=s.eventIds.map(id=>m.eventById.get(id));
-    const last=m.sessions.filter(x=>!x.isStub).slice(-1)[0];
+    const last=M.latestSession(m);
     const people=[...s.characterIds,...s.npcIds], hasStart=!!(s.startedHere||s.igStart), hasEnd=!!(s.endedHere||s.igEnd);
     const dl=d=>m.dayLabels[d]||"";
     return {
@@ -2267,9 +2930,9 @@ class Component extends DCLogic {
   renderVals(){
     const st=this.state, r=st.route, m=this.model, ready=!!m, t=this.t;
     const sec=r.section, hasDetail=ready&&!!(r.kind&&r.kind in KINDS);
-    const lastSess=ready&&m.sessions.length?m.sessions[m.sessions.length-1].no:0;
+    const latest=ready?M.latestSession(m):null, lastSess=latest?latest.no:0;
     const label=s=>t(`nav.${s.id}`);
-    const nav=SECTIONS.map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
+    const nav=SECTIONS.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
     const secondary=SECTIONS.filter(s=>!s.primary), onSecondary=secondary.find(s=>s.id===sec);
     const bottomNav=[...SECTIONS.filter(s=>s.primary).map(s=>({ isLink:true, href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-bn"+(s.id===sec?" is-on":"") })),
       { isMore:true, label:onSecondary?label(onSecondary):t("nav.more"), icon:onSecondary?ICONS[onSecondary.icon]:ICONS.more, cls:"cc-bn"+(onSecondary||st.moreOpen?" is-on":"") }];
@@ -2277,23 +2940,36 @@ class Component extends DCLogic {
       title:this._translator(l.code)("lang.switchTo",{name:l.name}), onClick:()=>this.setLang(l.code) }));
     const [d,dv]=hasDetail?this._buildDetail():[{open:false},{}];
     const v={ chronicle:ready&&sec==="chronicle", sessions:ready&&sec==="sessions", quests:ready&&sec==="quests",
-              characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map" };
+              characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map", saved:ready&&sec==="saved" };
+    // The star in the reading pane (not built into the memoized pane, so toggling it is instant).
+    const favRef=hasDetail&&d.open&&!d.notFound&&r.kind in FAV_KINDS?{kind:r.kind,id:String(r.id)}:null, favOn=!!favRef&&this.lib.isFavorite(favRef);
+    const recapEntry=latest&&(v.chronicle||v.sessions)?{ href:this.href("recap",latest.no), label:this.sessLabel(latest.no), title:latest.title?`· ${latest.title}`:"",
+      sub:this.sessionSub(latest), aria:t("recap.entryAria",{party:t("characters.partyName"),session:[this.sessLabel(latest.no),latest.title].filter(Boolean).join(" — ")}) }:null;
     return {
       t:t.dict, htmlLang:t.meta.htmlLang, langs,
       appCls:"cc-app",
       bodyCls:"cc-body"+(hasDetail?" has-detail":""),
       mainCls:"cc-main cc-scroll"+(sec==="map"?" is-map":""),
       icons:ICONS, nav, bottomNav,
-      moreItems:secondary.map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
+      moreItems:secondary.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
       moreOpen:st.moreOpen, onOpenMore:()=>this.setState(s=>({moreOpen:!s.moreOpen})), onCloseMore:()=>this.setState({moreOpen:false}),
-      showTutorial:st.showTutorial, onOpenTutorial:()=>this.openTutorial(), onCloseTutorial:()=>this.closeTutorial(),
+      onOpenTutorial:()=>this.openGuide("steps"), onOpenGlossary:()=>this.openGuide("glossary"), onDismissInvite:()=>this._markGuideSeen("dismissed"),
+      gd:this._buildGuide(), gl:st.guide&&st.guide.view==="glossary"?this._buildGlossary():{},
+      sr:this._buildSearch(), onOpenSearch:()=>this.openSearch(),
+      searchKbd:IS_MAC?"⌘K":"Ctrl K", searchKeys:"Control+K Meta+K", searchTitle:t("search.openTitle",{keys:IS_MAC?"⌘K":"Ctrl+K"}),
+      savedBtnCls:"cc-iconbtn"+(sec==="saved"?" is-on":""), savedCurrent:sec==="saved"?"page":undefined, savedSheetCls:"cc-sheet-item"+(sec==="saved"?" is-on":""),
+      recapEntry,
+      fav:favRef?{ can:true, on:favOn, cls:"cc-iconbtn sm cc-favbtn"+(favOn?" is-on":""), label:t(favOn?"saved.remove":"saved.add"), onToggle:()=>this.toggleFav(favRef) }:{ can:false },
+      liveMsg:st.liveMsg,
+      offlineNote:ready&&(st.servedOffline||st.netOffline)&&!st.offlineHidden, onHideOffline:()=>this.setState({offlineHidden:true}),
       dataError:st.dataError, loading:!ready&&!st.dataError,
       v, f:st.filters,
       c:v.chronicle?this._buildChronicle():{},
       sl:v.sessions?this._buildSessions():{}, ql:v.quests?this._buildQuests():{},
       pl:v.characters?this._buildPeople():{}, pll:v.places?this._buildPlaces():{},
+      sv:v.saved?this._buildSaved():{},
       mp:v.map?this._buildMap():{},
-      d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{}, lo:d.lore||{},
+      d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{}, rc:d.recap?dv:{}, lo:d.lore||{},
       dateType:"date",
       onText:e=>this.setF("text",e.target.value), onClearText:()=>{ this.setF("text",""); if(this._searchEl) this._searchEl.focus(); },
       onNpc:e=>this.setF("npc",e.target.value), onQuest:e=>this.setF("quest",e.target.value), onSession:e=>this.setF("session",e.target.value),
@@ -2304,6 +2980,7 @@ class Component extends DCLogic {
       onGroupDay:()=>this.setGroupBy("day"), onGroupSession:()=>this.setGroupBy("session"),
       onToggleSort:()=>this.setChronicleOrder(!st.sortDesc),
       mainRef:this.mainRef, detailRef:this.detailRef, searchRef:this.searchRef, headRef:this.headRef, vpRef:this.vpRef,
+      guideHeadRef:this.guideHeadRef, searchAllRef:this.searchAllRef, searchBodyRef:this.searchBodyRef,
       stop:e=>e.stopPropagation(),
       sampleNote:t("chronicle.endnote",{n:lastSess}),
     };

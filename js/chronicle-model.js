@@ -79,6 +79,7 @@
   const fold = s => str(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’‘`´]/g, "'")
     .toLowerCase().replace(/\s+/g, " ").trim();
   const uniq = a => [...new Set(a)];
+  const foldAll = list => uniq(list.flat().map(fold).filter(Boolean));
   const isNum = v => typeof v === "number" && isFinite(v);
   const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
   const nonEmpty = v => typeof v === "string" && v.trim() !== "";
@@ -143,8 +144,10 @@
     const lenCheck = (where, t, src) => { if (t != null && !sameLen(t, arr(src))) warn(`${where}: has ${arr(t).length} entries, the English source has ${arr(src).length} — English is shown`); };
     Object.keys(content.events || {}).forEach(id => {
       if (!evIds.has(id)) return warn(`unknown event "${id}"`);
-      const src = arr(raw.events).find(e => e.id === id);
-      lenCheck(`event "${id}" consequences`, content.events[id].consequences, src.consequences);
+      const src = arr(raw.events).find(e => e.id === id), te = content.events[id];
+      lenCheck(`event "${id}" consequences`, te.consequences, src.consequences);
+      lenCheck(`event "${id}" unresolved`, te.unresolved, src.unresolved);
+      if (nonEmpty(te.description) && !nonEmpty(src.description)) warn(`event "${id}": description has no English source — it is never shown`);
     });
     Object.keys(content.quests || {}).forEach(id => {
       if (!qIds.has(id)) return warn(`unknown quest "${id}"`);
@@ -177,6 +180,7 @@
       if (!src) return warn(`unknown session "${no}"`);
       const ts = content.sessions[no];
       lenCheck(`session ${no} effects`, ts.effects, src.effects);
+      if (ts.recap && nonEmpty(ts.recap.summary) && !(src.recap && nonEmpty(src.recap.summary))) warn(`session ${no}: recap.summary has no English source — it is never shown`);
       ["activePlots", "completedPlots"].forEach(k => {
         lenCheck(`session ${no} ${k}`, ts[k], src[k]);
         if (!sameLen(ts[k], arr(src[k]))) return;
@@ -325,6 +329,7 @@
         factionIds: arr(p.factionIds), ownRelations: arr(p.relations), ownRelationsTr: tr && sameLen(tr.relations, arr(p.relations)) ? tr.relations : null,
         relations: [], memberIds: [], eventIds: [], questIds: [], placeIds: [], sessionNos: [], notes: [],
       };
+      person.nameKeys = foldAll([...variants("people", p.id, "name", nameEn), ...variants("people", p.id, "aliases", aliasesEn)]);
       person.searchText = fold([...variants("people", p.id, "name", nameEn), ...variants("people", p.id, "aliases", aliasesEn),
         ...variants("people", p.id, "race", str(p.race)), ...variants("people", p.id, "role", str(p.role))].join(" • "));
       people.push(person); personById.set(p.id, person);
@@ -343,6 +348,7 @@
       const kindLabel = L(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || cap(str(l.kind)) || "Place");
       const place = { ...l, name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn, kindLabel,
         childIds: [], eventIds: [], allEventIds: [], notes: [], questIds: [], personIds: [], sessionNos: [] };
+      place.nameKeys = foldAll([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn)]);
       place.searchText = fold([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn),
         ...vocab(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || "")].join(" • "));
       places.push(place); placeById.set(l.id, place);
@@ -377,11 +383,13 @@
       const st = QUEST_STATUS[status] || { label: cap(status), tone: "other", order: 5 };
       const giverEn = q.giver && q.giver !== "—" ? str(q.giver) : "";
       const quest = { ...q, status, statusLabel: L(`questStatus.${status}`, st.label), statusTone: st.tone, statusOrder: st.order,
-        title: pickStr(tr, "title", str(q.title) || q.id), titleEn: str(q.title) || q.id, summary: pickStr(tr, "summary", str(q.summary)),
+        title: pickStr(tr, "title", str(q.title) || q.id), titleEn: str(q.title) || q.id,
+        summary: pickStr(tr, "summary", str(q.summary)), summaryEn: str(q.summary),
         sessionNos: arr(q.sessions).map(Number).filter(isNum), characterIds: arr(q.characterIds),
-        objectives: pickArr(tr, "objectives", arr(q.objectives)), giverId: q.giverId || null,
+        objectives: pickArr(tr, "objectives", arr(q.objectives)), objectivesEn: arr(q.objectives), giverId: q.giverId || null,
         giver: giverEn ? pickStr(tr, "giver", giverEn) : "",
         eventIds: [], npcIds: [], placeIds: [], progress: [] };
+      quest.nameKeys = foldAll(variants("quests", q.id, "title", quest.titleEn));
       quest.searchText = fold([...variants("quests", q.id, "title", quest.titleEn), ...variants("quests", q.id, "giver", giverEn),
         ...vocab(`questStatus.${status}`, st.label)].join(" • "));
       quests.push(quest); questById.set(q.id, quest);
@@ -411,6 +419,15 @@
         });
       };
       const titleEn = str(s.title) || titleFromLabel(s.dateLabel);
+      // Optional editorial recap ("Previously on…"): { summary?, highlights?: [eventId] }.
+      // Highlights are checked once the events are known (see below); nothing is ever inferred.
+      const rc = s.recap && typeof s.recap === "object" && !Array.isArray(s.recap) ? s.recap : {};
+      if (s.recap != null && rc !== s.recap) error(`Session ${no}: "recap" must be an object { summary?, highlights? }`);
+      const trc = tr.recap && typeof tr.recap === "object" ? tr.recap : null;
+      const recapEn = nonEmpty(rc.summary) ? rc.summary.trim() : "";
+      const recap = { summaryEn: recapEn, summary: recapEn ? pickStr(trc, "summary", recapEn) : "",
+        summaryFallback: !!recapEn && !(trc && nonEmpty(trc.summary)) && locale !== "en",
+        highlightIds: arr(rc.highlights).map(str).filter(Boolean) };
       const session = {
         ...s, no, isStub: !!stub,
         title: pickStr(tr, "title", titleEn), titleEn,
@@ -421,9 +438,12 @@
         effects: pickArr(tr, "effects", arr(s.effects)),
         activePlots: mapPlots(arr(s.activePlots), tr.activePlots, false),
         completedPlots: mapPlots(arr(s.completedPlots), tr.completedPlots, true),
+        recap,
         eventIds: [], characterIds: [], questIds: [], npcIds: [], placeIds: [], days: [],
       };
       session.playedLabel = session.playedOn ? dateLabel(session.playedOn) : "";
+      session.nameKeys = foldAll([`session ${no}`, ...searchTs.map(f => f("common.session", { n: no })),
+        ...variants("sessions", String(no), "title", titleEn)]);
       session.searchText = fold([`session ${no}`, ...searchTs.map(f => f("common.session", { n: no })),
         ...variants("sessions", String(no), "title", titleEn)].join(" • "));
       sessions.push(session); sessionByNo.set(no, session);
@@ -451,8 +471,13 @@
         ...e, raw: e, _idx: idx,
         session: isNum(no) ? no : null,
         title: pickStr(tr, "title", str(e.title) || e.id), titleEn: str(e.title) || e.id,
-        summary: pickStr(tr, "summary", str(e.summary)), description: pickStr(tr, "description", str(e.description)),
-        consequences: pickArr(tr, "consequences", arr(e.consequences)),
+        summary: pickStr(tr, "summary", str(e.summary)),
+        // Optional narrative depth for the important moments (all three may be absent):
+        //   description  — what happened, in full;  consequences — what changed (verified at the table);
+        //   unresolved   — what is still open (questions, conflicts, pending objectives).
+        description: nonEmpty(e.description) ? pickStr(tr, "description", str(e.description)) : "",
+        consequences: pickArr(tr, "consequences", arr(e.consequences).filter(nonEmpty)),
+        unresolved: pickArr(tr, "unresolved", arr(e.unresolved).filter(nonEmpty)),
         type: typeKey, typeLabel: L(`eventType.${typeKey}`, EVENT_TYPES[typeKey].label), typeGlyph: EVENT_TYPES[typeKey].glyph, typeFamily: EVENT_TYPES[typeKey].family,
         characterIds: arr(e.characterIds), npcIds: arr(e.npcIds), questIds: arr(e.questIds),
         locationId: e.locationId || null, relatedIds: arr(e.relatedEventIds),
@@ -462,6 +487,11 @@
         order: isNum(e.order) ? e.order : null,
       };
       if (!hasCoords && (e.xp != null || e.yp != null)) warn(`Event "${e.id}": incomplete map coordinates (needs both xp and yp)`);
+      if (e.description != null && typeof e.description !== "string") warn(`Event "${e.id}": "description" must be text`);
+      ["consequences", "unresolved"].forEach(k => {
+        if (e[k] != null && !Array.isArray(e[k])) warn(`Event "${e.id}": "${k}" should be a list of sentences`);
+        else if (arr(e[k]).some(x => !nonEmpty(x))) warn(`Event "${e.id}": "${k}" has empty or non-text entries (ignored)`);
+      });
       events.push(ev); eventById.set(ev.id, ev);
       if (ev.session == null) error(`Event "${e.id}": missing session number`);
       else if (!sessionByNo.has(ev.session)) { warn(`Event "${e.id}": session ${ev.session} has no entry in sessions.json`); addSession(ev.session, null, true); }
@@ -632,12 +662,37 @@
       const qs = e.questIds.map(id => questById.get(id).searchText);
       const pl = e.locationId ? [e.locationId, ...placeById.get(e.locationId).ancestorIds].map(id => placeById.get(id).searchText) : [];
       const sess = sessionByNo.get(e.session);
+      e.nameKeys = foldAll(variants("events", e.id, "title", e.titleEn));
       e.searchText = fold([
         ...variants("events", e.id, "title", e.titleEn), ...variants("events", e.id, "summary", str(e.raw.summary)),
         ...variants("events", e.id, "description", str(e.raw.description)), ...variants("events", e.id, "consequences", arr(e.raw.consequences)),
+        ...variants("events", e.id, "unresolved", arr(e.raw.unresolved)),
         ...variants("events", e.id, "igLabel", str(e.raw.igLabel)), e.igDate,
         ...vocab(`eventType.${e.type}`, EVENT_TYPES[e.type].label), sess ? sess.searchText : `session ${e.session}`,
         ...names, ...qs, ...pl].join(" • "));
+    });
+    // Wider context for the universal search (third tier, after names and own fields): the people,
+    // places and events a quest or session is linked to — so "Mortis" also finds his quests and the
+    // sessions he took part in. The Chronicle's own quick results never use it.
+    const namesOf = (ids, byId) => ids.map(id => byId.get(id)).filter(Boolean).flatMap(x => x.nameKeys);
+    quests.forEach(q => {
+      q.contextText = fold([...variants("quests", q.id, "summary", q.summaryEn), ...variants("quests", q.id, "objectives", q.objectivesEn),
+        ...namesOf([...q.characterIds, ...q.npcIds], personById), ...namesOf(q.placeIds, placeById)].join(" • "));
+    });
+    sessions.forEach(s => {
+      s.contextText = fold([...namesOf([...s.characterIds, ...s.npcIds], personById), ...namesOf(s.placeIds, placeById),
+        ...namesOf(s.eventIds, eventById), ...[...s.activePlots, ...s.completedPlots].map(p => p.name)].join(" • "));
+    });
+
+    // Recap highlights: only events recorded in that same session, in the editor's order.
+    sessions.forEach(s => {
+      s.recap.highlightIds = uniq(s.recap.highlightIds).filter(id => {
+        const ev = eventById.get(id);
+        if (!ev) { error(`Session ${s.no}: recap highlight "${id}" is not an event`); return false; }
+        if (ev.session !== s.no) { warn(`Session ${s.no}: recap highlight "${id}" belongs to session ${ev.session} — ignored`); return false; }
+        return true;
+      });
+      if (s.recap.highlightIds.length > 5) warn(`Session ${s.no}: recap has ${s.recap.highlightIds.length} highlights — 3 to 5 read best`);
     });
 
     // Lore of Exandria — attached last, read-only beside the campaign data (see normalizeLore).
@@ -774,22 +829,155 @@
     return next.length ? all.filter(x => next.includes(x)) : [NO_ONE];
   }
 
-  // ── Cross-entity quick search (people, quests, places, sessions) ──────────
+  // ── Universal search (every kind of entry, ranked) ────────────────────────
+  // One relevance scale for every kind, lower is better:
+  //   0 the whole name/title (or alias, or "Session 12") is the query
+  //   1 a name starts with the query          2 a word in a name starts with the query
+  //   3 every word of the query is in a name  4 every word is in the entry's own text
+  //     (summary, role, type, place, people… — the same text the Chronicle filter searches)
+  //   5 every word is in its wider context (a quest's or session's linked people, places, events)
+  // Names and texts hold the English original and every loaded translation, folded (no accents,
+  // no case), so either language finds the same entry. Ties keep a fixed, useful order per kind.
+  const SEARCH_KINDS = ["character", "place", "quest", "session", "event"];
+  const wordsOf = s => " " + s.replace(/[^a-z0-9]+/g, " ").trim() + " ";
+  // "s12" / "session 12" / "sesión 12" / "12" → { no: 12 }. A bare number with no such session means that campaign day.
+  const numberQuery = q => { const m = /^(s|session|sesion)?\s*(\d+)$/.exec(q); return m ? { no: +m[2], bare: !m[1] } : null; };
+
+  function scoreEntry(q, toks, names, own, context) {
+    let best = null;
+    const qw = wordsOf(q).trim();
+    for (const n of names || []) {
+      let s = null;
+      if (n === q) return 0;
+      if (n.startsWith(q)) s = 1;
+      else if (qw && wordsOf(n).includes(" " + qw)) s = 2;
+      else if (toks.every(t => n.includes(t))) s = 3;
+      if (s != null && (best == null || s < best)) best = s;
+    }
+    if (best != null) return best;
+    if (own && toks.every(t => own.includes(t))) return 4;
+    if (context && toks.every(t => context.includes(t))) return 5;
+    return null;
+  }
+
+  function searchAll(model, text, opts) {
+    const o = opts || {}, maxScore = o.maxScore == null ? 5 : o.maxScore;
+    const q = fold(text), toks = q.split(" ").filter(Boolean);
+    const empty = { query: q, total: 0, groups: [] };
+    if (!toks.length) return empty;
+    const num = numberQuery(q);
+    if (num) num.day = num.bare && !model.sessionByNo.has(num.no);   // "39": no session 39, so campaign day 39
+    const kinds = o.kinds || SEARCH_KINDS;
+    const candidates = {
+      character: model.people.map(p => [p, scoreEntry(q, toks, p.nameKeys, p.searchText)]),
+      place: model.places.map(p => [p, scoreEntry(q, toks, p.nameKeys, p.searchText)]),
+      quest: model.quests.map(x => [x, scoreEntry(q, toks, x.nameKeys, x.searchText, x.contextText)]),
+      // A number means that session (and its events) — never every text that happens to contain the digits.
+      session: model.sessions.map(s => [s, num ? (s.no === num.no ? 0 : null) : scoreEntry(q, toks, s.nameKeys, s.searchText, s.contextText)]),
+      event: model.events.map(e => [e, num ? ((num.day ? e.campaignDay === num.no : e.session === num.no) ? 4 : null) : scoreEntry(q, toks, e.nameKeys, e.searchText)]),
+    };
+    // Last-resort ties use the English names, so the order is the same in every language.
+    const tie = {
+      character: (a, b) => (a.kind === "pc" ? 0 : 1) - (b.kind === "pc" ? 0 : 1) || b.eventIds.length - a.eventIds.length || a.nameEn.localeCompare(b.nameEn),
+      place: (a, b) => b.allEventIds.length - a.allEventIds.length || a.nameEn.localeCompare(b.nameEn),
+      quest: (a, b) => a.statusOrder - b.statusOrder || (b.lastSession || 0) - (a.lastSession || 0) || a.titleEn.localeCompare(b.titleEn),
+      session: (a, b) => b.no - a.no,
+      event: (a, b) => b.chronoIndex - a.chronoIndex,                       // latest first, like the Chronicle
+    };
+    const groups = kinds.map(kind => {
+      const items = candidates[kind].filter(([, s]) => s != null && s <= maxScore)
+        .sort((a, b) => a[1] - b[1] || tie[kind](a[0], b[0]))
+        .map(([entity, score]) => ({ kind, id: kind === "session" ? entity.no : entity.id, score, entity }));
+      return { kind, items, best: items.length ? items[0].score : Infinity };
+    }).filter(g => g.items.length)
+      .sort((a, b) => a.best - b.best || SEARCH_KINDS.indexOf(a.kind) - SEARCH_KINDS.indexOf(b.kind));
+    return { query: q, total: groups.reduce((n, g) => n + g.items.length, 0), groups };
+  }
+
+  // The Chronicle's "also in the archive" chips: people, quests, places and sessions whose own
+  // text matches (no wider context), best matches first.
   function search(model, text, limit) {
-    const q = fold(text); limit = limit || 6;
-    if (!q) return { people: [], quests: [], places: [], sessions: [] };
-    const toks = q.split(" ").filter(Boolean);
-    const hit = (hay) => toks.every(t => hay.includes(t));
-    const sessNo = /^(?:s|session\s*|sesion\s*)?(\d+)$/.exec(q);
+    limit = limit || 6;
+    const r = searchAll(model, text, { maxScore: 4, kinds: ["character", "quest", "place", "session"] });
+    const of = kind => { const g = r.groups.find(x => x.kind === kind); return g ? g.items.slice(0, limit).map(i => i.entity) : []; };
+    return { people: of("character"), quests: of("quest"), places: of("place"), sessions: of("session") };
+  }
+
+  // The Chronicle filter that shows the same events as a search: a session number becomes the
+  // session filter (when that session exists), anything else the free-text filter.
+  function chronicleFilterFor(model, text) {
+    const num = numberQuery(fold(text));
+    return num && model.sessionByNo.has(num.no) ? { session: String(num.no) } : { text: str(text).trim() };
+  }
+
+  // Where each word of the query first appears in `text` (case- and accent-insensitive), as
+  // [start, end) ranges of the original string, merged — for highlighting a result's title.
+  function highlightRanges(text, query) {
+    const s = str(text), toks = fold(query).split(" ").filter(Boolean);
+    if (!s || !toks.length) return [];
+    let f = ""; const at = [];
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i].normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’‘`´]/g, "'").toLowerCase();
+      for (const ch of c) { f += ch; at.push(i); }
+    }
+    const ranges = toks.map(t => { const i = f.indexOf(t); return i < 0 ? null : [at[i], at[i + t.length - 1] + 1]; })
+      .filter(Boolean).sort((a, b) => a[0] - b[0]);
+    return ranges.reduce((out, r) => { const last = out[out.length - 1]; if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]); else out.push(r); return out; }, []);
+  }
+
+  // ── Entries by reference (favourites, history, links) ─────────────────────
+  function resolveRef(model, kind, id) {
+    if (!model || id == null) return null;
+    if (kind === "event") return model.eventById.get(String(id)) || null;
+    if (kind === "session") return model.sessionByNo.get(Number(id)) || null;
+    if (kind === "quest") return model.questById.get(String(id)) || null;
+    if (kind === "character") return model.personById.get(String(id)) || null;
+    if (kind === "place") return model.placeById.get(String(id)) || null;
+    return null;
+  }
+
+  // ── "Previously on…" ──────────────────────────────────────────────────────
+  // The latest session is the highest session NUMBER that has a log in sessions.json (never the
+  // order of labels or of the Sessions list); if none has a log yet, the highest with events.
+  function latestSession(model) {
+    const logged = model.sessions.filter(s => !s.isStub);
+    return (logged.length ? logged : model.sessions).reduce((a, s) => (!a || s.no > a.no ? s : a), null);
+  }
+
+  // Everything the recap shows, taken as recorded — no event is ranked unless an editor listed it
+  // in sessions.json recap.highlights; otherwise every recorded event is listed in order.
+  function recapOf(model, no) {
+    const s = model.sessionByNo.get(Number(no));
+    if (!s) return null;
+    const events = s.eventIds.map(id => model.eventById.get(id));
+    const highlights = s.recap.highlightIds.map(id => model.eventById.get(id));
+    const curated = highlights.length > 0;
+    const latest = latestSession(model);
     return {
-      people: model.people.filter(p => hit(p.searchText)).slice(0, limit),
-      quests: model.quests.filter(x => hit(x.searchText)).slice(0, limit),
-      places: model.places.filter(p => hit(p.searchText)).slice(0, limit),
-      sessions: model.sessions.filter(s => (sessNo && s.no === +sessNo[1]) || (!sessNo && hit(s.searchText))).slice(0, limit),
+      session: s, isLatest: !!latest && latest.no === s.no, curated,
+      summary: s.recap.summary, summaryFallback: s.recap.summaryFallback,
+      events, highlights,
+      // With highlights, decisions not among them are listed apart; without, they are already in the list.
+      decisions: curated ? events.filter(e => e.type === "decision" && !highlights.includes(e)) : [],
+      quests: s.questIds.map(id => model.questById.get(id)).sort((a, b) => a.statusOrder - b.statusOrder || a.titleEn.localeCompare(b.titleEn)),
+      pending: s.activePlots,                          // threads recorded as still open at the session's end
+      closed: s.completedPlots,
+      unresolved: events.flatMap(e => e.unresolved.map(text => ({ eventId: e.id, text }))),
+      effects: s.effects, startedHere: s.startedHere, endedHere: s.endedHere,
     };
   }
 
-  return { build, filterEvents, search, activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
+  // Real examples for the guide, picked from the data (so they follow the campaign as it grows).
+  function guideExamples(model) {
+    const evs = model.events;
+    const rich = evs.slice().reverse().find(e => e.characterIds.length && e.questIds.length && e.locationId) || evs[evs.length - 1] || null;
+    const person = model.pcs.slice().sort((a, b) => b.eventIds.length - a.eventIds.length)[0] || model.people[0] || null;
+    const mapped = rich && rich.hasCoords ? rich : evs.slice().reverse().find(e => e.hasCoords) || null;
+    return { event: rich, person, mapEvent: mapped };
+  }
+
+  return { build, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, SEARCH_KINDS, resolveRef, latestSession, recapOf, guideExamples,
+    activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
     chronicleGroups, sessionListItems, normalizePrefs, sortOrders, DEFAULT_ORDER,
     checkTranslations, normalizeRoutes, normalizeLore, safeExternalUrl, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
     EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, LORE_FACTS, fmtDate, parseDay, parseRecorded, splitIgLabel };

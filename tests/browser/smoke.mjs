@@ -12,17 +12,29 @@ import { chromium } from "playwright-core";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT = path.join(ROOT, "test-results");
 fs.mkdirSync(OUT, { recursive: true });
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript", ".json": "application/json; charset=utf-8", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".png": "image/png", ".css": "text/css" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript", ".json": "application/json; charset=utf-8", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".png": "image/png", ".css": "text/css", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
 
-const server = http.createServer((req, res) => {
-  const rel = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "") || "index.html";
-  const file = path.join(ROOT, rel);
-  if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end("not found"); }
-  res.writeHead(200, { "content-type": TYPES[path.extname(file)] || "application/octet-stream" });
-  fs.createReadStream(file).pipe(res);
-});
-await new Promise(r => server.listen(0, "127.0.0.1", r));
-const BASE = `http://127.0.0.1:${server.address().port}/`;
+// A static server like `npx serve`. `rewrite(rel, text)` may change a text file on the fly (used to
+// publish "new content" in the offline/update test); `close()` drops every connection (= offline).
+function startServer({ port = 0, rewrite } = {}) {
+  const sockets = new Set();
+  const server = http.createServer((req, res) => {
+    const rel = decodeURIComponent(new URL(req.url, "http://x").pathname).replace(/^\/+/, "") || "index.html";
+    const file = path.join(ROOT, rel);
+    if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end("not found"); }
+    res.writeHead(200, { "content-type": TYPES[path.extname(file)] || "application/octet-stream", "cache-control": "no-cache" });
+    if (rewrite && /\.(json|js|html)$/.test(file)) return res.end(rewrite(rel, fs.readFileSync(file, "utf8")));
+    fs.createReadStream(file).pipe(res);
+  });
+  server.on("connection", s => { sockets.add(s); s.on("close", () => sockets.delete(s)); });
+  return new Promise(r => server.listen(port, "127.0.0.1", () => r({
+    server, port: server.address().port, base: `http://127.0.0.1:${server.address().port}/`,
+    close: () => new Promise(done => { sockets.forEach(s => s.destroy()); server.close(() => done()); }),
+  })));
+}
+const main = await startServer();
+const server = main.server;
+const BASE = main.base;
 
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || "msedge", headless: true });
 const results = [];
@@ -56,8 +68,7 @@ await check("i18n · Spanish is the initial language (no saved preference)", asy
   const { ctx, page } = await open(DESKTOP, "", { keepGuide: true });
   eq(await page.getAttribute("html", "lang"), "es-AR", "html lang");
   eq(await page.title(), "Crónica de Exandria", "title");
-  assert(await page.isVisible("text=Cómo funciona la Crónica"), "guide is in Spanish");
-  await page.keyboard.press("Escape");
+  assert(await page.isVisible(".cc-invite:has-text('Mirá cómo funciona la Crónica')"), "the guide invitation is in Spanish");
   eq((await page.textContent(".cc-tab.is-on")).trim(), "Crónica", "active tab");
   eq((await page.textContent(".cc-lang .is-on")).trim(), "ES", "ES pressed");
   await ctx.close();
@@ -88,11 +99,11 @@ await check("i18n · no interface text left in English on the main screens (ES)"
   const { ctx, page } = await open(DESKTOP, "#/chronicle");
   await page.click("button[aria-controls=cc-filters]");
   const leftovers = [];
-  for (const hash of ["#/chronicle", "#/sessions", "#/quests", "#/characters", "#/places", "#/map", "#/chronicle/session/8", "#/quests/quest/cassandra", "#/characters/character/pike", "#/places/place/vasselheim"]) {
+  for (const hash of ["#/chronicle", "#/sessions", "#/quests", "#/characters", "#/places", "#/map", "#/saved", "#/chronicle/session/8", "#/chronicle/recap/12", "#/quests/quest/cassandra", "#/characters/character/pike", "#/places/place/vasselheim"]) {
     await page.evaluate(h => { location.hash = h; }, hash);
     await page.waitForTimeout(250);
     const text = await page.evaluate(() => document.querySelector(".cc-app").innerText);
-    for (const w of ["Filters", "Session ", "Quests", "Characters", "Back", "Show in Chronicle", "What happened", "Unresolved threads", "Party member", "Events on the map", "Zoom in", "Read entry", "Played ", "Day "])
+    for (const w of ["Filters", "Session ", "Quests", "Characters", "Back", "Show in Chronicle", "What happened", "Unresolved threads", "Party member", "Events on the map", "Zoom in", "Read entry", "Played ", "Day ", "Previously on", "Saved", "Favourites", "Search"])
       if (text.includes(w)) leftovers.push(`${hash}: "${w}"`);
   }
   eq(leftovers, [], "English UI strings found");
@@ -215,12 +226,32 @@ for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024
   await check(`responsive · ${w}px: no horizontal scroll, header fits, language switch reachable`, async () => {
     const phone = w < 720;
     const { ctx, page } = await open({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone }, "#/chronicle");
-    for (const hash of ["#/chronicle", "#/chronicle/event/s12_03", "#/sessions", "#/quests/quest/cassandra", "#/characters", "#/places", "#/map"]) {
+    for (const hash of ["#/chronicle", "#/chronicle/event/s12_03", "#/chronicle/recap/12", "#/sessions", "#/quests/quest/cassandra", "#/characters", "#/places", "#/saved", "#/map"]) {
       await page.evaluate(x => { location.hash = x; }, hash);
       await page.waitForTimeout(300);
       const sw = await page.evaluate(() => document.documentElement.scrollWidth);
       assert(sw <= w, `${hash}: scrollWidth ${sw} > ${w}`);
     }
+    // The search and the guide (both views) fit too — no sideways scroll inside them either.
+    const inside = sel => page.$eval(sel, el => [el.scrollWidth, el.clientWidth, document.documentElement.scrollWidth]);
+    await page.click(".cc-searchbtn");
+    await page.fill(".cc-spanel input", "Vasselheim");
+    await page.waitForTimeout(150);
+    { const [a, b, c] = await inside(".cc-sbody"); assert(a <= b && c <= w, `search ${a}/${b}, page ${c}`); }
+    if (w === 390 || w === 1280) await page.screenshot({ path: path.join(OUT, `search-${w}.png`) });
+    await page.keyboard.press("Escape");
+    await page.evaluate(() => { location.hash = "#/chronicle"; });
+    await page.locator(phone ? ".cc-bottom button.cc-bn" : ".cc-actions button").first().click();
+    if (phone) await page.locator(".cc-sheet-item", { hasText: "Guía" }).click();
+    for (let s = 0; s < 3; s++) {
+      const [a, b, c] = await inside(".cc-guide");
+      assert(a <= b && c <= w, `guide step ${s + 1}: ${a}/${b}, page ${c}`);
+      if (s < 2) await page.locator(".cc-guide-nav .cc-btn").last().click();
+    }
+    if (w === 320 || w === 1280) await page.screenshot({ path: path.join(OUT, `guide-${w}.png`) });
+    await page.click(".cc-guide-tabs button:last-child");
+    { const [a, b, c] = await inside(".cc-guide"); assert(a <= b && c <= w, `glossary ${a}/${b}, page ${c}`); }
+    await page.keyboard.press("Escape");
     const lang = await page.locator(".cc-lang").boundingBox(), brand = await page.locator(".cc-brand").boundingBox();
     assert(lang && lang.width > 0 && lang.x + lang.width <= w, "language switch visible");
     assert(brand.x + brand.width <= lang.x, "brand and switch do not overlap");
@@ -347,7 +378,7 @@ await check("theme · always dark: no toggle, an old light preference is ignored
   await page.waitForSelector(".cc-sheet");
   const sheet = (await page.textContent(".cc-sheet")).toLowerCase();
   assert(!/modo|claro|oscuro|tema/.test(sheet), `sheet: ${sheet}`);
-  eq(await page.locator(".cc-sheet-item").count(), 4, "Characters, Places, Map + guide");
+  eq(await page.locator(".cc-sheet-item").count(), 6, "Characters, Places, Map + Saved, Guide, Icons & colours");
   await page.keyboard.press("Escape");
   // Secondary surfaces use the dark tokens: lore text, popup panels, map controls.
   await page.evaluate(() => { location.hash = "#/places/place/vasselheim"; });
@@ -451,6 +482,326 @@ await check("cards · every event card has its type icon (family colour) and lab
   Object.entries(byFam).forEach(([f, cs]) => eq(cs.size, 1, `one colour for ${f}`));
   eq(new Set(Object.values(byFam).map(s => [...s][0])).size, Object.keys(byFam).length, "families have distinct colours");
   await page.screenshot({ path: path.join(OUT, "cards-360.png") });
+  await ctx.close();
+});
+
+// ── Guide: optional, three steps, remembered, never in the way ──────────────
+const guideText = page => page.evaluate(() => ({ n: document.querySelector(".cc-guide-n").textContent, h: document.querySelector(".cc-guide-h").textContent }));
+
+await check("guide · first visit: a quiet invitation, no window; 3 steps with next/previous/dots/arrows; Done is remembered", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle", { keepGuide: true });
+  eq(await page.locator("[data-dialog]").count(), 0, "no dialog opens by itself");
+  assert(await page.isVisible(".cc-invite"), "invitation shown in the Chronicle");
+  await page.click(".cc-invite .cc-btn");
+  await page.waitForSelector("[data-dialog=guide]");
+  eq(await guideText(page), { n: "Paso 1 de 3", h: "Explorá la historia" }, "step 1");
+  await page.waitForTimeout(50);
+  eq(await page.evaluate(() => document.activeElement.className), "cc-guide-h", "focus moves into the dialog");
+  assert(await page.locator(".cc-guide-ill .cc-card").count() === 1, "a real event card as the example");
+  eq(await page.locator(".cc-guide-nav .cc-btn").first().isDisabled(), true, "Previous disabled on step 1");
+  await page.keyboard.press("ArrowRight");
+  eq(await guideText(page), { n: "Paso 2 de 3", h: "Encontrá información" }, "arrow → step 2");
+  assert((await page.locator(".cc-gres-r").count()) >= 3, "real result groups as the example");
+  await page.click(".cc-guide-nav .cc-btn:has-text('Anterior')");
+  eq((await guideText(page)).h, "Explorá la historia", "Previous");
+  await page.locator(".cc-gdot").nth(2).click();
+  eq(await guideText(page), { n: "Paso 3 de 3", h: "Explorá el mundo" }, "dot 3");
+  assert(await page.locator(".cc-guide-ill svg.cc-gmap").count() === 1, "a drawn map sketch, not an image");
+  await page.click(".cc-guide-nav .cc-btn:has-text('Listo')");
+  eq(await page.locator("[data-dialog]").count(), 0, "closed");
+  eq(await page.evaluate(() => localStorage.getItem("chronicle-tutorial-seen")), "done", "completion remembered");
+  eq(await page.locator(".cc-invite").count(), 0, "invitation gone");
+  await page.reload();
+  await page.waitForSelector(".cc-card");
+  eq(await page.locator(".cc-invite").count(), 0, "still gone after reload");
+  await ctx.close();
+});
+
+await check("guide · skip / Esc / ✕ dismiss it; the help button reopens it any time; English; Try-it actions work", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle", { keepGuide: true });
+  await page.click(".cc-invite .cc-btn");
+  await page.click(".cc-guide-foot .cc-linkbtn");                             // "Saltar la guía"
+  eq(await page.evaluate(() => localStorage.getItem("chronicle-tutorial-seen")), "dismissed", "skip remembered");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");               // "?"
+  await page.waitForSelector("[data-dialog=guide]");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(100);
+  eq(await page.locator("[data-dialog]").count(), 0, "Esc closes");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("aria-haspopup")), "dialog", "focus back on the help button");
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");
+  eq((await guideText(page)).h, "Explore the story", "English step 1");
+  await page.click(".cc-act");                                                // "Open this event"
+  await page.waitForFunction(() => /^#\/chronicle\/event\//.test(location.hash));
+  eq(await page.locator("[data-dialog]").count(), 0, "the guide closed to show the event");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");
+  await page.keyboard.press("ArrowRight");
+  await page.click(".cc-act");                                                // "Search for “…”"
+  await page.waitForSelector("[data-dialog=search]");
+  assert((await page.inputValue(".cc-spanel input")).length > 0, "search opened with the example name");
+  assert(await page.locator(".cc-hit").count() > 3, "and its results");
+  await ctx.close();
+});
+
+await check("guide · a direct link to an entry is never blocked (first visit, phone and desktop)", async () => {
+  for (const opts of [PHONE, DESKTOP]) {
+    // A fresh visitor (no stored guide flag) arriving straight on an entry; wait for the entry itself.
+    const ctx = await browser.newContext(opts), page = await ctx.newPage();
+    page.on("pageerror", e => errors.push(`deep link: ${e.message}`));
+    await page.goto(BASE + "#/chronicle/event/s12_03");
+    await page.waitForSelector(".cc-doc-h", { timeout: 15000 });
+    eq(await page.locator("[data-dialog]").count(), 0, "no dialog");
+    eq(await page.textContent(".cc-doc-h"), "Mortis muere para llegar a la Reina Cuervo", "the entry is there");
+    if (opts === PHONE) eq(await page.locator(".cc-invite").isVisible().catch(() => false), false, "no invitation over the entry on a phone");
+    await ctx.close();
+  }
+});
+
+await check("guide · phone: from More; the glossary lists every event type, quest status and map mark", async () => {
+  const { ctx, page } = await open(PHONE, "#/chronicle");
+  await page.locator("button.cc-bn").tap();
+  await page.locator(".cc-sheet-item", { hasText: "Íconos y colores" }).tap();
+  await page.waitForSelector("[data-dialog=guide]");
+  eq(await page.locator(".cc-gl-row").count(), 13, "13 event types");
+  eq(await page.locator(".cc-gl-badges .cc-badge").count(), 4, "4 quest statuses");
+  assert((await page.locator(".cc-gl-mrow").count()) >= 11, "map marks + other marks");
+  const famColours = await page.$$eval(".cc-gl-famh", els => els.map(e => getComputedStyle(e).color));
+  eq(new Set(famColours).size, famColours.length, "each family its own colour");
+  await page.locator(".cc-guide-tabs button").first().tap();
+  eq((await guideText(page)).n, "Paso 1 de 3", "the Guide tab shows the steps");
+  await page.screenshot({ path: path.join(OUT, "guide-phone.png") });
+  await ctx.close();
+});
+
+// ── Universal search ────────────────────────────────────────────────────────
+await check("search · Ctrl+K from anywhere; grouped results (name first); keyboard to a result; Back has no dead step", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle");
+  await page.focus(".cc-searchbtn");
+  await page.keyboard.press("Control+K");
+  await page.waitForSelector("[data-dialog=search]");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("role")), "combobox", "the field takes the focus");
+  await page.keyboard.type("Mortis");
+  await page.waitForTimeout(100);
+  const groups = await page.$$eval(".cc-sgh", els => els.map(e => e.textContent.replace(/\d+\s*$/, "").trim()));
+  eq(groups.slice(0, 2), ["Personajes", "Acontecimientos"], "groups, best first");
+  assert(groups.includes("Misiones") && groups.includes("Sesiones"), `linked quests and sessions: ${groups}`);
+  eq((await page.textContent(".cc-hit.is-active .cc-hit-t")).trim(), "Mortis", "first result active");
+  eq(await page.locator(".cc-hit.is-active mark").count(), 1, "the match is highlighted");
+  await page.keyboard.press("ArrowDown");
+  eq(await page.getAttribute(".cc-spanel input", "aria-activedescendant"), "cc-opt-1", "aria-activedescendant follows");
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => location.hash === "#/chronicle/event/s12_03");
+  eq(await page.locator("[data-dialog]").count(), 0, "search closed");
+  eq(await page.evaluate(() => document.activeElement.className), "cc-doc-h", "focus on the opened entry");
+  await page.goBack();
+  await page.waitForFunction(() => location.hash === "#/chronicle");
+  eq(await page.locator("[data-dialog]").count(), 0, "one Back returns to the Chronicle");
+  // Escape closes and gives the focus back.
+  await page.focus(".cc-searchbtn");
+  await page.keyboard.press("Control+K");
+  eq(await page.inputValue(".cc-spanel input"), "Mortis", "the last search is kept");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(100);
+  eq(await page.locator("[data-dialog]").count(), 0, "Esc closes");
+  eq(await page.evaluate(() => document.activeElement.classList.contains("cc-searchbtn")), true, "focus returns to the button");
+  eq(new URL(page.url()).hash, "#/chronicle", "closing never navigates");
+  await ctx.close();
+});
+
+await check("search · bilingual, no accents needed, empty state, from Quests and the Map; Chronicle filter untouched", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/quests");
+  const evCount = async q => { await page.fill(".cc-spanel input", q); await page.waitForTimeout(120); return page.$$eval(".cc-sgh", els => els.map(e => e.textContent.replace(/\s+/g, " ").trim())); };
+  await page.click(".cc-searchbtn");
+  const a = await evCount("revelacion"), b = await evCount("revelación");
+  eq(a, b, "accents optional");
+  assert(a.some(g => /Acontecimientos 2/.test(g)), `revelación finds the two revelations: ${a}`);
+  await evCount("raven queen");
+  assert((await page.locator(".cc-hit-t", { hasText: "La Reina Cuervo" }).count()) > 0, "English query, Spanish entry");
+  await evCount("zzqqxx");
+  assert(await page.isVisible(".cc-snone"), "no-results message");
+  eq((await page.textContent(".cc-snone .cc-strong")).trim(), "Nada en la crónica coincide con «zzqqxx».", "message text");
+  await page.fill(".cc-spanel input", "");
+  assert(await page.isVisible(".cc-sintro"), "empty state explains what to search");
+  await evCount("Vasselheim");
+  await page.click(".cc-hit:has-text('Vasselheim') >> nth=0");
+  await page.waitForFunction(() => location.hash === "#/quests/place/vasselheim");
+  eq(await page.textContent(".cc-doc-h"), "Vasselheim", "opened in the current section");
+  await page.evaluate(() => { location.hash = "#/map"; });
+  await page.waitForSelector(".cc-mapwrap");
+  assert(await page.isVisible(".cc-searchbtn"), "available on the map");
+  await page.click(".cc-searchbtn");
+  await evCount("pelor");
+  await page.click(".cc-hit-more:has-text('Ver los')");                        // "See all in the Chronicle"
+  await page.waitForFunction(() => location.hash === "#/chronicle");
+  eq(await page.inputValue(".cc-toolbar input[type=search]"), "pelor", "the Chronicle filter takes the search");
+  assert(/de 33/.test(await page.textContent(".cc-results-t")), "Chronicle filtered");
+  await ctx.close();
+});
+
+await check("search · phone: full screen, typing right away, readable 44px rows, tap a result, Back closes without leaving", async () => {
+  const { ctx, page } = await open(PHONE, "#/sessions");
+  await page.locator(".cc-searchbtn").tap();
+  await page.waitForSelector("[data-dialog=search]");
+  const box = await page.locator(".cc-spanel").boundingBox();
+  eq([box.x, box.y, box.width, box.height], [0, 0, 375, 812], "the whole screen");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("role")), "combobox", "field focused");
+  await page.keyboard.type("vass");
+  await page.waitForTimeout(100);
+  const rows = await page.$$eval(".cc-hit", els => els.map(e => { const r = e.getBoundingClientRect(); return [r.height, r.left, r.right, parseFloat(getComputedStyle(e.querySelector(".cc-hit-t")).fontSize)]; }));
+  assert(rows.length > 5 && rows.every(([h, l, r, f]) => h >= 44 && l >= 0 && r <= 375 && f >= 16), `rows ${JSON.stringify(rows.slice(0, 3))}`);
+  const first = await page.locator(".cc-hit").first().boundingBox();
+  assert(first.y < 200, "results start right under the field (above a virtual keyboard)");
+  await page.locator(".cc-hit").first().tap();
+  await page.waitForFunction(() => location.hash === "#/sessions/place/vasselheim");
+  await page.locator(".cc-back").first().tap();
+  await page.waitForFunction(() => location.hash === "#/sessions");
+  await page.locator(".cc-searchbtn").tap();
+  await page.goBack();                                                        // Android's back gesture
+  await page.waitForTimeout(300);
+  eq(await page.locator("[data-dialog]").count(), 0, "Back closed the search");
+  eq(new URL(page.url()).hash, "#/sessions", "and stayed on the page");
+  await page.locator(".cc-searchbtn").tap();
+  await page.locator(".cc-sback").tap();
+  eq(await page.locator("[data-dialog]").count(), 0, "the back arrow closes it");
+  await ctx.close();
+});
+
+// ── Previously on… ──────────────────────────────────────────────────────────
+await check("recap · from the Chronicle: the latest session (12, by number), real events only, link to the full log; EN", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle");
+  eq((await page.textContent("a.cc-latest .cc-latest-k")).trim(), "Anteriormente en…", "entry label");
+  await page.click("a.cc-latest");
+  await page.waitForFunction(() => location.hash === "#/chronicle/recap/12");
+  eq(await page.textContent(".cc-doc-h"), "Anteriormente en Bund Der Vier…", "heading");
+  assert((await page.textContent(".cc-byline")).includes("Sesión 12"), "session 12");
+  eq(await page.locator(".cc-doc .cc-evrow").count(), 7, "session 12's seven recorded events");
+  assert(await page.isVisible("text=Lo que quedó registrado"), "neutral heading (no editor-chosen highlights)");
+  assert(await page.isVisible(".cc-where"), "where the party was left");
+  eq(await page.locator(".cc-doc .cc-plot").count(), 3, "the three threads still open");
+  await page.click(".cc-lang button:has-text('EN')");
+  eq(await page.textContent(".cc-doc-h"), "Previously on Bund Der Vier…", "English");
+  await page.click(".cc-doc .cc-btn:has-text('Read the full session')");
+  await page.waitForFunction(() => location.hash === "#/chronicle/session/12");
+  await ctx.close();
+});
+
+await check("recap · Sessions keeps oldest first and offers the same recap; phone 320px reads it without sideways scroll", async () => {
+  const { ctx, page } = await open({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true }, "#/sessions");
+  const nos = await page.$$eval(".cc-scard-no", els => els.map(e => +e.textContent));
+  eq(nos, nos.slice().sort((a, b) => a - b), "Sessions oldest first");
+  eq(await page.getAttribute("a.cc-latest", "href"), "#/sessions/recap/12", "recap of session 12");
+  await page.locator("a.cc-latest").tap();
+  await page.waitForSelector(".cc-where");
+  eq(await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-detail").scrollWidth]), [320, 320], "no horizontal scroll");
+  await page.screenshot({ path: path.join(OUT, "recap-320.png"), fullPage: false });
+  await ctx.close();
+});
+
+// ── Favourites + recently viewed ────────────────────────────────────────────
+await check("saved · star an event and a character; listed newest first; history after a moment; kept after reload; remove; clear", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle/event/s12_03");
+  await page.waitForSelector(".cc-favbtn");
+  eq(await page.getAttribute(".cc-favbtn", "aria-pressed"), "false", "not a favourite yet");
+  await page.click(".cc-favbtn");
+  eq(await page.getAttribute(".cc-favbtn", "aria-pressed"), "true", "now a favourite");
+  eq(await page.getAttribute(".cc-favbtn", "aria-label"), "Quitar de favoritos", "label says what a tap does");
+  await page.waitForTimeout(1400);                                              // counts as viewed
+  await page.evaluate(() => { location.hash = "#/chronicle/character/mortis"; });
+  await page.waitForFunction(() => document.querySelector(".cc-doc-h").textContent === "Mortis");
+  await page.click(".cc-favbtn");
+  await page.waitForTimeout(1400);
+  await page.click(".cc-actions a[href='#/saved']");
+  await page.waitForFunction(() => location.hash === "#/saved");
+  const favs = () => page.locator(".cc-page .cc-savedrow .cc-favbtn").count();
+  const list = i => page.$$eval(".cc-page .cc-hits", (h, i) => [...h[i].querySelectorAll(".cc-hit-t")].map(e => e.textContent.trim()), i);
+  eq(await list(0), ["Mortis", "Mortis muere para llegar a la Reina Cuervo"], "favourites, newest first");
+  eq(await list(1), ["Mortis", "Mortis muere para llegar a la Reina Cuervo"], "recently viewed, newest first");
+  await page.reload();
+  await page.waitForSelector(".cc-savedrow");
+  eq(await favs(), 2, "kept after reload");
+  await page.locator(".cc-savedrow .cc-favbtn").first().click();
+  eq(await favs(), 1, "removed from the list");
+  await page.click(".cc-page .cc-h2 .cc-linkbtn");                             // "Borrar historial"
+  assert(await page.isVisible("text=Las fichas que abras van a aparecer acá."), "history cleared");
+  await page.click(".cc-hit");
+  await page.waitForFunction(() => location.hash === "#/saved/event/s12_03");
+  eq(await page.textContent(".cc-doc-h"), "Mortis muere para llegar a la Reina Cuervo", "a favourite opens beside the list");
+  // The search panel offers the history before anything is typed.
+  await page.waitForTimeout(1400);
+  await page.keyboard.press("Control+K");
+  eq((await page.textContent(".cc-sgh")).replace(/\s+/g, " ").trim(), "Consultados recientemente", "history in the empty search");
+  await ctx.close();
+});
+
+await check("saved · stale references are dropped; storage blocked → still works for the visit, with a note", async () => {
+  const ctx = await browser.newContext(DESKTOP);
+  await ctx.addInitScript(() => { try { if (!sessionStorage.getItem("seeded")) { sessionStorage.setItem("seeded", "1"); localStorage.setItem("chronicle-tutorial-seen", "1");
+    localStorage.setItem("chronicle-favorites", JSON.stringify({ v: 1, items: [{ kind: "character", id: "baxcazhak", at: 1 }, { kind: "event", id: "s1_01", at: 2 }, { kind: "potion", id: "x" }] })); } } catch (e) {} });
+  const page = await ctx.newPage();
+  page.on("pageerror", e => errors.push(`saved: ${e.message}`));
+  await page.goto(BASE + "#/saved");
+  await page.waitForSelector(".cc-savedrow");
+  eq(await page.locator(".cc-savedrow").count(), 1, "only the entry that exists");
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("chronicle-favorites")).items.map(r => r.id)), ["s1_01"], "storage cleaned");
+  await ctx.close();
+  const blocked = await browser.newContext(DESKTOP);
+  await blocked.addInitScript(() => { Object.defineProperty(window, "localStorage", { configurable: true, get() { throw new DOMException("blocked", "SecurityError"); } }); });
+  const p2 = await blocked.newPage();
+  p2.on("pageerror", e => errors.push(`blocked storage: ${e.message}`));
+  await p2.goto(BASE + "#/chronicle/event/s12_03");
+  await p2.waitForSelector(".cc-favbtn");
+  await p2.click(".cc-favbtn");
+  eq(await p2.getAttribute(".cc-favbtn", "aria-pressed"), "true", "the star still works");
+  await p2.evaluate(() => { location.hash = "#/saved"; });
+  await p2.waitForSelector(".cc-savedrow");
+  assert(await p2.isVisible(".cc-page .cc-lore-warn"), "a note says nothing will be kept");
+  await blocked.close();
+});
+
+// ── Installable + offline ───────────────────────────────────────────────────
+await check("pwa · installable; after one visit it opens offline (favourites kept); new content shows when back online", async () => {
+  const srv = await startServer();
+  const ctx = await browser.newContext(DESKTOP);
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); localStorage.setItem("chronicle-lang", "en"); } catch (e) {} });
+  const page = await ctx.newPage();
+  page.on("pageerror", e => errors.push(`pwa: ${e.message}`));
+  await page.goto(srv.base + "#/chronicle/event/s12_03");
+  await page.waitForSelector(".cc-favbtn");
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 15000 });
+  const cdp = await ctx.newCDPSession(page);
+  const inst = await cdp.send("Page.getInstallabilityErrors");
+  // Test contexts are off-the-record profiles, which Chromium never offers to install ("in-incognito"); anything else is a real problem.
+  eq(inst.installabilityErrors.map(e => e.errorId).filter(id => id !== "in-incognito"), [], "no installability errors");
+  const manifest = await cdp.send("Page.getAppManifest");
+  assert(!manifest.errors.length && /Crónica/.test(manifest.data), "manifest parsed");
+  await page.click(".cc-favbtn");                                               // a favourite before going offline
+  // Offline: the server is gone.
+  await srv.close();
+  await page.reload();
+  await page.waitForSelector(".cc-doc-h", { timeout: 15000 });
+  eq(await page.textContent(".cc-doc-h"), "Mortis Dies to Reach the Raven Queen", "the entry opens offline");
+  assert(await page.isVisible(".cc-offline"), "an offline note");
+  eq(await page.getAttribute(".cc-favbtn", "aria-pressed"), "true", "favourite kept");
+  await page.evaluate(() => { location.hash = "#/sessions"; });
+  await page.waitForSelector(".cc-scard");
+  eq(await page.locator(".cc-scard").count(), 6, "the sessions list offline");
+  const stored = await page.evaluate(async () => { const out = []; for (const n of await caches.keys()) for (const r of await (await caches.open(n)).keys()) out.push(r.url); return out; });
+  assert(!stored.some(u => /exandria-map\.jpeg$/.test(u)), "the full-resolution map is not stored");
+  assert(stored.some(u => /data\/sessions\.json$/.test(u)) && stored.some(u => /react\.production\.min\.js$/.test(u)), "data and React are");
+  // New content is published; back online it shows on the next load (and becomes the new offline copy).
+  const title12 = "Freshly Published Title";
+  const again = await startServer({ port: srv.port, rewrite: (rel, text) => (rel === "data/sessions.json" ? JSON.stringify({ ...JSON.parse(text), 12: { ...JSON.parse(text)[12], title: title12 } }) : text) });
+  await page.reload();
+  await page.waitForSelector(".cc-scard");
+  assert((await page.textContent(".cc-page")).includes("Freshly Published Title"), "new session title online");
+  eq(await page.locator(".cc-offline").count(), 0, "no offline note when online");
+  await again.close();
+  await page.reload();
+  await page.waitForSelector(".cc-scard", { timeout: 15000 });
+  assert((await page.textContent(".cc-page")).includes("Freshly Published Title"), "the offline copy was refreshed");
+  eq(await page.evaluate(() => JSON.parse(localStorage.getItem("chronicle-favorites")).items.length), 1, "favourites untouched by updates");
+  await page.screenshot({ path: path.join(OUT, "offline-sessions.png") });
   await ctx.close();
 });
 

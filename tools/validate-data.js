@@ -96,9 +96,27 @@ m.sessions.forEach(s => [...s.activePlots, ...s.completedPlots].forEach(p => p.n
 // Lore links to party members are allowed but unusual (player characters are our own creations).
 m.lore.forEach((x, id) => { const p = m.personById.get(id); if (p && p.kind === "pc") warn(`lore.json: "${id}" is a party member — lore is meant for entities that exist in Exandria's canon`); });
 
+// The offline copy (sw.js) must list files that exist, or the service worker cannot install.
+const swFile = path.join(ROOT, "sw.js");
+if (fs.existsSync(swFile)) {
+  const sw = fs.readFileSync(swFile, "utf8"), list = /const PRECACHE = \[([\s\S]*?)\];/.exec(sw);
+  if (!list) warn("sw.js: PRECACHE list not found");
+  else [...list[1].matchAll(/"([^"]+)"/g)].map(x => x[1]).filter(f => f !== "./").forEach(f => { if (!fs.existsSync(path.join(ROOT, f))) err(`sw.js precaches "${f}", which does not exist (bump VERSION after fixing the list)`); });
+  ["characters", "routes", "events", "sessions", "quests", "npcs", "locations", "lore"].forEach(n => {
+    if (fs.existsSync(path.join(ROOT, "data", n + ".json")) && list && !list[1].includes(`"data/${n}.json"`)) warn(`sw.js does not precache data/${n}.json — it would be missing offline`);
+  });
+}
+
+// What is still to be written (never filled in automatically): unchronicled sessions, events without
+// narrative depth, sessions without an editorial recap. Informational only.
+const gaps = Model.sessionListItems(m, { order: "asc" }).filter(it => it.gap).map(it => (it.from === it.to ? `${it.from}` : `${it.from}–${it.to}`));
+const deep = m.events.filter(e => e.description || e.consequences.length || e.unresolved.length).length;
+const curated = m.sessions.filter(s => s.recap.highlightIds.length || s.recap.summaryEn).length;
+
 const mapless = m.events.filter(e => !e.hasCoords).length;
 console.log(`\n${m.events.length} events (${mapless} without map position) · ${m.sessions.length} sessions · ${m.quests.length} quests · ${m.pcs.length} PCs · ${m.npcs.length} NPCs/factions · ${m.places.length} places · lore for ${m.lore.size} entities (${[...m.lore.values()].reduce((n, x) => n + x.references.length, 0)} links)`);
 coverage.forEach(c => console.log("Translated " + c));
+console.log(`Pending to write: sessions not chronicled ${gaps.length ? gaps.join(", ") : "none"} · events with description/consequences/unresolved ${deep}/${m.events.length} · sessions with an editorial recap ${curated}/${m.sessions.filter(s => !s.isStub).length}`);
 if (unmatched.size) console.log(`Session-log entries not linked to an entity (fine for items; add an alias to link them): ${[...unmatched].join(", ")}`);
 console.log(errors ? `\n${errors} error(s), ${warnings} warning(s)` : `\nOK — ${warnings} warning(s)`);
 process.exit(errors ? 1 : 0);

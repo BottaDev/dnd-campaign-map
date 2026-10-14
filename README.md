@@ -19,11 +19,23 @@ The app has six sections. On desktop and tablet they are tabs in the top bar; on
 | **Places** | The places of the campaign as a tree (continent › city › district › site, plus other planes), with what happened in each. |
 | **Map** | The full interactive map — pan, zoom (wheel, buttons, pinch), event pins captioned by session, nearby pins gathered into numbered seals that split as you zoom in, each character's recorded journeys as dashed lines, party toggles. Tapping a pin shows the event (**Read entry** opens it, **Session log** opens that session); tapping a group lists its events. |
 
+Tools available from every section — they never add a tab or a permanent bar:
+
+| Tool | Where | What it does |
+|---|---|---|
+| **Search** (magnifier) | top bar on every screen (also on phones); `Ctrl+K` / `⌘K` | One search over **everything**: characters, NPCs, deities, factions, events, quests, places and sessions, grouped by kind with an icon, the name and one context line. Direct name matches come first (one relevance scale for every kind); a person also finds the events, quests and sessions linked to them. Works in Spanish and English whichever the interface is in, ignores case and accents (`revelacion` finds *Revelación*), understands `12` / `s12` / `sesión 12`. `↑ ↓ Enter Esc` on a keyboard; on a phone it opens as its own screen with the field at the top (results stay above the keyboard). Nothing typed yet → your recently viewed entries. Many events → *See all in the Chronicle* applies the same text as a Chronicle filter. |
+| **Previously on Bund Der Vier…** | one line under the Chronicle and Sessions headings | A recap of the **latest session** (the highest session number with a log): where the party was left, the recorded events (or the editor's highlights), decisions, threads still open, quests in play, effects at the session's end, and links to the full log and to its events in the Chronicle. Built only from the data — see [`recap`](#sessionsjson). |
+| **Saved** (star) | top bar on desktop; **More → Saved** on phones | Favourites (tap ☆ in any entry's top bar) and the last five entries you opened. Kept in this browser only (`localStorage`): no account, no sync. |
+| **Guide** (`?`) | top bar; **More → Guide** on phones | *How the Chronicle works* in three steps — explore the story, find anything, explore the world — each with a real example from the chronicle and a *try it* action. Optional: a first visit only gets a small dismissible invitation in the Chronicle (never a window over a shared link). |
+| **Icons & colours** | second tab of the guide; **More → Icons & colours** | The glossary: every event type with its icon and colour family, the quest statuses, the map's pins, seals and route lines. |
+
 Opening anything (an event, session, quest, person or place) shows its full page: beside the list on wide screens, full-screen with a **Back** button on phones. Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept. An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically. Characters and places that also exist in Critical Role's Exandria end with a folded **Lore of Exandria** section — a short, spoiler-free summary and a link to the source article (see [`lore.json`](#lorejson--lore-of-exandria)); our own story always comes first.
 
-Keyboard: `/` jumps to the search box, `Esc` closes the open page. `?` reopens the guide (also shown on the first visit; under **More** on a phone). The app has a single dark theme. The Chronicle and Sessions orders are remembered separately, but only once you change them — until then each opens on its default. **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
+Keyboard: `Ctrl+K` / `⌘K` opens the search from anywhere, `/` jumps to the Chronicle's filter box, `Esc` closes the search, the guide or the open page; inside the guide `←` `→` change step. Dialogs keep the keyboard focus inside and give it back when they close; Back (including Android's gesture) closes an open search or guide instead of leaving the page. The app has a single dark theme. The Chronicle and Sessions orders are remembered separately, but only once you change them — until then each opens on its default. **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
 
-Every page has a shareable URL (the language is a personal preference, never part of the link, so the same URL works for everyone), e.g. `#/chronicle/event/s8_04`, `#/sessions/session/12`, `#/quests/quest/cassandra`, `#/characters/character/locus`, `#/places/place/vasselheim`, `#/map/at/s11_06`.
+Every page has a shareable URL (the language is a personal preference, never part of the link, so the same URL works for everyone), e.g. `#/chronicle/event/s8_04`, `#/sessions/session/12`, `#/quests/quest/cassandra`, `#/characters/character/locus`, `#/places/place/vasselheim`, `#/map/at/s11_06`, `#/chronicle/recap/12` (Previously on…, session 12). `#/saved` opens your own favourites and history (they live in your browser, so that link shows each reader their own).
+
+After one visit the chronicle is also readable **offline** and can be **installed** like an app from browsers that offer it (see [Offline and installing](#offline-and-installing-pwa)).
 
 ## Running locally
 
@@ -49,27 +61,37 @@ npm run test:browser  # real-browser checks (run npm install once; drives the in
 - `tests/order.test.js` — default orders (Chronicle latest first, Sessions oldest first), explicit choices kept per section, legacy preferences migrated, numeric session order with gaps, stable same-day order, undated events last, independent of language and filters.
 - `tests/design.test.js` — every event type has its own icon and a colour family with a token, every quest status an icon and a tone; one dark theme only (no light tokens, toggle or theme strings; an old preference is discarded; dark before the app boots).
 - `tests/lore.test.js` — Lore of Exandria: one, several or no references, invalid/unsafe URLs, new-tab `rel`, summaries with and without translation, facts, unsourced lore rejected, the real `lore.json` (sourced, https, bilingual, reviewed), and campaign data identical with and without lore.
-- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px; the lore section (collapsed by default, folds again on the next entry, opens the article in a new tab without `window.opener` — Fandom is stubbed, never contacted —, ES ↔ EN, Chronicle → entry → Back, tap targets and readability at 320/360/390/430 px); dark-only theme (an old light preference is removed, no light flash, map controls and panels dark); default orders and their toggles (kept per section, across reloads and languages, with filters); every event card with its type icon, label and family colour, title larger than metadata, compact height. Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
+- `tests/search.test.js` — universal search: every kind of entry, grouping and relevance (names first), entries linked to a person, bilingual, accents/case, aliases and name prefixes, session numbers and campaign days, empty and no-result queries, highlighting, same ranking in both languages, the Chronicle's own search unchanged (and *See all in the Chronicle* showing exactly the same events).
+- `tests/recap.test.js` — Previously on…: latest session by number (gaps, stubs, out-of-order keys), sessions without summary/events, several events, editorial highlights (validated, order kept), pending threads and events' open questions, nothing invented (every text traced to the data), translation and fallback.
+- `tests/narrative.test.js` — optional `description` / `consequences` / `unresolved`: present, absent, malformed, translated (positional lists by length, fallback per field), searchable, relations untouched.
+- `tests/library.test.js` — favourites and history: add/remove/toggle, persistence, newest first, no consecutive duplicates, 5 shown / 20 kept, stale references pruned, corrupt or old-format storage, storage blocked or full (in-memory fallback), other tabs.
+- `tests/guide.test.js` — the guide: three brief steps with points and try-it actions in both languages, never opened automatically, reachable from `?` and More, real examples from the data, glossary covering every event type, family and status, drawn illustrations (no images).
+- `tests/pwa.test.js` — manifest (relative scope, dark colours, icons with real sizes, maskable), `index.html` wiring, every precached file exists and every startup file is precached, the 15 MB map never stored, versioned caches and network-first updates, user data kept out of the caches.
+- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px; the lore section (collapsed by default, folds again on the next entry, opens the article in a new tab without `window.opener` — Fandom is stubbed, never contacted —, ES ↔ EN, Chronicle → entry → Back, tap targets and readability at 320/360/390/430 px); dark-only theme (an old light preference is removed, no light flash, map controls and panels dark); default orders and their toggles (kept per section, across reloads and languages, with filters); every event card with its type icon, label and family colour, title larger than metadata, compact height; the guide (first-visit invitation instead of a window, steps by buttons/dots/arrows, Done/Skip remembered, `Esc` and focus return, English, try-it actions, never over a direct link, glossary on a phone); the search (`Ctrl+K`, groups with the name first, keyboard to a result, one Back to return, bilingual/no accents, empty and no-result states, from Quests and the Map, hand-off to the Chronicle filter, full screen on a phone with 44 px rows and Back closing it); the recap (session 12 by number, real events, ES/EN, from Sessions, 320 px); favourites and history (star, order, reload, remove, clear, stale references, storage blocked); offline (installability, reload with the server gone, favourites kept, the full map not stored, new content shown once back online and becoming the new offline copy); and no horizontal scroll inside the search or the guide at every width. Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
 
 `node_modules/` and `test-results/` are git-ignored; GitHub Pages never needs them.
 
 ## Deploying (GitHub Pages)
 
-GitHub Pages serves the repo exactly like `npx serve`. All paths are relative and navigation uses hash URLs (`#/…`), so it works from a project sub-path (`https://<user>.github.io/<repo>/`) with no server configuration. Commit everything (including `data/`, `js/` and `assets/`), then enable Pages (Settings → Pages → deploy from the `main` branch).
+GitHub Pages serves the repo exactly like `npx serve`. All paths are relative and navigation uses hash URLs (`#/…`), so it works from a project sub-path (`https://<user>.github.io/<repo>/`) with no server configuration. Commit everything (including `data/`, `js/` and `assets/`), then enable Pages (Settings → Pages → deploy from the `main` branch). `sw.js` and `manifest.webmanifest` must stay at the root, next to `index.html` (the service worker's scope is its own folder).
 
 ## Project layout
 
 ```
 index.html               the app: template, styles and UI logic (dc-runtime Design Component)
-js/chronicle-model.js    data layer: normalizes data/*.json, applies content translations, relationship indexes, filters, search, routes
+js/chronicle-model.js    data layer: normalizes data/*.json, applies content translations, relationship indexes, filters, search, recap, routes
 js/chronicle-map.js      map geometry: which route lines to draw, pins per coordinate, zoom-dependent clusters
+js/chronicle-library.js  favourites + recently viewed (localStorage, per browser)
 js/i18n.js               translation function t(), plural forms, language preference
 locales/en.js, es-AR.js  interface strings, one dictionary per language (same keys)
+sw.js                    service worker: offline copy (network first; see Offline and installing)
+manifest.webmanifest     web app manifest (name, icons, dark colours)
 tests/                   unit tests (node --test) and browser checks (tests/browser/)
 support.js               generated dc-runtime bundle (do not edit; loads React)
 tools/validate-data.js   data validator — run it before committing
+tools/make-icons.mjs     renders assets/app-icon.svg into the PNG app icons (dev only)
 data/                    campaign content (below)
-assets/                  map images and portraits
+assets/                  map images, portraits and app icons
 ```
 
 ## The data
@@ -145,6 +167,55 @@ Nothing requires an exact date: an event with no day inherits the day of its nei
 - `characterIds` are party members only; NPCs, deities and factions go in `npcIds`.
 - `relatedEventIds` — list a connection once (usually on the later event); it shows on both events.
 
+#### Narrative depth: `description`, `consequences`, `unresolved` (all optional)
+
+Most events need only a `title` and a one- or two-sentence `summary` — that is what the Chronicle card shows. The moments that matter (a revelation, a betrayal, a decision that changes the campaign) can carry more, shown **only on the event's page**, in this order: title → day and session → the summary as a lead and the `description` → *What changed* → *Still unresolved* → people, quests, connected events, where & when. Empty fields are simply not shown.
+
+| Field | Shown as | Write |
+|---|---|---|
+| `description` | the full account, under the summary | What happened, in prose. Blank lines separate paragraphs. |
+| `consequences` | **What changed** | A list of sentences: what is different now **in our campaign**, as verified at the table. |
+| `unresolved` | **Still unresolved** | A list of sentences: questions, conflicts and objectives that remain open after this event. They also appear in the *Previously on…* recap of its session. |
+
+Record only what happened or was established at the table — never guesses written as facts. If something is a theory of the players, say so (“The party suspects…”) or leave it out.
+
+A simple event (a short journey) — nothing more than the essentials:
+
+```json
+{
+  "id": "s99_01", "session": 99, "campaignDay": 120, "igLabel": "Day 120 · The coast road",
+  "type": "travel", "title": "Down the Coast Road",
+  "summary": "Two quiet days on the road south; nothing stops the party.",
+  "characterIds": ["ayante", "ereldra", "mortis", "sorfon"]
+}
+```
+
+An important event — with the three optional fields (a made-up example to show the shape, not campaign canon):
+
+```json
+{
+  "id": "s99_02", "session": 99, "campaignDay": 121, "igLabel": "Day 121 · The drowned shrine",
+  "type": "revelation", "title": "The Name Under the Water",
+  "summary": "In the drowned shrine the party learns who sealed it — and why.",
+  "description": "A longer account of the scene.\n\nA second paragraph if it needs one.",
+  "consequences": ["The shrine's keeper now knows the party's names.", "The way back through the shrine is closed."],
+  "unresolved": ["Who broke the seal before the party arrived?", "Will the keeper keep the secret?"],
+  "characterIds": ["mortis", "sorfon"], "questIds": ["some-quest"]
+}
+```
+
+Their Spanish goes in `data/i18n/es-AR.json` under the same event id — `description` as text, `consequences` and `unresolved` as lists **with the same number of entries, in the same order** as the English (a list of a different length is ignored and the English one is shown; the validator warns):
+
+```json
+{ "events": { "s99_02": {
+  "title": "El nombre bajo el agua",
+  "summary": "En el santuario sumergido el grupo descubre quién lo selló y por qué.",
+  "description": "Un relato más largo de la escena.\n\nUn segundo párrafo si hace falta.",
+  "consequences": ["El guardián del santuario ya conoce los nombres del grupo.", "El camino de regreso por el santuario quedó cerrado."],
+  "unresolved": ["¿Quién rompió el sello antes de que llegara el grupo?", "¿Guardará el secreto el guardián?"]
+} } }
+```
+
 ### `sessions.json`
 
 An object keyed by session number (as a string). Each entry is the session log.
@@ -176,6 +247,24 @@ An object keyed by session number (as a string). Each entry is the session log.
 - `activePlots` are the threads still open at the end of the session (shown as *Unresolved threads*); `completedPlots` closed this session (add `"closed": "Closed this session"`).
 - `questId` links a plot to its quest, so the quest page can show this session's snapshot.
 - Plot `npcs` entries need a `name`; `race`, `role`, `region` are optional. They are shown in the session log and, when the name matches a person or place, in that entity's *From the session logs*.
+
+#### `recap` — Previously on… (optional)
+
+The recap of a session is built from what is already recorded: `endedHere` (*where the party was left*), the session's events, its `activePlots` (*still open*), `completedPlots`, `effects`, its quests, and the `unresolved` items of its events. Nothing is ranked or summarised automatically — without a `recap` entry, **every** recorded event is listed in order under *What was recorded*. To curate it, add:
+
+```json
+"12": {
+  "title": "Councils Before the Hunt",
+  "recap": {
+    "summary": "Two or three sentences to read aloud before the next session.",
+    "highlights": ["s12_03", "s12_05", "s12_06"]
+  }
+}
+```
+
+- `highlights` — 3 to 5 event ids **of that session**, in the order to show them (others are ignored with a warning; more than five is a warning). Decisions that are not highlighted are then listed apart, so none is lost.
+- `summary` — optional; translate it in `data/i18n/es-AR.json` as `sessions["12"].recap.summary` (shown in English, with a note, until translated). A translation without an English summary is never shown.
+- The *latest* session is the highest session number that has an entry here — never the order of labels or of the Sessions list.
 
 ### `quests.json`
 
@@ -306,6 +395,8 @@ Current coverage (reviewed 2026-10-14, all from the Critical Role Wiki): places 
 
 There is **one dark theme** (no light mode, no toggle): ink-brown surfaces, parchment text and gold for what you can press. The page is painted dark before any script runs (`color-scheme: dark`, `theme-color`, an inline style in `<head>`); an old `chronicle-theme` preference from earlier versions is ignored and deleted. All colours are CSS custom properties on `.cc-app` in `index.html` — use the tokens, never a raw colour in a component.
 
+The same vocabulary is explained inside the app — guide → **Icons & colours** — built from these very tables, so a new type or status appears there by itself.
+
 **Kinds of event.** Every event type has one icon, one label and a colour *family*. The colour says which kind of moment it is, the icon says exactly which type, and the label is always written beside it — colour is never the only cue. Colour only tints the icon and the card's left edge; cards stay neutral so the title stays the strongest thing on them.
 
 | Family (token) | Colour | Types → icon |
@@ -364,9 +455,9 @@ Spanish of Argentina (`es-AR`) is the default; English (`en`) is the original la
   }
   ```
 
-  Arrays (effects, plots, plot npcs, notes, objectives, consequences, aliases, relations) are **positional**: same length and order as the English source. Ids, coordinates, dates (`playedOn`, in-world `igDate`), `questId`s and links are never translated. Session-log names keep linking by their English spelling even when a translated `name` is shown.
+  An event's `description`, `consequences` and `unresolved` and a session's `recap.summary` are translated the same way (see [Narrative depth](#narrative-depth-description-consequences-unresolved-all-optional) and [`recap`](#recap--previously-on-optional)). Arrays (effects, plots, plot npcs, notes, objectives, consequences, unresolved, aliases, relations) are **positional**: same length and order as the English source. Ids, coordinates, dates (`playedOn`, in-world `igDate`), `questId`s and links are never translated. Session-log names keep linking by their English spelling even when a translated `name` is shown.
 - **Fallback** — any missing or empty translated value, or a positional array whose length differs from the source, shows the English text (the validator warns). Nothing ever shows a key or an empty label.
-- **Search** — each entry is indexed in every loaded language, folded to lower case without accents: `revelación`, `revelacion` and `revelation` find the same events whatever the interface language. Translated categories (event types, quest status, place kinds) are searchable too.
+- **Search** — each entry is indexed in every loaded language, folded to lower case without accents: `revelación`, `revelacion` and `revelation` find the same events whatever the interface language. Translated categories (event types, quest status, place kinds) are searchable too. The universal search (`ChronicleModel.searchAll`) ranks every kind on one scale — whole name, name prefix, word prefix, all words in the name, all words in the entry's own text, all words in its linked people/places/events — with ties broken by the English names, so results come in the same order in both languages.
 - **Dates** — real play dates are formatted per language (`25 jun 2026` / `25 Jun 2026`); in-world dates (`29 Horisal 867`) are proper names and stay verbatim. Ordering never depends on the language.
 - **Adding a bilingual event** — add it to `events.json` in English as usual, then add `"<id>": { "title", "summary", "igLabel" }` (plus `description`/`consequences` if present) under `events` in `data/i18n/es-AR.json`. Same for a new session (under `sessions`, keyed by its number), quest, person or place. Until then the new entry simply appears in English in the Spanish interface. `node tools/validate-data.js` prints the translation coverage.
 
@@ -376,15 +467,40 @@ Spanish of Argentina (`es-AR`) is the default; English (`en`) is the original la
 2. **People and places:** add new NPCs to `npcs.json` and places to `locations.json` *before* referencing them from events (`npcIds`, `locationId`). Add an `aliases` entry when the session log names someone differently.
 3. **Quests:** link events with `questIds` and plots with `questId`; update the quest's `summary`, `status` and `sessions[]` in `quests.json`.
 4. **Movement:** if the party travelled, append the waypoints to each traveller's array in `routes.json` — with a shared `leg` id if they went together, and `"break": true` on the first point after an unrecorded jump.
-5. **Translation:** add the Spanish text for the new events, session or quest to `data/i18n/es-AR.json` (see [Languages](#languages-i18n)).
-6. **Lore (optional):** if a new NPC or place is a known part of Exandria, add a verified reference and a spoiler-free summary to `lore.json` (see [the checklist](#lorejson--lore-of-exandria)).
-7. **Validate** before committing:
+5. **Narrative depth (optional):** for the session's important moments, add `description`, `consequences` and `unresolved` to those events (see [Narrative depth](#narrative-depth-description-consequences-unresolved-all-optional)); leave ordinary events short.
+6. **Recap (optional):** to curate *Previously on…*, give the session a `recap` with 3–5 `highlights` and/or a `summary` (see [`recap`](#recap--previously-on-optional)). Without it the recap lists every recorded event.
+7. **Translation:** add the Spanish text for the new events, session or quest to `data/i18n/es-AR.json` (see [Languages](#languages-i18n)).
+8. **Lore (optional):** if a new NPC or place is a known part of Exandria, add a verified reference and a spoiler-free summary to `lore.json` (see [the checklist](#lorejson--lore-of-exandria)).
+9. **Offline copy:** only if you added a *new file* the page loads at start (a new `data/*.json`, script or portrait), list it in `PRECACHE` in `sw.js` and bump `VERSION`. New content in existing files needs nothing — the offline copy refreshes itself.
+10. **Validate** before committing:
 
    ```bash
    node tools/validate-data.js
    ```
 
-   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates, route waypoints and shared legs, asset paths, the lore layer (https-only links, every summary sourced), and the content translations (unknown ids, array lengths, coverage). It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session).
+   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates, route waypoints and shared legs, asset paths, the lore layer (https-only links, every summary sourced), the content translations (unknown ids, array lengths, coverage), recap highlights and narrative fields, and that every file `sw.js` precaches exists. It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session). Its last lines report what is **still to be written** — see [Pending content](#pending-content).
+
+## Pending content
+
+Nothing in the chronicle is filled in automatically, and nothing was invented to complete the new fields. As of this version (the validator prints the current state):
+
+- **Sessions 3–7 and 9 have not been chronicled** (no log, no events) — the Sessions list shows them as gaps. They should be written from the table's notes, not reconstructed.
+- **No event has `description`, `consequences` or `unresolved` yet** (0 of 33). The event pages show those sections as soon as they are written.
+- **No session has an editorial `recap`** (0 of 6), so *Previously on…* lists every recorded event of the latest session, neutrally. Adding `recap.highlights` (and optionally a `summary`) to session 12 is the quickest improvement.
+
+## Offline and installing (PWA)
+
+After one visit with a connection, the chronicle opens without one: Chronicle, Sessions, Quests, Characters, Places, every entry page, both languages, search, favourites and the guide. Browsers that support it offer to **install** it (Chrome/Edge: the install icon in the address bar; Android: *Add to home screen*; iOS Safari: *Share → Add to Home Screen*), and it then opens in its own dark window.
+
+How it works (`sw.js`, registered from `index.html` on `http(s)` only):
+
+- **Network first.** Online, every page, script and data file is fetched from the server first (revalidated past the HTTP cache), exactly as without a service worker — a newly published session appears on the next load. Each successful response also refreshes the offline copy. Players never stay on old sessions while they are online.
+- **Offline fallback.** With no connection (or one that does not answer within 6 s), the last saved copy is served, and a small note says *Offline — you are reading the last copy saved on this device*.
+- **What is stored:** the app shell, `data/*.json`, the Spanish content, React (from unpkg, same bytes so its integrity check passes), the portraits and icons (~0.5 MB); the 2400 px map preview and the fonts once they are first used. **The 15 MB full-resolution map is never stored** — offline, the Map shows the preview.
+- **Updates and versions:** caches are named `chronicle-shell-<VERSION>` / `chronicle-runtime-<VERSION>`; a new `sw.js` installs at once and deletes the old caches. Bump `VERSION` when you add a file to `PRECACHE` (new content in existing files needs no bump).
+- **Your data is separate:** favourites, history, the language and the guide flag live in `localStorage`, which the service worker never touches — updates and cache clean-ups never lose them. Favourites are never pruned against an offline copy (which may be older than the entry).
+
+Limitations: the first visit must be online; offline you see the last version you loaded; the full-resolution map needs a connection; favourites are per browser and device (no sync). To reset everything, clear the site's data in the browser.
 
 ## Compatibility
 
@@ -395,3 +511,4 @@ Older records keep working: events with only `date`/`igLabel`/`xp`/`yp`, session
 - `assets/exandria-map.jpeg` — the full-resolution map (~15 MB). Loaded only on the Map, once it is zoomed in far enough to need it.
 - `assets/exandria-map-preview.jpeg` — a 2400 px copy used for the first paint of the map and for the event mini-maps. If you replace the map, regenerate it at the same aspect ratio.
 - `assets/icon-*.jpeg` — round PC portraits; `assets/icon-bund-der-vier.png` — the shared seal for events involving several party members.
+- `assets/app-icon.svg` — the app icon (also the favicon); `app-icon-180/192/512.png` and `app-icon-maskable-512.png` are rendered from it with `node tools/make-icons.mjs` (PowerShell/cmd on Windows, after `npm install`).

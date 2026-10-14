@@ -1,0 +1,21 @@
+{
+  "name": "Crónica de Exandria",
+  "short_name": "Crónica",
+  "description": "La crónica de la campaña de Bund Der Vier: acontecimientos, sesiones, misiones, personajes, lugares y el mapa de Exandria.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./#/chronicle",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0c0a06",
+  "theme_color": "#140f08",
+  "categories": ["games", "entertainment", "books"],
+  "icons": [
+    { "src": "assets/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
