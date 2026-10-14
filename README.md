@@ -1,8 +1,8 @@
 # Campaign Chronicle
 
-An archive of the adventures of a D&D party: a narrative chronicle of every event in the campaign, linked to the sessions, quests, characters and places it touches — with the interactive campaign map as a companion for geography. It is a single static page (no backend, no build step) that works on desktop, tablet and phone.
+An archive of the adventures of a D&D party: a narrative chronicle of every event in the campaign, linked to the sessions, quests, characters and places it touches — with the interactive campaign map as a companion for geography. It is a single static page (no backend, no build step) that works on desktop, tablet and phone, in **Spanish (Argentina, the default) and English**: interface *and* narrative content.
 
-The party name, world name, and other branding text are hardcoded strings in `index.html` (not data-driven) — edit them there if you reuse this for a different campaign.
+The party name, world name, and other branding text live in the interface dictionaries (`locales/*.js`) — edit them there if you reuse this for a different campaign.
 
 Live version: served via GitHub Pages from this repo (see [Deploying](#deploying-github-pages)).
 
@@ -12,18 +12,18 @@ The app has six sections. On desktop and tablet they are tabs in the top bar; on
 
 | Section | What it shows |
 |---|---|
-| **Chronicle** (home) | Every event, in in-world order, as a narrative timeline grouped by campaign day (or by session). Free-text search plus filters for party member, NPC/deity/faction, quest, session, event type, place, in-world period (campaign days) and real-world play date — all combinable. Typing a search also lists matching people, quests, places and sessions. |
+| **Chronicle** (home) | Every event, in in-world order, as a narrative timeline grouped by campaign day (or by session). Free-text search (in both languages, ignoring accents and case) plus filters for party member, NPC/deity/faction, quest, session, event type, place, in-world period (campaign days) and real-world play date — all combinable. Typing a search also lists matching people, quests, places and sessions. |
 | **Sessions** | The sessions played, in order (first or latest first), with gaps for sessions that were never written up. Each session page has the real date it was played, the in-world days it covered, where it started and ended, its events, the quests in play, the people and places involved, active effects and unresolved threads. |
 | **Quests** | Every quest by status. A quest page shows where it stands now and *the story so far*: session by session, the events that advanced it and the session-log snapshot of the thread. |
 | **Characters** | The party and every NPC, deity and faction recorded in the session logs: relationships (both directions), factions/members, appearances, quests, places, and everything the session logs noted about them. |
 | **Places** | The places of the campaign as a tree (continent › city › district › site, plus other planes), with what happened in each. |
-| **Map** | The full interactive map — pan, zoom (wheel, buttons, pinch), event pins captioned by session, pin groups that cycle on click, the party's route, party toggles. Tapping a pin shows the event; **Read entry** opens it, **Session log** opens that session. |
+| **Map** | The full interactive map — pan, zoom (wheel, buttons, pinch), event pins captioned by session, nearby pins gathered into numbered seals that split as you zoom in, each character's recorded journeys as dashed lines, party toggles. Tapping a pin shows the event (**Read entry** opens it, **Session log** opens that session); tapping a group lists its events. |
 
 Opening anything (an event, session, quest, person or place) shows its full page: beside the list on wide screens, full-screen with a **Back** button on phones. Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept. An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically.
 
-Keyboard: `/` jumps to the search box, `Esc` closes the open page. The `☀`/`☾` button toggles light/dark (remembered), `?` reopens the guide (also shown on the first visit).
+Keyboard: `/` jumps to the search box, `Esc` closes the open page. The `☀`/`☾` button toggles light/dark (remembered), `?` reopens the guide (also shown on the first visit). **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
 
-Every page has a shareable URL, e.g. `#/chronicle/event/s8_04`, `#/sessions/session/12`, `#/quests/quest/cassandra`, `#/characters/character/locus`, `#/places/place/vasselheim`, `#/map/at/s11_06`.
+Every page has a shareable URL (the language is a personal preference, never part of the link, so the same URL works for everyone), e.g. `#/chronicle/event/s8_04`, `#/sessions/session/12`, `#/quests/quest/cassandra`, `#/characters/character/locus`, `#/places/place/vasselheim`, `#/map/at/s11_06`.
 
 ## Running locally
 
@@ -35,6 +35,21 @@ npx serve -p 5500 .
 
 Then open `http://localhost:5500/`. There is no build step — edit files and reload.
 
+## Tests
+
+```bash
+npm test              # data validator + unit tests (node --test, no dependencies)
+npm run test:browser  # real-browser checks (run npm install once; drives the installed Edge)
+```
+
+- `tests/filters.test.js` — party-member filter (OR for shared events, order of `characterIds`, events without party members, combined filters, no duplicate pins).
+- `tests/routes.test.js` — routes: order and revisits, independent and shared legs, breaks, incomplete data, filters that must not create connections, the real `routes.json` untouched.
+- `tests/markers.test.js` — one pin per exact coordinate, zoom-dependent clusters, no event lost, invalid coordinates, popups kept on screen.
+- `tests/i18n.test.js` — default language, persistence, every key used by `index.html` exists in both dictionaries, content translation and fallback, bilingual accent-insensitive search, localized dates, identical ids/relations in both languages.
+- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px. Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
+
+`node_modules/` and `test-results/` are git-ignored; GitHub Pages never needs them.
+
 ## Deploying (GitHub Pages)
 
 GitHub Pages serves the repo exactly like `npx serve`. All paths are relative and navigation uses hash URLs (`#/…`), so it works from a project sub-path (`https://<user>.github.io/<repo>/`) with no server configuration. Commit everything (including `data/`, `js/` and `assets/`), then enable Pages (Settings → Pages → deploy from the `main` branch).
@@ -43,7 +58,11 @@ GitHub Pages serves the repo exactly like `npx serve`. All paths are relative an
 
 ```
 index.html               the app: template, styles and UI logic (dc-runtime Design Component)
-js/chronicle-model.js    data layer: normalizes data/*.json, builds the relationship indexes, filters, search
+js/chronicle-model.js    data layer: normalizes data/*.json, applies content translations, relationship indexes, filters, search, routes
+js/chronicle-map.js      map geometry: which route lines to draw, pins per coordinate, zoom-dependent clusters
+js/i18n.js               translation function t(), plural forms, language preference
+locales/en.js, es-AR.js  interface strings, one dictionary per language (same keys)
+tests/                   unit tests (node --test) and browser checks (tests/browser/)
 support.js               generated dc-runtime bundle (do not edit; loads React)
 tools/validate-data.js   data validator — run it before committing
 data/                    campaign content (below)
@@ -62,7 +81,8 @@ data/
   events.json       individual campaign events — the core of the chronicle
   sessions.json     the full log of each session
   quests.json       the campaign quest log
-  routes.json       each character's waypoints on the map
+  routes.json       each character's recorded journeys on the map
+  i18n/es-AR.json   Spanish translations of the content above        (optional file)
 ```
 
 ### How things link
@@ -210,24 +230,87 @@ An object keyed by session number (as a string). Each entry is the session log.
 - `kind` — `continent`, `region`, `sea`, `city`, `district`, `site` or `plane`.
 - `parentId` nests places; filtering or opening a place includes everything inside it.
 - Places have no coordinates of their own: **View on map** centres on the first event recorded there that has a map position. Planes (and places inside them) are never shown on the map.
+- **Adding a place without breaking the map:** add it here (with `parentId` if it sits inside another place), reference it from events with `locationId`, and give those events `xp`/`yp` only if the place is on the Exandria map (both values, 0–100). A place with no positioned event simply has no **View on map**; nearby places are grouped visually at low zoom but keep their own coordinates. Add its Spanish name under `places` in `data/i18n/es-AR.json` when it has translatable words ("Temple of …"); bare proper names need nothing.
 
 ### `routes.json`
 
-One key per character `id`, an ordered array of `{ "xp", "yp" }` waypoints (percent of the map image). Kept for the map; the route line drawn on the map follows the chronological order of the visible event pins.
+The dashed lines on the map come **only** from this file. Events are where something happened; routes are how someone got from one place to another. A line is never derived from events, so two events in different regions are not connected unless the journey between them was recorded here.
+
+```json
+{
+  "mortis": [
+    { "xp": 45.0, "yp": 33.6, "leg": "s8-airship", "session": 8, "locationId": "kraghammer" },
+    { "xp": 42.3, "yp": 32.3, "leg": "s8-airship", "session": 8 },
+    { "xp": 30.2, "yp": 27.2, "leg": "s8-airship", "session": 8, "locationId": "vasselheim" },
+    { "xp": 29.9, "yp": 26.0, "break": true }
+  ]
+}
+```
+
+- One key per party member, an **ordered** array of waypoints (`xp`/`yp` = percent of the map image). The order is the order travelled: revisits (A → B → A → C) are kept; only an accidental repeat of the same point twice in a row is ignored.
+- `break: true` — do not connect this waypoint to the previous one: the journey in between was not recorded. Use it whenever a character reappears somewhere else without a known route.
+- `leg` — an id for a journey travelled **together**. When two or more visible characters carry the same `leg` id on consecutive waypoints, that stretch is drawn once as a shared line (dark ink) instead of one line per person. Togetherness comes only from this id — never from similar coordinates or shared events. Each character keeps their own waypoints for the leg; the shared line uses the first visible member's (party order).
+- `session`, `locationId` — optional notes for whoever maintains the file (validated, not drawn).
+- The old format (bare `{ "xp", "yp" }` arrays) is still valid: it is drawn as each character's own continuous route.
+- On the map each character has their own colour (`color` in `characters.json`) and dash pattern; shared legs are dark ink; the map panel shows the legend. Only the party-member selection decides which routes are shown — quest, type, text or date filters never add, remove or join route lines.
+- Invalid waypoints (missing or out-of-range coordinates) are skipped and the route is broken there instead of bridged; the validator reports them.
+
+The current file records the session 8 airship crossing Kraghammer → Vasselheim, taken by the whole party (the session 8 log ends "after the airship crossing" and all four arrive in event `s8_06`). The journey from Emon to Kraghammer (sessions 3–7, never chronicled) is deliberately *not* drawn. The four arrays' coordinates are the original ones.
+
+## The party-member filter
+
+One filter, shared by the Chronicle and the Map:
+
+- **No one selected** (the default) = every event, including events with no party member at all.
+- **Some selected** = events where **any** selected member took part (OR). An event of Ayante and Sorfon shows when either is selected, once when both are, and the order inside `characterIds` never matters.
+- Events without party members are hidden while a selection is active; when the campaign has any, a discreet **No party member** chip (Chronicle) / row (Map) includes them on purpose. They are never assigned to a character to make them show.
+- On the Map the same filter reads as visibility: every party row lit = no filter; switching a row off hides what is *only* theirs. Switching everyone off shows nothing.
+- It combines with the other filters with AND (e.g. Sorfon *and* quest X), and it alone decides which routes are drawn. Pins are one per coordinate, so an event with four party members is still one pin.
+
+## Map pins and groups
+
+- Events at **exactly** the same coordinates share one pin (with a count badge); tapping it lists them.
+- Pins with **different but close** coordinates gather, depending on the zoom, into a round numbered seal (deliberately not a pin, so it never reads as one place). Tapping it lists every event with its day and session; **Zoom in to separate** zooms until the places split (or as far as the map goes, when they are too close to ever split on that screen). Groups are recomputed for the zoom level and the active filters; no coordinate is changed and no event is dropped.
+- In an event's popup, ‹ › step through the other events of the same pin or group and **See all** returns to the list. Popups always stay on screen (shifted sideways near the edges, opened on the side with room, kept below the map's top bar).
+
+## Languages (i18n)
+
+Spanish of Argentina (`es-AR`) is the default; English (`en`) is the original language of the data. The choice is stored in `localStorage` (`chronicle-lang`).
+
+- **Interface** — every visible string, aria-label and tooltip comes from `locales/es-AR.js` / `locales/en.js` through `t("section.key", params)` (`js/i18n.js`). Both files have the same semantic keys; `{name}` placeholders are filled from params and `{ "one": …, "other": … }` objects are plural forms. They are plain scripts (not JSON) so even the first loading/error message is translated. To add a string: add the key to **both** files and use `{{ t.section.key }}` in the template or `this.t("section.key")` in code — `npm test` fails if a key is missing in either language. To add a language: a new `locales/<code>.js`, an entry in `LOCALES` in `js/i18n.js`, a script tag in `index.html`, and optionally `data/i18n/<code>.json`.
+- **Content** — the English `data/*.json` files stay the source of truth and are never rewritten. Translations live in `data/i18n/es-AR.json`, keyed by stable ids:
+
+  ```json
+  {
+    "events":   { "s1_02": { "title": "El encuentro en lo de Gilmore", "summary": "…", "igLabel": "Día 26 · La tienda de Gilmore, Emon" } },
+    "sessions": { "8": { "title": "…", "startedHere": "…", "ig": { "start": "…" }, "effects": ["…"],
+                         "activePlots": [ { "name": "…", "qt": "…", "npcs": [ { "role": "…" } ], "notes": ["…"] } ] } },
+    "quests":   { "cassandra": { "title": "…", "summary": "…", "objectives": ["…"] } },
+    "people":   { "sorfons-mother": { "name": "La madre de Sorfon", "race": "humana", "relations": [ { "label": "…", "reverseLabel": "…" } ] } },
+    "places":   { "gilmores-shop": { "name": "La tienda de Gilmore" } }
+  }
+  ```
+
+  Arrays (effects, plots, plot npcs, notes, objectives, consequences, aliases, relations) are **positional**: same length and order as the English source. Ids, coordinates, dates (`playedOn`, in-world `igDate`), `questId`s and links are never translated. Session-log names keep linking by their English spelling even when a translated `name` is shown.
+- **Fallback** — any missing or empty translated value, or a positional array whose length differs from the source, shows the English text (the validator warns). Nothing ever shows a key or an empty label.
+- **Search** — each entry is indexed in every loaded language, folded to lower case without accents: `revelación`, `revelacion` and `revelation` find the same events whatever the interface language. Translated categories (event types, quest status, place kinds) are searchable too.
+- **Dates** — real play dates are formatted per language (`25 jun 2026` / `25 Jun 2026`); in-world dates (`29 Horisal 867`) are proper names and stay verbatim. Ordering never depends on the language.
+- **Adding a bilingual event** — add it to `events.json` in English as usual, then add `"<id>": { "title", "summary", "igLabel" }` (plus `description`/`consequences` if present) under `events` in `data/i18n/es-AR.json`. Same for a new session (under `sessions`, keyed by its number), quest, person or place. Until then the new entry simply appears in English in the Spanish interface. `node tools/validate-data.js` prints the translation coverage.
 
 ## Adding content
 
 1. **New session:** add its entry to `sessions.json` (with `title` and `playedOn`), then one object per beat to `events.json` (`session`, `campaignDay`, `type`, …).
 2. **People and places:** add new NPCs to `npcs.json` and places to `locations.json` *before* referencing them from events (`npcIds`, `locationId`). Add an `aliases` entry when the session log names someone differently.
 3. **Quests:** link events with `questIds` and plots with `questId`; update the quest's `summary`, `status` and `sessions[]` in `quests.json`.
-4. **Movement:** if the party travelled, extend `routes.json`.
-5. **Validate** before committing:
+4. **Movement:** if the party travelled, append the waypoints to each traveller's array in `routes.json` — with a shared `leg` id if they went together, and `"break": true` on the first point after an unrecorded jump.
+5. **Translation:** add the Spanish text for the new events, session or quest to `data/i18n/es-AR.json` (see [Languages](#languages-i18n)).
+6. **Validate** before committing:
 
    ```bash
    node tools/validate-data.js
    ```
 
-   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates and asset paths. It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session).
+   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates, route waypoints and shared legs, asset paths, and the content translations (unknown ids, array lengths, coverage). It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session).
 
 ## Compatibility
 

@@ -2,18 +2,23 @@
 // Pure data layer for Campaign Chronicle: normalizes the raw data/*.json files,
 // builds the relationship indexes between events, sessions, quests, people and
 // places, and exposes filtering + search. No DOM, no React — it runs in the
-// browser (window.ChronicleModel) and in Node (tools/validate-data.js).
+// browser (window.ChronicleModel) and in Node (tools/validate-data.js, tests/).
 //
 // Every field added in the v2 data model is optional; records written for the
 // original map-first app (events with only date/igLabel/xp/yp, sessions with
 // only dateLabel, …) are normalized here so they keep working unchanged.
+//
+// Localization: build(raw, { locale, t, translations }) overlays the content
+// translations (data/i18n/<locale>.json) onto the display fields. The English
+// files stay the source of truth: ids, links, name matching and ordering never
+// depend on a translation, and any missing translated text falls back to English.
 (function (root, factory) {
   if (typeof module === "object" && module.exports) module.exports = factory();
   else root.ChronicleModel = factory();
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // ── Vocabularies ──────────────────────────────────────────────────────────
+  // ── Vocabularies (English defaults; localized labels come from opts.t) ────
   // ︎ forces text (not emoji) presentation so glyphs match the parchment UI.
   const EVENT_TYPES = {
     encounter:    { label: "Encounter",       glyph: "☉" },
@@ -53,19 +58,30 @@
 
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+  // Character-filter sentinels (never valid person ids: ids are lower-case words).
+  //   NO_CHARACTER — "events without any party member" (opt-in when a selection is active)
+  //   NO_ONE       — every party member switched off: nothing character-bound is shown
+  const NO_CHARACTER = "_none";
+  const NO_ONE = "_nobody";
+
   // ── Small helpers ─────────────────────────────────────────────────────────
   const arr  = v => Array.isArray(v) ? v : (v == null || v === "" ? [] : [v]);
   const str  = v => (v == null ? "" : String(v));
   const norm = s => str(s).toLowerCase().replace(/\s+/g, " ").trim();
+  // Search folding: case-, accent- and spacing-insensitive ("Revelación" → "revelacion").
+  const fold = s => str(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’‘`´]/g, "'")
+    .toLowerCase().replace(/\s+/g, " ").trim();
   const uniq = a => [...new Set(a)];
   const isNum = v => typeof v === "number" && isFinite(v);
   const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const nonEmpty = v => typeof v === "string" && v.trim() !== "";
 
-  function fmtDate(iso) {
+  function fmtDate(iso, months) {
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str(iso));
-    return m ? `${+m[3]} ${MONTHS[+m[2] - 1]} ${m[1]}` : str(iso);
+    const names = Array.isArray(months) && months.length === 12 ? months : MONTHS;
+    return m ? `${+m[3]} ${names[+m[2] - 1]} ${m[1]}` : str(iso);
   }
-  // "Day 26 · Emon" → 26
+  // "Day 26 · Emon" → 26   (structural: always parsed from the English label)
   function parseDay(label) {
     const m = /\bDay\s+(\d+)/i.exec(str(label));
     return m ? +m[1] : null;
@@ -86,31 +102,137 @@
     const s = str(label), i = s.indexOf("·");
     return i < 0 ? "" : s.slice(i + 1).trim();
   }
-  function rangeText(nums, prefix) {
-    const n = uniq(nums.filter(isNum)).sort((a, b) => a - b);
-    if (!n.length) return "";
-    return n.length === 1 ? `${prefix}${n[0]}` : `${prefix}${n[0]}–${n[n.length - 1]}`;
+
+  // ── Translation overlays ──────────────────────────────────────────────────
+  // A translated value is used only when it is a non-empty string; positional
+  // arrays only when their length matches the English source (else English).
+  const pickStr = (o, k, fb) => (o && nonEmpty(o[k]) ? o[k] : fb);
+  const sameLen = (t, src) => Array.isArray(t) && t.length === src.length;
+  const pickArr = (o, k, src) => (o && sameLen(o[k], src) ? src.map((x, i) => (nonEmpty(o[k][i]) ? o[k][i] : x)) : src);
+  const overlay = (content, kind, id) => (content && content[kind] && content[kind][id]) || null;
+
+  // Checks a content-translation file against the English data: unknown ids and
+  // positional arrays whose length differs (those fall back to English).
+  function checkTranslations(raw, content, locale) {
+    const out = [], tag = `i18n/${locale || content && content.locale || "?"}`;
+    if (!content || typeof content !== "object") return out;
+    const warn = msg => out.push({ level: "warn", msg: `${tag}: ${msg}` });
+    const ids = (list) => new Set(arr(list).map(x => x && x.id).filter(Boolean));
+    const evIds = ids(raw.events), qIds = ids(raw.quests), placeIds = ids(raw.locations);
+    const personIds = new Set([...ids(raw.characters), ...ids(raw.npcs)]);
+    const rawSessions = raw.sessions && typeof raw.sessions === "object" ? raw.sessions : {};
+    const lenCheck = (where, t, src) => { if (t != null && !sameLen(t, arr(src))) warn(`${where}: has ${arr(t).length} entries, the English source has ${arr(src).length} — English is shown`); };
+    Object.keys(content.events || {}).forEach(id => {
+      if (!evIds.has(id)) return warn(`unknown event "${id}"`);
+      const src = arr(raw.events).find(e => e.id === id);
+      lenCheck(`event "${id}" consequences`, content.events[id].consequences, src.consequences);
+    });
+    Object.keys(content.quests || {}).forEach(id => {
+      if (!qIds.has(id)) return warn(`unknown quest "${id}"`);
+      const src = arr(raw.quests).find(q => q.id === id);
+      lenCheck(`quest "${id}" objectives`, content.quests[id].objectives, src.objectives);
+    });
+    Object.keys(content.people || {}).forEach(id => {
+      if (!personIds.has(id)) return warn(`unknown person "${id}"`);
+      const src = [...arr(raw.characters), ...arr(raw.npcs)].find(p => p.id === id);
+      lenCheck(`person "${id}" aliases`, content.people[id].aliases, src.aliases);
+      lenCheck(`person "${id}" relations`, content.people[id].relations, src.relations);
+    });
+    Object.keys(content.places || {}).forEach(id => {
+      if (!placeIds.has(id)) return warn(`unknown place "${id}"`);
+      const src = arr(raw.locations).find(p => p.id === id);
+      lenCheck(`place "${id}" aliases`, content.places[id].aliases, src.aliases);
+    });
+    Object.keys(content.sessions || {}).forEach(no => {
+      const src = rawSessions[no];
+      if (!src) return warn(`unknown session "${no}"`);
+      const ts = content.sessions[no];
+      lenCheck(`session ${no} effects`, ts.effects, src.effects);
+      ["activePlots", "completedPlots"].forEach(k => {
+        lenCheck(`session ${no} ${k}`, ts[k], src[k]);
+        if (!sameLen(ts[k], arr(src[k]))) return;
+        arr(src[k]).forEach((p, i) => {
+          lenCheck(`session ${no} ${k}[${i}] npcs`, ts[k][i] && ts[k][i].npcs, p.npcs);
+          lenCheck(`session ${no} ${k}[${i}] notes`, ts[k][i] && ts[k][i].notes, p.notes);
+        });
+      });
+    });
+    return out;
+  }
+
+  // ── Routes: per-character waypoints → clean polyline segments ─────────────
+  // routes.json: { "<pcId>": [ { xp, yp, leg?, break?, session?, locationId? }, … ] }
+  //   break: true  → do not connect this waypoint to the previous one (journey not recorded)
+  //   leg: "<id>"  → shared journey id; consecutive waypoints carrying the same leg id on
+  //                  several characters' routes are one journey travelled together.
+  // Order is kept exactly (revisits A → B → A stay); only accidental *consecutive*
+  // duplicates are dropped. An invalid waypoint breaks the route instead of being bridged.
+  function normalizeRoutes(rawRoutes, personById, placeById, warn) {
+    const out = new Map();
+    Object.keys(rawRoutes || {}).forEach(id => {
+      if (!personById.has(id)) { warn(`routes.json: unknown character "${id}"`); return; }
+      const pts = rawRoutes[id];
+      if (!Array.isArray(pts)) { warn(`routes.json["${id}"] must be an array`); return; }
+      const segments = []; let cur = null, prev = null;
+      pts.forEach((p, i) => {
+        const ok = p && isNum(p.xp) && isNum(p.yp) && p.xp >= 0 && p.xp <= 100 && p.yp >= 0 && p.yp <= 100;
+        if (!ok) { warn(`routes.json["${id}"][${i}]: invalid waypoint skipped (the route is broken there, not bridged)`); cur = null; prev = null; return; }
+        if (p.locationId && placeById && !placeById.has(p.locationId)) warn(`routes.json["${id}"][${i}]: unknown locationId "${p.locationId}"`);
+        const pt = { xp: p.xp, yp: p.yp, leg: p.leg ? String(p.leg) : null, session: isNum(p.session) ? p.session : null,
+          locationId: p.locationId || null, index: i };
+        if (p.break === true || !cur) { cur = [pt]; segments.push(cur); prev = pt; return; }
+        if (prev.xp === pt.xp && prev.yp === pt.yp && prev.leg === pt.leg) return;   // accidental duplicate
+        cur.push(pt); prev = pt;
+      });
+      out.set(id, { characterId: id, segments, legIds: uniq(segments.flat().map(p => p.leg).filter(Boolean)),
+        pointCount: segments.reduce((n, s) => n + s.length, 0) });
+    });
+    return out;
   }
 
   // ── build() — raw files → linked campaign model ───────────────────────────
-  function build(raw) {
-    raw = raw || {};
+  function build(raw, opts) {
+    raw = raw || {}; opts = opts || {};
     const issues = [];
     const warn  = (msg) => issues.push({ level: "warn", msg });
     const error = (msg) => issues.push({ level: "error", msg });
+    const locale = opts.locale || "en";
+    const translations = opts.translations || {};
+    const content = translations[locale] || null;                 // overlay for display
+    const overlays = Object.values(translations).filter(Boolean);  // every loaded language (search)
+    const t = typeof opts.t === "function" ? opts.t : null;
+    const searchTs = arr(opts.searchTs).filter(f => typeof f === "function");
+    const L = (key, fb, params) => { const v = t ? t(key, params) : ""; return nonEmpty(v) ? v : fb; };
+    const months = t ? t("date.monthsShort") : null;
+    const dateLabel = iso => fmtDate(iso, months);
+    const dayRange = nums => {
+      const n = uniq(nums.filter(isNum)).sort((a, b) => a - b);
+      if (!n.length) return "";
+      return n.length === 1 ? L("days.one", `Day ${n[0]}`, { n: n[0] }) : L("days.range", `Day ${n[0]}–${n[n.length - 1]}`, { a: n[0], b: n[n.length - 1] });
+    };
+    // All language variants of a text field — the English original plus every overlay.
+    const variants = (kind, id, field, base) => [base, ...overlays.map(o => { const x = overlay(o, kind, id); return x && x[field]; })]
+      .flat().filter(nonEmpty);
+    const vocab = (key, en) => uniq([en, ...searchTs.map(f => f(key))].filter(nonEmpty));
+    if (content) checkTranslations(raw, content, locale).forEach(i => issues.push(i));
 
     // People: PCs (characters.json) + NPCs/deities/factions (npcs.json)
     const people = [], personById = new Map();
     const addPerson = (p, kind) => {
       if (!p || !p.id) { error(`${kind === "pc" ? "characters" : "npcs"}.json: entry without id`); return; }
       if (personById.has(p.id)) { error(`Duplicate person id "${p.id}"`); return; }
+      const tr = overlay(content, "people", p.id);
+      const nameEn = str(p.name) || p.id, aliasesEn = arr(p.aliases);
+      const category = kind === "pc" ? "party" : (PERSON_CATEGORIES[p.category] ? p.category : "person");
       const person = {
-        ...p, kind,
-        category: kind === "pc" ? "party" : (PERSON_CATEGORIES[p.category] ? p.category : "person"),
-        name: str(p.name) || p.id, aliases: arr(p.aliases),
-        factionIds: arr(p.factionIds), ownRelations: arr(p.relations),
+        ...p, kind, category,
+        name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn,
+        role: pickStr(tr, "role", str(p.role)), race: pickStr(tr, "race", str(p.race)),
+        factionIds: arr(p.factionIds), ownRelations: arr(p.relations), ownRelationsTr: tr && sameLen(tr.relations, arr(p.relations)) ? tr.relations : null,
         relations: [], memberIds: [], eventIds: [], questIds: [], placeIds: [], sessionNos: [], notes: [],
       };
+      person.searchText = fold([...variants("people", p.id, "name", nameEn), ...variants("people", p.id, "aliases", aliasesEn),
+        ...variants("people", p.id, "race", str(p.race)), ...variants("people", p.id, "role", str(p.role))].join(" • "));
       people.push(person); personById.set(p.id, person);
     };
     arr(raw.characters).forEach(c => addPerson(c, "pc"));
@@ -122,8 +244,13 @@
       if (!l || !l.id) { error("locations.json: entry without id"); return; }
       if (placeById.has(l.id)) { error(`Duplicate place id "${l.id}"`); return; }
       if (personById.has(l.id)) error(`Id "${l.id}" is used by both a person and a place`);
-      const place = { ...l, name: str(l.name) || l.id, aliases: arr(l.aliases), kindLabel: PLACE_KINDS[l.kind] || cap(str(l.kind)) || "Place",
+      const tr = overlay(content, "places", l.id);
+      const nameEn = str(l.name) || l.id, aliasesEn = arr(l.aliases);
+      const kindLabel = L(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || cap(str(l.kind)) || "Place");
+      const place = { ...l, name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn, kindLabel,
         childIds: [], eventIds: [], allEventIds: [], notes: [], questIds: [], personIds: [], sessionNos: [] };
+      place.searchText = fold([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn),
+        ...vocab(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || "")].join(" • "));
       places.push(place); placeById.set(l.id, place);
     });
     places.forEach(p => {
@@ -135,7 +262,7 @@
     places.forEach(p => { p.ancestorIds = ancestorsOf(p.id); p.depth = p.ancestorIds.length; });
 
     // Exact-name index used only to attach session-log NPC/location notes.
-    // Matching is exact (case/space-insensitive) against names + declared aliases.
+    // Matching is exact (case/space-insensitive) against the ENGLISH names + declared aliases.
     const nameIndex = new Map();
     const indexName = (name, ref) => {
       const k = norm(name); if (!k) return;
@@ -143,22 +270,26 @@
       if (prev && (prev.type !== ref.type || prev.id !== ref.id)) warn(`Name "${name}" is declared by both ${prev.type} "${prev.id}" and ${ref.type} "${ref.id}"`);
       else nameIndex.set(k, ref);
     };
-    people.forEach(p => [p.name, ...p.aliases].forEach(n => indexName(n, { type: "person", id: p.id })));
-    places.forEach(p => [p.name, ...p.aliases].forEach(n => indexName(n, { type: "place", id: p.id })));
+    people.forEach(p => [p.nameEn, ...p.aliasesEn].forEach(n => indexName(n, { type: "person", id: p.id })));
+    places.forEach(p => [p.nameEn, ...p.aliasesEn].forEach(n => indexName(n, { type: "place", id: p.id })));
 
     // Quests
     const quests = [], questById = new Map();
     arr(raw.quests).forEach((q, i) => {
       if (!q || !q.id) { error(`quests.json[${i}]: entry without id`); return; }
       if (questById.has(q.id)) { error(`Duplicate quest id "${q.id}"`); return; }
+      const tr = overlay(content, "quests", q.id);
       const status = str(q.status) || "active";
       const st = QUEST_STATUS[status] || { label: cap(status), tone: "other", order: 5 };
-      const quest = { ...q, status, statusLabel: st.label, statusTone: st.tone, statusOrder: st.order,
-        title: str(q.title) || q.id, summary: str(q.summary),
+      const giverEn = q.giver && q.giver !== "—" ? str(q.giver) : "";
+      const quest = { ...q, status, statusLabel: L(`questStatus.${status}`, st.label), statusTone: st.tone, statusOrder: st.order,
+        title: pickStr(tr, "title", str(q.title) || q.id), titleEn: str(q.title) || q.id, summary: pickStr(tr, "summary", str(q.summary)),
         sessionNos: arr(q.sessions).map(Number).filter(isNum), characterIds: arr(q.characterIds),
-        objectives: arr(q.objectives), giverId: q.giverId || null,
-        giver: q.giver && q.giver !== "—" ? str(q.giver) : "",
+        objectives: pickArr(tr, "objectives", arr(q.objectives)), giverId: q.giverId || null,
+        giver: giverEn ? pickStr(tr, "giver", giverEn) : "",
         eventIds: [], npcIds: [], placeIds: [], progress: [] };
+      quest.searchText = fold([...variants("quests", q.id, "title", quest.titleEn), ...variants("quests", q.id, "giver", giverEn),
+        ...vocab(`questStatus.${status}`, st.label)].join(" • "));
       quests.push(quest); questById.set(q.id, quest);
     });
 
@@ -168,21 +299,39 @@
     const addSession = (no, s, stub) => {
       s = s || {};
       const ig = s.ig || {};
-      const mapPlot = (p, closed) => ({ ...p, name: str(p.name), qt: str(p.qt), closed: closed ? (str(p.closed) || "Closed") : "",
-        isClosed: !!closed, questId: p.questId || null, npcs: arr(p.npcs), notes: arr(p.notes) });
+      const tr = overlay(content, "sessions", String(no)) || {};
+      const tig = tr.ig || {};
+      const closedDefault = L("plot.closed", "Closed");
+      const mapPlots = (list, trList, closed) => {
+        const tl = sameLen(trList, list) ? trList : [];
+        return list.map((p, i) => {
+          const tp = tl[i] || {};
+          const npcs = arr(p.npcs), tn = sameLen(tp.npcs, npcs) ? tp.npcs : [];
+          return { ...p, name: pickStr(tp, "name", str(p.name)), nameEn: str(p.name), qt: pickStr(tp, "qt", str(p.qt)),
+            closed: closed ? pickStr(tp, "closed", str(p.closed) || closedDefault) : "",
+            isClosed: !!closed, questId: p.questId || null,
+            npcs: npcs.map((n, j) => { n = n || {}; const x = tn[j] || {};
+              return { ...n, nameEn: str(n.name), name: pickStr(x, "name", str(n.name)), race: pickStr(x, "race", str(n.race)),
+                role: pickStr(x, "role", str(n.role)), region: pickStr(x, "region", str(n.region)) }; }),
+            notes: pickArr(tp, "notes", arr(p.notes)) };
+        });
+      };
+      const titleEn = str(s.title) || titleFromLabel(s.dateLabel);
       const session = {
         ...s, no, isStub: !!stub,
-        title: str(s.title) || titleFromLabel(s.dateLabel),
+        title: pickStr(tr, "title", titleEn), titleEn,
         playedOn: s.playedOn || parseRecorded(s.dateLabel) || null,
         dateLabel: str(s.dateLabel),
-        startedHere: str(s.startedHere), endedHere: str(s.endedHere),
-        igStart: str(ig.start), igEnd: str(ig.end), igRest: str(ig.rest),
-        effects: arr(s.effects),
-        activePlots: arr(s.activePlots).map(p => mapPlot(p, false)),
-        completedPlots: arr(s.completedPlots).map(p => mapPlot(p, true)),
+        startedHere: pickStr(tr, "startedHere", str(s.startedHere)), endedHere: pickStr(tr, "endedHere", str(s.endedHere)),
+        igStart: pickStr(tig, "start", str(ig.start)), igEnd: pickStr(tig, "end", str(ig.end)), igRest: pickStr(tig, "rest", str(ig.rest)),
+        effects: pickArr(tr, "effects", arr(s.effects)),
+        activePlots: mapPlots(arr(s.activePlots), tr.activePlots, false),
+        completedPlots: mapPlots(arr(s.completedPlots), tr.completedPlots, true),
         eventIds: [], characterIds: [], questIds: [], npcIds: [], placeIds: [], days: [],
       };
-      session.playedLabel = session.playedOn ? fmtDate(session.playedOn) : "";
+      session.playedLabel = session.playedOn ? dateLabel(session.playedOn) : "";
+      session.searchText = fold([`session ${no}`, ...searchTs.map(f => f("common.session", { n: no })),
+        ...variants("sessions", String(no), "title", titleEn)].join(" • "));
       sessions.push(session); sessionByNo.set(no, session);
       return session;
     };
@@ -197,20 +346,23 @@
     arr(raw.events).forEach((e, idx) => {
       if (!e || !e.id) { error(`events.json[${idx}]: entry without id`); return; }
       if (eventById.has(e.id)) { error(`Duplicate event id "${e.id}"`); return; }
+      const tr = overlay(content, "events", e.id);
       const no = Number(e.session);
       const typeKey = EVENT_TYPES[e.type] ? e.type : "other";
       if (e.type && !EVENT_TYPES[e.type]) warn(`Event "${e.id}": unknown type "${e.type}" (shown as "Event")`);
-      const ig = splitIgLabel(e.igLabel);
+      const igLabel = pickStr(tr, "igLabel", str(e.igLabel));
+      const ig = splitIgLabel(igLabel);
       const hasCoords = isNum(e.xp) && isNum(e.yp);
       const ev = {
         ...e, raw: e, _idx: idx,
         session: isNum(no) ? no : null,
-        title: str(e.title) || e.id, summary: str(e.summary), description: str(e.description),
-        consequences: arr(e.consequences),
-        type: typeKey, typeLabel: EVENT_TYPES[typeKey].label, typeGlyph: EVENT_TYPES[typeKey].glyph,
+        title: pickStr(tr, "title", str(e.title) || e.id), titleEn: str(e.title) || e.id,
+        summary: pickStr(tr, "summary", str(e.summary)), description: pickStr(tr, "description", str(e.description)),
+        consequences: pickArr(tr, "consequences", arr(e.consequences)),
+        type: typeKey, typeLabel: L(`eventType.${typeKey}`, EVENT_TYPES[typeKey].label), typeGlyph: EVENT_TYPES[typeKey].glyph,
         characterIds: arr(e.characterIds), npcIds: arr(e.npcIds), questIds: arr(e.questIds),
         locationId: e.locationId || null, relatedIds: arr(e.relatedEventIds),
-        igLabel: str(e.igLabel), igDate: str(e.igDate), whenLabel: ig.when, placeLabel: ig.where,
+        igLabel, igDate: str(e.igDate), whenLabel: ig.when, placeLabel: ig.where,
         campaignDay: isNum(e.campaignDay) ? e.campaignDay : parseDay(e.igLabel),
         dayApprox: false, hasCoords, xp: hasCoords ? e.xp : null, yp: hasCoords ? e.yp : null,
         order: isNum(e.order) ? e.order : null,
@@ -230,7 +382,7 @@
       evs.slice().reverse().forEach(e => { if (e.campaignDay != null && !e.dayApprox) next = e.campaignDay; else if (e.campaignDay == null && next != null) { e.campaignDay = next; e.dayApprox = true; } });
     });
 
-    // Chronological order: in-world day → session → explicit order → file order.
+    // Chronological order: in-world day → session → explicit order → file order (never the language).
     const dayKey = e => e.campaignDay != null ? e.campaignDay : Infinity;
     events.sort((a, b) => (dayKey(a) - dayKey(b)) || ((a.session ?? 1e9) - (b.session ?? 1e9))
       || ((a.order ?? a._idx) - (b.order ?? b._idx)) || (a._idx - b._idx));
@@ -244,14 +396,14 @@
       e.sessionTitle = s ? s.title : "";
       if (s) { s.eventIds.push(e.id); if (e.campaignDay != null) s.days.push(e.campaignDay); }
 
-      e.characterIds = e.characterIds.filter(id => {
+      e.characterIds = uniq(e.characterIds).filter(id => {
         const p = personById.get(id);
         if (!p) { error(`Event "${e.id}": unknown character "${id}"`); return false; }
         if (p.kind !== "pc") warn(`Event "${e.id}": "${id}" is an NPC — list it in npcIds instead of characterIds`);
         return true;
       });
-      e.npcIds = e.npcIds.filter(id => { if (!personById.has(id)) { error(`Event "${e.id}": unknown NPC "${id}"`); return false; } return true; });
-      e.questIds = e.questIds.filter(id => { if (!questById.has(id)) { error(`Event "${e.id}": unknown quest "${id}"`); return false; } return true; });
+      e.npcIds = uniq(e.npcIds).filter(id => { if (!personById.has(id)) { error(`Event "${e.id}": unknown NPC "${id}"`); return false; } return true; });
+      e.questIds = uniq(e.questIds).filter(id => { if (!questById.has(id)) { error(`Event "${e.id}": unknown quest "${id}"`); return false; } return true; });
       if (e.locationId && !placeById.has(e.locationId)) { error(`Event "${e.id}": unknown locationId "${e.locationId}"`); e.locationId = null; }
       e.relatedIds = e.relatedIds.filter(id => { if (!eventById.has(id)) { error(`Event "${e.id}": unknown related event "${id}"`); return false; } return id !== e.id; });
 
@@ -294,20 +446,20 @@
       s.npcIds = uniq(evs.flatMap(e => e.npcIds));
       s.placeIds = uniq(evs.map(e => e.locationId).filter(Boolean));
       s.days = uniq(s.days).sort((a, b) => a - b);
-      s.dayText = rangeText(s.days, "Day ");
+      s.dayText = dayRange(s.days);
       const qids = [...evs.flatMap(e => e.questIds), ...quests.filter(q => q.sessionNos.includes(s.no)).map(q => q.id)];
       [...s.activePlots, ...s.completedPlots].forEach(p => {
         if (p.questId) {
           const q = questById.get(p.questId);
-          if (!q) { error(`Session ${s.no}: plot "${p.name}" links unknown quest "${p.questId}"`); p.questId = null; }
-          else { qids.push(q.id); if (q.sessionNos.length && !q.sessionNos.includes(s.no)) warn(`Session ${s.no}: plot "${p.name}" links quest "${q.id}", whose sessions[] does not list ${s.no}`); }
+          if (!q) { error(`Session ${s.no}: plot "${p.nameEn}" links unknown quest "${p.questId}"`); p.questId = null; }
+          else { qids.push(q.id); if (q.sessionNos.length && !q.sessionNos.includes(s.no)) warn(`Session ${s.no}: plot "${p.nameEn}" links quest "${q.id}", whose sessions[] does not list ${s.no}`); }
         }
-        // Session-log notes about NPCs/places — attached only on exact name match.
+        // Session-log notes about NPCs/places — attached only on exact (English) name match.
         p.npcs.forEach(n => {
-          const ref = nameIndex.get(norm(n && n.name));
+          const ref = nameIndex.get(norm(n.nameEn));
           const text = [n.role, n.region].filter(Boolean).join(" · ");
           if (!ref) return;
-          const note = { session: s.no, plot: p.name, questId: p.questId, race: str(n.race), text, recordedAs: str(n.name) };
+          const note = { session: s.no, plot: p.name, questId: p.questId, race: str(n.race), text, recordedAs: n.nameEn };
           if (ref.type === "person") { const pp = personById.get(ref.id); pp.notes.push(note); pp.sessionNos.push(s.no); if (pp.kind === "npc") s.npcIds.push(pp.id); }
           else { const pl = placeById.get(ref.id); pl.notes.push(note); }
         });
@@ -337,7 +489,7 @@
       q.lastSession = nos.length ? nos[nos.length - 1] : null;
       q.firstSession = nos.length ? nos[0] : null;
       const days = q.eventIds.map(id => eventById.get(id).campaignDay).filter(isNum);
-      q.dayText = rangeText(days, "Day ");
+      q.dayText = dayRange(days);
     });
 
     // ── People: relations (both directions), factions, rollups ──────────────
@@ -347,11 +499,13 @@
         if (!f) { error(`Person "${p.id}": unknown faction "${fid}"`); return false; }
         f.memberIds.push(p.id); return true;
       });
-      p.ownRelations.forEach(r => {
+      p.ownRelations.forEach((r, i) => {
         const o = r && personById.get(r.id);
         if (!o) { error(`Person "${p.id}": relation to unknown person "${r && r.id}"`); return; }
-        p.relations.push({ id: o.id, label: str(r.label) });
-        o.relations.push({ id: p.id, label: str(r.reverseLabel || r.label) });
+        const tr = p.ownRelationsTr && p.ownRelationsTr[i];
+        const label = pickStr(tr, "label", str(r.label));
+        p.relations.push({ id: o.id, label });
+        o.relations.push({ id: p.id, label: pickStr(tr, "reverseLabel", r.reverseLabel ? str(r.reverseLabel) : label) });
       });
     });
     people.forEach(p => {
@@ -362,7 +516,7 @@
       p.memberIds = uniq(p.memberIds);
       p.notes.sort((a, b) => a.session - b.session);
       p.race = p.race || (p.notes.find(n => n.race) || {}).race || "";
-      p.categoryLabel = PERSON_CATEGORIES[p.category].label;
+      p.categoryLabel = L(`personCategory.${p.category}`, PERSON_CATEGORIES[p.category].label);
     });
     places.forEach(p => {
       p.allEventIds = uniq(p.allEventIds).sort((a, b) => eventById.get(a).chronoIndex - eventById.get(b).chronoIndex);
@@ -377,29 +531,38 @@
       p.focusEventId = fe ? fe.id : null;
     });
 
-    // Search text per event (lower-case, built once).
+    // Search text per event (folded, built once) — English original + every loaded translation,
+    // so "revelación", "revelacion" and "revelation" all find the same entry in either language.
     events.forEach(e => {
-      const names = [...e.characterIds, ...e.npcIds].flatMap(id => { const p = personById.get(id); return [p.name, ...p.aliases]; });
-      const qs = e.questIds.map(id => questById.get(id).title);
-      const pl = e.locationId ? [placeById.get(e.locationId).name, ...placeById.get(e.locationId).ancestorIds.map(id => placeById.get(id).name)] : [];
-      e.searchText = norm([e.title, e.summary, e.description, ...e.consequences, e.igLabel, e.igDate, e.typeLabel, `session ${e.session}`, e.sessionTitle, ...names, ...qs, ...pl].join(" • "));
+      const names = [...e.characterIds, ...e.npcIds].map(id => personById.get(id).searchText);
+      const qs = e.questIds.map(id => questById.get(id).searchText);
+      const pl = e.locationId ? [e.locationId, ...placeById.get(e.locationId).ancestorIds].map(id => placeById.get(id).searchText) : [];
+      const sess = sessionByNo.get(e.session);
+      e.searchText = fold([
+        ...variants("events", e.id, "title", e.titleEn), ...variants("events", e.id, "summary", str(e.raw.summary)),
+        ...variants("events", e.id, "description", str(e.raw.description)), ...variants("events", e.id, "consequences", arr(e.raw.consequences)),
+        ...variants("events", e.id, "igLabel", str(e.raw.igLabel)), e.igDate,
+        ...vocab(`eventType.${e.type}`, EVENT_TYPES[e.type].label), sess ? sess.searchText : `session ${e.session}`,
+        ...names, ...qs, ...pl].join(" • "));
     });
 
-    // Routes: per-character waypoints (kept as-is for the map).
+    // Routes: per-character waypoints, cleaned into polyline segments (see normalizeRoutes).
     const routes = raw.routes && typeof raw.routes === "object" ? raw.routes : {};
-    Object.keys(routes).forEach(k => { if (!personById.has(k)) warn(`routes.json: unknown character "${k}"`); });
+    const routeById = normalizeRoutes(routes, personById, placeById, warn);
 
     const days = uniq(events.map(e => e.campaignDay).filter(isNum)).sort((a, b) => a - b);
     const dayLabels = {};
     events.forEach(e => { if (e.campaignDay != null && e.igDate && !e.dayApprox && !dayLabels[e.campaignDay]) dayLabels[e.campaignDay] = e.igDate; });
 
     return {
-      events, eventById, sessions, sessionByNo, quests, questById, people, personById, places, placeById,
-      routes, days, dayLabels, issues,
-      // Exact (case/space-insensitive) name or alias → { type: "person"|"place", id }.
+      locale, events, eventById, sessions, sessionByNo, quests, questById, people, personById, places, placeById,
+      routes, routeById, days, dayLabels, issues,
+      // Exact (case/space-insensitive) English name or alias → { type: "person"|"place", id }.
       resolveName: (name) => nameIndex.get(norm(name)) || null,
       pcs: people.filter(p => p.kind === "pc"),
       npcs: people.filter(p => p.kind === "npc"),
+      hasUnassigned: events.some(e => !e.characterIds.length),
+      fmtDate: dateLabel,
     };
   }
 
@@ -407,10 +570,20 @@
   const EMPTY_FILTERS = Object.freeze({ text: "", pcs: [], npc: "", quest: "", session: "", type: "", place: "",
     dayFrom: "", dayTo: "", playedFrom: "", playedTo: "" });
 
+  // Party-member filter. `pcs` empty = no character filter (every event, including events
+  // without party members). Otherwise an event matches when ANY of its party members is
+  // selected (OR — order in characterIds is irrelevant); events without party members
+  // match only when NO_CHARACTER is selected.
+  function matchesCharacters(ev, pcs) {
+    if (!pcs || !pcs.length) return true;
+    if (!ev.characterIds.length) return pcs.includes(NO_CHARACTER);
+    return ev.characterIds.some(id => pcs.includes(id));
+  }
+
   // One predicate per filter — add new ones here without touching the UI (OCP).
   const FILTER_PREDICATES = [
-    (ev, f) => !f.text || norm(f.text).split(" ").every(tok => ev.searchText.includes(tok)),
-    (ev, f) => !f.pcs || !f.pcs.length || ev.characterIds.some(id => f.pcs.includes(id)),
+    (ev, f) => { const toks = fold(f.text).split(" ").filter(Boolean); return !toks.length || toks.every(tok => ev.searchText.includes(tok)); },
+    (ev, f) => matchesCharacters(ev, f.pcs),
     (ev, f) => !f.npc || ev.npcIds.includes(f.npc),
     (ev, f) => !f.quest || ev.questIds.includes(f.quest),
     (ev, f) => !f.session || String(ev.session) === String(f.session),
@@ -432,21 +605,39 @@
     return Object.keys(EMPTY_FILTERS).filter(k => k !== "text" && (Array.isArray(f[k]) ? f[k].length : f[k] !== "" && f[k] != null)).length;
   }
 
+  // Party members a character filter shows (pcs empty → everyone), in party order.
+  function selectedCharacterIds(model, pcs) {
+    if (!pcs || !pcs.length) return model.pcs.map(p => p.id);
+    return model.pcs.map(p => p.id).filter(id => pcs.includes(id));
+  }
+
+  // Toggling one row of a "who is visible" list (the map's party rows) on the pcs filter.
+  // The visible set is pcs (or everyone when pcs is empty); a full set collapses back to [],
+  // an empty one becomes [NO_ONE] so "everything switched off" stays distinct from "no filter".
+  function toggleVisibleCharacter(model, pcs, id) {
+    const all = [...model.pcs.map(p => p.id), ...(model.hasUnassigned ? [NO_CHARACTER] : [])];
+    const cur = pcs && pcs.length ? pcs.filter(x => x !== NO_ONE) : all.slice();
+    const next = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id];
+    if (all.every(x => next.includes(x))) return [];
+    return next.length ? all.filter(x => next.includes(x)) : [NO_ONE];
+  }
+
   // ── Cross-entity quick search (people, quests, places, sessions) ──────────
   function search(model, text, limit) {
-    const q = norm(text); limit = limit || 6;
+    const q = fold(text); limit = limit || 6;
     if (!q) return { people: [], quests: [], places: [], sessions: [] };
-    const toks = q.split(" ");
-    const hit = (hay) => { const h = norm(hay); return toks.every(t => h.includes(t)); };
-    const sessNo = /^(?:s|session\s*)?(\d+)$/.exec(q);
+    const toks = q.split(" ").filter(Boolean);
+    const hit = (hay) => toks.every(t => hay.includes(t));
+    const sessNo = /^(?:s|session\s*|sesion\s*)?(\d+)$/.exec(q);
     return {
-      people: model.people.filter(p => hit([p.name, ...p.aliases, p.race, p.role].join(" "))).slice(0, limit),
-      quests: model.quests.filter(x => hit([x.title, x.giver].join(" "))).slice(0, limit),
-      places: model.places.filter(p => hit([p.name, ...p.aliases].join(" "))).slice(0, limit),
-      sessions: model.sessions.filter(s => (sessNo && s.no === +sessNo[1]) || hit(`session ${s.no} ${s.title}`)).slice(0, limit),
+      people: model.people.filter(p => hit(p.searchText)).slice(0, limit),
+      quests: model.quests.filter(x => hit(x.searchText)).slice(0, limit),
+      places: model.places.filter(p => hit(p.searchText)).slice(0, limit),
+      sessions: model.sessions.filter(s => (sessNo && s.no === +sessNo[1]) || (!sessNo && hit(s.searchText))).slice(0, limit),
     };
   }
 
-  return { build, filterEvents, search, activeFilterCount, FILTER_PREDICATES, EMPTY_FILTERS,
+  return { build, filterEvents, search, activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
+    checkTranslations, normalizeRoutes, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
     EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, fmtDate, parseDay, parseRecorded, splitIgLabel };
 });

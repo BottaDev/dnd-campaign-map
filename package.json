@@ -1,0 +1,14 @@
+{
+  "name": "dnd-campaign-map",
+  "private": true,
+  "description": "Campaign Chronicle — static site (no build step). These scripts are development tooling only.",
+  "scripts": {
+    "start": "npx serve -p 5500 .",
+    "validate": "node tools/validate-data.js",
+    "test": "node tools/validate-data.js && node --test tests/*.test.js",
+    "test:browser": "node tests/browser/smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.52.0"
+  }
+}

@@ -2,89 +2,137 @@
   "sorfon": [
     {
       "xp": 45.3,
-      "yp": 33.4
+      "yp": 33.4,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "kraghammer"
     },
     {
       "xp": 42.6,
-      "yp": 32.1
+      "yp": 32.1,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 37.6,
-      "yp": 30.1
+      "yp": 30.1,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 33.6,
-      "yp": 28.3
+      "yp": 28.3,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 30.5,
-      "yp": 27
+      "yp": 27,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "vasselheim"
     }
   ],
   "ayante": [
     {
       "xp": 45.6,
-      "yp": 33
+      "yp": 33,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "kraghammer"
     },
     {
       "xp": 42.8,
-      "yp": 31.7
+      "yp": 31.7,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 37.8,
-      "yp": 29.7
+      "yp": 29.7,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 33.8,
-      "yp": 27.9
+      "yp": 27.9,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 30.7,
-      "yp": 26.6
+      "yp": 26.6,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "vasselheim"
     }
   ],
   "mortis": [
     {
       "xp": 45,
-      "yp": 33.6
+      "yp": 33.6,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "kraghammer"
     },
     {
       "xp": 42.3,
-      "yp": 32.3
+      "yp": 32.3,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 37.3,
-      "yp": 30.3
+      "yp": 30.3,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 33.3,
-      "yp": 28.5
+      "yp": 28.5,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 30.2,
-      "yp": 27.2
+      "yp": 27.2,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "vasselheim"
     }
   ],
   "ereldra": [
     {
       "xp": 44.8,
-      "yp": 33.1
+      "yp": 33.1,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "kraghammer"
     },
     {
       "xp": 42.1,
-      "yp": 31.9
+      "yp": 31.9,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 37.2,
-      "yp": 29.9
+      "yp": 29.9,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 33.1,
-      "yp": 28.1
+      "yp": 28.1,
+      "leg": "s8-airship",
+      "session": 8
     },
     {
       "xp": 30,
-      "yp": 26.8
+      "yp": 26.8,
+      "leg": "s8-airship",
+      "session": 8,
+      "locationId": "vasselheim"
     }
   ]
 }

@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-AR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#140f08">
-<title>Exandria Chronicle</title>
+<title>Crónica de Exandria</title>
 <script src="./js/chronicle-model.js"></script>
+<script src="./js/chronicle-map.js"></script>
+<script src="./js/i18n.js"></script>
+<script src="./locales/en.js"></script>
+<script src="./locales/es-AR.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -460,7 +464,6 @@
   .cc-partyrow.is-off .cc-seal{filter:grayscale(.7);}
   .cc-partyrow-n{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.04em;color:var(--title);line-height:1.1;}
   .cc-partyrow-r{font-size:13px;font-style:italic;color:var(--muted);line-height:1.15;}
-  .cc-partydot{flex:none;width:10px;height:10px;border-radius:50%;margin-left:auto;}
   .cc-check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:16px;color:var(--body2);cursor:pointer;}
   .cc-check input{width:20px;height:20px;accent-color:#c4a040;}
   .cc-popup-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
@@ -481,40 +484,73 @@
   .cc-tut-d{font-size:15.5px;line-height:1.42;color:var(--body);}
   .cc-banner{margin:16px auto;max-width:720px;padding:14px 16px;border-radius:12px;border:1px solid var(--failed);color:var(--title);background:rgba(160,40,60,.12);font-size:16px;}
   .cc-loading{padding:80px 20px;text-align:center;font-style:italic;font-size:18px;color:var(--muted);}
+
+  /* ── Language switch (ES / EN): a small seal-like segmented control, visible on phones too ── */
+  .cc-lang{display:inline-flex;flex:none;border:1px solid var(--chip-border);border-radius:10px;overflow:hidden;background:var(--chip-soft);}
+  .cc-lang button{min-width:40px;min-height:40px;padding:0 9px;border:0;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;letter-spacing:.12em;cursor:pointer;}
+  .cc-lang button+button{border-left:1px solid var(--chip-border);}
+  .cc-lang button.is-on{background:var(--btn-bg);color:var(--btn-color);}
+  .cc-lang button:not(.is-on):hover{color:var(--title);}
+  @media (max-width:719px){ .cc-top{justify-content:space-between;} .cc-lang{margin-left:auto;} .cc-lang button{min-height:38px;min-width:42px;font-size:11px;} }
+  @media (min-width:720px){ .cc-lang{align-self:center;} }
+
+  /* ── Map: route legend + grouped-marker list ── */
+  .cc-swatch{flex:none;display:inline-flex;align-items:center;margin-left:auto;}
+  .cc-swatch svg{display:block;}
+  .cc-legend-row{display:flex;align-items:center;gap:10px;min-height:36px;font-size:14.5px;line-height:1.3;color:var(--body2);}
+  .cc-legend-row .cc-swatch{margin-left:0;}
+  .cc-mp-note{margin:4px 0 6px;font-size:14px!important;line-height:1.4;}
+  .cc-plist{display:grid;max-height:300px;overflow-y:auto;overscroll-behavior:contain;margin:0 -6px;-webkit-overflow-scrolling:touch;}
+  .cc-plist-i{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:48px;padding:7px 6px;border:0;border-top:1px solid var(--line-faint);background:none;text-align:left;cursor:pointer;border-radius:0;}
+  .cc-plist-i:first-child{border-top:0;}
+  .cc-plist-i:hover{background:var(--card-bg);}
+  .cc-plist-i .cc-seal{margin-top:2px;}
+  .cc-plist-b{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .cc-plist-m{font-size:12.5px;font-style:italic;color:var(--muted);line-height:1.3;}
+  .cc-plist-t{font-family:'Cinzel',serif;font-size:13.5px;font-weight:600;color:var(--title);line-height:1.25;}
+  .cc-popup-nav{display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid var(--line-faint);}
+  .cc-popup-nav .cc-popup-n{margin:0;}
+  .cc-popup-nav .cc-linkbtn{min-height:36px;padding:4px;font-size:11px;}
+  .cc-popup-step{width:36px;height:36px;border:1px solid var(--chip-border);border-radius:9px;background:var(--chip-soft);color:var(--accent);font-size:18px;line-height:1;cursor:pointer;padding:0;}
+  @media (max-width:719px){ .cc-mapwrap.has-popup .cc-zoom{display:none;} }   /* the popup needs the whole phone screen */
+  .cc-marker:focus-visible{outline:2px solid #f5ead0;outline-offset:2px;}
 </style>
 </helmet>
 <div class="{{ appCls }}">
 
   <!-- ═══ TOP BAR ═══ -->
   <header class="cc-top">
-    <a class="cc-brand" href="#/chronicle" aria-label="Exandria Chronicle — home"><span class="cc-brand-k">Exandria</span><span class="cc-brand-t">Chronicle</span></a>
-    <nav class="cc-tabs" aria-label="Sections">
+    <a class="cc-brand" href="#/chronicle" aria-label="{{ t.app.homeAria }}"><span class="cc-brand-k">{{ t.app.brandKicker }}</span><span class="cc-brand-t">{{ t.app.brandTitle }}</span></a>
+    <nav class="cc-tabs" aria-label="{{ t.app.sectionsAria }}">
       <sc-for list="{{ nav }}" as="n">
         <a class="{{ n.cls }}" href="{{ n.href }}" aria-current="{{ n.current }}" title="{{ n.label }}">{{ n.icon }}<span class="cc-tab-label">{{ n.label }}</span></a>
       </sc-for>
     </nav>
+    <div class="cc-lang" role="group" aria-label="{{ t.lang.label }}">
+      <sc-for list="{{ langs }}" as="lg"><button class="{{ lg.cls }}" onClick="{{ lg.onClick }}" aria-pressed="{{ lg.on }}" lang="{{ lg.lang }}" title="{{ lg.title }}" aria-label="{{ lg.title }}">{{ lg.short }}</button></sc-for>
+    </div>
     <div class="cc-actions">
       <button class="cc-iconbtn" onClick="{{ onThemeToggle }}" title="{{ themeTitle }}" aria-label="{{ themeTitle }}">{{ themeIcon }}</button>
-      <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="How this chronicle works" aria-label="How this chronicle works">?</button>
+      <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}">?</button>
     </div>
   </header>
 
   <div class="{{ bodyCls }}">
     <main class="{{ mainCls }}" ref="{{ mainRef }}">
 
-      <sc-if value="{{ dataError }}"><div class="cc-banner" role="alert">The chronicle could not be loaded: {{ dataError }}. If you opened the file directly, serve the folder over HTTP (e.g. <code>npx serve .</code>).</div></sc-if>
-      <sc-if value="{{ loading }}"><div class="cc-loading">Unrolling the chronicle…</div></sc-if>
+      <sc-if value="{{ dataError }}"><div class="cc-banner" role="alert">{{ t.status.loadError }} {{ dataError }}. {{ t.status.loadHint }} <code>npx serve .</code></div></sc-if>
+      <sc-if value="{{ loading }}"><div class="cc-loading">{{ t.status.loading }}</div></sc-if>
 
       <!-- ═══ CHRONICLE ═══ -->
       <sc-if value="{{ v.chronicle }}">
       <div class="cc-page">
         <div class="cc-sechead cc-chead">
-          <h1 class="cc-sec-h">Chronicle</h1>
+          <h1 class="cc-sec-h">{{ t.chronicle.title }}</h1>
           <span class="cc-flex"></span>
           <sc-if value="{{ c.latest }}">
             <a class="cc-latest" href="{{ c.latest.href }}" title="{{ c.latest.sub }}">
-              <span class="cc-latest-k">Latest</span>
-              <span class="cc-latest-t">Session {{ c.latest.no }} <i>· {{ c.latest.title }}</i></span>
+              <span class="cc-latest-k">{{ t.chronicle.latest }}</span>
+              <span class="cc-latest-t">{{ c.latest.label }} <i>· {{ c.latest.title }}</i></span>
               <span class="cc-chev">›</span>
             </a>
           </sc-if>
@@ -524,46 +560,46 @@
           <div class="cc-searchrow">
             <div class="cc-search">
               <span class="cc-search-ico">{{ icons.search }}</span>
-              <input class="cc-input" ref="{{ searchRef }}" type="search" value="{{ f.text }}" onChange="{{ onText }}" placeholder="Search events, people, places…" aria-label="Search the chronicle" enterKeyHint="search" autoComplete="off" spellCheck="false" />
-              <sc-if value="{{ f.text }}"><button class="cc-search-x" onClick="{{ onClearText }}" aria-label="Clear search">✕</button></sc-if>
+              <input class="cc-input" ref="{{ searchRef }}" type="search" value="{{ f.text }}" onChange="{{ onText }}" placeholder="{{ t.chronicle.searchPlaceholder }}" aria-label="{{ t.chronicle.searchAria }}" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+              <sc-if value="{{ f.text }}"><button class="cc-search-x" onClick="{{ onClearText }}" aria-label="{{ t.chronicle.clearSearch }}">✕</button></sc-if>
             </div>
-            <button class="{{ c.filterBtnCls }}" onClick="{{ onToggleFilters }}" aria-expanded="{{ c.filtersOpen }}" aria-controls="cc-filters" aria-label="{{ c.filterLabel }}">{{ icons.filter }}<span class="cc-hide-xs">Filters</span><sc-if value="{{ c.activeCount }}"><span class="cc-count">{{ c.activeCount }}</span></sc-if></button>
+            <button class="{{ c.filterBtnCls }}" onClick="{{ onToggleFilters }}" aria-expanded="{{ c.filtersOpen }}" aria-controls="cc-filters" aria-label="{{ c.filterLabel }}">{{ icons.filter }}<span class="cc-hide-xs">{{ t.chronicle.filters }}</span><sc-if value="{{ c.activeCount }}"><span class="cc-count">{{ c.activeCount }}</span></sc-if></button>
           </div>
 
           <sc-if value="{{ c.filtersOpen }}">
             <div class="cc-filters cc-scroll" id="cc-filters">
               <div class="cc-fsec">
-                <span class="cc-flabel">Party members</span>
+                <span class="cc-flabel">{{ t.chronicle.partyMembers }}</span>
                 <div class="cc-pcchips">
                   <sc-for list="{{ c.pcChips }}" as="p">
-                    <button class="{{ p.cls }}" onClick="{{ p.onToggle }}" aria-pressed="{{ p.on }}" aria-label="{{ p.name }}"><span class="cc-seal" style="{{ p.seal }}"></span>{{ p.name }}</button>
+                    <button class="{{ p.cls }}" onClick="{{ p.onToggle }}" aria-pressed="{{ p.on }}" aria-label="{{ p.name }}"><span class="{{ p.sealCls }}" style="{{ p.seal }}">{{ p.mono }}</span>{{ p.name }}</button>
                   </sc-for>
                 </div>
               </div>
               <div class="cc-fgrid">
-                <label class="cc-field"><span class="cc-flabel">Person, deity or faction</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.npc }}" onChange="{{ onNpc }}">{{ c.opt.npc }}</select></span></label>
-                <label class="cc-field"><span class="cc-flabel">Quest</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.quest }}" onChange="{{ onQuest }}">{{ c.opt.quest }}</select></span></label>
-                <label class="cc-field"><span class="cc-flabel">Session</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.session }}" onChange="{{ onSession }}">{{ c.opt.session }}</select></span></label>
-                <label class="cc-field"><span class="cc-flabel">Type of event</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.type }}" onChange="{{ onType }}">{{ c.opt.type }}</select></span></label>
-                <label class="cc-field"><span class="cc-flabel">Place</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.place }}" onChange="{{ onPlace }}">{{ c.opt.place }}</select></span></label>
+                <label class="cc-field"><span class="cc-flabel">{{ t.chronicle.npc }}</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.npc }}" onChange="{{ onNpc }}">{{ c.opt.npc }}</select></span></label>
+                <label class="cc-field"><span class="cc-flabel">{{ t.chronicle.quest }}</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.quest }}" onChange="{{ onQuest }}">{{ c.opt.quest }}</select></span></label>
+                <label class="cc-field"><span class="cc-flabel">{{ t.chronicle.session }}</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.session }}" onChange="{{ onSession }}">{{ c.opt.session }}</select></span></label>
+                <label class="cc-field"><span class="cc-flabel">{{ t.chronicle.type }}</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.type }}" onChange="{{ onType }}">{{ c.opt.type }}</select></span></label>
+                <label class="cc-field"><span class="cc-flabel">{{ t.chronicle.place }}</span><span class="cc-selwrap"><select class="cc-select" value="{{ f.place }}" onChange="{{ onPlace }}">{{ c.opt.place }}</select></span></label>
               </div>
               <div class="cc-fsec" style="margin-top:12px;">
-                <span class="cc-flabel">In-world period</span>
+                <span class="cc-flabel">{{ t.chronicle.period }}</span>
                 <div class="cc-fgrid2">
-                  <span class="cc-selwrap"><select class="cc-select" value="{{ f.dayFrom }}" onChange="{{ onDayFrom }}" aria-label="From campaign day">{{ c.opt.dayFrom }}</select></span>
-                  <span class="cc-selwrap"><select class="cc-select" value="{{ f.dayTo }}" onChange="{{ onDayTo }}" aria-label="To campaign day">{{ c.opt.dayTo }}</select></span>
+                  <span class="cc-selwrap"><select class="cc-select" value="{{ f.dayFrom }}" onChange="{{ onDayFrom }}" aria-label="{{ t.chronicle.fromDayAria }}">{{ c.opt.dayFrom }}</select></span>
+                  <span class="cc-selwrap"><select class="cc-select" value="{{ f.dayTo }}" onChange="{{ onDayTo }}" aria-label="{{ t.chronicle.toDayAria }}">{{ c.opt.dayTo }}</select></span>
                 </div>
               </div>
               <div class="cc-fsec">
-                <span class="cc-flabel">Played at the table between</span>
+                <span class="cc-flabel">{{ t.chronicle.playedBetween }}</span>
                 <div class="cc-fgrid2">
-                  <input class="cc-input cc-date" type="{{ dateType }}" value="{{ f.playedFrom }}" onChange="{{ onPlayedFrom }}" aria-label="Played from" />
-                  <input class="cc-input cc-date" type="{{ dateType }}" value="{{ f.playedTo }}" onChange="{{ onPlayedTo }}" aria-label="Played until" />
+                  <input class="cc-input cc-date" type="{{ dateType }}" lang="{{ htmlLang }}" value="{{ f.playedFrom }}" onChange="{{ onPlayedFrom }}" aria-label="{{ t.chronicle.playedFromAria }}" />
+                  <input class="cc-input cc-date" type="{{ dateType }}" lang="{{ htmlLang }}" value="{{ f.playedTo }}" onChange="{{ onPlayedTo }}" aria-label="{{ t.chronicle.playedToAria }}" />
                 </div>
               </div>
               <div class="cc-factions">
-                <button class="cc-btn ghost" onClick="{{ onReset }}">Clear all</button>
-                <button class="cc-btn" onClick="{{ onToggleFilters }}">Show {{ c.count }} events</button>
+                <button class="cc-btn ghost" onClick="{{ onReset }}">{{ t.chronicle.clearAll }}</button>
+                <button class="cc-btn" onClick="{{ onToggleFilters }}">{{ c.showLabel }}</button>
               </div>
             </div>
           </sc-if>
@@ -572,9 +608,9 @@
         <div class="cc-results">
           <span class="cc-results-t" aria-live="polite">{{ c.resultsText }}</span>
           <span class="cc-flex"></span>
-          <div class="cc-seg" role="group" aria-label="Group events by">
-            <button class="{{ c.byDayCls }}" onClick="{{ onGroupDay }}" aria-pressed="{{ c.byDay }}" title="Group by campaign day">Day</button>
-            <button class="{{ c.bySessCls }}" onClick="{{ onGroupSession }}" aria-pressed="{{ c.bySession }}" title="Group by session">Session</button>
+          <div class="cc-seg" role="group" aria-label="{{ t.chronicle.groupByAria }}">
+            <button class="{{ c.byDayCls }}" onClick="{{ onGroupDay }}" aria-pressed="{{ c.byDay }}" title="{{ t.chronicle.groupDayTitle }}">{{ t.chronicle.groupDay }}</button>
+            <button class="{{ c.bySessCls }}" onClick="{{ onGroupSession }}" aria-pressed="{{ c.bySession }}" title="{{ t.chronicle.groupSessionTitle }}">{{ t.chronicle.groupSession }}</button>
           </div>
           <div class="cc-seg"><button onClick="{{ onToggleSort }}" title="{{ c.sortTitle }}" aria-label="{{ c.sortTitle }}">{{ c.sortLabel }}</button></div>
         </div>
@@ -582,15 +618,15 @@
         <sc-if value="{{ c.hasActives }}">
           <div class="cc-actives">
             <sc-for list="{{ c.actives }}" as="a">
-              <button class="cc-active" onClick="{{ a.onRemove }}" aria-label="Remove filter {{ a.label }}"><span class="cc-active-l">{{ a.label }}</span><span class="cc-active-x">✕</span></button>
+              <button class="cc-active" onClick="{{ a.onRemove }}" aria-label="{{ a.aria }}"><span class="cc-active-l">{{ a.label }}</span><span class="cc-active-x">✕</span></button>
             </sc-for>
-            <button class="cc-linkbtn" onClick="{{ onReset }}">Clear all</button>
+            <button class="cc-linkbtn" onClick="{{ onReset }}">{{ t.chronicle.clearAll }}</button>
           </div>
         </sc-if>
 
         <sc-if value="{{ c.hasQuick }}">
           <div class="cc-quick">
-            <span class="cc-flabel" style="margin:0;">Also in the archive</span>
+            <span class="cc-flabel" style="margin:0;">{{ t.chronicle.alsoInArchive }}</span>
             <sc-for list="{{ c.quick }}" as="qk">
               <div class="cc-quick-row">
                 <span class="cc-quick-k">{{ qk.label }}</span>
@@ -603,7 +639,7 @@
         </sc-if>
 
         <sc-if value="{{ c.isEmpty }}">
-          <div class="cc-empty">No events match these filters. The pages here are blank. <button class="cc-linkbtn" onClick="{{ onReset }}">Clear filters</button></div>
+          <div class="cc-empty">{{ t.chronicle.empty }} <button class="cc-linkbtn" onClick="{{ onReset }}">{{ t.chronicle.clearFilters }}</button></div>
         </sc-if>
 
         <sc-for list="{{ c.groups }}" as="g">
@@ -633,11 +669,11 @@
       <sc-if value="{{ v.sessions }}">
       <div class="cc-page">
         <div class="cc-sechead">
-          <h1 class="cc-sec-h">Sessions</h1>
+          <h1 class="cc-sec-h">{{ t.sessions.title }}</h1>
           <span class="cc-flex"></span>
-          <div class="cc-seg" role="group" aria-label="Order sessions">
-            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}">First</button>
-            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}">Latest</button>
+          <div class="cc-seg" role="group" aria-label="{{ t.sessions.orderAria }}">
+            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}">{{ t.sessions.first }}</button>
+            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}">{{ t.sessions.latest }}</button>
           </div>
           <p class="cc-sec-sub">{{ sl.sub }}</p>
         </div>
@@ -646,7 +682,7 @@
             <sc-if value="{{ it.isGap }}"><div class="cc-gap">{{ it.text }}</div></sc-if>
             <sc-if value="{{ it.isSession }}">
               <a class="{{ it.cls }}" href="{{ it.href }}">
-                <span class="cc-scard-no" aria-label="Session {{ it.no }}">{{ it.no }}</span>
+                <span class="cc-scard-no" aria-label="{{ it.aria }}">{{ it.no }}</span>
                 <span class="cc-cbody">
                   <span class="cc-ctitle">{{ it.title }}</span>
                   <span class="cc-cmeta">{{ it.meta }}</span>
@@ -663,10 +699,10 @@
       <sc-if value="{{ v.quests }}">
       <div class="cc-page">
         <div class="cc-sechead">
-          <h1 class="cc-sec-h">Quests</h1>
+          <h1 class="cc-sec-h">{{ t.quests.title }}</h1>
           <p class="cc-sec-sub">{{ ql.sub }}</p>
         </div>
-        <div class="cc-statusbar" role="group" aria-label="Filter quests by status">
+        <div class="cc-statusbar" role="group" aria-label="{{ t.quests.statusAria }}">
           <sc-for list="{{ ql.tabs }}" as="tb"><button class="{{ tb.cls }}" onClick="{{ tb.onClick }}" aria-pressed="{{ tb.on }}">{{ tb.label }} <span class="cc-count">{{ tb.count }}</span></button></sc-for>
         </div>
         <sc-for list="{{ ql.groups }}" as="grp">
@@ -688,16 +724,16 @@
       <sc-if value="{{ v.characters }}">
       <div class="cc-page">
         <div class="cc-sechead">
-          <h1 class="cc-sec-h">Characters</h1>
-          <p class="cc-sec-sub">The party, and everyone the chronicle has recorded along the way.</p>
+          <h1 class="cc-sec-h">{{ t.characters.title }}</h1>
+          <p class="cc-sec-sub">{{ t.characters.sub }}</p>
         </div>
         <div class="cc-search" style="margin-bottom:6px;">
           <span class="cc-search-ico">{{ icons.search }}</span>
-          <input class="cc-input" type="search" value="{{ pl.query }}" onChange="{{ pl.onQuery }}" placeholder="Find a character, deity or faction…" aria-label="Find a character" autoComplete="off" spellCheck="false" />
-          <sc-if value="{{ pl.query }}"><button class="cc-search-x" onClick="{{ pl.onClear }}" aria-label="Clear">✕</button></sc-if>
+          <input class="cc-input" type="search" value="{{ pl.query }}" onChange="{{ pl.onQuery }}" placeholder="{{ t.characters.findPlaceholder }}" aria-label="{{ t.characters.findAria }}" autoComplete="off" spellCheck="false" />
+          <sc-if value="{{ pl.query }}"><button class="cc-search-x" onClick="{{ pl.onClear }}" aria-label="{{ t.common.clear }}">✕</button></sc-if>
         </div>
         <sc-if value="{{ pl.hasParty }}">
-          <h2 class="cc-h2">Bund Der Vier</h2>
+          <h2 class="cc-h2">{{ t.characters.partyName }}</h2>
           <div class="cc-party">
             <sc-for list="{{ pl.party }}" as="p">
               <a class="{{ p.cls }}" href="{{ p.href }}" style="{{ p.stripe }}">
@@ -718,7 +754,7 @@
             </sc-for>
           </div>
         </sc-for>
-        <sc-if value="{{ pl.isEmpty }}"><div class="cc-empty">No one by that name is recorded.</div></sc-if>
+        <sc-if value="{{ pl.isEmpty }}"><div class="cc-empty">{{ t.characters.empty }}</div></sc-if>
       </div>
       </sc-if>
 
@@ -726,8 +762,8 @@
       <sc-if value="{{ v.places }}">
       <div class="cc-page">
         <div class="cc-sechead">
-          <h1 class="cc-sec-h">Places</h1>
-          <p class="cc-sec-sub">Where the chronicle has been — and the places it has only heard of.</p>
+          <h1 class="cc-sec-h">{{ t.places.title }}</h1>
+          <p class="cc-sec-sub">{{ t.places.sub }}</p>
         </div>
         <div class="cc-tree">
           <sc-for list="{{ pll.items }}" as="p">
@@ -745,26 +781,46 @@
 
       <!-- ═══ MAP ═══ -->
       <sc-if value="{{ v.map }}">
-      <div class="cc-mapwrap">
-        <div class="cc-vp" ref="{{ vpRef }}" onMouseDown="{{ mp.onDown }}" aria-label="Map of Exandria — drag to pan, scroll or pinch to zoom">
+      <div class="{{ mp.wrapCls }}">
+        <div class="cc-vp" ref="{{ vpRef }}" onMouseDown="{{ mp.onDown }}" aria-label="{{ t.map.aria }}">
           <div style="{{ mp.worldStyle }}">
-            <img class="cc-map-img" src="assets/exandria-map-preview.jpeg" alt="Map of Exandria" draggable="false" loading="lazy" />
+            <img class="cc-map-img" src="assets/exandria-map-preview.jpeg" alt="{{ t.map.imgAlt }}" draggable="false" loading="lazy" />
             <sc-if value="{{ mp.hiLoaded }}"><img class="cc-map-hi" src="{{ mp.hiSrc }}" alt="" draggable="false" loading="lazy" /></sc-if>
             <div class="cc-routes">{{ mp.routesSvg }}</div>
             <sc-for list="{{ mp.pins }}" as="p">
               <div>
-                <button onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" aria-label="{{ p.title }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}"></span></button>
+                <button class="cc-marker" onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" aria-label="{{ p.title }}" aria-haspopup="{{ p.haspopup }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}">{{ p.inner }}</span></button>
+                <sc-if value="{{ p.badge }}"><span aria-hidden="true" style="{{ p.badgeStyle }}">{{ p.badge }}</span></sc-if>
                 <div style="{{ p.labelStyle }}">{{ p.labelText }}</div>
               </div>
             </sc-for>
             <sc-if value="{{ mp.hasSel }}">
-              <div onMouseDown="{{ stop }}" style="{{ mp.sel.style }}">
+              <div data-nopan="1" data-popup="{{ mp.sel.key }}" onMouseDown="{{ stop }}" style="{{ mp.sel.style }}">
                 <div style="{{ mp.sel.arrowStyle }}"></div>
-                <div class="cc-popup-meta"><span class="cc-seal sm" style="{{ mp.sel.seal }}"></span><span>{{ mp.sel.when }} · Session {{ mp.sel.session }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseSel }}" aria-label="Close">✕</button></div>
+                <div class="cc-popup-meta"><span class="cc-seal sm" style="{{ mp.sel.seal }}"></span><span>{{ mp.sel.meta }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseSel }}" aria-label="{{ t.common.close }}">✕</button></div>
                 <div class="cc-popup-t">{{ mp.sel.title }}</div>
                 <div class="cc-popup-s">{{ mp.sel.summary }}</div>
-                <div class="cc-popup-a"><a class="cc-btn" href="{{ mp.sel.readHref }}">Read entry ›</a><a class="cc-btn ghost" href="{{ mp.sel.sessionHref }}">Session {{ mp.sel.session }} log</a></div>
-                <sc-if value="{{ mp.sel.groupNote }}"><div class="cc-popup-n">{{ mp.sel.groupNote }}</div></sc-if>
+                <div class="cc-popup-a"><a class="cc-btn" href="{{ mp.sel.readHref }}">{{ t.map.readEntry }}</a><a class="cc-btn ghost" href="{{ mp.sel.sessionHref }}">{{ mp.sel.sessionLabel }}</a></div>
+                <sc-if value="{{ mp.sel.hasGroup }}">
+                  <div class="cc-popup-nav">
+                    <button class="cc-popup-step" onClick="{{ mp.sel.onPrev }}" aria-label="{{ t.map.prevHere }}" title="{{ t.map.prevHere }}">‹</button>
+                    <span class="cc-popup-n">{{ mp.sel.groupNote }}</span>
+                    <button class="cc-popup-step" onClick="{{ mp.sel.onNext }}" aria-label="{{ t.map.nextHere }}" title="{{ t.map.nextHere }}">›</button>
+                    <span class="cc-flex"></span>
+                    <button class="cc-linkbtn" onClick="{{ mp.sel.onList }}">{{ mp.sel.listLabel }}</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ mp.hasList }}">
+              <div data-nopan="1" data-popup="{{ mp.list.key }}" onMouseDown="{{ stop }}" style="{{ mp.list.style }}" role="dialog" aria-label="{{ mp.list.title }}">
+                <div style="{{ mp.list.arrowStyle }}"></div>
+                <div class="cc-popup-meta"><span>{{ mp.list.title }}</span><button class="cc-popup-x" onClick="{{ mp.onCloseList }}" aria-label="{{ t.common.close }}">✕</button></div>
+                <sc-if value="{{ mp.list.sub }}"><div class="cc-popup-n" style="margin:0 0 6px;">{{ mp.list.sub }}</div></sc-if>
+                <div class="cc-plist cc-scroll" style="{{ mp.list.listStyle }}">
+                  <sc-for list="{{ mp.list.items }}" as="it"><button class="cc-plist-i" onClick="{{ it.onSelect }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-plist-b"><span class="cc-plist-m">{{ it.meta }}</span><span class="cc-plist-t">{{ it.title }}</span></span></button></sc-for>
+                </div>
+                <sc-if value="{{ mp.list.canZoom }}"><div class="cc-popup-a"><button class="cc-btn ghost" onClick="{{ mp.list.onZoom }}">{{ icons.search }}{{ t.map.zoomToSeparate }}</button></div></sc-if>
               </div>
             </sc-if>
           </div>
@@ -772,36 +828,38 @@
         </div>
 
         <div class="cc-mapbar">
-          <button class="cc-mapbtn" onClick="{{ mp.onTogglePanel }}" aria-expanded="{{ mp.panelOpen }}">{{ icons.layers }}<span>Party &amp; filters</span><sc-if value="{{ mp.activeCount }}"><span class="cc-count">{{ mp.activeCount }}</span></sc-if></button>
+          <button class="cc-mapbtn" onClick="{{ mp.onTogglePanel }}" aria-expanded="{{ mp.panelOpen }}">{{ icons.layers }}<span>{{ t.map.partyFilters }}</span><sc-if value="{{ mp.activeCount }}"><span class="cc-count">{{ mp.activeCount }}</span></sc-if></button>
           <span class="cc-flex"></span>
           <sc-if value="{{ mp.canBack }}"><button class="cc-mapbtn" onClick="{{ mp.onBack }}">{{ icons.back }}<span>{{ mp.backLabel }}</span></button></sc-if>
         </div>
 
         <sc-if value="{{ mp.panelOpen }}">
-          <div class="cc-mappanel cc-scroll" onMouseDown="{{ stop }}">
-            <div class="cc-mp-h"><span>Bund Der Vier</span><span class="cc-flex"></span><button class="cc-iconbtn sm" onClick="{{ mp.onTogglePanel }}" aria-label="Close panel">✕</button></div>
+          <div class="cc-mappanel cc-scroll" data-nopan="1" onMouseDown="{{ stop }}">
+            <div class="cc-mp-h"><span>{{ t.characters.partyName }}</span><span class="cc-flex"></span><button class="cc-iconbtn sm" onClick="{{ mp.onTogglePanel }}" aria-label="{{ t.map.closePanel }}">✕</button></div>
             <sc-for list="{{ mp.party }}" as="c">
               <button class="{{ c.cls }}" onClick="{{ c.onToggle }}" aria-pressed="{{ c.on }}">
-                <span class="cc-seal" style="{{ c.seal }}"></span>
-                <span style="display:grid;gap:2px;flex:1;min-width:0;"><span class="cc-partyrow-n">{{ c.name }}</span><span class="cc-partyrow-r">{{ c.role }}</span></span>
-                <span class="cc-partydot" style="{{ c.dot }}"></span>
+                <span class="{{ c.sealCls }}" style="{{ c.seal }}">{{ c.mono }}</span>
+                <span style="display:grid;gap:2px;flex:1;min-width:0;"><span class="cc-partyrow-n">{{ c.name }}</span><span class="cc-partyrow-r">{{ c.sub }}</span></span>
+                <span class="cc-swatch">{{ c.swatch }}</span>
               </button>
             </sc-for>
-            <label class="cc-check"><input type="checkbox" checked="{{ mp.showRoute }}" onChange="{{ mp.onToggleRoute }}" />Show the party's route</label>
-            <div class="cc-mp-h" style="margin-top:8px;">Events on the map</div>
+            <label class="cc-check"><input type="checkbox" checked="{{ mp.showRoute }}" onChange="{{ mp.onToggleRoute }}" />{{ t.map.showRoutes }}</label>
+            <sc-if value="{{ mp.hasShared }}"><div class="cc-legend-row"><span class="cc-swatch">{{ mp.sharedSwatch }}</span><span><span class="cc-strong">{{ t.map.sharedRoute }}</span> · {{ mp.sharedSub }}</span></div></sc-if>
+            <p class="cc-muted cc-mp-note">{{ t.map.routesNote }}</p>
+            <div class="cc-mp-h" style="margin-top:8px;">{{ t.map.eventsOnMap }}</div>
             <p class="cc-muted" style="margin:0 0 8px;font-size:15px;">{{ mp.countText }}</p>
             <sc-if value="{{ mp.activeCount }}">
-              <div class="cc-btnrow"><a class="cc-btn ghost" href="#/chronicle">Edit Chronicle filters</a><button class="cc-btn ghost" onClick="{{ onReset }}">Clear filters</button></div>
+              <div class="cc-btnrow"><a class="cc-btn ghost" href="#/chronicle">{{ t.map.editFilters }}</a><button class="cc-btn ghost" onClick="{{ onReset }}">{{ t.map.clearFilters }}</button></div>
             </sc-if>
           </div>
         </sc-if>
 
         <div class="cc-zoom">
           <div class="cc-zoomgrp">
-            <button class="cc-zbtn" onClick="{{ mp.onZoomIn }}" title="Zoom in" aria-label="Zoom in">+</button>
-            <button class="cc-zbtn" onClick="{{ mp.onZoomOut }}" title="Zoom out" aria-label="Zoom out">−</button>
+            <button class="cc-zbtn" onClick="{{ mp.onZoomIn }}" title="{{ t.map.zoomIn }}" aria-label="{{ t.map.zoomIn }}">+</button>
+            <button class="cc-zbtn" onClick="{{ mp.onZoomOut }}" title="{{ t.map.zoomOut }}" aria-label="{{ t.map.zoomOut }}">−</button>
           </div>
-          <button class="cc-zbtn solo" onClick="{{ mp.onResetView }}" title="Reset view" aria-label="Reset view">⤢</button>
+          <button class="cc-zbtn solo" onClick="{{ mp.onResetView }}" title="{{ t.map.resetView }}" aria-label="{{ t.map.resetView }}">⤢</button>
           <span class="cc-zlabel">{{ mp.zoomLabel }} · {{ mp.zoomHint }}</span>
         </div>
       </div>
@@ -809,70 +867,70 @@
     </main>
 
     <!-- ═══ DETAIL PANE ═══ -->
-    <aside class="cc-detail cc-scroll" ref="{{ detailRef }}" aria-label="Details">
+    <aside class="cc-detail cc-scroll" ref="{{ detailRef }}" aria-label="{{ t.app.detailsAria }}">
       <sc-if value="{{ d.open }}">
       <div class="cc-doc">
         <div class="cc-docbar">
-          <button class="cc-back" onClick="{{ d.onBack }}">{{ icons.back }}<span>Back</span></button>
+          <button class="cc-back" onClick="{{ d.onBack }}">{{ icons.back }}<span>{{ t.common.back }}</span></button>
           <span class="cc-dockind">{{ d.kindLabel }}</span>
           <span class="cc-flex"></span>
-          <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="View on map">{{ icons.target }}<span>Map</span></a></sc-if>
+          <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="{{ t.common.viewOnMap }}">{{ icons.target }}<span>{{ t.common.map }}</span></a></sc-if>
           <sc-if value="{{ d.prevHref }}"><a class="cc-iconbtn sm" href="{{ d.prevHref }}" title="{{ d.prevTitle }}" aria-label="{{ d.prevTitle }}">‹</a></sc-if>
           <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">›</a></sc-if>
-          <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="Close" aria-label="Close">✕</button>
+          <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}">✕</button>
         </div>
 
-        <sc-if value="{{ d.notFound }}"><div class="cc-notfound"><p class="cc-muted">This page of the chronicle could not be found.</p><a class="cc-btn ghost" href="{{ d.homeHref }}">Return</a></div></sc-if>
+        <sc-if value="{{ d.notFound }}"><div class="cc-notfound"><p class="cc-muted">{{ t.detail.notFound }}</p><a class="cc-btn ghost" href="{{ d.homeHref }}">{{ t.common.returnLink }}</a></div></sc-if>
 
         <!-- EVENT -->
         <sc-if value="{{ d.event }}">
           <div class="cc-kick"><span>{{ e.typeLabel }}</span><span class="cc-dot"></span><span>{{ e.kickWhen }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ e.title }}</h1>
-          <p class="cc-byline"><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}{{ e.sessionTitle }}</a><sc-if value="{{ e.place }}"><span class="cc-sep">·</span><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a></sc-if><sc-if value="{{ e.placeOnly }}"><span class="cc-sep">·</span>{{ e.placeOnly }}</sc-if></p>
+          <p class="cc-byline"><a class="cc-a" href="{{ e.sessionHref }}">{{ e.sessionLabel }}{{ e.sessionTitle }}</a><sc-if value="{{ e.place }}"><span class="cc-sep">·</span><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a></sc-if><sc-if value="{{ e.placeOnly }}"><span class="cc-sep">·</span>{{ e.placeOnly }}</sc-if></p>
           <p class="cc-lead drop">{{ e.summary }}</p>
           <sc-if value="{{ e.description }}"><div class="cc-prose">{{ e.description }}</div></sc-if>
           <sc-if value="{{ e.hasConsequences }}">
-            <h2 class="cc-h2">Consequences</h2>
+            <h2 class="cc-h2">{{ t.event.consequences }}</h2>
             <ul class="cc-bullets"><sc-for list="{{ e.consequences }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ e.hasPeople }}">
-            <h2 class="cc-h2">Who was there</h2>
+            <h2 class="cc-h2">{{ t.event.who }}</h2>
             <div class="cc-chips">
               <sc-for list="{{ e.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for>
             </div>
           </sc-if>
           <sc-if value="{{ e.hasQuests }}">
-            <h2 class="cc-h2">Quests</h2>
+            <h2 class="cc-h2">{{ t.event.quests }}</h2>
             <div class="cc-rows">
               <sc-for list="{{ e.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for>
             </div>
           </sc-if>
           <sc-if value="{{ e.hasRelated }}">
-            <h2 class="cc-h2">Connected events</h2>
+            <h2 class="cc-h2">{{ t.event.connected }}</h2>
             <div class="cc-rows">
-              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
+              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
             </div>
           </sc-if>
           <details class="cc-disc">
-            <summary>{{ icons.map }}Where &amp; when</summary>
+            <summary>{{ icons.map }}{{ t.event.whereWhen }}</summary>
             <div class="cc-disc-b">
               <dl class="cc-facts">
-                <div class="cc-fact"><dt>In the world</dt><dd>{{ e.worldWhen }}<sc-if value="{{ e.worldSub }}"><span class="sub">{{ e.worldSub }}</span></sc-if></dd></div>
-                <div class="cc-fact"><dt>At the table</dt><dd><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}{{ e.sessionTitle }}</a><sc-if value="{{ e.playedText }}"><span class="sub">{{ e.playedText }}</span></sc-if></dd></div>
-                <sc-if value="{{ e.place }}"><div class="cc-fact"><dt>Where</dt><dd><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a><sc-if value="{{ e.place.trail }}"><span class="sub">{{ e.place.trail }}</span></sc-if></dd></div></sc-if>
+                <div class="cc-fact"><dt>{{ t.event.inWorld }}</dt><dd>{{ e.worldWhen }}<sc-if value="{{ e.worldSub }}"><span class="sub">{{ e.worldSub }}</span></sc-if></dd></div>
+                <div class="cc-fact"><dt>{{ t.event.atTable }}</dt><dd><a class="cc-a" href="{{ e.sessionHref }}">{{ e.sessionLabel }}{{ e.sessionTitle }}</a><sc-if value="{{ e.playedText }}"><span class="sub">{{ e.playedText }}</span></sc-if></dd></div>
+                <sc-if value="{{ e.place }}"><div class="cc-fact"><dt>{{ t.event.where }}</dt><dd><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a><sc-if value="{{ e.place.trail }}"><span class="sub">{{ e.place.trail }}</span></sc-if></dd></div></sc-if>
               </dl>
               <sc-if value="{{ e.hasCoords }}">
-                <a class="cc-minimap" href="{{ e.mapHref }}" aria-label="Open this place on the full map">
+                <a class="cc-minimap" href="{{ e.mapHref }}" aria-label="{{ t.event.openMapAria }}">
                   <img src="assets/exandria-map-preview.jpeg" alt="" loading="lazy" draggable="false" style="{{ e.mini.img }}" />
                   <span class="cc-minipin" style="{{ e.mini.pin }}"></span>
                 </a>
-                <div class="cc-mini-cap"><span>{{ e.mini.caption }}</span><a class="cc-btn ghost" href="{{ e.mapHref }}">{{ icons.target }}Open full map</a></div>
+                <div class="cc-mini-cap"><span>{{ e.mini.caption }}</span><a class="cc-btn ghost" href="{{ e.mapHref }}">{{ icons.target }}{{ t.event.openFullMap }}</a></div>
               </sc-if>
             </div>
           </details>
           <sc-if value="{{ e.hasPlots }}">
             <details class="cc-disc">
-              <summary>{{ icons.sessions }}From the session {{ e.session }} log</summary>
+              <summary>{{ icons.sessions }}{{ e.fromLog }}</summary>
               <div class="cc-disc-b">
                 <sc-for list="{{ e.plots }}" as="p">
                   <div class="{{ p.cls }}">
@@ -888,58 +946,58 @@
 
         <!-- SESSION -->
         <sc-if value="{{ d.session }}">
-          <div class="cc-kick"><span>Session {{ s.no }}</span><sc-if value="{{ s.isLatest }}"><span class="cc-badge">Latest</span></sc-if></div>
+          <div class="cc-kick"><span>{{ s.kick }}</span><sc-if value="{{ s.isLatest }}"><span class="cc-badge">{{ t.common.latest }}</span></sc-if></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ s.title }}</h1>
           <p class="cc-byline">{{ s.playedText }}<span class="cc-sep">·</span>{{ s.worldText }}</p>
-          <div class="cc-actrow"><button class="cc-act" onClick="{{ s.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div>
-          <sc-if value="{{ s.isStub }}"><p class="cc-muted">No session log has been written for this session yet.</p></sc-if>
+          <div class="cc-actrow"><button class="cc-act" onClick="{{ s.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div>
+          <sc-if value="{{ s.isStub }}"><p class="cc-muted">{{ t.session.noLog }}</p></sc-if>
           <sc-if value="{{ s.hasTime }}">
             <dl class="cc-facts">
-              <sc-if value="{{ s.hasStart }}"><div class="cc-fact"><dt>Began</dt><dd>{{ s.startedHere }}<sc-if value="{{ s.igStart }}"><span class="sub">{{ s.igStart }}</span></sc-if></dd></div></sc-if>
-              <sc-if value="{{ s.hasEnd }}"><div class="cc-fact"><dt>Ended</dt><dd>{{ s.endedHere }}<sc-if value="{{ s.igEnd }}"><span class="sub">{{ s.igEnd }}</span></sc-if></dd></div></sc-if>
-              <sc-if value="{{ s.igRest }}"><div class="cc-fact"><dt>Last long rest</dt><dd>{{ s.igRest }}</dd></div></sc-if>
+              <sc-if value="{{ s.hasStart }}"><div class="cc-fact"><dt>{{ t.session.began }}</dt><dd>{{ s.startedHere }}<sc-if value="{{ s.igStart }}"><span class="sub">{{ s.igStart }}</span></sc-if></dd></div></sc-if>
+              <sc-if value="{{ s.hasEnd }}"><div class="cc-fact"><dt>{{ t.session.ended }}</dt><dd>{{ s.endedHere }}<sc-if value="{{ s.igEnd }}"><span class="sub">{{ s.igEnd }}</span></sc-if></dd></div></sc-if>
+              <sc-if value="{{ s.igRest }}"><div class="cc-fact"><dt>{{ t.session.lastRest }}</dt><dd>{{ s.igRest }}</dd></div></sc-if>
             </dl>
           </sc-if>
-          <h2 class="cc-h2">What happened <span class="n">{{ s.eventCount }}</span></h2>
-          <sc-if value="{{ s.noEvents }}"><p class="cc-muted">No events recorded for this session.</p></sc-if>
+          <h2 class="cc-h2">{{ t.session.whatHappened }} <span class="n">{{ s.eventCount }}</span></h2>
+          <sc-if value="{{ s.noEvents }}"><p class="cc-muted">{{ t.session.noEvents }}</p></sc-if>
           <div class="cc-rows">
             <sc-for list="{{ s.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for>
           </div>
           <sc-if value="{{ s.hasEffects }}">
-            <h2 class="cc-h2">Active effects at session's end</h2>
+            <h2 class="cc-h2">{{ t.session.effects }}</h2>
             <ul class="cc-bullets"><sc-for list="{{ s.effects }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ s.hasQuests }}">
-            <h2 class="cc-h2">Quests in play</h2>
+            <h2 class="cc-h2">{{ t.session.questsInPlay }}</h2>
             <div class="cc-rows">
               <sc-for list="{{ s.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for>
             </div>
           </sc-if>
           <sc-if value="{{ s.hasActive }}">
-            <h2 class="cc-h2">Unresolved threads</h2>
+            <h2 class="cc-h2">{{ t.session.unresolved }}</h2>
             <sc-for list="{{ s.activePlots }}" as="p">
               <div class="{{ p.cls }}">
-                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">Quest ›</a></sc-if></div>
+                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">{{ t.common.questLink }}</a></sc-if></div>
                 <p class="cc-plot-q">{{ p.qt }}</p>
                 <sc-if value="{{ p.hasMore }}">
                   <details class="cc-plot-more"><summary>{{ p.moreLabel }}</summary>
-                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
-                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">{{ t.session.npcsPlaces }}</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">{{ t.session.notes }}</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
                   </details>
                 </sc-if>
               </div>
             </sc-for>
           </sc-if>
           <sc-if value="{{ s.hasCompleted }}">
-            <h2 class="cc-h2">Closed this session</h2>
+            <h2 class="cc-h2">{{ t.session.closedThis }}</h2>
             <sc-for list="{{ s.completedPlots }}" as="p">
               <div class="{{ p.cls }}">
-                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><span class="cc-badge tone-done">{{ p.closed }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">Quest ›</a></sc-if></div>
+                <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><span class="cc-badge tone-done">{{ p.closed }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">{{ t.common.questLink }}</a></sc-if></div>
                 <p class="cc-plot-q">{{ p.qt }}</p>
                 <sc-if value="{{ p.hasMore }}">
                   <details class="cc-plot-more"><summary>{{ p.moreLabel }}</summary>
-                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
-                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">{{ t.session.npcsPlaces }}</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">{{ t.session.notes }}</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
                   </details>
                 </sc-if>
               </div>
@@ -947,7 +1005,7 @@
           </sc-if>
           <sc-if value="{{ s.hasCast }}">
             <details class="cc-disc">
-              <summary>{{ icons.characters }}Characters &amp; places <span class="n">{{ s.castCount }}</span></summary>
+              <summary>{{ icons.characters }}{{ t.session.cast }} <span class="n">{{ s.castCount }}</span></summary>
               <div class="cc-disc-b">
                 <sc-if value="{{ s.hasPeople }}"><div class="cc-chips"><sc-for list="{{ s.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
                 <sc-if value="{{ s.hasPlaces }}"><div class="cc-chips" style="margin-top:12px;"><sc-for list="{{ s.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
@@ -960,26 +1018,26 @@
         <sc-if value="{{ d.quest }}">
           <div class="cc-kick"><span class="{{ q.badgeCls }}">{{ q.badge }}</span><span>{{ q.tableText }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ q.title }}</h1>
-          <sc-if value="{{ q.hasByline }}"><p class="cc-byline"><sc-if value="{{ q.giver }}">Given by <sc-if value="{{ q.giverHref }}"><a class="cc-a" href="{{ q.giverHref }}">{{ q.giver }}</a></sc-if><sc-if value="{{ q.giverPlain }}">{{ q.giver }}</sc-if></sc-if><sc-if value="{{ q.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ q.dayText }}">{{ q.dayText }}</sc-if></p></sc-if>
-          <div class="cc-actrow"><button class="cc-act" onClick="{{ q.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div>
+          <sc-if value="{{ q.hasByline }}"><p class="cc-byline"><sc-if value="{{ q.giver }}">{{ t.quest.givenBy }} <sc-if value="{{ q.giverHref }}"><a class="cc-a" href="{{ q.giverHref }}">{{ q.giver }}</a></sc-if><sc-if value="{{ q.giverPlain }}">{{ q.giver }}</sc-if></sc-if><sc-if value="{{ q.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ q.dayText }}">{{ q.dayText }}</sc-if></p></sc-if>
+          <div class="cc-actrow"><button class="cc-act" onClick="{{ q.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div>
           <p class="cc-lead">{{ q.summary }}</p>
           <sc-if value="{{ q.hasObjectives }}">
-            <h2 class="cc-h2">Objectives</h2>
+            <h2 class="cc-h2">{{ t.quest.objectives }}</h2>
             <ul class="cc-bullets"><sc-for list="{{ q.objectives }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ q.hasPeople }}">
-            <h2 class="cc-h2">Who is involved</h2>
+            <h2 class="cc-h2">{{ t.quest.who }}</h2>
             <div class="cc-chips"><sc-for list="{{ q.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ q.hasPlaces }}">
-            <h2 class="cc-h2">Places</h2>
+            <h2 class="cc-h2">{{ t.quest.places }}</h2>
             <div class="cc-chips"><sc-for list="{{ q.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
-          <h2 class="cc-h2">The story so far</h2>
+          <h2 class="cc-h2">{{ t.quest.story }}</h2>
           <div class="cc-steps">
             <sc-for list="{{ q.steps }}" as="st">
               <div class="cc-step">
-                <div class="cc-step-h"><a href="{{ st.href }}">Session {{ st.session }}</a><span>{{ st.sub }}</span></div>
+                <div class="cc-step-h"><a href="{{ st.href }}">{{ st.label }}</a><span>{{ st.sub }}</span></div>
                 <sc-if value="{{ st.hasEvents }}"><div class="cc-rows"><sc-for list="{{ st.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div></sc-if>
                 <sc-for list="{{ st.plots }}" as="p">
                   <div class="{{ p.cls }}">
@@ -988,7 +1046,7 @@
                     <sc-if value="{{ p.hasNotes }}"><details class="cc-plot-more"><summary>{{ p.notesLabel }}</summary><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></details></sc-if>
                   </div>
                 </sc-for>
-                <sc-if value="{{ st.isEmpty }}"><p class="cc-muted" style="margin:0;">Touched this session — no details recorded.</p></sc-if>
+                <sc-if value="{{ st.isEmpty }}"><p class="cc-muted" style="margin:0;">{{ t.quest.touched }}</p></sc-if>
               </div>
             </sc-for>
           </div>
@@ -1002,75 +1060,75 @@
           </div>
           <sc-if value="{{ p.hasFacts }}">
             <dl class="cc-facts">
-              <sc-if value="{{ p.race }}"><div class="cc-fact"><dt>Kind</dt><dd>{{ p.race }}</dd></div></sc-if>
-              <sc-if value="{{ p.aliases }}"><div class="cc-fact"><dt>Also recorded as</dt><dd>{{ p.aliases }}</dd></div></sc-if>
-              <sc-if value="{{ p.sessText }}"><div class="cc-fact"><dt>Appears in</dt><dd>{{ p.sessText }}</dd></div></sc-if>
+              <sc-if value="{{ p.race }}"><div class="cc-fact"><dt>{{ t.person.kind }}</dt><dd>{{ p.race }}</dd></div></sc-if>
+              <sc-if value="{{ p.aliases }}"><div class="cc-fact"><dt>{{ t.person.aka }}</dt><dd>{{ p.aliases }}</dd></div></sc-if>
+              <sc-if value="{{ p.sessText }}"><div class="cc-fact"><dt>{{ t.person.appears }}</dt><dd>{{ p.sessText }}</dd></div></sc-if>
             </dl>
           </sc-if>
-          <sc-if value="{{ p.canFilter }}"><div class="cc-actrow" style="margin-top:-6px;"><button class="cc-act" onClick="{{ p.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div></sc-if>
+          <sc-if value="{{ p.canFilter }}"><div class="cc-actrow" style="margin-top:-6px;"><button class="cc-act" onClick="{{ p.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div></sc-if>
           <sc-if value="{{ p.hasNotes }}">
-            <h2 class="cc-h2">From the session logs</h2>
-            <div class="cc-rows"><sc-for list="{{ p.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">Session {{ n.session }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
+            <h2 class="cc-h2">{{ t.person.fromLogs }}</h2>
+            <div class="cc-rows"><sc-for list="{{ p.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">{{ n.sessionLabel }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasFactions }}">
-            <h2 class="cc-h2">Belongs to</h2>
+            <h2 class="cc-h2">{{ t.person.belongs }}</h2>
             <div class="cc-chips"><sc-for list="{{ p.factions }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasMembers }}">
-            <h2 class="cc-h2">Members</h2>
+            <h2 class="cc-h2">{{ t.person.members }}</h2>
             <div class="cc-chips"><sc-for list="{{ p.members }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasRelations }}">
-            <h2 class="cc-h2">Relationships</h2>
+            <h2 class="cc-h2">{{ t.person.relationships }}</h2>
             <div class="cc-rows"><sc-for list="{{ p.relations }}" as="r"><a class="cc-relrow" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ r.label }}</span><span class="cc-row-sub">{{ r.sub }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasQuests }}">
-            <h2 class="cc-h2">Quests</h2>
+            <h2 class="cc-h2">{{ t.person.quests }}</h2>
             <div class="cc-rows"><sc-for list="{{ p.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasEvents }}">
-            <h2 class="cc-h2">Appearances <span class="n">{{ p.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+            <h2 class="cc-h2">{{ t.person.appearances }} <span class="n">{{ p.eventCount }}</span></h2>
+            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasPlaces }}">
-            <h2 class="cc-h2">Places</h2>
+            <h2 class="cc-h2">{{ t.person.places }}</h2>
             <div class="cc-chips"><sc-for list="{{ p.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
-          <sc-if value="{{ p.isSparse }}"><p class="cc-muted">Little more than a name has been recorded so far.</p></sc-if>
+          <sc-if value="{{ p.isSparse }}"><p class="cc-muted">{{ t.person.sparse }}</p></sc-if>
         </sc-if>
 
         <!-- PLACE -->
         <sc-if value="{{ d.place }}">
           <div class="cc-kick"><span>{{ pp.kindLabel }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ pp.name }}</h1>
-          <sc-if value="{{ pp.hasByline }}"><p class="cc-byline"><sc-if value="{{ pp.hasCrumbs }}"><span>In </span><sc-for list="{{ pp.crumbs }}" as="cr"><sc-if value="{{ cr.sep }}"><span class="cc-sep">›</span></sc-if><a class="cc-a" href="{{ cr.href }}">{{ cr.label }}</a></sc-for></sc-if><sc-if value="{{ pp.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ pp.aliases }}"><span>Also recorded as {{ pp.aliases }}</span></sc-if></p></sc-if>
-          <sc-if value="{{ pp.canFilter }}"><div class="cc-actrow"><button class="cc-act" onClick="{{ pp.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div></sc-if>
+          <sc-if value="{{ pp.hasByline }}"><p class="cc-byline"><sc-if value="{{ pp.hasCrumbs }}"><span>{{ t.place.inPrefix }} </span><sc-for list="{{ pp.crumbs }}" as="cr"><sc-if value="{{ cr.sep }}"><span class="cc-sep">›</span></sc-if><a class="cc-a" href="{{ cr.href }}">{{ cr.label }}</a></sc-for></sc-if><sc-if value="{{ pp.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ pp.aliases }}"><span>{{ pp.aliases }}</span></sc-if></p></sc-if>
+          <sc-if value="{{ pp.canFilter }}"><div class="cc-actrow"><button class="cc-act" onClick="{{ pp.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div></sc-if>
           <sc-if value="{{ pp.planarNote }}"><p class="cc-muted">{{ pp.planarNote }}</p></sc-if>
           <sc-if value="{{ pp.hasEvents }}">
-            <h2 class="cc-h2">What happened here <span class="n">{{ pp.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+            <h2 class="cc-h2">{{ t.place.happened }} <span class="n">{{ pp.eventCount }}</span></h2>
+            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasChildren }}">
-            <h2 class="cc-h2">Within</h2>
+            <h2 class="cc-h2">{{ t.place.within }}</h2>
             <div class="cc-chips"><sc-for list="{{ pp.children }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasQuests }}">
-            <h2 class="cc-h2">Quests</h2>
+            <h2 class="cc-h2">{{ t.place.quests }}</h2>
             <div class="cc-rows"><sc-for list="{{ pp.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasPeople }}">
-            <h2 class="cc-h2">Characters seen here</h2>
+            <h2 class="cc-h2">{{ t.place.seen }}</h2>
             <div class="cc-chips"><sc-for list="{{ pp.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasNotes }}">
-            <h2 class="cc-h2">From the session logs</h2>
-            <div class="cc-rows"><sc-for list="{{ pp.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">Session {{ n.session }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
+            <h2 class="cc-h2">{{ t.place.fromLogs }}</h2>
+            <div class="cc-rows"><sc-for list="{{ pp.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">{{ n.sessionLabel }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
           </sc-if>
-          <sc-if value="{{ pp.isSparse }}"><p class="cc-muted">Only mentioned in passing so far.</p></sc-if>
+          <sc-if value="{{ pp.isSparse }}"><p class="cc-muted">{{ t.place.sparse }}</p></sc-if>
         </sc-if>
 
         <sc-if value="{{ d.hasPrevNext }}">
-          <nav class="cc-prevnext" aria-label="Previous and next">
+          <nav class="cc-prevnext" aria-label="{{ t.common.prevNextAria }}">
             <sc-if value="{{ d.prevHref }}"><a class="cc-pn" href="{{ d.prevHref }}"><span class="cc-pn-k">‹ {{ d.prevKind }}</span><span class="cc-pn-t">{{ d.prevName }}</span></a></sc-if>
             <sc-if value="{{ d.nextHref }}"><a class="cc-pn next" href="{{ d.nextHref }}"><span class="cc-pn-k">{{ d.nextKind }} ›</span><span class="cc-pn-t">{{ d.nextName }}</span></a></sc-if>
           </nav>
@@ -1081,7 +1139,7 @@
   </div>
 
   <!-- ═══ BOTTOM NAV (phones) ═══ -->
-  <nav class="cc-bottom" aria-label="Sections">
+  <nav class="cc-bottom" aria-label="{{ t.app.sectionsAria }}">
     <sc-for list="{{ bottomNav }}" as="n">
       <sc-if value="{{ n.isLink }}"><a class="{{ n.cls }}" href="{{ n.href }}" aria-current="{{ n.current }}">{{ n.icon }}<span>{{ n.label }}</span></a></sc-if>
       <sc-if value="{{ n.isMore }}"><button class="{{ n.cls }}" onClick="{{ onOpenMore }}" aria-haspopup="true" aria-expanded="{{ moreOpen }}">{{ n.icon }}<span>{{ n.label }}</span></button></sc-if>
@@ -1090,12 +1148,12 @@
 
   <sc-if value="{{ moreOpen }}">
     <div class="cc-sheet-back" onClick="{{ onCloseMore }}"></div>
-    <div class="cc-sheet" role="dialog" aria-label="More sections">
+    <div class="cc-sheet" role="dialog" aria-label="{{ t.nav.moreAria }}">
       <div class="cc-sheet-grip"></div>
       <div class="cc-sheet-grid">
         <sc-for list="{{ moreItems }}" as="n"><a class="{{ n.cls }}" href="{{ n.href }}">{{ n.icon }}<span>{{ n.label }}</span></a></sc-for>
         <button class="cc-sheet-item" onClick="{{ onThemeToggle }}"><span class="cc-ico" style="font-size:22px;line-height:26px;height:26px;text-align:center;color:var(--accent);">{{ themeIcon }}</span><span>{{ themeShort }}</span></button>
-        <button class="cc-sheet-item" onClick="{{ onOpenTutorial }}"><span class="cc-ico" style="font-family:Cinzel,serif;font-size:22px;line-height:26px;height:26px;text-align:center;color:var(--accent);">?</span><span>Guide</span></button>
+        <button class="cc-sheet-item" onClick="{{ onOpenTutorial }}"><span class="cc-ico" style="font-family:Cinzel,serif;font-size:22px;line-height:26px;height:26px;text-align:center;color:var(--accent);">?</span><span>{{ t.guide.short }}</span></button>
       </div>
     </div>
   </sc-if>
@@ -1103,26 +1161,29 @@
   <!-- ═══ TUTORIAL ═══ -->
   <sc-if value="{{ showTutorial }}">
     <div class="cc-overlay" onClick="{{ onCloseTutorial }}">
-      <div class="cc-modal cc-scroll" onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="How the Chronicle works">
-        <button class="cc-iconbtn sm" onClick="{{ onCloseTutorial }}" title="Close" aria-label="Close" style="position:absolute;top:12px;right:12px;">✕</button>
+      <div class="cc-modal cc-scroll" onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="{{ t.guide.dialogAria }}">
+        <button class="cc-iconbtn sm" onClick="{{ onCloseTutorial }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}" style="position:absolute;top:12px;right:12px;">✕</button>
         <div class="cc-hero" style="padding-top:0;">
-          <div class="cc-kicker">Exandria</div>
-          <div class="cc-h1" style="font-size:26px;line-height:1.1;">How the Chronicle Works</div>
+          <div class="cc-kicker">{{ t.guide.kicker }}</div>
+          <div class="cc-h1" style="font-size:26px;line-height:1.1;">{{ t.guide.title }}</div>
           <div class="cc-flourish">✦</div>
         </div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.chronicle }}</span><div><div class="cc-tut-t">The Chronicle</div><div class="cc-tut-d">Every event of the campaign, in in-world order. Search, filter by character, quest, session, type, place or period, and open any entry to read it in full.</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.quests }}</span><div><div class="cc-tut-t">Sessions, Quests, Characters &amp; Places</div><div class="cc-tut-d">Each has its own section, and everything is linked: from an event jump to its session, quests, people and places — and back again.</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.map }}</span><div><div class="cc-tut-t">The Map</div><div class="cc-tut-d">Loads only when you open it. Drag to pan, scroll or pinch to zoom; pins are captioned with their session. Use “Map” at the top of an entry, and “Read entry” from a pin.</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.search }}</span><div><div class="cc-tut-t">At the table</div><div class="cc-tut-d">On a phone, Chronicle, Sessions and Quests sit in the bottom bar; Characters, Places, the Map, light/dark mode and this guide are under More. Your filters and place in the list are kept when you go back. On a keyboard, press / to search.</div></div></div>
-        <button class="cc-btn" onClick="{{ onCloseTutorial }}" style="width:100%;margin-top:16px;">Enter the Chronicle</button>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.chronicle }}</span><div><div class="cc-tut-t">{{ t.guide.chronicleT }}</div><div class="cc-tut-d">{{ t.guide.chronicleD }}</div></div></div>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.quests }}</span><div><div class="cc-tut-t">{{ t.guide.sectionsT }}</div><div class="cc-tut-d">{{ t.guide.sectionsD }}</div></div></div>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.map }}</span><div><div class="cc-tut-t">{{ t.guide.mapT }}</div><div class="cc-tut-d">{{ t.guide.mapD }}</div></div></div>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.search }}</span><div><div class="cc-tut-t">{{ t.guide.tableT }}</div><div class="cc-tut-d">{{ t.guide.tableD }}</div></div></div>
+        <button class="cc-btn" onClick="{{ onCloseTutorial }}" style="width:100%;margin-top:16px;">{{ t.guide.enter }}</button>
       </div>
     </div>
   </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:840},&quot;showRoutes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showLegend&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
-// Data model, relationship indexes, filters and search live in js/chronicle-model.js.
+// Data model, relationship indexes, filters and search live in js/chronicle-model.js;
+// pin grouping, clustering and route layers in js/chronicle-map.js; translation in js/i18n.js.
 const M = window.ChronicleModel;
+const MapL = window.ChronicleMap;
+const I18N = window.ChronicleI18n;
 const h = React.createElement;
 
 // ── MapViewport — viewport math + DOM event wiring (SRP) ─────────────────
@@ -1142,13 +1203,16 @@ class MapViewport {
   }
   pan(v,dx,dy)      { return this.clamp({scale:v.scale,x:v.x+dx,y:v.y+dy}); }
   zoom(v,px,py,f)   { const s2=Math.max(this.MIN,Math.min(this.MAX,v.scale*f)),k=s2/v.scale; return this.clamp({scale:s2,x:px-(px-v.x)*k,y:py-(py-v.y)*k}); }
-  center(v,ev,minScale){ const el=this._el; if(!el||!el.clientWidth) return v; const vw=el.clientWidth,vh=el.clientHeight,s=Math.max(v.scale,minScale); return this.clamp({scale:s,x:vw/2-(ev.xp/100*vw)*s,y:vh/2-(ev.yp/100*this.worldH())*s}); }
+  center(v,ev,minScale){ const el=this._el; if(!el||!el.clientWidth) return v; const vw=el.clientWidth,vh=el.clientHeight,s=Math.min(this.MAX,Math.max(v.scale,minScale)); return this.clamp({scale:s,x:vw/2-(ev.xp/100*vw)*s,y:vh/2-(ev.yp/100*this.worldH())*s}); }
   attach(el,onPan,onZoom,onDragEnd){
     this._el=el;
-    this._onWheel=e=>{ e.preventDefault(); const r=el.getBoundingClientRect(); onZoom(e.clientX-r.left,e.clientY-r.top,e.deltaY<0?1.18:1/1.18); };
+    // Popups and panels inside the map (data-nopan) keep their own scrolling and taps.
+    const own=e=>!!(e.target&&e.target.closest&&e.target.closest("[data-nopan]"));
+    this._onWheel=e=>{ if(own(e)) return; e.preventDefault(); const r=el.getBoundingClientRect(); onZoom(e.clientX-r.left,e.clientY-r.top,e.deltaY<0?1.18:1/1.18); };
     this._onMove=e=>{ if(!this._drag)return; onPan(e.clientX-this._drag.px,e.clientY-this._drag.py); this._drag.px=e.clientX; this._drag.py=e.clientY; };
     this._onUp=()=>{ if(this._drag){ this._drag=null; onDragEnd(); } };
     this._onTouchStart=e=>{
+      if(own(e)){ this._drag=null; this._pinch=null; return; }
       this._userTouched=true;
       if(e.touches.length>=2){
         const [a,b]=e.touches;
@@ -1178,7 +1242,7 @@ class MapViewport {
     };
     this._onTouchEnd=e=>{
       if(e.touches.length===0){ if(this._drag||this._pinch){ this._drag=null; this._pinch=null; onDragEnd(); } }
-      else if(e.touches.length===1){ this._pinch=null; this._drag={px:e.touches[0].clientX,py:e.touches[0].clientY}; }
+      else if(e.touches.length===1&&!own(e)){ this._pinch=null; this._drag={px:e.touches[0].clientX,py:e.touches[0].clientY}; }
     };
     el.addEventListener("wheel",this._onWheel,{passive:false});
     el.addEventListener("touchstart",this._onTouchStart,{passive:true});
@@ -1220,6 +1284,7 @@ const Prefs = {
   getS(k,fb){ try{ const v=sessionStorage.getItem(k); return v==null?fb:JSON.parse(v); }catch(e){ return fb; } },
   setS(k,v){ try{ sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
 };
+const safeStorage = ()=>{ try{ return window.localStorage; }catch(e){ return null; } };
 
 // ── Icons (inline SVG, inherit currentColor) ──────────────────────────────
 const ICON_SHAPES = {
@@ -1241,18 +1306,30 @@ const ICONS = Object.fromEntries(Object.entries(ICON_SHAPES).map(([k,ds])=>[k,
   h("svg",{className:"cc-ico",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:k==="more"?3:1.7,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",focusable:"false"},
     ds.map((d,i)=>h("path",{key:i,d})))]));
 
+// ── Route line styles: one colour + dash pattern per party member (party order) ─
+const ROUTE_DASHES = ["8 4", "2 4", "11 4 2 4", "5 3 1 3"];
+const ROUTE_CASING = "rgba(247,237,212,.82)";
+const SHARED_INK = "#1a1208";
+const routeStyle = (p,i)=>({ color:(p&&p.color)||"#4a3a20", dash:ROUTE_DASHES[i%ROUTE_DASHES.length] });
+function swatch(style,shared){
+  return h("svg",{width:34,height:12,viewBox:"0 0 34 12","aria-hidden":"true",focusable:"false"},
+    h("line",{x1:3,y1:6,x2:31,y2:6,stroke:ROUTE_CASING,strokeWidth:shared?7:5.5,strokeLinecap:"round"}),
+    h("line",{x1:3,y1:6,x2:31,y2:6,stroke:shared?SHARED_INK:style.color,strokeWidth:shared?3.4:2.6,strokeDasharray:shared?"7 5":style.dash,strokeLinecap:"round"}));
+}
+
 // ── Routing — #/<section>[/<kind>/<id>] (hash routes work on GitHub Pages) ──
+// The language is a preference, never part of the URL, so shared links work in both.
 const SECTIONS = [
-  { id:"chronicle",  label:"Chronicle",  icon:"chronicle",  primary:true },
-  { id:"sessions",   label:"Sessions",   icon:"sessions",   primary:true },
-  { id:"quests",     label:"Quests",     icon:"quests",     primary:true },
-  { id:"characters", label:"Characters", icon:"characters" },
-  { id:"places",     label:"Places",     icon:"places" },
-  { id:"map",        label:"Map",        icon:"map" },
+  { id:"chronicle",  icon:"chronicle",  primary:true },
+  { id:"sessions",   icon:"sessions",   primary:true },
+  { id:"quests",     icon:"quests",     primary:true },
+  { id:"characters", icon:"characters" },
+  { id:"places",     icon:"places" },
+  { id:"map",        icon:"map" },
 ];
 const SECTION_IDS = SECTIONS.map(s=>s.id);
 // Detail kinds open the reading pane; "at" (map only) just focuses a pin.
-const KINDS = { event:"Event", session:"Session log", quest:"Quest", character:"Character", place:"Place" };
+const KINDS = { event:1, session:1, quest:1, character:1, place:1 };
 const enc = s => encodeURIComponent(s);
 const HI_RES_MAP = "assets/exandria-map.jpeg";
 function parseHash(hash){
@@ -1268,14 +1345,18 @@ const routeHash = r => "#/"+r.section+(r.kind?`/${r.kind}/${enc(r.id)}`:"");
 class Component extends DCLogic {
   constructor(props){
     super(props);
-    this.model=null;                     // built by ChronicleModel.build() once data/*.json loads
+    this.model=null;                     // ChronicleModel.build() for the current language, once data/*.json loads
+    this.raw=null; this._content={}; this._models={}; this._ts={};
     this._mqMobile=window.matchMedia("(max-width: 719px)");
     this._mqWide=window.matchMedia("(min-width: 1024px)");
     const prefs=Prefs.get("chronicle-prefs",{})||{};
     const theme=Prefs.get("chronicle-theme",null);
     const savedFilters=Prefs.getS("chronicle-filters",null);
+    const lang=I18N.loadLocale(safeStorage());
+    this.t=this._translator(lang);
     this.state = {
       route:parseHash(location.hash),
+      lang,
       filters:{...M.EMPTY_FILTERS, pcs:[], ...(savedFilters&&typeof savedFilters==="object"?savedFilters:{})},
       filtersOpen:false,
       groupBy:prefs.groupBy==="session"?"session":"day",
@@ -1284,19 +1365,20 @@ class Component extends DCLogic {
       collapsedGroups:{},
       questStatus:"all",
       peopleQuery:"",
-      enabled:{},                        // map party toggles (character id → on/off)
       showRoute:props.showRoutes??true,
       view:{ scale:1, x:0, y:0 },
-      mapSelId:null, mapPanelOpen:false, hiLoaded:false,
+      mapSelId:null, mapList:null, mapPanelOpen:false, hiLoaded:false,
       isMobile:this._mqMobile.matches, isWide:this._mqWide.matches,
       darkMode:theme==null?true:theme==="dark",
       docs:{}, dataError:null, loaded:false,
       showTutorial:false, moreOpen:false,
     };
+    if(!Array.isArray(this.state.filters.pcs)) this.state.filters.pcs=[];
+    this._applyDocLang(lang);
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
     this._stack=[routeHash(this.state.route)];
-    this._scroll={}; this._dscroll={}; this._interact=0; this._mapCentered=false;
+    this._scroll={}; this._dscroll={}; this._interact=0; this._mapCentered=false; this._memo={};
 
     this._vpEl=null; this._mainEl=null; this._detailEl=null; this._searchEl=null; this._headEl=null;
     this.vpRef = el=>{
@@ -1341,22 +1423,33 @@ class Component extends DCLogic {
     if(!location.hash) history.replaceState(null,"",routeHash(this.state.route));
 
     // Required files fail loudly; npcs/locations are optional (a 404 simply means "none yet").
-    const load=(name,optional)=>fetch(`data/${name}.json`).then(r=>{
-      if(!r.ok){ if(optional) return null; throw new Error(`Failed to load ${name}.json`); }
-      return r.json().catch(err=>{ throw new Error(`${name}.json is not valid JSON (${err.message})`); });
+    const load=(file,name,optional)=>fetch(file).then(r=>{
+      if(!r.ok){ if(optional) return null; throw new Error(this.t("status.failedFile",{name})); }
+      return r.json().catch(err=>{ throw new Error(this.t("status.invalidJson",{name,error:err.message})); });
     });
-    Promise.all([["characters"],["routes"],["events"],["sessions"],["quests"],["npcs",true],["locations",true]].map(([n,o])=>load(n,o)))
-      .then(([characters,routes,events,sessions,quests,npcs,locations])=>{
-        this.model=M.build({characters,routes,events,sessions,quests,npcs:npcs||[],locations:locations||[]});
+    // Content translations are optional too: a missing or broken file just means English text.
+    const loadContent=I18N.LOCALES.filter(l=>l.code!==I18N.FALLBACK_LOCALE).map(l=>
+      fetch(`data/i18n/${l.code}.json`).then(r=>r.ok?r.json():null).catch(err=>{ console.warn(`[chronicle] data/i18n/${l.code}.json ignored: ${err.message}`); return null; })
+        .then(c=>[l.code,c]));
+    const files=[["characters"],["routes"],["events"],["sessions"],["quests"],["npcs",true],["locations",true]];
+    Promise.all([Promise.all(files.map(([n,o])=>load(`data/${n}.json`,n,o))),Promise.all(loadContent)])
+      .then(([[characters,routes,events,sessions,quests,npcs,locations],contents])=>{
+        this.raw={characters,routes,events,sessions,quests,npcs:npcs||[],locations:locations||[]};
+        contents.forEach(([code,c])=>{ if(c&&typeof c==="object") this._content[code]=c; });
+        this.model=this._modelFor(this.state.lang);
         if(this.model.issues.length) console.warn("[chronicle] data issues:\n"+this.model.issues.map(i=>`${i.level}: ${i.msg}`).join("\n"));
-        const enabled={}; this.model.pcs.forEach(p=>{ enabled[p.id]=true; });
-        this.setState({loaded:true,enabled},()=>this._afterRoute(null,this.state.route));
+        this.setState({loaded:true},()=>this._afterRoute(null,this.state.route));
       }).catch(err=>{
         console.error(err);
         this.setState({dataError:String(err&&err.message||err)});
       });
   }
   componentDidUpdate(){
+    // Map popups are placed from an estimated height on their first frame; once rendered, their real
+    // height is measured and, if it differs, they are placed again (one extra render, no loop).
+    const pop=this._vpEl&&this._vpEl.querySelector("[data-popup]");
+    if(pop){ const key=pop.getAttribute("data-popup"), h=pop.offsetHeight, m=this._popupMeasure;
+      if(h&&(!m||m.key!==key||Math.abs(m.h-h)>4)){ this._popupMeasure={key,h}; this.setState({}); } }
     // The full-resolution map (~15 MB) is fetched only once the map is zoomed in far enough
     // that the 2400px preview would look soft on this screen; until then the preview is shown.
     const el=this._vpEl;
@@ -1372,6 +1465,29 @@ class Component extends DCLogic {
     window.removeEventListener("resize",this.reflow);
     window.removeEventListener("hashchange",this._onHash);
     document.removeEventListener("keydown",this._onKey);
+  }
+
+  // ── Language ──────────────────────────────────────────────────────────────
+  _translator(code){ return this._ts[code]||(this._ts[code]=I18N.createTranslator(code)); }
+  // One model per language (built lazily, cached). Ids, links and order are identical in all of them.
+  _modelFor(code){
+    if(!this._models[code]) this._models[code]=M.build(this.raw,{ locale:code, t:this._translator(code), translations:this._content,
+      searchTs:I18N.LOCALES.map(l=>this._translator(l.code)) });
+    return this._models[code];
+  }
+  _applyDocLang(code){
+    const t=this._translator(code);
+    try{ document.documentElement.lang=t.meta.htmlLang; document.title=t("app.docTitle"); }catch(e){}
+  }
+  // Switching language re-renders in place: same route, filters, scroll position and map view.
+  setLang(code){
+    if(!I18N.isLocale(code)||code===this.state.lang) return;
+    I18N.saveLocale(safeStorage(),code);
+    this.t=this._translator(code);
+    if(this.raw) this.model=this._modelFor(code);
+    this._memo={};
+    this._applyDocLang(code);
+    this.setState({lang:code});
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
@@ -1419,6 +1535,7 @@ class Component extends DCLogic {
       if(this.state.showTutorial) return this.closeTutorial();
       if(this.state.moreOpen) return this.setState({moreOpen:false});
       if(this.state.filtersOpen) return this.setState({filtersOpen:false});
+      if(this.state.mapList) return this.setState({mapList:null});
       if(!typing&&this.state.route.kind) return this.closeDetail();
     }
     if(e.key==="/"&&!typing&&!e.ctrlKey&&!e.metaKey){ e.preventDefault(); this.focusSearch(); }
@@ -1433,7 +1550,7 @@ class Component extends DCLogic {
     if(!this.model||!this._vpEl) return;
     const r=this.state.route;
     let target=null;
-    if((r.kind==="event"||r.kind==="at")){ const ev=this.model.eventById.get(r.id); if(ev&&ev.hasCoords){ target=ev; if(this.state.mapSelId!==ev.id) this.setState({mapSelId:ev.id}); } }
+    if((r.kind==="event"||r.kind==="at")){ const ev=this.model.eventById.get(r.id); if(ev&&ev.hasCoords){ target=ev; if(this.state.mapSelId!==ev.id||this.state.mapList) this.setState({mapSelId:ev.id,mapList:null}); } }
     else if(r.kind==="place"){ const pl=this.model.placeById.get(r.id); const ev=pl&&pl.focusEventId&&this.model.eventById.get(pl.focusEventId); if(ev) target=ev; }
     const changed=!prev||prev.section!=="map"||routeHash(prev)!==routeHash(r);
     if(target&&(changed||justMounted)) this._centerSoon(target,r.kind==="place"?2.0:2.4);
@@ -1448,21 +1565,32 @@ class Component extends DCLogic {
   }
   // On tall (portrait) screens, the zoom at which the map fills the viewport's height.
   _coverScale(){ const el=this._vpEl; return el&&el.clientWidth?Math.min(this.viewport.MAX,el.clientHeight/(el.clientWidth*this.viewport._ar)):1; }
-  selectPin(id){
+  // Select one event's pin. A second tap on the selected lone pin deselects it (unless keep).
+  selectPin(id,{keep=false}={}){
     const r=this.state.route, cur=(r.kind==="event"||r.kind==="at")?r.id:this.state.mapSelId;
-    if(cur===id&&r.section==="map"){ this.setState({mapSelId:null}); this.navigate("#/map",{replace:true}); return; }
+    if(!keep&&cur===id&&r.section==="map"&&!this.state.mapList){ this.setState({mapSelId:null}); this.navigate("#/map",{replace:true}); return; }
     this.viewport._userTouched=true;
-    this.setState({mapSelId:id});
+    this.setState({mapSelId:id,mapList:null});
     this.navigate(this.state.isWide?`#/map/event/${enc(id)}`:`#/map/at/${enc(id)}`,{replace:r.section==="map"});
   }
+  // Open the list of events gathered in one marker (same spot, or a cluster of nearby spots).
+  openList(ids){
+    const cur=this.state.mapList;
+    if(cur&&cur.length===ids.length&&cur.every((id,i)=>id===ids[i])) return this.setState({mapList:null});
+    this.viewport._userTouched=true;
+    this.setState({mapList:ids});
+  }
+  zoomTo(pt,scale){ this._interact++; this.viewport._userTouched=true; this.setState(s=>({mapList:null,view:this.viewport.center(s.view,pt,scale)})); }
 
   // ── State actions ─────────────────────────────────────────────────────────
   setDoc(id,field,val) { this.setState(s=>{ const docs=this.store.set(s.docs,id,field,val); this.store.save(docs); return {docs}; }); }
-  setF(key,val)        { this.setState(s=>{ const filters={...s.filters,[key]:val}; Prefs.setS("chronicle-filters",filters); return {filters}; }); }
-  togglePc(id)         { const cur=this.state.filters.pcs||[]; this.setF("pcs",cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]); }
-  reset()              { const filters={...M.EMPTY_FILTERS,pcs:[]}; Prefs.setS("chronicle-filters",filters); this.setState({filters}); }
+  setF(key,val)        { this.setState(s=>{ const filters={...s.filters,[key]:val}; Prefs.setS("chronicle-filters",filters); return {filters,mapList:null}; }); }
+  // Chronicle chips: select / unselect a party member (none selected = everyone).
+  togglePc(id)         { const cur=(this.state.filters.pcs||[]).filter(x=>x!==M.NO_ONE); this.setF("pcs",cur.includes(id)?cur.filter(x=>x!==id):[...cur,id]); }
+  // Map rows: show / hide a party member — same filter, seen as visibility (everyone on = no filter).
+  toggleVisiblePc(id)  { this.setF("pcs",M.toggleVisibleCharacter(this.model,this.state.filters.pcs,id)); }
+  reset()              { const filters={...M.EMPTY_FILTERS,pcs:[]}; Prefs.setS("chronicle-filters",filters); this.setState({filters,mapList:null}); }
   filterBy(key,val)    { const filters={...M.EMPTY_FILTERS,pcs:[],[key]:val}; Prefs.setS("chronicle-filters",filters); this._scroll.chronicle=0; this.setState({filters,filtersOpen:false}); this.navigate("#/chronicle"); }
-  toggle(id)           { this.setState(s=>({enabled:{...s.enabled,[id]:s.enabled[id]===false}})); }
   toggleGroup(key)     { this.setState(s=>({collapsedGroups:{...s.collapsedGroups,[key]:!s.collapsedGroups[key]}})); }
   savePrefs()          { const {groupBy,sortDesc,sessionsDesc}=this.state; Prefs.set("chronicle-prefs",{groupBy,sortDesc,sessionsDesc}); }
   setPref(patch)       { this.setState(patch,()=>this.savePrefs()); }
@@ -1476,10 +1604,13 @@ class Component extends DCLogic {
   placeMapHref(pl){ if(!pl||!pl.focusEventId) return null; return this.state.isWide?`#/map/place/${enc(pl.id)}`:`#/map/at/${enc(pl.focusEventId)}`; }
   isOpen(kind,id) { const r=this.state.route; return r.kind===kind&&String(r.id)===String(id); }
   title(ev)       { return this.store.titleOf(this.state.docs,ev); }
-  dayText(ev)     { return ev.campaignDay!=null?`${ev.dayApprox?"≈ ":""}Day ${ev.campaignDay}`:(ev.whenLabel||"Date unknown"); }
+  sessLabel(n)    { return this.t("common.session",{n}); }
+  sessRange(nos)  { const n=[...new Set(nos)].sort((a,b)=>a-b); return n.length>1?this.t("common.sessionRange",{a:n[0],b:n[n.length-1]}):this.sessLabel(n[0]); }
+  dayText(ev)     { return ev.campaignDay!=null?this.t(ev.dayApprox?"common.dayApprox":"common.day",{n:ev.campaignDay}):(ev.whenLabel||this.t("common.dateUnknown")); }
+  cmp(a,b)        { return String(a).localeCompare(String(b),this.state.lang); }
   seal(p)         { return p&&p.sealImg?`background-image:url("${p.sealImg}");`:""; }
   sealCls(p,extra){ return "cc-seal"+(p&&!p.sealImg?` mono mono-${p.category}`:"")+(extra?" "+extra:""); }
-  mono(p)         { return p&&!p.sealImg?((p.name.replace(/^(the|an?)\s+/i,"").match(/[A-Za-zÀ-ÿ]/)||["?"])[0].toUpperCase()):""; }
+  mono(p)         { return p&&!p.sealImg?((p.name.replace(/^(the|an?|el|la|los|las|un|una)\s+/i,"").match(/[A-Za-zÀ-ÿ]/)||["?"])[0].toUpperCase()):""; }
   multiSeal()     { return `background-image:url("assets/icon-bund-der-vier.png");`; }
   // Seal for an event: the shared party seal for several PCs, a portrait for one, else the type glyph.
   evSeal(ev){
@@ -1499,29 +1630,31 @@ class Component extends DCLogic {
   personChip(p,sub){ return { href:this.href("character",p.id), label:p.name, sub:sub||"", cls:"cc-chip", hasSeal:true, sealCls:this.sealCls(p), seal:this.seal(p), mono:this.mono(p) }; }
   questRow(q)     { return { href:this.href("quest",q.id), title:q.title, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}` }; }
   placeChip(pl)   { return { href:this.href("place",pl.id), label:pl.name, sub:pl.kindLabel }; }
-  evRow(ev)       { const s=this.evNode(ev); return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:this.dayText(ev), session:ev.session, glyph:ev.typeGlyph,
+  evRow(ev)       { const s=this.evNode(ev); return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:this.dayText(ev), session:ev.session, sessionLabel:this.sessLabel(ev.session), glyph:ev.typeGlyph,
                       cls:"cc-evrow"+(this.isOpen("event",ev.id)?" is-sel":""), sealCls:s.cls, seal:s.style, mono:s.mono }; }
   plotVm(p){
+    const t=this.t;
     const npcs=(p.npcs||[]).map(n=>{
-      const ref=this.model.resolveName(n.name);
+      const ref=this.model.resolveName(n.nameEn||n.name);
       const rest=`${n.race?` (${n.race})`:""}${n.role?` — ${n.role}`:""}${n.region?` · ${n.region}`:""}`;
       const href=ref?this.href(ref.type==="person"?"character":"place",ref.id):null;
       return { name:n.name, rest, href, plain:!href };
     });
     const q=p.questId&&this.model.questById.get(p.questId);
     const notes=p.notes||[];
-    return { name:p.name, qt:p.qt, closed:p.isClosed?(p.closed||"Closed"):"", cls:"cc-plot"+(p.isClosed?" done":""),
+    return { name:p.name, qt:p.qt, closed:p.isClosed?(p.closed||t("plot.closed")):"", cls:"cc-plot"+(p.isClosed?" done":""),
       npcs, hasNpcs:npcs.length>0, notes, hasNotes:notes.length>0, questHref:q?this.href("quest",q.id):null,
       // The thread's state stays visible; the who's-who list and notes fold behind one line.
-      hasMore:npcs.length>0||notes.length>0, notesLabel:`Notes (${notes.length})`,
-      moreLabel:[npcs.length?`NPCs & locations (${npcs.length})`:"", notes.length?`Notes (${notes.length})`:""].filter(Boolean).join(" · ") };
+      hasMore:npcs.length>0||notes.length>0, notesLabel:t("session.notesN",{count:notes.length}),
+      moreLabel:[npcs.length?t("session.npcsN",{count:npcs.length}):"", notes.length?t("session.notesN",{count:notes.length}):""].filter(Boolean).join(" · ") };
   }
-  sessionSub(s){ return [s.playedLabel?`Played ${s.playedLabel}`:"", s.dayText].filter(Boolean).join(" · "); }
+  sessionSub(s){ return [s.playedLabel?this.t("common.played",{date:s.playedLabel}):"", s.dayText].filter(Boolean).join(" · "); }
   options(list,anyLabel){ return [h("option",{key:"_",value:""},anyLabel),...list.map(o=>h("option",{key:o.value,value:o.value},o.label))]; }
+  _memoize(slot,key,fn){ const m=this._memo[slot]; if(m&&m.key===key) return m.val; const val=fn(); this._memo[slot]={key,val}; return val; }
 
   // ── Chronicle (list) ──────────────────────────────────────────────────────
   _buildChronicle(){
-    const m=this.model, f=this.state.filters, st=this.state;
+    const m=this.model, f=this.state.filters, st=this.state, t=this.t;
     const evs=M.filterEvents(m,f);
     const ordered=st.sortDesc?evs.slice().reverse():evs;
     const groups=[], byKey={};
@@ -1535,11 +1668,11 @@ class Component extends DCLogic {
       let label, sub;
       if(st.groupBy==="session"){
         const s=m.sessionByNo.get(first.session);
-        label=`Session ${first.session}`; sub=[s&&s.title, s&&s.playedLabel?`played ${s.playedLabel}`:""].filter(Boolean).join(" · ");
+        label=this.sessLabel(first.session); sub=[s&&s.title, s&&s.playedLabel?t("common.playedLower",{date:s.playedLabel}):""].filter(Boolean).join(" · ");
       } else {
         const sess=[...new Set(g.evs.map(e=>e.session))].sort((a,b)=>a-b);
-        label=first.campaignDay!=null?`Day ${first.campaignDay}`:"Undated";
-        sub=[m.dayLabels[first.campaignDay]||"", sess.length>1?`Sessions ${sess.join(", ")}`:`Session ${sess[0]}`].filter(Boolean).join(" · ");
+        label=first.campaignDay!=null?t("common.day",{n:first.campaignDay}):t("common.undated");
+        sub=[m.dayLabels[first.campaignDay]||"", sess.length>1?t("common.sessionsList",{list:sess.join(", ")}):this.sessLabel(sess[0])].filter(Boolean).join(" · ");
       }
       // Cards only carry what the group header doesn't already say: the day when grouped by session,
       // the session only when one day spans several. People, place, quests and map live in the entry.
@@ -1552,7 +1685,7 @@ class Component extends DCLogic {
           return {
             id:ev.id, href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary,
             meta:st.groupBy==="session"?`${this.dayText(ev)} · ${ev.typeLabel}`:ev.typeLabel,
-            sessTag:multiSession?`Session ${ev.session}`:"",
+            sessTag:multiSession?this.sessLabel(ev.session):"",
             cls:"cc-card"+(this.isOpen("event",ev.id)?" is-sel":""),
             nodeCls:"cc-node", nodeStyle:s.style, nodeText:s.mono,
           };
@@ -1561,38 +1694,44 @@ class Component extends DCLogic {
     });
 
     // Filter options — only values that actually occur, so no option leads to an empty page.
-    const withEvents=x=>x.eventIds.length>0, byName=(a,b)=>a.name.localeCompare(b.name);
+    const withEvents=x=>x.eventIds.length>0, byName=(a,b)=>this.cmp(a.name,b.name);
+    const dayOpt=key=>m.days.map(d=>({value:String(d),label:`${t(key,{n:d})}${m.dayLabels[d]?` · ${m.dayLabels[d]}`:""}`}));
     const opt={
-      npc:this.options(m.npcs.filter(withEvents).sort(byName).map(p=>({value:p.id,label:p.name})),"Anyone"),
-      quest:this.options(m.quests.filter(withEvents).slice().sort((a,b)=>a.statusOrder-b.statusOrder||a.title.localeCompare(b.title)).map(q=>({value:q.id,label:`${q.title}${q.status==="completed"?" ✓":""}`})),"Any quest"),
-      session:this.options(m.sessions.filter(s=>s.eventIds.length).map(s=>({value:String(s.no),label:`Session ${s.no}${s.title?` — ${s.title}`:""}`})),"Any session"),
-      type:this.options(Object.entries(M.EVENT_TYPES).filter(([k])=>m.events.some(e=>e.type===k)).map(([k,t])=>({value:k,label:`${t.glyph} ${t.label}`})),"Any type"),
-      place:this.options(this._placeOrder().filter(p=>p.allEventIds.length).map(p=>({value:p.id,label:`${" ".repeat(p.depth)}${p.name}`})),"Anywhere"),
-      dayFrom:this.options(m.days.map(d=>({value:String(d),label:`From Day ${d}${m.dayLabels[d]?` · ${m.dayLabels[d]}`:""}`})),"From the beginning"),
-      dayTo:this.options(m.days.map(d=>({value:String(d),label:`To Day ${d}${m.dayLabels[d]?` · ${m.dayLabels[d]}`:""}`})),"To the latest"),
+      npc:this.options(m.npcs.filter(withEvents).sort(byName).map(p=>({value:p.id,label:p.name})),t("chronicle.anyone")),
+      quest:this.options(m.quests.filter(withEvents).slice().sort((a,b)=>a.statusOrder-b.statusOrder||this.cmp(a.title,b.title)).map(q=>({value:q.id,label:`${q.title}${q.status==="completed"?" ✓":""}`})),t("chronicle.anyQuest")),
+      session:this.options(m.sessions.filter(s=>s.eventIds.length).map(s=>({value:String(s.no),label:`${this.sessLabel(s.no)}${s.title?` — ${s.title}`:""}`})),t("chronicle.anySession")),
+      type:this.options(Object.entries(M.EVENT_TYPES).filter(([k])=>m.events.some(e=>e.type===k)).map(([k,ty])=>({value:k,label:`${ty.glyph} ${t(`eventType.${k}`)}`})),t("chronicle.anyType")),
+      place:this.options(this._placeOrder().filter(p=>p.allEventIds.length).map(p=>({value:p.id,label:`${" ".repeat(p.depth)}${p.name}`})),t("chronicle.anywhere")),
+      dayFrom:this.options(dayOpt("chronicle.fromDay"),t("chronicle.fromBeginning")),
+      dayTo:this.options(dayOpt("chronicle.toDay"),t("chronicle.toLatest")),
     };
-    const pcChips=m.pcs.map(p=>{ const on=(f.pcs||[]).includes(p.id); return { id:p.id, name:p.name, on, cls:"cc-pcchip"+(on?" is-on":""), seal:this.seal(p), onToggle:()=>this.togglePc(p.id) }; });
+    const pcs=f.pcs||[];
+    const pcChips=m.pcs.map(p=>{ const on=pcs.includes(p.id); return { id:p.id, name:p.name, on, cls:"cc-pcchip"+(on?" is-on":""), sealCls:"cc-seal", seal:this.seal(p), mono:"", onToggle:()=>this.togglePc(p.id) }; });
+    // Events without party members can be picked on purpose — offered only when there are some.
+    if(m.hasUnassigned){ const on=pcs.includes(M.NO_CHARACTER); pcChips.push({ id:M.NO_CHARACTER, name:t("chronicle.unassigned"), on, cls:"cc-pcchip"+(on?" is-on":""), sealCls:"cc-seal mono mono-type", seal:"", mono:"❦", onToggle:()=>this.togglePc(M.NO_CHARACTER) }); }
 
     const actives=[];
-    (f.pcs||[]).forEach(id=>{ const p=m.personById.get(id); actives.push({label:p?p.name:id,onRemove:()=>this.togglePc(id)}); });
+    const pcLabel=id=>id===M.NO_ONE?t("chronicle.activeNobody"):id===M.NO_CHARACTER?t("chronicle.activeUnassigned"):((m.personById.get(id)||{}).name||id);
+    pcs.forEach(id=>actives.push({label:pcLabel(id),onRemove:()=>id===M.NO_ONE?this.setF("pcs",[]):this.togglePc(id)}));
     const one=(key,label)=>{ if(f[key]!==""&&f[key]!=null) actives.push({label,onRemove:()=>this.setF(key,"")}); };
-    one("npc",`With ${(m.personById.get(f.npc)||{}).name||f.npc}`);
-    one("quest",`Quest: ${(m.questById.get(f.quest)||{}).title||f.quest}`);
-    one("session",`Session ${f.session}`);
-    one("type",`Type: ${(M.EVENT_TYPES[f.type]||{}).label||f.type}`);
-    one("place",`In ${(m.placeById.get(f.place)||{}).name||f.place}`);
-    one("dayFrom",`From Day ${f.dayFrom}`); one("dayTo",`To Day ${f.dayTo}`);
-    one("playedFrom",`Played from ${M.fmtDate(f.playedFrom)}`); one("playedTo",`Played until ${M.fmtDate(f.playedTo)}`);
+    one("npc",t("chronicle.activeWith",{name:(m.personById.get(f.npc)||{}).name||f.npc}));
+    one("quest",t("chronicle.activeQuest",{title:(m.questById.get(f.quest)||{}).title||f.quest}));
+    one("session",this.sessLabel(f.session));
+    one("type",t("chronicle.activeType",{label:M.EVENT_TYPES[f.type]?t(`eventType.${f.type}`):f.type}));
+    one("place",t("chronicle.activeIn",{name:(m.placeById.get(f.place)||{}).name||f.place}));
+    one("dayFrom",t("chronicle.fromDay",{n:f.dayFrom})); one("dayTo",t("chronicle.toDay",{n:f.dayTo}));
+    one("playedFrom",t("chronicle.activePlayedFrom",{date:m.fmtDate(f.playedFrom)})); one("playedTo",t("chronicle.activePlayedTo",{date:m.fmtDate(f.playedTo)}));
+    actives.forEach(a=>{ a.aria=t("chronicle.removeFilter",{label:a.label}); });
 
-    // Cross-entity quick results for the free-text search.
+    // Cross-entity quick results for the free-text search (matches both languages, no accents needed).
     const quick=[];
     if(f.text&&f.text.trim()){
       const r=M.search(m,f.text,6);
       const chip=(href,label,sub,p)=>({href,label,sub:sub||"",cls:"cc-chip"+(p?"":" plain"),hasSeal:!!p,sealCls:p?this.sealCls(p,"sm"):"",seal:p?this.seal(p):"",mono:p?this.mono(p):""});
-      if(r.people.length) quick.push({label:"People",items:r.people.map(p=>chip(this.href("character",p.id),p.name,"",p))});
-      if(r.quests.length) quick.push({label:"Quests",items:r.quests.map(q=>chip(this.href("quest",q.id),q.title,q.statusLabel))});
-      if(r.places.length) quick.push({label:"Places",items:r.places.map(p=>chip(this.href("place",p.id),p.name,p.kindLabel))});
-      if(r.sessions.length) quick.push({label:"Sessions",items:r.sessions.map(s=>chip(this.href("session",s.no),`Session ${s.no}`,s.title))});
+      if(r.people.length) quick.push({label:t("chronicle.quickPeople"),items:r.people.map(p=>chip(this.href("character",p.id),p.name,"",p))});
+      if(r.quests.length) quick.push({label:t("chronicle.quickQuests"),items:r.quests.map(q=>chip(this.href("quest",q.id),q.title,q.statusLabel))});
+      if(r.places.length) quick.push({label:t("chronicle.quickPlaces"),items:r.places.map(p=>chip(this.href("place",p.id),p.name,p.kindLabel))});
+      if(r.sessions.length) quick.push({label:t("chronicle.quickSessions"),items:r.sessions.map(s=>chip(this.href("session",s.no),this.sessLabel(s.no),s.title))});
     }
 
     const last=m.sessions.filter(s=>!s.isStub).slice(-1)[0];
@@ -1601,69 +1740,70 @@ class Component extends DCLogic {
       groups:vm, count:evs.length, isEmpty:evs.length===0, opt, pcChips, actives, hasActives:actives.length>0, activeCount,
       quick, hasQuick:quick.length>0, filtersOpen:st.filtersOpen,
       filterBtnCls:"cc-btn ghost"+(st.filtersOpen||activeCount?" is-on":""),
-      filterLabel:activeCount?`Filters (${activeCount} active)`:"Filters",
-      resultsText:evs.length===m.events.length?`${m.events.length} events`:`${evs.length} of ${m.events.length} events`,
+      filterLabel:activeCount?t("chronicle.filtersActive",{count:activeCount}):t("chronicle.filters"),
+      showLabel:t("chronicle.showEvents",{count:evs.length}),
+      resultsText:evs.length===m.events.length?t("chronicle.resultsAll",{count:m.events.length}):t("chronicle.resultsSome",{count:evs.length,total:m.events.length}),
       byDay:st.groupBy==="day", bySession:st.groupBy==="session",
       byDayCls:st.groupBy==="day"?"is-on":"", bySessCls:st.groupBy==="session"?"is-on":"",
-      sortLabel:st.sortDesc?"Newest ↑":"Oldest ↓", sortTitle:st.sortDesc?"Showing newest first — switch to oldest first":"Showing oldest first — switch to newest first",
-      latest:last?{href:this.href("session",last.no),no:last.no,title:last.title||"",sub:this.sessionSub(last)}:null,
+      sortLabel:st.sortDesc?t("chronicle.newest"):t("chronicle.oldest"), sortTitle:st.sortDesc?t("chronicle.newestTitle"):t("chronicle.oldestTitle"),
+      latest:last?{href:this.href("session",last.no),label:this.sessLabel(last.no),title:last.title||"",sub:this.sessionSub(last)}:null,
     };
   }
   _placeOrder(){
     const m=this.model, out=[];
     const firstIdx=p=>p.allEventIds.length?m.eventById.get(p.allEventIds[0]).chronoIndex:1e9;
-    const walk=(list)=>list.slice().sort((a,b)=>firstIdx(a)-firstIdx(b)||a.name.localeCompare(b.name)).forEach(p=>{ out.push(p); walk(p.childIds.map(id=>m.placeById.get(id))); });
+    const walk=(list)=>list.slice().sort((a,b)=>firstIdx(a)-firstIdx(b)||this.cmp(a.name,b.name)).forEach(p=>{ out.push(p); walk(p.childIds.map(id=>m.placeById.get(id))); });
     walk(m.places.filter(p=>!p.parentId));
     return out;
   }
 
   // ── Section lists ─────────────────────────────────────────────────────────
   _buildSessions(){
-    const m=this.model, desc=this.state.sessionsDesc;
+    const m=this.model, desc=this.state.sessionsDesc, t=this.t;
     const asc=m.sessions, items=[];
     asc.forEach((s,i)=>{
       const prev=asc[i-1];
-      if(prev&&s.no-prev.no>1){ const a=prev.no+1,b=s.no-1; items.push({isGap:true,text:a===b?`Session ${a} not chronicled`:`Sessions ${a}–${b} not chronicled`}); }
+      if(prev&&s.no-prev.no>1){ const a=prev.no+1,b=s.no-1; items.push({isGap:true,text:a===b?t("sessions.gapOne",{n:a}):t("sessions.gapRange",{a,b})}); }
       // Number, title, when, and the opening line; who took part and which quests moved are in the log.
-      items.push({ isSession:true, no:s.no, href:this.href("session",s.no), title:s.title||`Session ${s.no}`,
-        meta:[this.sessionSub(s)||"No date recorded", s.eventIds.length?`${s.eventIds.length} event${s.eventIds.length===1?"":"s"}`:""].filter(Boolean).join(" · "),
-        opening:s.startedHere||(s.isStub?"No session log written yet.":""),
+      items.push({ isSession:true, no:s.no, aria:this.sessLabel(s.no), href:this.href("session",s.no), title:s.title||this.sessLabel(s.no),
+        meta:[this.sessionSub(s)||t("sessions.noDate"), s.eventIds.length?t("common.events",{count:s.eventIds.length}):""].filter(Boolean).join(" · "),
+        opening:s.startedHere||(s.isStub?t("sessions.noLogYet"):""),
         cls:"cc-scard"+(this.isOpen("session",s.no)?" is-sel":"") });
     });
     if(desc) items.reverse();
     const played=m.sessions.filter(s=>!s.isStub).length;
-    return { items, sub:`${played} session${played===1?"":"s"} chronicled, in the order they were played.`,
+    return { items, sub:t("sessions.sub",{count:played}),
       ascCls:desc?"":"is-on", descCls:desc?"is-on":"",
       onAsc:()=>this.setPref({sessionsDesc:false}), onDesc:()=>this.setPref({sessionsDesc:true}) };
   }
   _buildQuests(){
-    const m=this.model, sel=this.state.questStatus;
+    const m=this.model, sel=this.state.questStatus, t=this.t;
     const statuses=[...new Set(m.quests.map(q=>q.status))].sort((a,b)=>(m.quests.find(q=>q.status===a).statusOrder)-(m.quests.find(q=>q.status===b).statusOrder));
     const labelOf=st=>m.quests.find(q=>q.status===st).statusLabel;
-    const tabs=[{key:"all",label:"All",count:m.quests.length},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length}))]
-      .map(t=>({...t,on:sel===t.key,cls:"cc-btn ghost"+(sel===t.key?" is-on":""),onClick:()=>this.setState({questStatus:t.key})}));
+    const tabs=[{key:"all",label:t("quests.all"),count:m.quests.length},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length}))]
+      .map(tb=>({...tb,on:sel===tb.key,cls:"cc-btn ghost"+(sel===tb.key?" is-on":""),onClick:()=>this.setState({questStatus:tb.key})}));
     // Status is carried by the group heading and the card's edge colour, so no badge per card;
     // the cast, places and events of each quest stay in its page.
     const card=q=>({ href:this.href("quest",q.id), title:q.title, summary:q.summary,
       cls:"cc-qcard"+(q.statusTone==="done"?" tone-done":"")+(this.isOpen("quest",q.id)?" is-sel":""),
-      foot:[q.giver?`Given by ${q.giver}`:"", q.lastSession!=null?`last in Session ${q.lastSession}`:""].filter(Boolean).join(" · ") });
-    const recent=(a,b)=>(b.lastSession||0)-(a.lastSession||0)||a.title.localeCompare(b.title);
+      foot:[q.giver?t("quests.givenBy",{name:q.giver}):"", q.lastSession!=null?t("quests.lastIn",{n:q.lastSession}):""].filter(Boolean).join(" · ") });
+    const recent=(a,b)=>(b.lastSession||0)-(a.lastSession||0)||this.cmp(a.title,b.title);
     const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st).sort(recent).map(card); return {label:labelOf(st),count:items.length,items}; });
     const active=m.quests.filter(q=>q.status==="active").length;
-    return { tabs, groups, sub:`${active} in progress · ${m.quests.length} recorded.` };
+    return { tabs, groups, sub:t("quests.sub",{active,total:m.quests.length}) };
   }
   _buildPeople(){
-    const m=this.model, q=this.state.peopleQuery.trim().toLowerCase();
-    const hit=p=>!q||[p.name,...p.aliases,p.race||"",p.role||""].join(" ").toLowerCase().includes(q);
+    const m=this.model, t=this.t, toks=M.fold(this.state.peopleQuery).split(" ").filter(Boolean);
+    const hit=p=>!toks.length||toks.every(tok=>p.searchText.includes(tok));
     const party=m.pcs.filter(hit).map(p=>({ href:this.href("character",p.id), name:p.name, role:p.role||"", seal:this.seal(p),
       stripe:`--pc-color:${p.color||"#b58f3e"};`,
       cls:"cc-pcard"+(this.isOpen("character",p.id)?" is-sel":"") }));
     const cats=Object.entries(M.PERSON_CATEGORIES).filter(([k])=>k!=="party").sort((a,b)=>a[1].order-b[1].order);
-    const groups=cats.map(([k,c])=>{
-      const items=m.npcs.filter(p=>p.category===k&&hit(p)).sort((a,b)=>b.eventIds.length-a.eventIds.length||a.name.localeCompare(b.name))
-        .map(p=>({ href:this.href("character",p.id), name:p.name, sub:[p.race,p.memberIds.length?`${p.memberIds.length} members`:""].filter(Boolean).join(" · "),
+    const groups=cats.map(([k])=>{
+      const items=m.npcs.filter(p=>p.category===k&&hit(p)).sort((a,b)=>b.eventIds.length-a.eventIds.length||this.cmp(a.name,b.name))
+        .map(p=>({ href:this.href("character",p.id), name:p.name, sub:[p.race,p.memberIds.length?t("common.members",{count:p.memberIds.length}):""].filter(Boolean).join(" · "),
           sealCls:this.sealCls(p), mono:this.mono(p), cls:"cc-row"+(this.isOpen("character",p.id)?" is-sel":"") }));
-      return {label:c.label,count:items.length,items};
+      return {label:t(`personCategory.${k}`),count:items.length,items};
     }).filter(g=>g.items.length);
     return { query:this.state.peopleQuery, onQuery:e=>this.setState({peopleQuery:e.target.value}), onClear:()=>this.setState({peopleQuery:""}),
       party, hasParty:party.length>0, groups, isEmpty:!party.length&&!groups.length };
@@ -1673,37 +1813,47 @@ class Component extends DCLogic {
     // Name + kind; the map stays one tap away for every place that has a pin.
     return { items:this._placeOrder().map(p=>({ href:this.href("place",p.id), name:p.name, glyph:KIND_GLYPH[p.kind]||"✦",
       sub:p.kindLabel, indent:`margin-left:${Math.min(p.depth,4)*(this.state.isMobile?12:18)}px;`,
-      mapHref:this.placeMapHref(p), mapTitle:`${p.name} on the map`,
+      mapHref:this.placeMapHref(p), mapTitle:this.t("places.onMap",{name:p.name}),
       cls:"cc-row"+(this.isOpen("place",p.id)?" is-sel":"") })) };
   }
 
   // ── Detail pane ───────────────────────────────────────────────────────────
   _buildDetail(){
-    const r=this.state.route, m=this.model;
-    const base={ open:true, kindLabel:KINDS[r.kind], onBack:()=>this.goBack(), onClose:()=>this.closeDetail(), homeHref:routeHash({section:r.section}) };
+    const r=this.state.route, st=this.state;
+    // Memoized: the pane does not change while the map beside it is panned or zoomed.
+    const key=[routeHash(r),st.lang,st.isWide,st.isMobile].join("|"), c=this._memo.detail;
+    if(c&&c.key===key&&c.model===this.model&&c.docs===st.docs) return c.val;
+    const val=this._buildDetailNow();
+    this._memo.detail={key,model:this.model,docs:st.docs,val};
+    return val;
+  }
+  _buildDetailNow(){
+    const r=this.state.route, m=this.model, t=this.t;
+    const base={ open:true, kindLabel:t(`kinds.${r.kind}`), onBack:()=>this.goBack(), onClose:()=>this.closeDetail(), homeHref:routeHash({section:r.section}) };
     const notFound={...base,notFound:true};
     if(r.kind==="event"){
       const ev=m.eventById.get(r.id); if(!ev) return [notFound,{}];
       const prev=m.events[ev.chronoIndex-1], next=m.events[ev.chronoIndex+1];
-      return [{...base,event:true,mapHref:this.mapHref(ev),...this._pn(prev&&this.href("event",prev.id),prev&&this.title(prev),next&&this.href("event",next.id),next&&this.title(next),"Earlier","Later")},this._eventVm(ev)];
+      return [{...base,event:true,mapHref:this.mapHref(ev),...this._pn(prev&&this.href("event",prev.id),prev&&this.title(prev),next&&this.href("event",next.id),next&&this.title(next),t("common.earlier"),t("common.later"))},this._eventVm(ev)];
     }
     if(r.kind==="session"){
       const s=m.sessionByNo.get(Number(r.id)); if(!s) return [notFound,{}];
       const firstMapped=s.eventIds.map(id=>m.eventById.get(id)).find(e=>e.hasCoords);
-      return [{...base,session:true,mapHref:firstMapped?this.mapHref(firstMapped):null,...this._pn(s.prevNo!=null&&this.href("session",s.prevNo),s.prevNo!=null&&`Session ${s.prevNo}`,s.nextNo!=null&&this.href("session",s.nextNo),s.nextNo!=null&&`Session ${s.nextNo}`,"Previous session","Next session")},this._sessionVm(s)];
+      return [{...base,session:true,mapHref:firstMapped?this.mapHref(firstMapped):null,...this._pn(s.prevNo!=null&&this.href("session",s.prevNo),s.prevNo!=null&&this.sessLabel(s.prevNo),s.nextNo!=null&&this.href("session",s.nextNo),s.nextNo!=null&&this.sessLabel(s.nextNo),t("common.prevSession"),t("common.nextSession"))},this._sessionVm(s)];
     }
     if(r.kind==="quest"){ const q=m.questById.get(r.id); return q?[{...base,quest:true},this._questVm(q)]:[notFound,{}]; }
-    if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?"Party member":p.categoryLabel},this._personVm(p)]:[notFound,{}]; }
+    if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?t("kinds.partyMember"):p.categoryLabel},this._personVm(p)]:[notFound,{}]; }
     if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true,mapHref:this.placeMapHref(p)},this._placeVm(p)]:[notFound,{}]; }
     return [{open:false},{}];
   }
   _pn(prevHref,prevName,nextHref,nextName,prevKind,nextKind){
-    return { prevHref:prevHref||null, prevName:prevName||"", prevTitle:prevName?`${prevKind}: ${prevName}`:"", prevKind,
-             nextHref:nextHref||null, nextName:nextName||"", nextTitle:nextName?`${nextKind}: ${nextName}`:"", nextKind,
+    const t=this.t;
+    return { prevHref:prevHref||null, prevName:prevName||"", prevTitle:prevName?t("common.prevNextTitle",{kind:prevKind,name:prevName}):"", prevKind,
+             nextHref:nextHref||null, nextName:nextName||"", nextTitle:nextName?t("common.prevNextTitle",{kind:nextKind,name:nextName}):"", nextKind,
              hasPrevNext:!!(prevHref||nextHref) };
   }
   _eventVm(ev){
-    const m=this.model, s=m.sessionByNo.get(ev.session);
+    const m=this.model, t=this.t, s=m.sessionByNo.get(ev.session);
     const pl=ev.locationId&&m.placeById.get(ev.locationId);
     const people=[...ev.characterIds.map(id=>this.personChip(m.personById.get(id))),
                   ...ev.npcIds.map(id=>this.personChip(m.personById.get(id)))];
@@ -1715,38 +1865,39 @@ class Component extends DCLogic {
       const left=Math.min(0,Math.max(100-100*z,50-ev.xp*kx)), top=Math.min(0,Math.max(100-100*ky,50-ev.yp*ky));
       mini={ img:`width:${z*100}%;left:${left.toFixed(3)}%;top:${top.toFixed(3)}%;`,
              pin:`left:${(left+ev.xp*kx).toFixed(3)}%;top:${(top+ev.yp*ky).toFixed(3)}%;`,
-             caption:pl&&pl.isPlanar?`Recorded pin for this event — ${pl.name} itself lies beyond the map.`:(ev.placeLabel||(pl&&pl.name)||"Recorded map position") };
+             caption:pl&&pl.isPlanar?t("event.planarCaption",{name:pl.name}):(ev.placeLabel||(pl&&pl.name)||t("event.mapPosition")) };
     }
     const worldParts=[];
-    if(ev.campaignDay!=null) worldParts.push(`${ev.dayApprox?"About ":""}Day ${ev.campaignDay}`);
+    if(ev.campaignDay!=null) worldParts.push(t(ev.dayApprox?"common.aboutDay":"common.day",{n:ev.campaignDay}));
     if(ev.igDate) worldParts.push(ev.igDate);
     return {
       title:this.title(ev), summary:ev.summary, description:ev.description, glyph:ev.typeGlyph, typeLabel:ev.typeLabel,
       kickWhen:this.dayText(ev), placeOnly:!pl&&ev.placeLabel?ev.placeLabel:"",
-      session:ev.session, sessionHref:this.href("session",ev.session), sessionTitle:s&&s.title?` — ${s.title}`:"",
-      playedText:s&&s.playedLabel?`Played ${s.playedLabel}`:"",
-      worldWhen:worldParts.join(" · ")||ev.igLabel||"Not recorded",
-      worldSub:[ev.placeLabel, ev.dayApprox?"day inferred from the surrounding entries":""].filter(Boolean).join(" — "),
+      session:ev.session, sessionLabel:this.sessLabel(ev.session), sessionHref:this.href("session",ev.session), sessionTitle:s&&s.title?` — ${s.title}`:"",
+      playedText:s&&s.playedLabel?t("common.played",{date:s.playedLabel}):"",
+      worldWhen:worldParts.join(" · ")||ev.igLabel||t("common.notRecorded"),
+      worldSub:[ev.placeLabel, ev.dayApprox?t("event.dayInferred"):""].filter(Boolean).join(" — "),
       place:pl?{href:this.href("place",pl.id),name:pl.name,trail:pl.ancestorIds.slice().reverse().map(id=>m.placeById.get(id).name).join(" › ")}:null,
       mapHref:this.mapHref(ev), hasCoords:ev.hasCoords, mini:mini||{},
       consequences:ev.consequences, hasConsequences:ev.consequences.length>0,
       people, hasPeople:people.length>0,
       quests:ev.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:ev.questIds.length>0,
       related:ev.relatedIds.map(id=>this.evRow(m.eventById.get(id))), hasRelated:ev.relatedIds.length>0,
-      plots, hasPlots:plots.length>0,
+      plots, hasPlots:plots.length>0, fromLog:t("event.fromLog",{n:ev.session}),
     };
   }
   _sessionVm(s){
-    const m=this.model, evs=s.eventIds.map(id=>m.eventById.get(id));
+    const m=this.model, t=this.t, evs=s.eventIds.map(id=>m.eventById.get(id));
     const last=m.sessions.filter(x=>!x.isStub).slice(-1)[0];
     const people=[...s.characterIds,...s.npcIds], hasStart=!!(s.startedHere||s.igStart), hasEnd=!!(s.endedHere||s.igEnd);
+    const dl=d=>m.dayLabels[d]||"";
     return {
-      no:s.no, title:s.title||`Session ${s.no}`, isStub:s.isStub, isLatest:last&&last.no===s.no,
-      playedText:s.playedLabel?`Played ${s.playedLabel}`:"Date not recorded",
-      worldText:s.dayText?(s.days.length>1?`${s.dayText} · ${m.dayLabels[s.days[0]]||""}${m.dayLabels[s.days[s.days.length-1]]?` – ${m.dayLabels[s.days[s.days.length-1]]}`:""}`:`${s.dayText}${m.dayLabels[s.days[0]]?` · ${m.dayLabels[s.days[0]]}`:""}`):"In-world date not recorded",
+      no:s.no, kick:this.sessLabel(s.no), title:s.title||this.sessLabel(s.no), isStub:s.isStub, isLatest:last&&last.no===s.no,
+      playedText:s.playedLabel?t("common.played",{date:s.playedLabel}):t("session.dateNotRecorded"),
+      worldText:s.dayText?(s.days.length>1?`${s.dayText} · ${dl(s.days[0])}${dl(s.days[s.days.length-1])?` – ${dl(s.days[s.days.length-1])}`:""}`:`${s.dayText}${dl(s.days[0])?` · ${dl(s.days[0])}`:""}`):t("session.worldNotRecorded"),
       onFilter:()=>this.filterBy("session",String(s.no)),
       // Where the session began and ended, with the in-game clock beside each — one block instead of two.
-      startedHere:s.startedHere||"Not recorded", endedHere:s.endedHere||"Not recorded", igStart:s.igStart||"", igEnd:s.igEnd||"", igRest:s.igRest||"",
+      startedHere:s.startedHere||t("common.notRecorded"), endedHere:s.endedHere||t("common.notRecorded"), igStart:s.igStart||"", igEnd:s.igEnd||"", igRest:s.igRest||"",
       hasStart, hasEnd, hasTime:hasStart||hasEnd||!!s.igRest,
       events:evs.map(ev=>({...this.evRow(ev),summary:ev.summary,when:`${this.dayText(ev)} · ${ev.typeLabel}${ev.placeLabel?` · ${ev.placeLabel}`:""}`})),
       eventCount:evs.length, noEvents:evs.length===0,
@@ -1760,23 +1911,23 @@ class Component extends DCLogic {
     };
   }
   _questVm(q){
-    const m=this.model;
+    const m=this.model, t=this.t;
     const giver=q.giverId&&m.personById.get(q.giverId);
     const people=[...q.characterIds.map(id=>this.personChip(m.personById.get(id))),
-                  ...q.npcIds.filter(id=>!q.characterIds.includes(id)).map(id=>{ const p=m.personById.get(id); return this.personChip(p,p.id===q.giverId?"gave the quest":""); })];
-    const steps=q.progress.map(st=>{
-      const s=m.sessionByNo.get(st.session);
-      const events=st.eventIds.map(id=>{ const ev=m.eventById.get(id); return {...this.evRow(ev),when:`${this.dayText(ev)} · ${ev.typeLabel}`}; });
-      const plots=st.plots.map(p=>this.plotVm(p));
-      return { session:st.session, href:this.href("session",st.session), sub:[s&&s.title, s&&s.playedLabel?`played ${s.playedLabel}`:""].filter(Boolean).join(" · "),
+                  ...q.npcIds.filter(id=>!q.characterIds.includes(id)).map(id=>{ const p=m.personById.get(id); return this.personChip(p,p.id===q.giverId?t("quest.gaveQuest"):""); })];
+    const steps=q.progress.map(stp=>{
+      const s=m.sessionByNo.get(stp.session);
+      const events=stp.eventIds.map(id=>{ const ev=m.eventById.get(id); return {...this.evRow(ev),when:`${this.dayText(ev)} · ${ev.typeLabel}`}; });
+      const plots=stp.plots.map(p=>this.plotVm(p));
+      return { session:stp.session, label:this.sessLabel(stp.session), href:this.href("session",stp.session), sub:[s&&s.title, s&&s.playedLabel?t("common.playedLower",{date:s.playedLabel}):""].filter(Boolean).join(" · "),
         events, hasEvents:events.length>0, plots, isEmpty:!events.length&&!plots.length };
     });
     return {
       title:q.title, summary:q.summary, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`,
-      sessText:q.sessionNos.length?q.sessionNos.map(n=>`S${n}`).join(" · "):"",
+      sessText:q.sessionNos.length?q.sessionNos.map(n=>t("common.sessionShort",{n})).join(" · "):"",
       giver:q.giver, giverHref:giver?this.href("character",giver.id):null, giverPlain:!giver,
       hasByline:!!(q.giver||q.dayText), bothByline:!!(q.giver&&q.dayText),
-      tableText:q.firstSession!=null?(q.firstSession===q.lastSession?`Session ${q.firstSession}`:`Sessions ${q.firstSession}–${q.lastSession} (${q.progress.length} recorded)`):"Not yet linked to a session",
+      tableText:q.firstSession!=null?(q.firstSession===q.lastSession?t("quest.tableOne",{n:q.firstSession}):t("quest.tableRange",{a:q.firstSession,b:q.lastSession,count:q.progress.length})):t("quest.notLinked"),
       dayText:q.dayText, onFilter:()=>this.filterBy("quest",q.id),
       objectives:q.objectives, hasObjectives:q.objectives.length>0,
       people, hasPeople:people.length>0,
@@ -1785,18 +1936,18 @@ class Component extends DCLogic {
     };
   }
   _personVm(p){
-    const m=this.model;
+    const m=this.model, t=this.t, same=(a,b)=>M.fold(a)===M.fold(b);
     const events=p.eventIds.map(id=>this.evRow(m.eventById.get(id)));
-    const notes=p.notes.map(n=>({ session:n.session, href:this.href("session",n.session), plot:n.plot, text:n.text||(n.race?cap(n.race):"Mentioned"),
-      recordedAs:n.recordedAs&&n.recordedAs.toLowerCase()!==p.name.toLowerCase()?`Recorded as “${n.recordedAs}”`:"" }));
+    const notes=p.notes.map(n=>({ session:n.session, sessionLabel:this.sessLabel(n.session), href:this.href("session",n.session), plot:n.plot, text:n.text||(n.race?cap(n.race):t("person.mentioned")),
+      recordedAs:n.recordedAs&&!same(n.recordedAs,p.nameEn)&&!same(n.recordedAs,p.name)?t("person.recordedAs",{name:n.recordedAs}):"" }));
     const relations=p.relations.map(rl=>{ const o=m.personById.get(rl.id); return { href:this.href("character",o.id), label:o.name, sub:rl.label, sealCls:this.sealCls(o,"sm"), seal:this.seal(o), mono:this.mono(o) }; });
     const chip=o=>({ href:this.href("character",o.id), label:o.name, cls:"cc-chip", sealCls:this.sealCls(o,"sm"), seal:this.seal(o), mono:this.mono(o) });
     const factions=p.factionIds.map(id=>chip(m.personById.get(id))), members=p.memberIds.map(id=>chip(m.personById.get(id)));
     const quests=p.questIds.map(id=>m.questById.get(id)).sort((a,b)=>a.statusOrder-b.statusOrder||(b.lastSession||0)-(a.lastSession||0)).map(q=>this.questRow(q));
-    const aliases=p.aliases.filter(a=>a.toLowerCase()!==p.name.toLowerCase()).join(", ");
-    const sessText=p.sessionNos.length?p.sessionNos.map(n=>`Session ${n}`).join(", "):"";
+    const aliases=p.aliases.filter(a=>!same(a,p.name)).join(t("common.listSep"));
+    const sessText=p.sessionNos.length?p.sessionNos.map(n=>this.sessLabel(n)).join(t("common.listSep")):"";
     return {
-      name:p.name, role:p.role||"", categoryLabel:p.kind==="pc"?"Party member · Bund Der Vier":p.categoryLabel,
+      name:p.name, role:p.role||"", categoryLabel:p.kind==="pc"?t("person.partyKick"):p.categoryLabel,
       sealCls:this.sealCls(p,"lg"), seal:this.seal(p), mono:this.mono(p),
       race:p.race?cap(p.race):"", aliases, sessText, hasFacts:!!(p.race||aliases||sessText),
       canFilter:p.eventIds.length>0, onFilter:()=>p.kind==="pc"?this.filterBy("pcs",[p.id]):this.filterBy("npc",p.id),
@@ -1809,18 +1960,18 @@ class Component extends DCLogic {
     };
   }
   _placeVm(pl){
-    const m=this.model;
+    const m=this.model, t=this.t, same=(a,b)=>M.fold(a)===M.fold(b);
     const events=pl.allEventIds.map(id=>{ const ev=m.eventById.get(id), sub=ev.locationId!==pl.id&&m.placeById.get(ev.locationId); return {...this.evRow(ev),when:`${this.dayText(ev)}${sub?` · ${sub.name}`:""}`}; });
-    const notes=pl.notes.map(n=>({ session:n.session, href:this.href("session",n.session), plot:n.plot, text:n.text||"Mentioned",
-      recordedAs:n.recordedAs&&n.recordedAs.toLowerCase()!==pl.name.toLowerCase()?`Recorded as “${n.recordedAs}”`:"" }));
+    const notes=pl.notes.map(n=>({ session:n.session, sessionLabel:this.sessLabel(n.session), href:this.href("session",n.session), plot:n.plot, text:n.text||t("place.mentioned"),
+      recordedAs:n.recordedAs&&!same(n.recordedAs,pl.nameEn)&&!same(n.recordedAs,pl.name)?t("person.recordedAs",{name:n.recordedAs}):"" }));
     const people=pl.personIds.map(id=>m.personById.get(id)).sort((a,b)=>(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)).map(p=>this.personChip(p));
-    const aliases=pl.aliases.filter(a=>a.toLowerCase()!==pl.name.toLowerCase()).map(a=>`“${a}”`).join(", ");
+    const aliasList=pl.aliases.filter(a=>!same(a,pl.name)).map(a=>`“${a}”`).join(t("common.listSep"));
     return {
       name:pl.name, kindLabel:pl.kindLabel,
       crumbs:pl.ancestorIds.slice().reverse().map((id,i)=>({href:this.href("place",id),label:m.placeById.get(id).name,sep:i>0})), hasCrumbs:pl.ancestorIds.length>0,
-      aliases, hasByline:!!(pl.ancestorIds.length||aliases), bothByline:!!(pl.ancestorIds.length&&aliases),
+      aliases:aliasList?t("place.aka",{list:aliasList}):"", hasByline:!!(pl.ancestorIds.length||aliasList), bothByline:!!(pl.ancestorIds.length&&aliasList),
       mapHref:this.placeMapHref(pl), canFilter:pl.allEventIds.length>0, onFilter:()=>this.filterBy("place",pl.id),
-      planarNote:pl.isPlanar?"Another plane of existence — it has no place on the map of Exandria.":"",
+      planarNote:pl.isPlanar?t("place.planar"):"",
       children:pl.childIds.map(id=>this.placeChip(m.placeById.get(id))), hasChildren:pl.childIds.length>0,
       events, eventCount:events.length, hasEvents:events.length>0,
       quests:pl.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:pl.questIds.length>0,
@@ -1830,118 +1981,210 @@ class Component extends DCLogic {
   }
 
   // ── Map ───────────────────────────────────────────────────────────────────
+  // Visible events: the shared filters (party members with OR, quest, type, text…). Memoized so
+  // panning and zooming never re-filter. An event opened explicitly ("View on map") is always shown.
   _mapEvents(){
-    const en=this.state.enabled, r=this.state.route;
-    const evs=M.filterEvents(this.model,this.state.filters).filter(ev=>ev.hasCoords&&(!ev.characterIds.length||en[ev.characterIds[0]]!==false));
-    // An event opened explicitly ("View on map") is always shown, even if the filters hide it.
-    const focus=(r.kind==="event"||r.kind==="at")&&this.model.eventById.get(r.id);
+    const r=this.state.route, focusId=(r.kind==="event"||r.kind==="at")?r.id:"";
+    const f=this.state.filters;
+    const m=this._memo.mapEvents;
+    if(m&&m.model===this.model&&m.filters===f&&m.focusId===focusId) return m.val;
+    const evs=M.filterEvents(this.model,f).filter(ev=>ev.hasCoords);
+    const focus=focusId&&this.model.eventById.get(focusId);
     if(focus&&focus.hasCoords&&!evs.includes(focus)){ evs.push(focus); evs.sort((a,b)=>a.chronoIndex-b.chronoIndex); }
+    this._memo.mapEvents={model:this.model,filters:f,focusId,val:evs};
     return evs;
   }
-  _buildRoutesSvg(evs){
-    // Unique pin locations in chronological order, joined by a dashed route line.
-    const pinMap={}, pts=[];
-    if(this.state.showRoute) evs.forEach(ev=>{ const key=`${ev.xp},${ev.yp}`; if(!pinMap[key]){ pinMap[key]=1; pts.push(ev); } });
-    const kids=[];
-    for(let i=0;i<pts.length-1;i++){
-      const a=pts[i],b=pts[i+1];
-      kids.push(h("line",{key:i,x1:a.xp,y1:a.yp,x2:b.xp,y2:b.yp,stroke:"#1a1208",strokeWidth:3.5,strokeDasharray:"7 5",strokeLinecap:"round",opacity:.9,vectorEffect:"non-scaling-stroke",style:{filter:"drop-shadow(0 0 3px rgba(0,0,0,.8))"}}));
-    }
-    return h("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none",style:{position:"absolute",inset:0,width:"100%",height:"100%"}},kids);
-  }
-  _buildPins(evs,view,selId){
-    const MAX=this.viewport.MAX, inv=MAX/view.scale;
-    // Group visible events by map position — one pin per unique coordinate
-    const groups={}, order=[];
-    evs.forEach(ev=>{ const key=`${ev.xp},${ev.yp}`; if(!groups[key]){ groups[key]=[]; order.push(key); } groups[key].push(ev); });
-    return order.map(key=>{
-      const g=groups[key];
-      const isSel=g.some(e=>e.id===selId);
-      const k=(isSel?1.25:1)*inv;
-      const rep=g.find(e=>e.id===selId)||g[0];
-      const isMulti=g.length>1||rep.characterIds.length>1;
-      const c=this.model.personById.get(rep.characterIds[0]);
-      const outer=isMulti?"#4a3a20":(c&&c.color)||"#4a3a20", inner=isMulti||!c?`url("assets/icon-bund-der-vier.png") center/cover`:`url("${c.sealImg}") center/cover`;
-      // Clicking cycles to the next event in the group, or deselects a lone selected pin
-      const idx=g.findIndex(e=>e.id===selId);
-      const next=idx===-1?g[0]:g[(idx+1)%g.length];
-      const label=g.length>1?`${g.length} events · click to cycle`:this.title(rep);
-      const sessNos=[...new Set(g.map(e=>e.session))].sort((a,b)=>a-b);
-      const sessText=sessNos.length>1?`Sessions ${sessNos[0]}–${sessNos[sessNos.length-1]}`:`Session ${sessNos[0]}`;
-      return {
-        title:label, onSelect:()=>this.selectPin(next.id),
-        style:`position:absolute;left:${rep.xp}%;top:${rep.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${outer},${outer}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${isSel?5:3};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
-        sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${inner};`,
-        labelText:sessText,
-        labelStyle:`position:absolute;left:${rep.xp}%;top:${rep.yp}%;padding:1px 7px;pointer-events:none;white-space:nowrap;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#f7edd0;background:rgba(20,14,6,.62);border-radius:999px;transform:translate(-50%,${18*inv}px) scale(${inv});transform-origin:50% 0;text-shadow:0 1px 2px rgba(0,0,0,.95);z-index:${isSel?5:3};`,
-      };
+  // Party members whose routes are shown: the party-member filter only — never quest, type or text.
+  _routeIds(){ return M.selectedCharacterIds(this.model,this.state.filters.pcs); }
+  _buildRoutesSvg(){
+    const ids=this.state.showRoute?this._routeIds():[];
+    return this._memoize("routes",`${ids.join(",")}|${this.model.locale}`,()=>{
+      const m=this.model, layers=MapL.routeLayers(m,ids), idx=new Map(m.pcs.map((p,i)=>[p.id,i]));
+      const pts=list=>list.map(p=>`${p.xp},${p.yp}`).join(" ");
+      const line=(key,points,stroke,width,dash)=>h("polyline",{key,points,fill:"none",stroke,strokeWidth:width,strokeDasharray:dash||undefined,strokeLinecap:"round",strokeLinejoin:"round",vectorEffect:"non-scaling-stroke"});
+      const kids=[];
+      // Casing first (one pass), so crossings stay legible; then shared journeys (ink), then individual ones (colour).
+      layers.shared.forEach((l,i)=>kids.push(line(`sc${i}`,pts(l.points),ROUTE_CASING,7)));
+      layers.individual.forEach((l,i)=>kids.push(line(`ic${i}`,pts(l.points),ROUTE_CASING,5.5)));
+      layers.shared.forEach((l,i)=>kids.push(line(`s${i}`,pts(l.points),SHARED_INK,3.4,"7 5")));
+      layers.individual.forEach((l,i)=>{ const p=m.personById.get(l.characterId), s=routeStyle(p,idx.get(l.characterId)); kids.push(line(`i${i}`,pts(l.points),s.color,2.6,s.dash)); });
+      const svg=h("svg",{viewBox:"0 0 100 100",preserveAspectRatio:"none","aria-hidden":"true",style:{position:"absolute",inset:0,width:"100%",height:"100%",overflow:"visible"}},kids);
+      return { svg, layers };
     });
   }
+  _mapMetrics(){
+    const vw=this._vpEl&&this._vpEl.clientWidth||836;
+    return { vw, vh:this._vpEl&&this._vpEl.clientHeight||560, pxX:vw/100, pxY:vw*this.viewport._ar/100, threshold:this.state.isMobile?42:32 };
+  }
+  // Markers for the current zoom: one per exact coordinate, merged into clusters when closer than a
+  // tap target on screen. Depends on the zoom level only (not on panning), quantized to
+  // eighths of a doubling so a pinch gesture does not re-cluster on every frame.
+  _markers(evs,scale){
+    const mt=this._mapMetrics(), qs=Math.pow(2,Math.round(Math.log2(scale)*8)/8);
+    const key=`${qs.toFixed(4)}|${mt.vw}|${mt.threshold}`;
+    const c=this._memo.markers;
+    if(c&&c.evs===evs&&c.key===key) return c.val;
+    const val=MapL.clusterSpots(MapL.groupSpots(evs),{scale:qs,pxX:mt.pxX,pxY:mt.pxY,threshold:mt.threshold});
+    this._memo.markers={evs,key,val};
+    return val;
+  }
+  _markerSeal(evs){
+    // A portrait when every event here belongs to the same single party member; else the party seal.
+    const ids=[...new Set(evs.flatMap(e=>e.characterIds))];
+    const c=ids.length===1&&evs.every(e=>e.characterIds.length===1)?this.model.personById.get(ids[0]):null;
+    return { outer:(c&&c.color)||"#4a3a20", inner:c&&c.sealImg?`url("${c.sealImg}") center/cover`:`url("assets/icon-bund-der-vier.png") center/cover` };
+  }
+  _buildPins(markers,view,selId,listIds){
+    const t=this.t, inv=this.viewport.MAX/view.scale;
+    return markers.map(mk=>{
+      const ids=mk.events.map(e=>e.id);
+      const isSel=(!listIds&&ids.includes(selId))||(!!listIds&&listIds.includes(ids[0])&&ids.length===listIds.length);
+      const n=mk.events.length, k=(isSel?1.2:1)*inv;
+      const sessText=this.sessRange(mk.events.map(e=>e.session));
+      const z=isSel?6:mk.isCluster?4:3;
+      const caption=`position:absolute;left:${mk.xp}%;top:${mk.yp}%;padding:1px 7px;pointer-events:none;white-space:nowrap;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#f7edd0;background:rgba(20,14,6,.62);border-radius:999px;transform:translate(-50%,${(mk.isCluster?22:18)*inv}px) scale(${inv});transform-origin:50% 0;text-shadow:0 1px 2px rgba(0,0,0,.95);z-index:${z};`;
+      if(mk.isCluster){
+        // Several nearby places: a round numbered seal (not a pin), so it never reads as one location.
+        return { title:t("map.clusterTitle",{count:n,spots:mk.spots.length}), haspopup:"dialog", inner:String(n), badge:"",
+          onSelect:()=>this.openList(ids),
+          style:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;width:36px;height:36px;padding:0;cursor:pointer;border-radius:50%;background:radial-gradient(circle at 38% 30%,#4a3a20,#1e140a);border:2px ${isSel?"solid #f5ead0":"solid rgba(214,180,107,.95)"};box-shadow:0 4px 10px rgba(0,0,0,.55),0 0 0 4px rgba(20,14,6,.45),inset 0 1px 0 rgba(255,255,255,.25);transform:translate(-50%,-50%) scale(${k});transform-origin:center;z-index:${z};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}`,
+          sealStyle:`display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:#f5ead0;text-shadow:0 1px 2px rgba(0,0,0,.8);`,
+          labelText:sessText, labelStyle:caption };
+      }
+      const seal=this._markerSeal(mk.events);
+      return { title:n>1?t("map.pinMany",{count:n}):this.title(mk.events[0]), haspopup:n>1?"dialog":undefined, inner:"",
+        onSelect:()=>n>1?this.openList(ids):this.selectPin(ids[0]),
+        style:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${seal.outer},${seal.outer}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${z};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
+        sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${seal.inner};`,
+        badge:n>1?String(n):"",
+        badgeStyle:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#c4a040;color:#1a1208;border:1.5px solid #f5ead0;font-family:'EB Garamond',serif;font-weight:600;font-size:12px;line-height:15px;text-align:center;pointer-events:none;transform:translate(-50%,-50%) translate(${12*k}px,${-14*k}px) scale(${inv});z-index:${z+1};box-shadow:0 2px 4px rgba(0,0,0,.5);`,
+        labelText:sessText, labelStyle:caption };
+    });
+  }
+  // Popup frame anchored on a marker. It always stays on screen: shifted sideways near the edges,
+  // opened on the side with more room, and — when neither side fits (short phone screens) —
+  // slid vertically so it sits below the map's top bar (the arrow is then dropped).
+  _popupFrame(anchor,view,estH,key){
+    const st=this.state, mt=this._mapMetrics(), inv=this.viewport.MAX/view.scale;
+    const measured=this._popupMeasure; if(measured&&measured.key===key) estH=measured.h;   // real height, once rendered
+    const W=Math.min(280,mt.vw-24), TOP=st.isMobile?62:74, BOTTOM=mt.vh-10;
+    const ax=view.x+(anchor.xp/100)*mt.vw*view.scale, ay=view.y+(anchor.yp/100)*mt.vw*this.viewport._ar*view.scale;
+    const roomAbove=ay-20-TOP, roomBelow=BOTTOM-(ay+40);
+    const below=!!this._vpEl&&roomAbove<estH&&roomBelow>roomAbove;
+    let dy=0;
+    if(!below&&roomAbove<estH) dy=estH-roomAbove;                    // push down, under the top bar
+    if(below&&roomBelow<estH) dy=-Math.min(estH-roomBelow,Math.max(0,ay+40-TOP));
+    const shift=MapL.clampShift(ax,W,mt.vw,10);
+    const arrowLeft=Math.max(16,Math.min(W-16,W/2-shift));
+    const tx=`calc(-50% + ${(shift*inv).toFixed(2)}px)`;
+    return { key,
+      style:`position:absolute;left:${anchor.xp}%;top:${anchor.yp}%;width:${W}px;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:13px;padding:12px 14px 13px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);z-index:8;${below
+        ?`transform:translate(${tx},${((40+dy)*inv).toFixed(2)}px) scale(${inv});transform-origin:50% 0;`
+        :`transform:translate(${tx},calc(-100% - ${((20-dy)*inv).toFixed(2)}px)) scale(${inv});transform-origin:50% 100%;`}animation:chr-pop .18s ease both;cursor:default;`,
+      arrowStyle:dy?"display:none;":`position:absolute;left:${arrowLeft}px;${below?"top":"bottom"}:-7px;width:14px;height:14px;background:${st.darkMode?(below?"#1e180e":"#282010"):(below?"#f7eed4":"#ead7ab")};border-${below?"left":"right"}:1px solid var(--popup-border);border-${below?"top":"bottom"}:1px solid var(--popup-border);transform:translateX(-50%) rotate(45deg);`,
+    };
+  }
   _buildMap(){
-    const m=this.model, st=this.state, view=st.view, r=st.route, MAX=this.viewport.MAX, inv=MAX/view.scale;
+    const m=this.model, st=this.state, t=this.t, view=st.view, r=st.route, MAX=this.viewport.MAX;
     const evs=this._mapEvents();
+    const markers=this._markers(evs,view.scale);
     const selId=(r.kind==="event"||r.kind==="at")?r.id:st.mapSelId;
-    const selEv=selId&&evs.find(e=>e.id===selId)||null;
-    let sel=null;
+    const listIds=st.mapList&&st.mapList.filter(id=>evs.some(e=>e.id===id));
+    const hasListOpen=!!(listIds&&listIds.length);
+    const markerOf=id=>markers.find(mk=>mk.events.some(e=>e.id===id));
+    let sel=null, list=null;
+    if(hasListOpen){
+      const mk=markerOf(listIds[0])||{xp:0,yp:0,spots:[],isCluster:false};
+      const items=listIds.map(id=>m.eventById.get(id));
+      const spots=new Set(items.map(e=>`${e.xp},${e.yp}`)).size;
+      const mt=this._mapMetrics();
+      const sep=MapL.separationScale({isCluster:spots>1,spots:MapL.groupSpots(items)},{scale:view.scale,pxX:mt.pxX,pxY:mt.pxY,threshold:mt.threshold,maxScale:MAX});
+      const fullSep=spots>1&&!!(MapL.separationScale({isCluster:true,spots:MapL.groupSpots(items)},{scale:1,pxX:mt.pxX,pxY:mt.pxY,threshold:mt.threshold,maxScale:MAX})||{}).full;
+      // The list scrolls inside a height that leaves room for its header, note and zoom button on screen.
+      const chrome=26+64+(spots>1&&!fullSep?48:0)+(sep?58:0), listMax=Math.max(112,Math.min(300,mt.vh-(st.isMobile?62:74)-10-chrome));
+      const frame=this._popupFrame(mk,view,chrome+Math.min(items.length*58,listMax),`list|${listIds.join(",")}|${st.lang}|${mt.vw}`);
+      list={ ...frame, listStyle:`max-height:${listMax}px;`, title:spots>1?t("map.listNear",{count:items.length,spots}):t("map.listHere",{count:items.length}),
+        sub:spots>1&&!fullSep?t("map.listNearSub"):"",
+        items:items.map(ev=>{ const s=this.evNode(ev); return { title:this.title(ev), meta:`${this.dayText(ev)} · ${this.sessLabel(ev.session)} · ${ev.typeLabel}`,
+          sealCls:s.cls+" sm", seal:s.style, mono:s.mono, onSelect:()=>this.selectPin(ev.id,{keep:true}) }; }),
+        canZoom:!!sep, onZoom:()=>sep&&this.zoomTo({xp:mk.xp,yp:mk.yp},sep.scale) };
+    }
+    const selEv=!hasListOpen&&selId&&evs.find(e=>e.id===selId)||null;
     if(selEv){
-      const group=evs.filter(e=>e.xp===selEv.xp&&e.yp===selEv.yp), gi=group.findIndex(e=>e.id===selEv.id);
+      const mk=markerOf(selEv.id), group=mk?mk.events:[selEv], gi=group.findIndex(e=>e.id===selEv.id);
       const s=this.evSeal(selEv);
-      // Open the popup below the pin when there is no room above it (pins near the map's top edge).
-      const vw=this._vpEl?this._vpEl.clientWidth:0, pinY=view.y+(selEv.yp/100)*vw*this.viewport._ar*view.scale, below=!!vw&&pinY<330;
-      sel={ title:this.title(selEv), summary:selEv.summary, session:selEv.session, when:this.dayText(selEv),
+      const step=d=>()=>this.selectPin(group[(gi+d+group.length)%group.length].id,{keep:true});
+      sel={ ...this._popupFrame(mk||selEv,view,group.length>1?290:236,`sel|${selEv.id}|${group.length}|${st.lang}|${this._mapMetrics().vw}`), title:this.title(selEv), summary:selEv.summary,
+        meta:`${this.dayText(selEv)} · ${this.sessLabel(selEv.session)}`,
         seal:s.style||"background:linear-gradient(160deg,#4a3a20,#241608);",
-        readHref:`#/map/event/${enc(selEv.id)}`, sessionHref:`#/map/session/${selEv.session}`,
-        groupNote:group.length>1?`${gi+1} of ${group.length} events here — tap the pin to cycle`:"",
-        style:`position:absolute;left:${selEv.xp}%;top:${selEv.yp}%;width:280px;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:13px;padding:12px 14px 13px;box-shadow:0 22px 46px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);z-index:8;${below
-          ?`transform:translate(-50%,${40*inv}px) scale(${inv});transform-origin:50% 0;`
-          :`transform:translate(-50%,calc(-100% - ${18*inv}px)) scale(${inv});transform-origin:50% 100%;`}animation:chr-pop .18s ease both;cursor:default;`,
-        arrowStyle:`position:absolute;left:50%;${below?"top":"bottom"}:-7px;width:14px;height:14px;background:${st.darkMode?(below?"#1e180e":"#282010"):(below?"#f7eed4":"#ead7ab")};border-${below?"left":"right"}:1px solid var(--popup-border);border-${below?"top":"bottom"}:1px solid var(--popup-border);transform:translateX(-50%) rotate(45deg);` };
+        readHref:`#/map/event/${enc(selEv.id)}`, sessionHref:`#/map/session/${selEv.session}`, sessionLabel:t("map.sessionLog",{n:selEv.session}),
+        hasGroup:group.length>1, groupNote:t("map.nOfM",{i:gi+1,n:group.length}),
+        onPrev:step(-1), onNext:step(1), listLabel:t("map.showList",{count:group.length}), onList:()=>this.openList(group.map(e=>e.id)) };
     }
     const filtered=M.filterEvents(m,st.filters), mapless=filtered.filter(e=>!e.hasCoords).length;
     const spots=new Set(evs.map(e=>`${e.xp},${e.yp}`)).size;
     const activeCount=M.activeFilterCount(st.filters)+(st.filters.text?1:0);
     const lastHash=this._stack[this._stack.length-2]||"";
+    const routes=this._buildRoutesSvg();
+    const pcs=st.filters.pcs||[], idx=new Map(m.pcs.map((p,i)=>[p.id,i]));
+    const party=m.pcs.map(p=>{
+      const on=!pcs.length||pcs.includes(p.id), route=m.routeById.get(p.id), hasRoute=!!route&&route.pointCount>1;
+      return { name:p.name, sub:[p.role||"", hasRoute?"":t("map.noRoute")].filter(Boolean).join(" · "), on, cls:"cc-partyrow"+(on?"":" is-off"),
+        sealCls:"cc-seal", seal:this.seal(p), mono:"", swatch:hasRoute?swatch(routeStyle(p,idx.get(p.id))):null, onToggle:()=>this.toggleVisiblePc(p.id) };
+    });
+    if(m.hasUnassigned){ const on=!pcs.length||pcs.includes(M.NO_CHARACTER);
+      party.push({ name:t("map.unassignedRow"), sub:"", on, cls:"cc-partyrow"+(on?"":" is-off"), sealCls:"cc-seal mono mono-type", seal:"", mono:"❦", swatch:null, onToggle:()=>this.toggleVisiblePc(M.NO_CHARACTER) }); }
+    const sharedMembers=[...new Set(routes.layers.shared.flatMap(l=>l.memberIds))].map(id=>m.personById.get(id).name);
+    const pinsKey=[view.scale.toFixed(4),selId||"",(listIds||[]).join(","),st.lang,st.darkMode].join("|");
+    const pins=(this._memo.pins&&this._memo.pins.markers===markers&&this._memo.pins.key===pinsKey)?this._memo.pins.val
+      :(this._memo.pins={markers,key:pinsKey,val:this._buildPins(markers,view,selId,hasListOpen?listIds:null)}).val;
     return {
       worldStyle:`position:absolute;top:0;left:0;width:${MAX*100}%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/MAX).toFixed(6)});transform-origin:0 0;will-change:transform;`,
       hiLoaded:st.hiLoaded, hiSrc:HI_RES_MAP,
-      routesSvg:this._buildRoutesSvg(evs), pins:this._buildPins(evs,view,selId),
+      routesSvg:routes.svg, pins,
       hasSel:!!sel, sel:sel||{}, onCloseSel:()=>{ this.setState({mapSelId:null}); if(r.kind==="at"||r.kind==="event") this.navigate("#/map",{replace:true}); },
+      hasList:!!list, list:list||{}, onCloseList:()=>this.setState({mapList:null}),
+      wrapCls:"cc-mapwrap"+(sel||list?" has-popup":""),
       onDown:e=>{ this.viewport.startDrag(e.clientX,e.clientY,cur=>{ if(this._vpEl) this._vpEl.style.cursor=cur; }); },
       onZoomIn: ()=>{ const el=this._vpEl; this._interact++; this.setState(s=>{ const view=this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1.4); return {view}; }); },
       onZoomOut:()=>{ const el=this._vpEl; this._interact++; this.setState(s=>({view:this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1/1.4)})); },
       onResetView:()=>{ this._interact++; this.setState(s=>({view:this.viewport.clamp({scale:1,x:0,y:0})})); },
-      zoomLabel:`${Math.round(view.scale*100)}%`, zoomHint:st.isMobile?"pinch to zoom · drag to pan":"scroll to zoom · drag to pan",
+      zoomLabel:`${Math.round(view.scale*100)}%`, zoomHint:st.isMobile?t("map.hintTouch"):t("map.hintMouse"),
       panelOpen:st.mapPanelOpen, onTogglePanel:()=>this.setState(s=>({mapPanelOpen:!s.mapPanelOpen})),
-      party:m.pcs.map(p=>{ const on=st.enabled[p.id]!==false; return { name:p.name, role:p.role||"", on, cls:"cc-partyrow"+(on?"":" is-off"), seal:this.seal(p),
-        dot:`background:${on?p.color:"transparent"};border:1.5px solid ${p.color};box-shadow:${on?`0 0 8px ${p.color}99`:"none"};`, onToggle:()=>this.toggle(p.id) }; }),
-      showRoute:st.showRoute, onToggleRoute:()=>this.setState(s=>({showRoute:!s.showRoute})),
-      countText:`${evs.length} event${evs.length===1?"":"s"} at ${spots} place${spots===1?"":"s"}${mapless?` · ${mapless} more without a map position (see the Chronicle)`:""}.`,
+      party, showRoute:st.showRoute, onToggleRoute:()=>this.setState(s=>({showRoute:!s.showRoute})),
+      hasShared:st.showRoute&&routes.layers.shared.length>0, sharedSwatch:swatch(null,true),
+      sharedSub:`${sharedMembers.join(t("common.listSep"))} — ${t("map.sharedRouteSub")}`,
+      countText:t("map.countText",{events:t("common.events",{count:evs.length}),places:t("map.countPlaces",{count:spots})})+(mapless?` ${t("map.mapless",{count:mapless})}`:""),
       activeCount,
       canBack:this.canGoBack()&&!lastHash.startsWith("#/map"), onBack:()=>this.goBack(),
-      backLabel:lastHash.includes("/event/")&&!st.isMobile?"Back to the entry":"Back",
+      backLabel:lastHash.includes("/event/")&&!st.isMobile?t("map.backToEntry"):t("map.back"),
     };
   }
 
   // ── renderVals — coordinates builders, owns no logic (SRP) ───────────────
   renderVals(){
-    const st=this.state, r=st.route, m=this.model, ready=!!m;
+    const st=this.state, r=st.route, m=this.model, ready=!!m, t=this.t;
     const sec=r.section, hasDetail=ready&&!!(r.kind&&r.kind in KINDS);
     const lastSess=ready&&m.sessions.length?m.sessions[m.sessions.length-1].no:0;
-    const nav=SECTIONS.map(s=>({ href:`#/${s.id}`, label:s.label, icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
+    const label=s=>t(`nav.${s.id}`);
+    const nav=SECTIONS.map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
     const secondary=SECTIONS.filter(s=>!s.primary), onSecondary=secondary.find(s=>s.id===sec);
-    const bottomNav=[...SECTIONS.filter(s=>s.primary).map(s=>({ isLink:true, href:`#/${s.id}`, label:s.label, icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-bn"+(s.id===sec?" is-on":"") })),
-      { isMore:true, label:onSecondary?onSecondary.label:"More", icon:onSecondary?ICONS[onSecondary.icon]:ICONS.more, cls:"cc-bn"+(onSecondary||st.moreOpen?" is-on":"") }];
+    const bottomNav=[...SECTIONS.filter(s=>s.primary).map(s=>({ isLink:true, href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-bn"+(s.id===sec?" is-on":"") })),
+      { isMore:true, label:onSecondary?label(onSecondary):t("nav.more"), icon:onSecondary?ICONS[onSecondary.icon]:ICONS.more, cls:"cc-bn"+(onSecondary||st.moreOpen?" is-on":"") }];
+    const langs=I18N.LOCALES.map(l=>({ code:l.code, short:l.short, lang:l.htmlLang, on:l.code===st.lang, cls:l.code===st.lang?"is-on":"",
+      title:this._translator(l.code)("lang.switchTo",{name:l.name}), onClick:()=>this.setLang(l.code) }));
     const [d,dv]=hasDetail?this._buildDetail():[{open:false},{}];
     const v={ chronicle:ready&&sec==="chronicle", sessions:ready&&sec==="sessions", quests:ready&&sec==="quests",
               characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map" };
     return {
+      t:t.dict, htmlLang:t.meta.htmlLang, langs,
       appCls:`cc-app theme-${st.darkMode?"dark":"light"}`,
       bodyCls:"cc-body"+(hasDetail?" has-detail":""),
       mainCls:"cc-main cc-scroll"+(sec==="map"?" is-map":""),
       icons:ICONS, nav, bottomNav,
-      moreItems:secondary.map(s=>({ href:`#/${s.id}`, label:s.label, icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
+      moreItems:secondary.map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
       moreOpen:st.moreOpen, onOpenMore:()=>this.setState(s=>({moreOpen:!s.moreOpen})), onCloseMore:()=>this.setState({moreOpen:false}),
-      themeIcon:st.darkMode?"☀":"☾", themeTitle:st.darkMode?"Switch to light mode":"Switch to dark mode", themeShort:st.darkMode?"Light mode":"Dark mode",
+      themeIcon:st.darkMode?"☀":"☾", themeTitle:st.darkMode?t("theme.toLight"):t("theme.toDark"), themeShort:st.darkMode?t("theme.light"):t("theme.dark"),
       onThemeToggle:()=>this.toggleTheme(),
       showTutorial:st.showTutorial, onOpenTutorial:()=>this.openTutorial(), onCloseTutorial:()=>this.closeTutorial(),
       dataError:st.dataError, loading:!ready&&!st.dataError,
@@ -1962,7 +2205,7 @@ class Component extends DCLogic {
       onToggleSort:()=>this.setPref({sortDesc:!st.sortDesc}),
       mainRef:this.mainRef, detailRef:this.detailRef, searchRef:this.searchRef, headRef:this.headRef, vpRef:this.vpRef,
       stop:e=>e.stopPropagation(),
-      sampleNote:`Session ${lastSess} logged · Kraghammer → Vasselheim.`,
+      sampleNote:t("chronicle.endnote",{n:lastSess}),
     };
   }
 }
