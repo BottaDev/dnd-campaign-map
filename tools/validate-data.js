@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Validates data/*.json: JSON syntax, unique ids, cross-references, asset paths,
-// route waypoints, and the content translations in data/i18n/<locale>.json.
+// route waypoints, the Exandria lore layer (data/lore.json: https-only links, every
+// summary sourced) and the content translations in data/i18n/<locale>.json.
 // Uses the same model the page uses (js/chronicle-model.js), so anything that
 // passes here loads in the browser. Exit code 1 on errors; warnings don't fail.
 //
@@ -20,6 +21,7 @@ const FILES = {
   quests:     { required: true,  shape: "array" },
   npcs:       { required: false, shape: "array" },
   locations:  { required: false, shape: "array" },
+  lore:       { required: false, shape: "object" },
 };
 
 let errors = 0, warnings = 0;
@@ -74,7 +76,8 @@ I18N.LOCALES.filter(l => l.code !== I18N.FALLBACK_LOCALE).forEach(l => {
   Model.checkTranslations(raw, content, l.code).forEach(i => (i.level === "error" ? err : warn)(i.msg));
   const has = (kind, ids) => ids.filter(id => content[kind] && content[kind][id]).length;
   const logged = m.sessions.filter(s => !s.isStub);
-  coverage.push(`${l.code}: events ${has("events", m.events.map(e => e.id))}/${m.events.length} · sessions ${has("sessions", logged.map(s => String(s.no)))}/${logged.length} · quests ${has("quests", m.quests.map(q => q.id))}/${m.quests.length}`);
+  const lore = [...m.lore.values()].filter(x => x.summaryEn);
+  coverage.push(`${l.code}: events ${has("events", m.events.map(e => e.id))}/${m.events.length} · sessions ${has("sessions", logged.map(s => String(s.no)))}/${logged.length} · quests ${has("quests", m.quests.map(q => q.id))}/${m.quests.length} · lore summaries ${lore.filter(x => content.lore && content.lore[x.entityId] && content.lore[x.entityId].summary).length}/${lore.length}`);
 });
 // Asset paths referenced from data must exist (relative paths keep GitHub Pages working).
 m.people.forEach(p => ["sealImg", "portrait"].forEach(k => {
@@ -90,8 +93,11 @@ m.sessions.forEach(s => [...s.activePlots, ...s.completedPlots].forEach(p => p.n
   if (!known) unmatched.add(n.name);
 })));
 
+// Lore links to party members are allowed but unusual (player characters are our own creations).
+m.lore.forEach((x, id) => { const p = m.personById.get(id); if (p && p.kind === "pc") warn(`lore.json: "${id}" is a party member — lore is meant for entities that exist in Exandria's canon`); });
+
 const mapless = m.events.filter(e => !e.hasCoords).length;
-console.log(`\n${m.events.length} events (${mapless} without map position) · ${m.sessions.length} sessions · ${m.quests.length} quests · ${m.pcs.length} PCs · ${m.npcs.length} NPCs/factions · ${m.places.length} places`);
+console.log(`\n${m.events.length} events (${mapless} without map position) · ${m.sessions.length} sessions · ${m.quests.length} quests · ${m.pcs.length} PCs · ${m.npcs.length} NPCs/factions · ${m.places.length} places · lore for ${m.lore.size} entities (${[...m.lore.values()].reduce((n, x) => n + x.references.length, 0)} links)`);
 coverage.forEach(c => console.log("Translated " + c));
 if (unmatched.size) console.log(`Session-log entries not linked to an entity (fine for items; add an alias to link them): ${[...unmatched].join(", ")}`);
 console.log(errors ? `\n${errors} error(s), ${warnings} warning(s)` : `\nOK — ${warnings} warning(s)`);

@@ -19,7 +19,7 @@ The app has six sections. On desktop and tablet they are tabs in the top bar; on
 | **Places** | The places of the campaign as a tree (continent › city › district › site, plus other planes), with what happened in each. |
 | **Map** | The full interactive map — pan, zoom (wheel, buttons, pinch), event pins captioned by session, nearby pins gathered into numbered seals that split as you zoom in, each character's recorded journeys as dashed lines, party toggles. Tapping a pin shows the event (**Read entry** opens it, **Session log** opens that session); tapping a group lists its events. |
 
-Opening anything (an event, session, quest, person or place) shows its full page: beside the list on wide screens, full-screen with a **Back** button on phones. Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept. An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically.
+Opening anything (an event, session, quest, person or place) shows its full page: beside the list on wide screens, full-screen with a **Back** button on phones. Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept. An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically. Characters and places that also exist in Critical Role's Exandria end with a folded **Lore of Exandria** section — a short, spoiler-free summary and a link to the source article (see [`lore.json`](#lorejson--lore-of-exandria)); our own story always comes first.
 
 Keyboard: `/` jumps to the search box, `Esc` closes the open page. The `☀`/`☾` button toggles light/dark (remembered), `?` reopens the guide (also shown on the first visit). **ES / EN** in the top bar (on every screen size) switches the language in place — same page, filters and map view — and is remembered for the next visit.
 
@@ -46,7 +46,8 @@ npm run test:browser  # real-browser checks (run npm install once; drives the in
 - `tests/routes.test.js` — routes: order and revisits, independent and shared legs, breaks, incomplete data, filters that must not create connections, the real `routes.json` untouched.
 - `tests/markers.test.js` — one pin per exact coordinate, zoom-dependent clusters, no event lost, invalid coordinates, popups kept on screen.
 - `tests/i18n.test.js` — default language, persistence, every key used by `index.html` exists in both dictionaries, content translation and fallback, bilingual accent-insensitive search, localized dates, identical ids/relations in both languages.
-- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px. Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
+- `tests/lore.test.js` — Lore of Exandria: one, several or no references, invalid/unsafe URLs, new-tab `rel`, summaries with and without translation, facts, unsourced lore rejected, the real `lore.json` (sourced, https, bilingual, reviewed), and campaign data identical with and without lore.
+- `tests/browser/smoke.mjs` — drives the real page with `playwright-core` (no browser download): the language switch keeps the route, no English left in the Spanish UI, map filters/routes/clusters, phone taps, pinch and pan, every popup on a 320×640 screen, no horizontal scroll at 320/360/390/430/768/1280 px; the lore section (collapsed by default, folds again on the next entry, opens the article in a new tab without `window.opener` — Fandom is stubbed, never contacted —, ES ↔ EN, Chronicle → entry → Back, tap targets and readability at 320/360/390/430 px, light theme). Screenshots go to `test-results/`. Set `BROWSER_CHANNEL=chrome` to drive Chrome instead of Edge. On Windows run it from PowerShell or cmd (Git Bash breaks Playwright's browser pipe).
 
 `node_modules/` and `test-results/` are git-ignored; GitHub Pages never needs them.
 
@@ -82,6 +83,7 @@ data/
   sessions.json     the full log of each session
   quests.json       the campaign quest log
   routes.json       each character's recorded journeys on the map
+  lore.json         Lore of Exandria: curated summaries + external references (optional file)
   i18n/es-AR.json   Spanish translations of the content above        (optional file)
 ```
 
@@ -257,6 +259,47 @@ The dashed lines on the map come **only** from this file. Events are where somet
 
 The current file records the session 8 airship crossing Kraghammer → Vasselheim, taken by the whole party (the session 8 log ends "after the airship crossing" and all four arrive in event `s8_06`). The journey from Emon to Kraghammer (sessions 3–7, never chronicled) is deliberately *not* drawn. The four arrays' coordinates are the original ones.
 
+### `lore.json` — Lore of Exandria
+
+Background on the **wider world** (Critical Role's Exandria), kept apart from what happened at our table. It never changes campaign data: names, aliases, relations, events, search and filters are built exactly as if the file did not exist (a unit test compares both). Entities only *read* it, as an extra folded section at the end of their page.
+
+```json
+{
+  "sources": {
+    "cr-wiki": { "label": "Critical Role Wiki", "url": "https://criticalrole.fandom.com/wiki/Critical_Role_Wiki", "community": true, "spoilers": true }
+  },
+  "entries": {
+    "pelor": {
+      "summary": "One of the Prime Deities and among Exandria's creator gods: …",
+      "facts": { "alsoKnownAs": "The Dawnfather · The Lord of the Sun", "domains": "Life, Light, Nature", "symbol": "A bright, eight-pointed star" },
+      "references": [ { "source": "cr-wiki", "title": "The Dawnfather", "url": "https://criticalrole.fandom.com/wiki/The_Dawnfather" } ],
+      "basedOn": ["cr-wiki"],
+      "lastReviewed": "2026-10-14"
+    }
+  }
+}
+```
+
+- `entries` is keyed by an **existing** person or place id (`npcs.json`, `characters.json`, `locations.json`) — never a new entity, never a renamed id. An entity without an entry simply has no lore section.
+- `sources` — one per website: `label` (shown on links and in the attribution), optional home `url`, `community: true` for fan-run sites (shown as "community wiki, not official"), `spoilers` (default `true`: show the spoiler warning under its links). Add the official site, D&D Beyond, etc. here when needed.
+- `references` — one or more links: `source` (a key of `sources`), `url`, `title` (the article name). **Only absolute `https://` URLs** are accepted (no `javascript:`, `data:`, `http:`, relative or credential URLs); invalid links are dropped and reported, duplicates are ignored. Links open in a new tab with `rel="noopener noreferrer"`.
+- `summary` (optional) — a short **original** text, about 40–80 words. A link without a summary is fine.
+- `facts` (optional) — a few labelled values, from a fixed vocabulary: `alsoKnownAs`, `continent`, `region`, `government`, `portfolio`, `domains`, `symbol`, `worshippers`, `temples`, `base`, `purpose`, `patron`, `affiliation`, `role`. Unknown keys are ignored (warning). Don't repeat what the summary already says.
+- `basedOn` (optional) — source ids the summary was written from (default: the sources of its references). `lastReviewed` (optional, `YYYY-MM-DD`) — when it was last checked.
+- A `summary` or `facts` **without at least one valid reference is rejected** (validator error, not shown): nothing unsourced reaches the page.
+- Spanish: `data/i18n/es-AR.json` → `"lore": { "<id>": { "summary": "…", "facts": { "domains": "Vida, Luz" } } }` (and `"loreSources": { "<sourceId>": { "label": "…" } }` if a source name needs translating). Per-field English fallback; a summary shown in English in the Spanish UI says so. Proper names stay as in the source.
+
+**How it looks.** On a character or place page, after every campaign section, a single collapsed row **Lore of Exandria** (*background from the wider world, kept apart from our campaign*). It starts folded on every page (it stays open if you only switch language). Opened, it shows the summary, the facts, one link card per reference (source, article, ↗), the spoiler warning *"The external article may contain spoilers from the Critical Role universe."* and a one-line attribution (*summary written for this chronicle from … · reviewed … · what happened at our table takes precedence*). Nothing is fetched from the external site — no scraping, no embeds, no images: the text is curated, stored locally and rendered as plain text.
+
+**Adding lore for an entity — checklist**
+
+1. Make sure the entity really *is* the canon one (same person/place, not just a similar name). The DM's own NPCs get nothing unless that link is confirmed.
+2. Find the article and check that it exists under that exact title (the wiki's API is handy: `https://criticalrole.fandom.com/api.php?action=query&format=json&redirects=1&titles=<Title>` — use the final title of any redirect, e.g. Pelor → *The Dawnfather*).
+3. Write the summary in your own words from verifiable facts, **spoiler-free**: no secret identities, betrayals, deaths, plot twists, or late-campaign developments. General background only; when in doubt, leave it out — the link is there for the rest. Never copy article text or images (Fandom text is CC BY-SA; images have their own terms).
+4. Add the Spanish version under `lore` in `data/i18n/es-AR.json`, then run `npm test`.
+
+Current coverage (reviewed 2026-10-14, all from the Critical Role Wiki): places Tal'Dorei, Emon, Greyskull Keep, Gilmore's shop (*Gilmore's Glorious Goods*), Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the Shadowfell, the Far Realm; deities Pelor, Sarenrae, the Raven Queen, Bahamut, Torog; factions La Toma (*Slayer's Take*) and the shadar-kai; people Gilmore, Pike Trickfoot, Allura Vysoren, Cassandra and Percival de Rolo, Vax'ildan. Without a wiki article (left without lore on purpose): Strahd, Ashardalon, Baba Yaga, Ravenloft/Barovia, the Monster Jägers, Haftifaflmorhen, Cromulus, Ilión, Damali, and every DM-original NPC and place.
+
 ## The party-member filter
 
 One filter, shared by the Chronicle and the Map:
@@ -287,7 +330,8 @@ Spanish of Argentina (`es-AR`) is the default; English (`en`) is the original la
                          "activePlots": [ { "name": "…", "qt": "…", "npcs": [ { "role": "…" } ], "notes": ["…"] } ] } },
     "quests":   { "cassandra": { "title": "…", "summary": "…", "objectives": ["…"] } },
     "people":   { "sorfons-mother": { "name": "La madre de Sorfon", "race": "humana", "relations": [ { "label": "…", "reverseLabel": "…" } ] } },
-    "places":   { "gilmores-shop": { "name": "La tienda de Gilmore" } }
+    "places":   { "gilmores-shop": { "name": "La tienda de Gilmore" } },
+    "lore":     { "pelor": { "summary": "…", "facts": { "domains": "Vida, Luz, Naturaleza" } } }
   }
   ```
 
@@ -304,17 +348,18 @@ Spanish of Argentina (`es-AR`) is the default; English (`en`) is the original la
 3. **Quests:** link events with `questIds` and plots with `questId`; update the quest's `summary`, `status` and `sessions[]` in `quests.json`.
 4. **Movement:** if the party travelled, append the waypoints to each traveller's array in `routes.json` — with a shared `leg` id if they went together, and `"break": true` on the first point after an unrecorded jump.
 5. **Translation:** add the Spanish text for the new events, session or quest to `data/i18n/es-AR.json` (see [Languages](#languages-i18n)).
-6. **Validate** before committing:
+6. **Lore (optional):** if a new NPC or place is a known part of Exandria, add a verified reference and a spoiler-free summary to `lore.json` (see [the checklist](#lorejson--lore-of-exandria)).
+7. **Validate** before committing:
 
    ```bash
    node tools/validate-data.js
    ```
 
-   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates, route waypoints and shared legs, asset paths, and the content translations (unknown ids, array lengths, coverage). It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session).
+   It checks JSON syntax, duplicate ids, every reference (characters, NPCs, quests, places, related events, plot quests, giver, factions, relations), coordinates, route waypoints and shared legs, asset paths, the lore layer (https-only links, every summary sourced), and the content translations (unknown ids, array lengths, coverage). It exits with an error if anything would break the page, and warns about softer inconsistencies (for example, an event linking a quest whose `sessions[]` does not list that session).
 
 ## Compatibility
 
-Older records keep working: events with only `date`/`igLabel`/`xp`/`yp`, sessions with only `dateLabel`, quests without `giverId`, or no `npcs.json`/`locations.json` at all. Missing fields are derived where possible (day from `igLabel`, title and play date from `dateLabel`) and otherwise hidden — the page never shows empty sections or placeholder data.
+Older records keep working: events with only `date`/`igLabel`/`xp`/`yp`, sessions with only `dateLabel`, quests without `giverId`, or no `npcs.json`/`locations.json`/`lore.json` at all. Missing fields are derived where possible (day from `igLabel`, title and play date from `dateLabel`) and otherwise hidden — the page never shows empty sections or placeholder data.
 
 ## Assets
 

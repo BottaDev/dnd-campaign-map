@@ -56,6 +56,11 @@
     district: "District", site: "Site", plane: "Plane",
   };
 
+  // Optional structured lore facts (data/lore.json entries[id].facts), shown in this order.
+  // Labels come from the interface dictionaries (lore.fact.<key>); unknown keys are ignored.
+  const LORE_FACTS = ["alsoKnownAs", "continent", "region", "government", "portfolio", "domains", "symbol",
+    "worshippers", "temples", "base", "purpose", "patron", "affiliation", "role"];
+
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
   // Character-filter sentinels (never valid person ids: ids are lower-case words).
@@ -103,6 +108,18 @@
     return i < 0 ? "" : s.slice(i + 1).trim();
   }
 
+  // External links from data files: only absolute https:// URLs to a real host, without
+  // credentials or whitespace/control characters. Anything else (javascript:, data:, http:,
+  // relative paths, "//host") returns null and is never rendered as a link.
+  function safeExternalUrl(value) {
+    const s = typeof value === "string" ? value.trim() : "";
+    if (!s || /[\s\u0000-\u001f\u007f<>"`]/.test(s) || !/^https:\/\//i.test(s)) return null;
+    let u;
+    try { u = new URL(s); } catch (e) { return null; }
+    if (u.protocol !== "https:" || u.username || u.password || !/\.[a-z]{2,}$/i.test(u.hostname)) return null;
+    return u.href;
+  }
+
   // ── Translation overlays ──────────────────────────────────────────────────
   // A translated value is used only when it is a non-empty string; positional
   // arrays only when their length matches the English source (else English).
@@ -142,6 +159,16 @@
       if (!placeIds.has(id)) return warn(`unknown place "${id}"`);
       const src = arr(raw.locations).find(p => p.id === id);
       lenCheck(`place "${id}" aliases`, content.places[id].aliases, src.aliases);
+    });
+    const loreEntries = raw.lore && raw.lore.entries && typeof raw.lore.entries === "object" ? raw.lore.entries : {};
+    Object.keys(content.lore || {}).forEach(id => {
+      if (!personIds.has(id) && !placeIds.has(id)) return warn(`unknown lore entity "${id}"`);
+      const src = loreEntries[id];
+      if (!src) return warn(`lore "${id}" has no English entry in lore.json — it is never shown`);
+      const tf = content.lore[id] && content.lore[id].facts;
+      Object.keys(tf && typeof tf === "object" ? tf : {}).forEach(k => {
+        if (!src.facts || !nonEmpty(src.facts[k])) warn(`lore "${id}": fact "${k}" has no English source — it is never shown`);
+      });
     });
     Object.keys(content.sessions || {}).forEach(no => {
       const src = rawSessions[no];
@@ -188,6 +215,71 @@
         pointCount: segments.reduce((n, s) => n + s.length, 0) });
     });
     return out;
+  }
+
+  // ── Lore: curated background from the wider world (data/lore.json) ────────
+  // lore.json: { sources: { <sourceId>: { label, url?, community?, spoilers? } },
+  //              entries: { <personOrPlaceId>: { references: [{ source, url, title? }], summary?,
+  //                                               facts?: { <LORE_FACTS key>: text }, basedOn?: [sourceId], lastReviewed? } } }
+  // Lore is a separate layer: it is attached to an entity as `entity.lore` and never changes
+  // campaign fields, links, relations or search. Summaries/facts must cite at least one valid
+  // reference; links are https:// only (see safeExternalUrl). Translations: content.lore[id]
+  // { summary, facts: { key: text } } and content.loreSources[id].label — English fallback per field.
+  function normalizeLore(rawLore, o) {
+    const byId = new Map(), sources = {};
+    if (rawLore == null) return { byId, sources };
+    if (typeof rawLore !== "object" || Array.isArray(rawLore)) { o.error("lore.json must be a JSON object { sources, entries }"); return { byId, sources }; }
+    const obj = v => (v && typeof v === "object" && !Array.isArray(v) ? v : {});
+    Object.keys(obj(rawLore.sources)).forEach(id => {
+      const s = obj(rawLore.sources[id]);
+      if (!nonEmpty(s.label)) { o.error(`lore.json: source "${id}" needs a label`); return; }
+      const home = s.url != null ? safeExternalUrl(s.url) : null;
+      if (s.url != null && !home) o.error(`lore.json: source "${id}" has an invalid url "${str(s.url)}" (https:// only)`);
+      sources[id] = { id, label: pickStr(overlay(o.content, "loreSources", id), "label", s.label.trim()), labelEn: s.label.trim(),
+        url: home, community: s.community === true, spoilers: s.spoilers !== false };
+    });
+    const entries = obj(rawLore.entries);
+    Object.keys(entries).forEach(id => {
+      const e = entries[id], at = `lore.json entries["${id}"]`;
+      if (!e || typeof e !== "object" || Array.isArray(e)) { o.error(`${at} must be an object`); return; }
+      if (!o.personById.has(id) && !o.placeById.has(id)) { o.error(`${at}: unknown person or place id`); return; }
+      const tr = overlay(o.content, "lore", id) || {};
+      const seen = new Set();
+      const references = arr(e.references).map((r, i) => {
+        r = obj(r);
+        const url = safeExternalUrl(r.url);
+        if (!url) { o.error(`${at}.references[${i}]: invalid url "${str(r.url)}" — only https:// links are allowed`); return null; }
+        if (seen.has(url)) { o.warn(`${at}.references[${i}]: duplicate link ${url}`); return null; }
+        seen.add(url);
+        const src = sources[r.source];
+        if (!src) o.warn(`${at}.references[${i}]: unknown source "${str(r.source)}"`);
+        return { source: src ? src.id : null, sourceLabel: src ? src.label : new URL(url).hostname.replace(/^www\./, ""),
+          title: str(r.title).trim(), url, community: src ? src.community : false, spoilers: src ? src.spoilers : true };
+      }).filter(Boolean);
+      const summaryEn = str(e.summary).trim();
+      const rf = obj(e.facts), tf = obj(tr.facts);
+      Object.keys(rf).forEach(k => {
+        if (!LORE_FACTS.includes(k)) o.warn(`${at}: unknown fact "${k}" ignored (known: ${LORE_FACTS.join(", ")})`);
+        else if (!nonEmpty(rf[k])) o.warn(`${at}: fact "${k}" is empty`);
+      });
+      const facts = LORE_FACTS.filter(k => nonEmpty(rf[k])).map(k => ({ key: k, label: o.L(`lore.fact.${k}`, k), value: pickStr(tf, k, rf[k].trim()) }));
+      if ((summaryEn || facts.length) && !references.length) { o.error(`${at}: a summary or facts need at least one valid reference (the source they come from) — not shown`); return; }
+      if (!references.length) { o.warn(`${at}: empty entry`); return; }
+      const words = summaryEn ? summaryEn.split(/\s+/).length : 0;
+      if (words > 120) o.warn(`${at}: summary has ${words} words — keep it brief (about 40–80) and link the article for the rest`);
+      arr(e.basedOn).forEach(s => { if (!sources[s]) o.warn(`${at}: basedOn names unknown source "${s}"`); });
+      const basedOn = uniq((e.basedOn ? arr(e.basedOn) : references.map(r => r.source)).filter(s => sources[s]).map(s => sources[s].label));
+      const reviewed = /^\d{4}-\d{2}-\d{2}$/.test(str(e.lastReviewed)) ? e.lastReviewed : null;
+      if (e.lastReviewed != null && !reviewed) o.warn(`${at}: lastReviewed must be YYYY-MM-DD`);
+      const translated = nonEmpty(tr.summary);
+      byId.set(id, {
+        entityId: id, summary: translated ? tr.summary.trim() : summaryEn, summaryEn,
+        summaryLang: summaryEn && !translated ? "en" : o.locale, summaryFallback: !!summaryEn && !translated && o.locale !== "en",
+        facts, references, basedOn, spoilers: references.some(r => r.spoilers),
+        lastReviewed: reviewed, reviewedLabel: reviewed ? o.dateLabel(reviewed) : "",
+      });
+    });
+    return { byId, sources };
   }
 
   // ── build() — raw files → linked campaign model ───────────────────────────
@@ -546,6 +638,11 @@
         ...names, ...qs, ...pl].join(" • "));
     });
 
+    // Lore of Exandria — attached last, read-only beside the campaign data (see normalizeLore).
+    const lore = normalizeLore(raw.lore, { content, locale, personById, placeById, warn, error, L, dateLabel });
+    people.forEach(p => { p.lore = lore.byId.get(p.id) || null; });
+    places.forEach(p => { p.lore = lore.byId.get(p.id) || null; });
+
     // Routes: per-character waypoints, cleaned into polyline segments (see normalizeRoutes).
     const routes = raw.routes && typeof raw.routes === "object" ? raw.routes : {};
     const routeById = normalizeRoutes(routes, personById, placeById, warn);
@@ -556,7 +653,7 @@
 
     return {
       locale, events, eventById, sessions, sessionByNo, quests, questById, people, personById, places, placeById,
-      routes, routeById, days, dayLabels, issues,
+      routes, routeById, days, dayLabels, issues, lore: lore.byId, loreSources: lore.sources,
       // Exact (case/space-insensitive) English name or alias → { type: "person"|"place", id }.
       resolveName: (name) => nameIndex.get(norm(name)) || null,
       pcs: people.filter(p => p.kind === "pc"),
@@ -638,6 +735,6 @@
   }
 
   return { build, filterEvents, search, activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
-    checkTranslations, normalizeRoutes, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
-    EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, fmtDate, parseDay, parseRecorded, splitIgLabel };
+    checkTranslations, normalizeRoutes, normalizeLore, safeExternalUrl, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
+    EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, LORE_FACTS, fmtDate, parseDay, parseRecorded, splitIgLabel };
 });

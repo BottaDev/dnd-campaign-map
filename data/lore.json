@@ -1,0 +1,157 @@
+{
+  "sources": {
+    "cr-wiki": {
+      "label": "Critical Role Wiki",
+      "url": "https://criticalrole.fandom.com/wiki/Critical_Role_Wiki",
+      "community": true,
+      "spoilers": true
+    }
+  },
+  "entries": {
+    "taldorei": {
+      "summary": "One of the continents of Exandria, known in older times as Gwessar. Its lands range from mountains and fertile plains to dense forests and southern jungles. Much of the continent belongs to the Republic of Tal'Dorei. Notable settlements include Emon, Westruun, Whitestone and the dwarven citadel of Kraghammer.",
+      "references": [{ "source": "cr-wiki", "title": "Tal'Dorei", "url": "https://criticalrole.fandom.com/wiki/Tal%27Dorei" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "emon": {
+      "summary": "Capital of Tal'Dorei and the cultural heart of human civilization on the continent, also called the City of Fellowship and the Jewel of Tal'Dorei. A 60-foot wall surrounds the city; its districts include the market of Abdar's Promenade, a Temple District devoted to the Prime Deities and the Erudite Quarter, a centre of higher learning. Canals known as the Ozmit Waterways cross it.",
+      "facts": { "region": "Bladeshimmer Shoreline" },
+      "references": [{ "source": "cr-wiki", "title": "Emon", "url": "https://criticalrole.fandom.com/wiki/Emon" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "greyskull-keep": {
+      "summary": "A keep in Emon that the city had built as a reward for Vox Machina after they first saved it; it took six months to build and became the group's home in the city. It later also served as Whitestone's embassy in Emon. Its patron deity is Sarenrae.",
+      "references": [{ "source": "cr-wiki", "title": "Greyskull Keep", "url": "https://criticalrole.fandom.com/wiki/Greyskull_Keep" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "gilmores-shop": {
+      "summary": "Gilmore's Glorious Goods, the magic shop of Shaun Gilmore in Emon, where magic items are sold and made. Draped in blue and purple fabrics, with bead curtains instead of a door, it is enchanted to be larger inside than out, scented with incense and lit by ever-burning candles. Vox Machina were regular customers and, as Gilmore's sponsored adventurers, enjoyed a generous discount.",
+      "references": [{ "source": "cr-wiki", "title": "Gilmore's Glorious Goods", "url": "https://criticalrole.fandom.com/wiki/Gilmore%27s_Glorious_Goods" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "kraghammer": {
+      "summary": "An underground dwarven citadel within the Cliffkeep Mountains of northern Tal'Dorei, raised in the ruins of an older city, Uthtor. It is governed by an Ironkeeper and divided into three great tiers: the Top, Center and Bottom Slab. Most of its people are dwarves.",
+      "references": [{ "source": "cr-wiki", "title": "Kraghammer", "url": "https://criticalrole.fandom.com/wiki/Kraghammer" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "ozmit-sea": {
+      "summary": "A large body of water that separates three continents: Tal'Dorei, Marquet and Issylra. Vasselheim, on Issylra, stands some 20–30 miles inland from its shores.",
+      "references": [{ "source": "cr-wiki", "title": "Ozmit Sea", "url": "https://criticalrole.fandom.com/wiki/Ozmit_Sea" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "whitestone": {
+      "summary": "A city of Tal'Dorei known as the City of the Sun Tree and long the seat of the noble de Rolo family. Once an independent city-state, it later joined the Republic of Tal'Dorei and is governed by an appointed council, the Chamber of Whitestone. In the lore, the Sun Tree at its heart was planted by Pelor.",
+      "facts": { "region": "Parchwood Timberlands" },
+      "references": [{ "source": "cr-wiki", "title": "Whitestone", "url": "https://criticalrole.fandom.com/wiki/Whitestone" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "vasselheim": {
+      "summary": "Called the Dawn City and the Cradle of Faith, a city built around a great mountain, the Heaven's Stair, some 20–30 miles inland from the Ozmit Sea. It is a theocracy: each district honours one of the Prime Deities and is led by its own Dawn Marshal, and the Marshals meet in council on matters of the whole city. Arcane magic is frowned upon, and by tradition visitors arrive on foot, as pilgrims.",
+      "facts": { "continent": "Issylra" },
+      "references": [{ "source": "cr-wiki", "title": "Vasselheim", "url": "https://criticalrole.fandom.com/wiki/Vasselheim" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "shadowfell": {
+      "summary": "One of the planes of existence known in Exandria, also called the Shadow Realm or the Plane of Shadow. The Raven Queen's icy realm, Letherna, is tucked into a corner of it, and it is home to shadar-kai settlements such as the town of Obleris.",
+      "references": [{ "source": "cr-wiki", "title": "Shadowfell", "url": "https://criticalrole.fandom.com/wiki/Shadowfell" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "far-realm": {
+      "summary": "A plane of existence that touches the Material Plane, usually deep in the Underdark. Entering it is said to break a mortal mind, and those who have nightmares at its borders are said to sometimes dream things into being.",
+      "references": [{ "source": "cr-wiki", "title": "Far Realm", "url": "https://criticalrole.fandom.com/wiki/Far_Realm" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "pelor": {
+      "summary": "One of the Prime Deities and among Exandria's creator gods: the god of the sun, summer and agriculture, worshipped above all by farmers and people who live off the land. In the lore he planted the Sun Tree of Whitestone.",
+      "facts": {
+        "alsoKnownAs": "The Dawnfather · The Lord of the Sun · The Primordial Light",
+        "domains": "Life, Light, Nature",
+        "symbol": "A bright, eight-pointed star",
+        "temples": "Chantry of the Dawn (Rexxentrum)"
+      },
+      "references": [{ "source": "cr-wiki", "title": "The Dawnfather", "url": "https://criticalrole.fandom.com/wiki/The_Dawnfather" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "sarenrae": {
+      "summary": "One of the Prime Deities: the goddess of redemption, healing and temperance, with lesser ties to the sun and the dawn. Her realm is the Island of Renewal, in the Fields of Elysium. Pike Trickfoot of Vox Machina is one of her clerics.",
+      "facts": {
+        "alsoKnownAs": "The Everlight · The Dawnflower · The Redeeming Light · Raei",
+        "domains": "Life, Light, Peace",
+        "symbol": "A feminine, humanoid phoenix",
+        "temples": "Temple of Renewal (Vasselheim)"
+      },
+      "references": [{ "source": "cr-wiki", "title": "Sarenrae", "url": "https://criticalrole.fandom.com/wiki/Sarenrae" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "raven-queen": {
+      "summary": "One of the Prime Deities: the goddess of death, fate and winter, and also of twilight and the passage of time, who presides over the transition between life and death. Once a mortal, she ascended to godhood in the Age of Arcanum, and her true name has been lost. She abhors undeath. Her realm, Letherna, lies in the Shadowfell; in Vasselheim, the Duskmeadow district is devoted to her.",
+      "facts": {
+        "alsoKnownAs": "The Matron of Ravens · The Matron of Death · The Duskmaven",
+        "domains": "Death, Grave, Life, Twilight, Blood",
+        "symbol": "A white humanoid mask framed in black feathers",
+        "temples": "Raven's Crest (Vasselheim)"
+      },
+      "references": [{ "source": "cr-wiki", "title": "The Raven Queen", "url": "https://criticalrole.fandom.com/wiki/The_Raven_Queen" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "bahamut": {
+      "summary": "One of the Prime Deities: the god of honour and justice and the deity of good-aligned and metallic dragons, regarded as the first of their kind. He is the sworn enemy of Tiamat, queen of the chromatic dragons. His great temple is the Platinum Sanctuary in Vasselheim.",
+      "facts": {
+        "alsoKnownAs": "The Platinum Dragon · Lord of the North Wind",
+        "domains": "Life, Order, War",
+        "symbol": "A silver dragon's head in profile"
+      },
+      "references": [{ "source": "cr-wiki", "title": "The Platinum Dragon", "url": "https://criticalrole.fandom.com/wiki/The_Platinum_Dragon" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "torog": {
+      "summary": "One of the Betrayer Gods: the evil god of torturers, slavers and jailers. Legend holds that the passages beneath the world were formed by his tears of pain and anger, and his realm is a network of deadly caves and manacles. He was defeated during the Calamity by the Dawnfather and the Everlight.",
+      "facts": {
+        "domains": "Blood, Death, Trickery",
+        "symbol": "Three pale arms clawing from a dark void"
+      },
+      "references": [{ "source": "cr-wiki", "title": "The Crawling King", "url": "https://criticalrole.fandom.com/wiki/The_Crawling_King" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "la-toma": {
+      "summary": "A guild based in Vasselheim whose members are paid to hunt rare creatures, usually for specific parts of the animal. The guild pays homage to Ioun, the goddess of knowledge, prophecy and skill.",
+      "references": [{ "source": "cr-wiki", "title": "Slayer's Take", "url": "https://criticalrole.fandom.com/wiki/Slayer%27s_Take" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "shadar-kai": {
+      "summary": "Elves whose ancestors settled in the Shadowfell and were changed by it: their skin is pale and ashen, and they carry gifts granted by the Raven Queen, the goddess of death whose realm, Letherna, also lies in that plane. They have built settlements there, such as Obleris.",
+      "references": [{ "source": "cr-wiki", "title": "Shadar-kai", "url": "https://criticalrole.fandom.com/wiki/Shadar-kai" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "gilmore": {
+      "summary": "Shaun Gilmore, usually known simply as Gilmore, is a human sorcerer and merchant who owns Gilmore's Glorious Goods, a magic shop in Emon. He is known as the chief sponsor of Vox Machina, to whom he offers a discount on all his wares.",
+      "references": [{ "source": "cr-wiki", "title": "Shaun Gilmore", "url": "https://criticalrole.fandom.com/wiki/Shaun_Gilmore" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "pike": {
+      "summary": "A gnome cleric of Sarenrae, the Everlight, and a member of the adventuring party Vox Machina. She was raised in Westruun by her great-great-grandfather Wilhand Trickfoot, who had turned their family of thieves toward the Everlight. Pike joined Vox Machina to help find her missing childhood friend, Grog Strongjaw.",
+      "references": [{ "source": "cr-wiki", "title": "Pike Trickfoot", "url": "https://criticalrole.fandom.com/wiki/Pike_Trickfoot" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "allura": {
+      "summary": "A human wizard of the school of abjuration and one of the most respected arcanists in Exandria. She holds a seat on the council that governs Tal'Dorei from Emon, and has long been one of Vox Machina's kindest and most loyal allies.",
+      "references": [{ "source": "cr-wiki", "title": "Allura Vysoren", "url": "https://criticalrole.fandom.com/wiki/Allura_Vysoren" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "cassandra": {
+      "summary": "The youngest child of the de Rolo family, the noble house of Whitestone, and the younger sister of Percival de Rolo.",
+      "references": [{ "source": "cr-wiki", "title": "Cassandra de Rolo", "url": "https://criticalrole.fandom.com/wiki/Cassandra_de_Rolo" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "percy": {
+      "summary": "Percival de Rolo III, usually called Percy, is a human gunslinger, a tinkerer and a member of Vox Machina. He belongs to the de Rolo family, the noble house of Whitestone, and in the lore of Exandria he is credited with building the very first firearm.",
+      "references": [{ "source": "cr-wiki", "title": "Percival de Rolo", "url": "https://criticalrole.fandom.com/wiki/Percival_de_Rolo" }],
+      "lastReviewed": "2026-10-14"
+    },
+    "vaxildan": {
+      "summary": "A half-elf rogue, a member of Vox Machina and the twin brother of Vex'ahlia. Born in Byroden, the twins were later taken to the elven city of Syngorn at their father's direction, and left it in their teens to make their own way. In the lore he is known as the Champion of the Raven Queen.",
+      "references": [{ "source": "cr-wiki", "title": "Vax'ildan", "url": "https://criticalrole.fandom.com/wiki/Vax%27ildan" }],
+      "lastReviewed": "2026-10-14"
+    }
+  }
+}

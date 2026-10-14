@@ -1395,5 +1395,103 @@
     "far-realm": {
       "name": "El Reino Lejano"
     }
+  },
+  "lore": {
+    "taldorei": {
+      "summary": "Uno de los continentes de Exandria, llamado Gwessar en tiempos antiguos. Sus tierras van de montañas y llanuras fértiles a bosques densos y selvas en el sur. Gran parte del continente pertenece a la República de Tal'Dorei. Entre sus asentamientos destacados están Emon, Westruun, Whitestone y la ciudadela enana de Kraghammer."
+    },
+    "emon": {
+      "summary": "Capital de Tal'Dorei y corazón cultural de la civilización humana del continente, también llamada la Ciudad de la Hermandad y la Joya de Tal'Dorei. La rodea una muralla de 60 pies; entre sus distritos están el mercado de Abdar's Promenade, un Distrito de los Templos dedicado a las Deidades Principales (Prime Deities) y el Erudite Quarter, centro de estudios superiores. La atraviesan canales llamados Ozmit Waterways."
+    },
+    "greyskull-keep": {
+      "summary": "Un torreón de Emon que la ciudad hizo construir como recompensa para Vox Machina después de que la salvaran por primera vez; tardó seis meses en levantarse y se convirtió en el hogar del grupo en la ciudad. Más tarde también funcionó como embajada de Whitestone en Emon. Su deidad patrona es Sarenrae."
+    },
+    "gilmores-shop": {
+      "summary": "Gilmore's Glorious Goods, la tienda mágica de Shaun Gilmore en Emon, donde se venden y fabrican objetos mágicos. Cubierta de telas azules y violetas, con cortinas de cuentas en lugar de puerta, está encantada para ser más grande por dentro que por fuera; huele a incienso y la iluminan velas que nunca se apagan. Vox Machina eran clientes habituales y, como aventureros patrocinados por Gilmore, tenían un generoso descuento."
+    },
+    "kraghammer": {
+      "summary": "Una ciudadela enana subterránea en las Cliffkeep Mountains, al norte de Tal'Dorei, levantada sobre las ruinas de una ciudad más antigua, Uthtor. La gobierna un Ironkeeper y se divide en tres grandes niveles: Top Slab, Center Slab y Bottom Slab. La mayoría de sus habitantes son enanos."
+    },
+    "ozmit-sea": {
+      "summary": "Una gran masa de agua que separa tres continentes: Tal'Dorei, Marquet e Issylra. Vasselheim, en Issylra, se alza a unas 20–30 millas tierra adentro de sus costas."
+    },
+    "whitestone": {
+      "summary": "Una ciudad de Tal'Dorei conocida como la Ciudad del Árbol del Sol y, durante mucho tiempo, sede de la noble familia de Rolo. Antes ciudad-estado independiente, luego se unió a la República de Tal'Dorei y la gobierna un consejo designado, la Cámara de Whitestone (Chamber of Whitestone). Según el lore, el Árbol del Sol que se alza en su centro lo plantó Pelor."
+    },
+    "vasselheim": {
+      "summary": "Llamada la Ciudad del Alba y la Cuna de la Fe, es una ciudad construida alrededor de una gran montaña, la Heaven's Stair, a unas 20–30 millas tierra adentro del mar de Ozmit. Es una teocracia: cada distrito honra a una de las Deidades Principales (Prime Deities) y lo dirige su propio Dawn Marshal; los Marshals se reúnen en consejo para los asuntos de toda la ciudad. La magia arcana está mal vista y, por tradición, se llega a pie, como peregrino."
+    },
+    "shadowfell": {
+      "summary": "Uno de los planos de existencia conocidos en Exandria, también llamado el Reino de las Sombras o el Plano de la Sombra. En un rincón se esconde Letherna, el reino helado de la Reina Cuervo, y allí hay asentamientos shadar-kai como el pueblo de Obleris."
+    },
+    "far-realm": {
+      "summary": "Un plano de existencia que toca el Plano Material, por lo general en las profundidades de la Infraoscuridad. Se dice que entrar en él quiebra la mente de un mortal, y que quienes tienen pesadillas en sus fronteras a veces hacen realidad lo que sueñan."
+    },
+    "pelor": {
+      "summary": "Una de las Deidades Principales (Prime Deities) y uno de los dioses creadores de Exandria: el dios del sol, el verano y la agricultura, venerado sobre todo por campesinos y por quienes viven de la tierra. Según el lore, plantó el Árbol del Sol de Whitestone.",
+      "facts": {
+        "alsoKnownAs": "El Padre del Alba · El Señor del Sol · La Luz Primordial",
+        "domains": "Vida, Luz, Naturaleza",
+        "symbol": "Una estrella brillante de ocho puntas",
+        "temples": "Chantry of the Dawn (Rexxentrum)"
+      }
+    },
+    "sarenrae": {
+      "summary": "Una de las Deidades Principales (Prime Deities): la diosa de la redención, la sanación y la templanza, con lazos menores con el sol y el alba. Su reino es la Isla de la Renovación, en los Campos Elíseos. Pike Trickfoot, de Vox Machina, es una de sus clérigas.",
+      "facts": {
+        "alsoKnownAs": "La Luz Eterna · La Flor del Alba · La Luz Redentora · Raei",
+        "domains": "Vida, Luz, Paz",
+        "symbol": "Un fénix de forma humana y femenina",
+        "temples": "Temple of Renewal (Vasselheim)"
+      }
+    },
+    "raven-queen": {
+      "summary": "Una de las Deidades Principales (Prime Deities): la diosa de la muerte, el destino y el invierno, y también del crepúsculo y del paso del tiempo, que preside el tránsito entre la vida y la muerte. Fue mortal y ascendió a la divinidad en la Era del Arcano; su verdadero nombre se perdió. Aborrece la no-muerte. Su reino, Letherna, está en el Páramo Sombrío; en Vasselheim, el distrito de Duskmeadow está consagrado a ella.",
+      "facts": {
+        "alsoKnownAs": "La Matrona de los Cuervos · La Matrona de la Muerte · La Duskmaven",
+        "domains": "Muerte, Sepulcro, Vida, Crepúsculo, Sangre",
+        "symbol": "Una máscara humanoide blanca enmarcada en plumas negras",
+        "temples": "Raven's Crest (Vasselheim)"
+      }
+    },
+    "bahamut": {
+      "summary": "Una de las Deidades Principales (Prime Deities): el dios del honor y la justicia y la deidad de los dragones bondadosos y metálicos, a quien se considera el primero de su especie. Es enemigo jurado de Tiamat, reina de los dragones cromáticos. Su gran templo es el Platinum Sanctuary, en Vasselheim.",
+      "facts": {
+        "alsoKnownAs": "El Dragón de Platino · Señor del Viento del Norte",
+        "domains": "Vida, Orden, Guerra",
+        "symbol": "Una cabeza de dragón plateado de perfil"
+      }
+    },
+    "torog": {
+      "summary": "Uno de los Dioses Traidores (Betrayer Gods): el dios maligno de los torturadores, los esclavistas y los carceleros. Según la leyenda, los pasajes bajo el mundo se formaron con sus lágrimas de dolor y de ira, y su reino es una red de cavernas mortales y grilletes. Durante la Calamidad lo derrotaron el Padre del Alba y la Luz Eterna.",
+      "facts": {
+        "domains": "Sangre, Muerte, Engaño",
+        "symbol": "Tres brazos pálidos que arañan desde un vacío oscuro"
+      }
+    },
+    "la-toma": {
+      "summary": "Un gremio con sede en Vasselheim cuyos miembros cobran por cazar criaturas raras, por lo general para obtener partes concretas del animal. El gremio rinde homenaje a Ioun, diosa del conocimiento, la profecía y la destreza."
+    },
+    "shadar-kai": {
+      "summary": "Elfos cuyos antepasados se asentaron en el Páramo Sombrío y fueron transformados por él: tienen la piel pálida y cenicienta y portan dones otorgados por la Reina Cuervo, la diosa de la muerte cuyo reino, Letherna, también está en ese plano. Allí fundaron asentamientos como Obleris."
+    },
+    "gilmore": {
+      "summary": "Shaun Gilmore, conocido simplemente como Gilmore, es un hechicero y mercader humano, dueño de Gilmore's Glorious Goods, una tienda mágica de Emon. Se lo conoce como el principal patrocinador de Vox Machina, a quienes les hace descuento en toda su mercadería."
+    },
+    "pike": {
+      "summary": "Una gnoma clériga de Sarenrae, la Luz Eterna, y miembro del grupo de aventureros Vox Machina. Se crio en Westruun con su tatarabuelo Wilhand Trickfoot, que había apartado a su familia de ladrones del delito para llevarla hacia la Luz Eterna. Pike se unió a Vox Machina para ayudar a encontrar a su amigo de la infancia Grog Strongjaw, que había desaparecido."
+    },
+    "allura": {
+      "summary": "Una maga humana de la escuela de abjuración y una de las arcanistas más respetadas de Exandria. Ocupa un lugar en el consejo que gobierna Tal'Dorei desde Emon y es, desde hace tiempo, una de las aliadas más leales y bondadosas de Vox Machina."
+    },
+    "cassandra": {
+      "summary": "La hija menor de la familia de Rolo, la casa noble de Whitestone, y hermana menor de Percival de Rolo."
+    },
+    "percy": {
+      "summary": "Percival de Rolo III, al que suelen llamar Percy, es un pistolero humano, inventor y miembro de Vox Machina. Pertenece a la familia de Rolo, la casa noble de Whitestone, y en el lore de Exandria se le atribuye la creación dla primera arma de fuego."
+    },
+    "vaxildan": {
+      "summary": "Un semielfo pícaro, miembro de Vox Machina y hermano mellizo de Vex'ahlia. Nacidos en Byroden, los mellizos fueron llevados más tarde a la ciudad élfica de Syngorn por orden de su padre, y la dejaron en la adolescencia para valerse por sí mismos. En el lore se lo conoce como el Campeón de la Reina Cuervo."
+    }
   }
 }

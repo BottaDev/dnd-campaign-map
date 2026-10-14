@@ -35,7 +35,7 @@ function loadRealData() {
   return {
     characters: readJson("data/characters.json"), routes: readJson("data/routes.json"), events: readJson("data/events.json"),
     sessions: readJson("data/sessions.json"), quests: readJson("data/quests.json"), npcs: readJson("data/npcs.json"),
-    locations: readJson("data/locations.json"),
+    locations: readJson("data/locations.json"), lore: readJson("data/lore.json"),
   };
 }
 const loadContent = code => readJson(`data/i18n/${code}.json`);

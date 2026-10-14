@@ -235,6 +235,112 @@ for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024
   });
 }
 
+// ── Lore of Exandria ────────────────────────────────────────────────────────
+// External pages are stubbed: the tests never reach Fandom, they only check what the app asks for.
+const stubWiki = ctx => ctx.route("https://criticalrole.fandom.com/**", r => r.fulfill({ status: 200, contentType: "text/html", body: "<title>stub</title>" }));
+
+await check("lore · collapsed by default; safe new-tab link; spoiler warning; ES ↔ EN; next entry folds again", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places/place/taldorei");
+  await stubWiki(ctx);
+  const isOpen = () => page.locator(".cc-lore").evaluate(d => d.open);
+  eq(await isOpen(), false, "collapsed");
+  assert(!(await page.locator(".cc-lore-p").isVisible()), "summary hidden while collapsed");
+  await page.click(".cc-lore summary");
+  assert(await page.locator(".cc-lore-p").isVisible(), "summary shown");
+  const a = page.locator(".cc-extlink");
+  eq(await a.count(), 1, "one reference");
+  eq(await a.getAttribute("href"), "https://criticalrole.fandom.com/wiki/Tal%27Dorei", "href");
+  eq([await a.getAttribute("target"), await a.getAttribute("rel")], ["_blank", "noopener noreferrer"], "target/rel");
+  assert((await a.textContent()).includes("Critical Role Wiki"), "source named");
+  eq((await page.textContent(".cc-lore-warn")).trim(), "El artículo externo puede contener spoilers del universo de Critical Role.", "spoiler warning");
+  const [tab] = await Promise.all([ctx.waitForEvent("page"), a.click()]);
+  await tab.waitForLoadState();
+  eq(tab.url(), "https://criticalrole.fandom.com/wiki/Tal%27Dorei", "article opened in a new tab");
+  eq(await tab.evaluate(() => window.opener), null, "no window.opener");
+  await tab.close();
+  eq(new URL(page.url()).hash, "#/places/place/taldorei", "the chronicle stays where it was");
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForFunction(() => document.documentElement.lang === "en");
+  eq(await isOpen(), true, "still open after switching language");
+  assert((await page.textContent(".cc-lore-p")).startsWith("One of the continents of Exandria"), "English summary");
+  eq(await page.getAttribute(".cc-lore-p", "lang"), "en", "lang attribute");
+  eq((await page.textContent(".cc-lore-warn")).trim(), "The external article may contain spoilers from the Critical Role universe.", "English warning");
+  await page.evaluate(() => { location.hash = "#/places/place/emon"; });
+  await page.waitForFunction(() => document.querySelector(".cc-doc-h").textContent === "Emon");
+  eq(await isOpen(), false, "the next entry starts collapsed");
+  await page.evaluate(() => { location.hash = "#/characters/character/diomedes"; });
+  await page.waitForFunction(() => document.querySelector(".cc-doc-h").textContent === "Diomedes");
+  eq(await page.locator(".cc-lore").count(), 0, "no lore section for the DM's own NPC");
+  await ctx.close();
+});
+
+await check("lore · Chronicle → event → character → lore → back twice; search filter kept; campaign sections first", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle");
+  await page.fill("input[type=search]", "Allura");
+  await page.waitForTimeout(150);
+  const results = await page.textContent(".cc-results-t");
+  await page.click("a[data-ev=s2_04]");
+  await page.waitForFunction(() => location.hash === "#/chronicle/event/s2_04");
+  await page.click(".cc-doc a[href='#/chronicle/character/allura']");
+  await page.waitForFunction(() => location.hash === "#/chronicle/character/allura");
+  const order = await page.$$eval(".cc-doc > h2, .cc-doc > details", els => els.map(e => e.tagName));
+  eq(order[order.length - 1], "DETAILS", "lore comes after every campaign section");
+  assert(order.filter(x => x === "H2").length >= 2, "campaign sections present");
+  await page.click(".cc-lore summary");
+  assert((await page.textContent(".cc-lore-p")).includes("abjuración"), "Spanish summary");
+  await page.click(".cc-back");
+  await page.waitForFunction(() => location.hash === "#/chronicle/event/s2_04");
+  await page.click(".cc-back");
+  await page.waitForFunction(() => location.hash === "#/chronicle");
+  eq(await page.inputValue("input[type=search]"), "Allura", "search kept");
+  eq(await page.textContent(".cc-results-t"), results, "same results");
+  await ctx.close();
+});
+
+for (const w of [320, 360, 390, 430]) {
+  await check(`lore · ${w}px phone: tap to expand, readable, comfortable link, no horizontal scroll`, async () => {
+    // Phones show an entry full-screen (the list is hidden), so open the list first, then the entry.
+    const { ctx, page } = await open({ viewport: { width: w, height: 780 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, "#/characters");
+    await page.evaluate(() => { location.hash = "#/characters/character/raven-queen"; });
+    await page.waitForSelector(".cc-lore");
+    const sum = page.locator(".cc-lore summary");
+    const closedH = (await sum.boundingBox()).height;
+    assert(closedH >= 44 && closedH <= 90, `collapsed section is one compact row (${closedH}px)`);
+    await sum.scrollIntoViewIfNeeded();
+    await sum.tap();
+    await page.waitForFunction(() => document.querySelector(".cc-lore").open);
+    const m = await page.evaluate(() => {
+      const d = document.querySelector(".cc-detail"), a = document.querySelector(".cc-extlink").getBoundingClientRect();
+      return { sw: document.documentElement.scrollWidth, dsw: d.scrollWidth, dcw: d.clientWidth, a: { x: a.x, r: a.right, h: a.height },
+        font: parseFloat(getComputedStyle(document.querySelector(".cc-lore-p")).fontSize),
+        warn: parseFloat(getComputedStyle(document.querySelector(".cc-lore-warn")).fontSize), facts: document.querySelectorAll(".cc-lore .cc-fact").length };
+    });
+    assert(m.sw <= w && m.dsw <= m.dcw, `horizontal scroll: page ${m.sw}, pane ${m.dsw}/${m.dcw}`);
+    assert(m.a.h >= 44 && m.a.x >= 0 && m.a.r <= w, `link box ${JSON.stringify(m.a)}`);
+    assert(m.font >= 16 && m.warn >= 14, `font sizes ${m.font}/${m.warn}`);
+    eq(m.facts, 4, "deity facts");
+    await page.locator(".cc-lore").screenshot({ path: path.join(OUT, `lore-${w}.png`) });
+    await sum.tap();
+    await page.waitForFunction(() => !document.querySelector(".cc-lore").open);
+    await ctx.close();
+  });
+}
+
+await check("lore · light theme renders the section with the parchment tokens", async () => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); localStorage.setItem("chronicle-theme", JSON.stringify("light")); } catch (e) {} });
+  const page = await ctx.newPage();
+  page.on("pageerror", e => errors.push(`light: ${e.message}`));
+  await page.goto(BASE + "#/places/place/vasselheim");
+  await page.waitForSelector(".cc-lore");
+  assert(await page.locator(".cc-app.theme-light").count(), "light theme");
+  await page.locator(".cc-lore summary").tap();
+  await page.locator(".cc-lore").screenshot({ path: path.join(OUT, "lore-light-390.png") });
+  const color = await page.$eval(".cc-lore-p", el => getComputedStyle(el).color);
+  eq(color, "rgb(67, 51, 28)", "body text uses --body2 of the light theme");
+  await ctx.close();
+});
+
 await check("no console errors or page errors", async () => { eq(errors, [], "errors"); });
 
 await browser.close();

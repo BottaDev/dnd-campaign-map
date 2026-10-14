@@ -389,6 +389,24 @@
   .cc-disc>summary .n{font-family:'EB Garamond',serif;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:0;}
   .cc-disc-b{padding:2px 4px 18px;}
   .cc-disc-b>.cc-h2:first-child{margin-top:4px;}
+  /* Lore of Exandria: background from the wider world — folded away, below our own story */
+  .cc-lore{margin-top:30px;}
+  .cc-lore>summary{padding:8px 4px;}
+  .cc-lore-h{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .cc-lore-hint{font-family:'EB Garamond',Georgia,serif;font-weight:400;font-style:italic;font-size:15px;letter-spacing:0;line-height:1.35;color:var(--muted);}
+  .cc-lore-p{font-size:17px;line-height:1.6;color:var(--body2);margin:2px 0 12px;max-width:38em;}
+  .cc-lore-note{font-size:14.5px;font-style:italic;color:var(--muted);margin:-6px 0 12px;}
+  .cc-lore .cc-facts{margin-bottom:14px;}
+  .cc-lore-refs{display:grid;gap:8px;}
+  .cc-extlink{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 14px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);transition:border-color .15s ease;}
+  .cc-extlink:hover{border-color:var(--card-border-hover);}
+  .cc-extlink-b{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .cc-extlink-t{font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;line-height:1.3;color:var(--title);overflow-wrap:anywhere;}
+  .cc-extlink-s{font-size:14.5px;font-style:italic;color:var(--muted);}
+  .cc-extlink .cc-ico{width:18px;height:18px;color:var(--accent);}
+  .cc-lore-warn{display:flex;gap:8px;margin:10px 0 0;font-size:15px;line-height:1.45;color:var(--body2);}
+  .cc-lore-warn::before{content:"\26A0\FE0E";flex:none;color:var(--effect-bullet);}
+  .cc-lore-foot{margin:12px 0 0;font-size:14px;line-height:1.5;font-style:italic;color:var(--muted);}
   /* Session-log plots: a ruled paragraph; NPC lists and notes fold away */
   .cc-plot{position:relative;padding:2px 0 2px 16px;border-left:2px solid var(--accent);}
   .cc-plot+.cc-plot{margin-top:20px;}
@@ -1127,6 +1145,23 @@
           <sc-if value="{{ pp.isSparse }}"><p class="cc-muted">{{ t.place.sparse }}</p></sc-if>
         </sc-if>
 
+        <!-- LORE OF EXANDRIA (characters, places): curated background, collapsed, after our own story.
+             key = entity, so it starts folded again on every entry; the language switch keeps it open. -->
+        <sc-if value="{{ lo.has }}">
+          <details class="cc-disc cc-lore" key="{{ lo.key }}">
+            <summary>{{ icons.lore }}<span class="cc-lore-h"><span>{{ t.lore.heading }}</span><span class="cc-lore-hint">{{ t.lore.hint }}</span></span></summary>
+            <div class="cc-disc-b">
+              <sc-if value="{{ lo.summary }}"><p class="cc-lore-p" lang="{{ lo.summaryLang }}">{{ lo.summary }}</p></sc-if>
+              <sc-if value="{{ lo.fallbackNote }}"><p class="cc-lore-note">{{ lo.fallbackNote }}</p></sc-if>
+              <sc-if value="{{ lo.noSummary }}"><p class="cc-lore-note" style="margin-top:0;">{{ t.lore.noSummary }}</p></sc-if>
+              <sc-if value="{{ lo.hasFacts }}"><dl class="cc-facts"><sc-for list="{{ lo.facts }}" as="lf"><div class="cc-fact"><dt>{{ lf.label }}</dt><dd>{{ lf.value }}</dd></div></sc-for></dl></sc-if>
+              <div class="cc-lore-refs"><sc-for list="{{ lo.refs }}" as="r"><a class="cc-extlink" href="{{ r.url }}" target="_blank" rel="noopener noreferrer"><span class="cc-extlink-b"><span class="cc-extlink-t">{{ r.label }}</span><span class="cc-extlink-s">{{ r.sub }}</span></span>{{ icons.external }}<span class="cc-sr">{{ t.lore.newTab }}</span></a></sc-for></div>
+              <sc-if value="{{ lo.spoiler }}"><p class="cc-lore-warn">{{ lo.spoiler }}</p></sc-if>
+              <p class="cc-lore-foot">{{ lo.footnote }}</p>
+            </div>
+          </details>
+        </sc-if>
+
         <sc-if value="{{ d.hasPrevNext }}">
           <nav class="cc-prevnext" aria-label="{{ t.common.prevNextAria }}">
             <sc-if value="{{ d.prevHref }}"><a class="cc-pn" href="{{ d.prevHref }}"><span class="cc-pn-k">‹ {{ d.prevKind }}</span><span class="cc-pn-t">{{ d.prevName }}</span></a></sc-if>
@@ -1301,6 +1336,8 @@ const ICON_SHAPES = {
   target:   ["M12 19.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15z","M12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z","M12 2.5v2","M12 19.5v2","M2.5 12h2","M19.5 12h2"],
   pin:      ["M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"],
   layers:   ["M12 4 3.5 8.5 12 13l8.5-4.5z","M3.5 12.5 12 17l8.5-4.5","M3.5 16.5 12 21l8.5-4.5"],
+  lore:     ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M3.5 12h17","M12 3.5c2.4 2.3 3.6 5.1 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.1-3.6-8.5s1.2-6.2 3.6-8.5z"],
+  external: ["M14 4.5h5.5V10","M19.5 4.5 11 13","M17.5 13.5v5a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1h5"],
 };
 const ICONS = Object.fromEntries(Object.entries(ICON_SHAPES).map(([k,ds])=>[k,
   h("svg",{className:"cc-ico",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:k==="more"?3:1.7,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",focusable:"false"},
@@ -1422,7 +1459,7 @@ class Component extends DCLogic {
     try{ if(!localStorage.getItem("chronicle-tutorial-seen")) this.setState({showTutorial:true}); }catch(e){}
     if(!location.hash) history.replaceState(null,"",routeHash(this.state.route));
 
-    // Required files fail loudly; npcs/locations are optional (a 404 simply means "none yet").
+    // Required files fail loudly; npcs/locations/lore are optional (a 404 simply means "none yet").
     const load=(file,name,optional)=>fetch(file).then(r=>{
       if(!r.ok){ if(optional) return null; throw new Error(this.t("status.failedFile",{name})); }
       return r.json().catch(err=>{ throw new Error(this.t("status.invalidJson",{name,error:err.message})); });
@@ -1431,10 +1468,10 @@ class Component extends DCLogic {
     const loadContent=I18N.LOCALES.filter(l=>l.code!==I18N.FALLBACK_LOCALE).map(l=>
       fetch(`data/i18n/${l.code}.json`).then(r=>r.ok?r.json():null).catch(err=>{ console.warn(`[chronicle] data/i18n/${l.code}.json ignored: ${err.message}`); return null; })
         .then(c=>[l.code,c]));
-    const files=[["characters"],["routes"],["events"],["sessions"],["quests"],["npcs",true],["locations",true]];
+    const files=[["characters"],["routes"],["events"],["sessions"],["quests"],["npcs",true],["locations",true],["lore",true]];
     Promise.all([Promise.all(files.map(([n,o])=>load(`data/${n}.json`,n,o))),Promise.all(loadContent)])
-      .then(([[characters,routes,events,sessions,quests,npcs,locations],contents])=>{
-        this.raw={characters,routes,events,sessions,quests,npcs:npcs||[],locations:locations||[]};
+      .then(([[characters,routes,events,sessions,quests,npcs,locations,lore],contents])=>{
+        this.raw={characters,routes,events,sessions,quests,npcs:npcs||[],locations:locations||[],lore:lore||null};
         contents.forEach(([code,c])=>{ if(c&&typeof c==="object") this._content[code]=c; });
         this.model=this._modelFor(this.state.lang);
         if(this.model.issues.length) console.warn("[chronicle] data issues:\n"+this.model.issues.map(i=>`${i.level}: ${i.msg}`).join("\n"));
@@ -1842,8 +1879,8 @@ class Component extends DCLogic {
       return [{...base,session:true,mapHref:firstMapped?this.mapHref(firstMapped):null,...this._pn(s.prevNo!=null&&this.href("session",s.prevNo),s.prevNo!=null&&this.sessLabel(s.prevNo),s.nextNo!=null&&this.href("session",s.nextNo),s.nextNo!=null&&this.sessLabel(s.nextNo),t("common.prevSession"),t("common.nextSession"))},this._sessionVm(s)];
     }
     if(r.kind==="quest"){ const q=m.questById.get(r.id); return q?[{...base,quest:true},this._questVm(q)]:[notFound,{}]; }
-    if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?t("kinds.partyMember"):p.categoryLabel},this._personVm(p)]:[notFound,{}]; }
-    if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true,mapHref:this.placeMapHref(p)},this._placeVm(p)]:[notFound,{}]; }
+    if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?t("kinds.partyMember"):p.categoryLabel,lore:this._loreVm(p,r.kind)},this._personVm(p)]:[notFound,{}]; }
+    if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true,mapHref:this.placeMapHref(p),lore:this._loreVm(p,r.kind)},this._placeVm(p)]:[notFound,{}]; }
     return [{open:false},{}];
   }
   _pn(prevHref,prevName,nextHref,nextName,prevKind,nextKind){
@@ -1977,6 +2014,24 @@ class Component extends DCLogic {
       quests:pl.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:pl.questIds.length>0,
       people, hasPeople:people.length>0, notes, hasNotes:notes.length>0,
       isSparse:!events.length&&!notes.length&&!pl.childIds.length,
+    };
+  }
+
+  // Lore of Exandria for a person or place (model: entity.lore, from data/lore.json). Only text and
+  // https:// URLs already checked by ChronicleModel.safeExternalUrl reach the template — no HTML.
+  _loreVm(ent,kind){
+    const lo=ent&&ent.lore, t=this.t;
+    if(!lo) return { has:false };
+    const refs=lo.references.map(r=>({ url:r.url, label:r.title?`${r.sourceLabel} — ${r.title}`:r.sourceLabel,
+      sub:[t("lore.readMore"), r.community?t("lore.community"):""].filter(Boolean).join(" · ") }));
+    const foot=[lo.basedOn.length?t("lore.basedOn",{sources:lo.basedOn.join(t("common.listSep"))}):"",
+      lo.reviewedLabel?t("lore.reviewed",{date:lo.reviewedLabel}):"", t("lore.precedence")].filter(Boolean);
+    return {
+      has:true, key:`lore:${kind}:${ent.id}`,
+      summary:lo.summary, summaryLang:lo.summaryLang==="en"?"en":t.meta.htmlLang, noSummary:!lo.summary,
+      fallbackNote:lo.summaryFallback?t("lore.inEnglish"):"",
+      facts:lo.facts.map(x=>({ label:x.label, value:x.value })), hasFacts:lo.facts.length>0,
+      refs, spoiler:lo.spoilers?t("lore.spoiler",{count:refs.length}):"", footnote:foot.join(" "),
     };
   }
 
@@ -2193,7 +2248,7 @@ class Component extends DCLogic {
       sl:v.sessions?this._buildSessions():{}, ql:v.quests?this._buildQuests():{},
       pl:v.characters?this._buildPeople():{}, pll:v.places?this._buildPlaces():{},
       mp:v.map?this._buildMap():{},
-      d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{},
+      d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{}, lo:d.lore||{},
       dateType:"date",
       onText:e=>this.setF("text",e.target.value), onClearText:()=>{ this.setF("text",""); if(this._searchEl) this._searchEl.focus(); },
       onNpc:e=>this.setF("npc",e.target.value), onQuest:e=>this.setF("quest",e.target.value), onSession:e=>this.setF("session",e.target.value),
