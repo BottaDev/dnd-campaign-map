@@ -118,6 +118,8 @@
     .cc-tabs{display:none;}
     .cc-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px;}
     .cc-brand-t{font-size:19px;}
+    .cc-top{min-height:50px;}
+    .cc-top .cc-actions{display:none;}                 /* theme + guide live in the More sheet on phones */
     .cc-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:20;background:var(--bar-bg);border-top:1px solid var(--border);box-shadow:0 -10px 24px rgba(0,0,0,.25);padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
   }
   .cc-bn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:6px 2px;border:0;background:none;color:var(--muted);font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
@@ -144,13 +146,13 @@
   .cc-tagline{position:relative;font-style:italic;font-size:16px;color:var(--tagline);margin:10px auto 0;max-width:470px;line-height:1.4;}
   @media (max-width:719px){ .cc-hero{padding:2px 4px 10px;} .cc-hero>.cc-kicker,.cc-hero>.cc-h1{display:none;} .cc-h1{font-size:30px;} .cc-tagline{font-size:15px;margin-top:6px;} .cc-flourish{margin-top:2px;} }
 
-  .cc-sechead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;margin:6px 0 18px;}
+  .cc-sechead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:6px 0 16px;}
   .cc-sec-h{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:34px;line-height:1.05;margin:0;color:var(--h1);text-shadow:var(--h1-shadow);}
   .cc-sec-sub{flex-basis:100%;margin:0;font-style:italic;font-size:16px;color:var(--tagline);}
-  @media (max-width:719px){ .cc-sec-h{font-size:26px;} }
-  .cc-h2{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-family:'Cinzel',serif;font-size:12.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--section);}
-  .cc-h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent);}
-  .cc-h2 .n{font-weight:500;color:var(--accent);letter-spacing:.06em;}
+  @media (max-width:719px){ .cc-sec-h{font-size:24px;} .cc-sec-sub{display:none;} .cc-sechead{margin:4px 0 12px;} }
+  /* Section headings: Cinzel's lower case is already small caps, so no forced upper case / wide tracking. */
+  .cc-h2{display:flex;align-items:baseline;gap:8px;margin:30px 0 10px;font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--section);}
+  .cc-h2 .n{font-family:'EB Garamond',serif;font-size:15px;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:0;}
   .cc-muted{color:var(--muted);font-style:italic;font-size:16px;line-height:1.45;}
   .cc-a{color:var(--title);text-decoration:underline!important;text-decoration-color:var(--line)!important;text-underline-offset:3px;}
   .cc-a:hover{text-decoration-color:var(--accent)!important;}
@@ -202,13 +204,14 @@
   .cc-seals .cc-seal{width:26px;height:26px;margin-right:-6px;font-size:11px;}
 
   /* ── Chronicle ── */
-  .cc-latest{display:flex;align-items:center;gap:12px;margin:4px 0 14px;padding:10px 14px;min-height:58px;border-radius:13px;border:1px solid var(--card-border);background:var(--card-bg);box-shadow:var(--card-shadow);}
-  .cc-latest:hover{border-color:var(--card-border-hover);}
-  .cc-latest-k{flex:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
-  .cc-latest-m{display:flex;flex-direction:column;min-width:0;flex:1;}
-  .cc-latest-t{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--title);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cc-latest-s{font-size:14px;font-style:italic;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* "Latest session" — one quiet line, not a card */
+  .cc-latest{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;min-height:44px;padding:0 2px;color:var(--title);}
+  .cc-latest-k{flex:none;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
+  .cc-latest-t{min-width:0;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-latest-t i{color:var(--muted);}
+  .cc-latest:hover .cc-latest-t{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
   .cc-chev{flex:none;color:var(--accent);font-size:22px;line-height:1;}
+  @media (max-width:719px){ .cc-chead .cc-sec-h{display:none;} .cc-chead{margin:0 0 2px;} .cc-chead .cc-flex{display:none;} }
 
   .cc-toolbar{position:sticky;top:0;z-index:5;margin:0 -24px;padding:10px 24px;background:var(--sticky-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-faint);}
   @media (max-width:719px){ .cc-toolbar{margin:0 -16px;padding:8px 16px;} .cc-hide-xs{display:none;} }
@@ -223,147 +226,190 @@
   .cc-pcchips{display:flex;flex-wrap:wrap;gap:8px;}
   .cc-pcchip{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--body2);cursor:pointer;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em;opacity:.75;transition:all .15s ease;}
   .cc-pcchip.is-on{opacity:1;border-color:var(--card-border-sel);background:var(--card-bg-sel);color:var(--title);box-shadow:0 6px 14px rgba(0,0,0,.2);}
-  .cc-actives{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;align-items:center;}
-  .cc-active{display:inline-flex;align-items:center;gap:6px;min-height:38px;max-width:100%;padding:0 5px 0 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-size:15px;cursor:pointer;}
+  .cc-actives{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center;}
+  .cc-active{display:inline-flex;align-items:center;gap:6px;min-height:44px;max-width:100%;padding:0 5px 0 12px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-size:15px;cursor:pointer;}
   .cc-active-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cc-active-x{flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.14);font-size:12px;}
-  .cc-linkbtn{border:0;background:none;padding:8px 6px;min-height:38px;color:var(--accent);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
-  .cc-results{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap;}
-  .cc-results-t{font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.06em;color:var(--accent);}
+  .cc-linkbtn{border:0;background:none;padding:8px 6px;min-height:44px;color:var(--accent);font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
+  /* Count + grouping/sort: scrolls away with the page, so the sticky bar stays one row tall */
+  .cc-results{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .cc-results-t{font-size:15px;font-style:italic;color:var(--muted);}
   .cc-seg{display:inline-flex;border:1px solid var(--chip-border);border-radius:10px;overflow:hidden;background:var(--chip-soft);}
-  .cc-seg button{min-height:40px;padding:0 11px;border:0;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
+  .cc-seg button{min-height:44px;padding:0 12px;border:0;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.04em;cursor:pointer;white-space:nowrap;}
   .cc-seg button+button{border-left:1px solid var(--chip-border);}
   .cc-seg button.is-on{background:var(--btn-bg);color:var(--btn-color);}
-  @media (max-width:719px){ .cc-seg button{padding:0 8px;letter-spacing:.06em;} .cc-results{gap:6px;} }
+  @media (max-width:719px){ .cc-seg button{padding:0 10px;} .cc-results{gap:6px;} }
 
-  .cc-quick{margin:14px 0 2px;padding:10px 14px 12px;border-radius:14px;border:1px dashed var(--card-border);}
-  .cc-quick-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:6px;}
-  .cc-quick-k{min-width:70px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--section);}
+  .cc-quick{margin:14px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line-faint);}
+  .cc-quick-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:8px;}
+  .cc-quick-k{min-width:70px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em;color:var(--section);}
 
   .cc-empty{text-align:center;padding:26px 14px;margin-top:18px;color:var(--muted);font-style:italic;font-size:16px;border:1px dashed var(--card-border);border-radius:12px;}
-  .cc-group{margin-top:16px;content-visibility:auto;contain-intrinsic-size:auto 600px;}
+  /* Chronological groups: the day/session marker is the strongest element of the list, cards sit under it */
+  .cc-group{margin-top:18px;content-visibility:auto;contain-intrinsic-size:auto 600px;}
   .cc-ghead{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0;border:0;background:none;cursor:pointer;text-align:left;}
   .cc-gsub{font-size:15px;font-style:italic;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-gline{flex:1;height:1px;min-width:16px;background:linear-gradient(90deg,var(--line),transparent);}
-  .cc-gcount{font-family:'Cinzel',serif;font-size:11px;color:var(--accent);}
+  .cc-gline{flex:1;height:1px;min-width:12px;background:linear-gradient(90deg,var(--line),transparent);}
+  .cc-gcount{font-size:14px;font-style:italic;color:var(--muted);}
   .cc-caret{color:var(--accent);font-size:13px;transition:transform .2s ease;}
   .cc-group.is-closed .cc-caret{transform:rotate(-90deg);}
-  .cc-tl{position:relative;padding-left:36px;margin-top:8px;}
-  .cc-tl::before{content:"";position:absolute;left:13px;top:6px;bottom:6px;width:2px;background:var(--tl-line);}
-  .cc-card{position:relative;display:block;padding:14px 16px 13px;margin-bottom:12px;border-radius:14px;border:1px solid var(--card-border);background:var(--card-bg);box-shadow:var(--card-shadow);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease;cursor:pointer;}
+  .cc-tl{position:relative;padding-left:34px;margin-top:6px;}
+  .cc-tl::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:2px;background:var(--tl-line);}
+  .cc-card{position:relative;display:block;padding:11px 14px 12px;margin-bottom:8px;border-radius:12px;border:1px solid transparent;background:var(--card-bg);transition:border-color .16s ease,background .16s ease;cursor:pointer;}
   .cc-card:hover{border-color:var(--card-border-hover);}
-  .cc-card.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);transform:translateX(3px);}
-  .cc-node{position:absolute;left:-36px;top:15px;width:28px;height:28px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;border:2px solid var(--node-border);box-shadow:0 2px 5px rgba(0,0,0,.5);z-index:1;font-size:13px;color:#e6c97a;background-color:#2a1c0a;}
+  .cc-card.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
+  .cc-node{position:absolute;left:-34px;top:12px;width:26px;height:26px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;border:2px solid var(--node-border);box-shadow:0 2px 5px rgba(0,0,0,.45);z-index:1;font-size:13px;line-height:1;color:#e6c97a;background-color:#2a1c0a;}
   .cc-card.is-sel .cc-node{border-color:#c7a24b;box-shadow:0 0 0 3px rgba(199,162,75,.4);}
-  .cc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
+  .cc-meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);line-height:1.3;}
+  .cc-meta-l{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cc-dot{width:3px;height:3px;border-radius:50%;background:#b89a5a;flex:none;}
-  .cc-sesstag{margin-left:auto;color:var(--muted);letter-spacing:.06em;}
-  .cc-card-t{display:block;font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--title);line-height:1.22;margin-bottom:5px;}
-  .cc-card-s{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:16.5px;line-height:1.45;color:var(--body);}
-  .cc-card-f{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap;font-size:14px;font-style:italic;color:var(--muted2);}
-  .cc-card-f .cc-ico{width:15px;height:15px;color:var(--accent);}
-  .cc-place{display:inline-flex;align-items:center;gap:4px;min-width:0;}
-  .cc-endnote{text-align:center;padding:18px 0 4px;color:var(--accent);font-size:13px;font-style:italic;}
+  .cc-sesstag{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;font-family:'EB Garamond',serif;font-size:14.5px;font-style:italic;letter-spacing:0;text-transform:none;color:var(--muted);}
+  .cc-sesstag b{font-family:'Cinzel',serif;font-style:normal;font-weight:400;font-size:20px;line-height:.8;color:var(--accent);}
+  .cc-card-t{display:block;font-family:'Cinzel',serif;font-size:17.5px;font-weight:600;color:var(--title);line-height:1.22;margin-bottom:4px;}
+  .cc-card-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;line-height:1.45;color:var(--body);}
+  .cc-endnote{text-align:center;padding:18px 0 4px;color:var(--accent);font-size:14px;font-style:italic;}
 
   /* ── Lists: sessions, quests, people, places ── */
-  .cc-list{display:grid;gap:12px;}
-  .cc-scard,.cc-qcard,.cc-pcard,.cc-row{position:relative;display:flex;gap:14px;padding:14px 16px;border-radius:14px;border:1px solid var(--card-border);background:var(--card-bg);box-shadow:var(--card-shadow);transition:border-color .15s ease,background .15s ease,transform .15s ease;}
+  .cc-list{display:grid;gap:8px;}
+  .cc-scard,.cc-qcard,.cc-pcard,.cc-row{position:relative;display:flex;gap:14px;padding:12px 14px;border-radius:12px;border:1px solid transparent;background:var(--card-bg);transition:border-color .15s ease,background .15s ease;}
   .cc-scard:hover,.cc-qcard:hover,.cc-pcard:hover,.cc-row:hover{border-color:var(--card-border-hover);}
   .cc-scard.is-sel,.cc-qcard.is-sel,.cc-pcard.is-sel,.cc-row.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
-  .cc-scard-no{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;width:58px;height:58px;border-radius:12px;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;box-shadow:0 4px 9px rgba(0,0,0,.25);font-family:'Cinzel',serif;}
-  .cc-scard-no small{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.8;}
-  .cc-scard-no b{font-size:22px;line-height:1;margin-top:2px;}
-  .cc-cbody{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1;}
+  .cc-scard{align-items:flex-start;}
+  .cc-scard-no{flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-top:2px;border-radius:50%;background:linear-gradient(180deg,#3a2a14,#241608);color:#f5ead0;box-shadow:0 3px 7px rgba(0,0,0,.25);font-family:'Cinzel',serif;font-size:19px;font-weight:600;}
+  .cc-cbody{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
   .cc-ctitle{font-family:'Cinzel',serif;font-size:17px;font-weight:600;color:var(--title);line-height:1.22;}
-  .cc-cmeta{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);}
+  .cc-cmeta{font-size:15px;font-style:italic;color:var(--muted);}
   .cc-ctext{font-size:16px;line-height:1.45;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .cc-ctext.l3{-webkit-line-clamp:3;}
-  .cc-cfoot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;font-size:14px;font-style:italic;color:var(--muted2);}
   .cc-gap{display:flex;align-items:center;gap:10px;padding:2px 6px;color:var(--muted);font-style:italic;font-size:15px;}
   .cc-gap::before,.cc-gap::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 11px);}
-  .cc-qcard{flex-direction:column;gap:6px;}
-  .cc-qcard.tone-done{background:var(--done-bg);border-color:var(--done-border);}
-  .cc-qhead{display:flex;align-items:flex-start;gap:10px;}
-  .cc-qhead .cc-ctitle{flex:1;min-width:0;}
-  .cc-statusbar{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 16px;}
-  .cc-party{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
-  .cc-pcard{align-items:center;}
-  .cc-pcard .cc-seal{width:58px;height:58px;font-size:22px;border-width:2px;}
-  .cc-pcard-stripe{position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;}
-  .cc-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;}
-  .cc-row{align-items:center;gap:12px;padding:10px 12px;min-height:56px;}
-  .cc-row .cc-ctitle{font-size:15.5px;}
-  .cc-row-sub{font-size:14px;font-style:italic;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cc-row-n{flex:none;font-family:'Cinzel',serif;font-size:11px;color:var(--accent);}
-  .cc-tree{display:grid;gap:6px;}
-  .cc-tree .cc-row{box-shadow:none;}
+  .cc-qcard{flex-direction:column;gap:3px;padding-left:18px;}
+  .cc-qcard::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--accent);}
+  .cc-qcard.tone-done::before{background:var(--done-color);}
+  .cc-qcard.tone-done .cc-ctitle{color:var(--body2);}
+  .cc-statusbar{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 6px;}
+  .cc-statusbar .cc-btn{padding:0 11px;gap:6px;font-size:12.5px;letter-spacing:.03em;text-transform:none;box-shadow:none;}
+  .cc-statusbar .cc-count{min-width:20px;height:20px;font-size:12.5px;}
+  .cc-party{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+  .cc-pcard{align-items:center;padding:12px 14px;}
+  .cc-pcard .cc-seal{width:64px;height:64px;font-size:24px;border-width:2px;border-color:var(--pc-color,var(--seal-border));}
+  .cc-pcard .cc-ctitle{font-size:18.5px;}
+  @media (max-width:719px){
+    .cc-party{grid-template-columns:1fr 1fr;}
+    .cc-pcard{flex-direction:column;gap:8px;text-align:center;padding:14px 10px 12px;}
+    .cc-pcard .cc-seal{width:72px;height:72px;}
+    .cc-pcard .cc-row-sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  }
+  /* NPC / place rows: a plain list with hairlines instead of a grid of boxes */
+  .cc-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));column-gap:20px;}
+  .cc-row{align-items:center;gap:12px;padding:6px 8px;min-height:56px;border-radius:10px;background:none;}
+  .cc-people .cc-row,.cc-tree .cc-prow{border-bottom:1px solid var(--line-faint);border-radius:0;}
+  .cc-row:hover{background:var(--card-bg);border-color:transparent;}
+  .cc-people .cc-row.is-sel,.cc-tree .cc-row.is-sel{border-radius:10px;}
+  .cc-row .cc-ctitle{font-size:16px;}
+  .cc-row-sub{font-size:15px;font-style:italic;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-tree{display:grid;}
+  .cc-prow{display:flex;align-items:center;gap:4px;}
+  .cc-prow .cc-row{flex:1;min-width:0;}
+  .cc-prow-map{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;color:var(--accent);}
+  .cc-prow-map:hover{background:var(--card-bg);}
+  .cc-prow-map .cc-ico{width:19px;height:19px;}
 
   /* ── Detail documents ── */
   .cc-doc{max-width:720px;margin:0 auto;padding:0 max(26px,env(safe-area-inset-right)) 48px max(26px,env(safe-area-inset-left));}
   .cc-docbar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;margin:0 -26px 4px;padding:8px 26px;background:var(--sticky-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-faint);}
   .cc-back{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 14px 0 8px;border-radius:11px;border:1px solid var(--chip-border);background:var(--chip-bg);color:var(--chip-color);font-family:'Cinzel',serif;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
-  .cc-dockind{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  @media (max-width:719px){ .cc-doc{padding:0 max(16px,env(safe-area-inset-right)) 36px max(16px,env(safe-area-inset-left));} .cc-docbar{margin:0 -16px 4px;padding:6px 16px;} }
-  .cc-kickrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;}
-  .cc-typebadge{display:inline-flex;align-items:center;gap:6px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding:4px 11px;border-radius:999px;border:1px solid rgba(180,140,60,.4);background:rgba(180,140,60,.1);}
-  .cc-doc-h{font-family:'Cinzel',serif;font-weight:700;font-size:31px;line-height:1.15;color:var(--h1);margin:10px 0 14px;text-shadow:var(--h1-shadow);outline:none;}
+  .cc-dockind{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.06em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .cc-docbar .cc-iconbtn.sm{width:44px;height:44px;}
+  .cc-docmap{flex:none;padding:0 12px 0 10px;gap:6px;color:var(--accent);}
+  .cc-docmap .cc-ico{width:18px;height:18px;}
+  @media (max-width:719px){ .cc-doc{padding:0 max(16px,env(safe-area-inset-right)) 36px max(16px,env(safe-area-inset-left));} .cc-docbar{margin:0 -16px 4px;padding:6px 16px;gap:6px;} }
+  @media (max-width:359px){ .cc-dockind{display:none;} }
+  /* Document header: one kicker line, the title, one byline — then the story */
+  .cc-kick{display:flex;align-items:center;gap:6px 9px;flex-wrap:wrap;margin-top:18px;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);line-height:1.4;}
+  .cc-kick .cc-badge{font-size:11px;}
+  .cc-kick .cc-a{color:var(--accent);}
+  .cc-doc-h{font-family:'Cinzel',serif;font-weight:700;font-size:31px;line-height:1.15;color:var(--h1);margin:6px 0 8px;text-shadow:var(--h1-shadow);outline:none;}
   @media (max-width:719px){ .cc-doc-h{font-size:25px;} }
-  .cc-facts{display:grid;gap:8px;margin:0 0 16px;padding:0;}
-  .cc-fact{display:flex;gap:12px;align-items:baseline;padding:10px 14px;border-radius:11px;background:var(--row-bg);border:1px solid var(--row-border);}
-  .cc-fact dt{flex:none;width:108px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-  .cc-fact dd{margin:0;min-width:0;font-size:16.5px;line-height:1.35;color:var(--title);}
-  .cc-fact .sub{display:block;margin-top:2px;font-size:14.5px;font-style:italic;color:var(--muted);}
-  @media (max-width:480px){ .cc-fact{flex-direction:column;gap:3px;} .cc-fact dt{width:auto;} }
-  .cc-lead{font-size:20px;line-height:1.55;color:var(--body2);margin:6px 0 10px;}
+  .cc-byline{margin:0 0 18px;font-size:16.5px;font-style:italic;line-height:1.5;color:var(--muted);}
+  .cc-byline .cc-a{color:var(--body2);}
+  .cc-sep{padding:0 .35em;color:var(--accent);font-style:normal;}
+  .cc-actrow{display:flex;flex-wrap:wrap;gap:4px 14px;margin:-10px 0 14px;}
+  .cc-act{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 2px;border:0;background:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.06em;color:var(--accent);}
+  .cc-act:hover{text-decoration:underline;text-underline-offset:3px;}
+  .cc-act .cc-ico{width:18px;height:18px;}
+  /* Facts: a quiet definition list with hairlines, not a stack of boxes */
+  .cc-facts{display:grid;margin:0 0 16px;padding:0;}
+  .cc-fact{display:flex;gap:14px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line-faint);}
+  .cc-fact:first-child{padding-top:2px;}
+  .cc-fact dt{flex:none;width:118px;font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--muted);}
+  .cc-fact dd{margin:0;min-width:0;font-size:16.5px;line-height:1.45;color:var(--body2);}
+  .cc-fact .sub{display:block;margin-top:2px;font-size:15px;font-style:italic;color:var(--muted);}
+  @media (max-width:480px){ .cc-fact{flex-direction:column;gap:2px;} .cc-fact dt{width:auto;} }
+  .cc-lead{font-size:20px;line-height:1.6;color:var(--body2);margin:6px 0 10px;max-width:38em;}
   .cc-lead.drop::first-letter{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:2.7em;float:left;line-height:.86;margin:5px 9px 0 0;color:var(--accent);}
-  .cc-prose{font-size:18px;line-height:1.6;color:var(--body2);white-space:pre-line;}
-  @media (max-width:719px){ .cc-lead{font-size:18.5px;} }
+  .cc-prose{font-size:18px;line-height:1.65;color:var(--body2);white-space:pre-line;max-width:38em;}
+  @media (max-width:719px){ .cc-lead{font-size:18px;} .cc-prose{font-size:17.5px;} }
   .cc-bullets{display:grid;gap:8px;margin:0;padding:0;list-style:none;}
-  .cc-bullets li{display:flex;gap:10px;font-size:16.5px;line-height:1.45;color:var(--body2);}
+  .cc-bullets li{display:flex;gap:10px;font-size:16.5px;line-height:1.5;color:var(--body2);}
   .cc-bullets li::before{content:"\2726";flex:none;color:var(--effect-bullet);margin-top:1px;}
   .cc-bullets.notes li::before{content:"\203A";color:#b89a5a;font-size:20px;line-height:1;}
-  .cc-rows{display:grid;gap:10px;}
-  .cc-evrow{display:flex;gap:12px;padding:11px 13px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);transition:border-color .15s ease;}
-  .cc-evrow:hover{border-color:var(--card-border-hover);}
-  .cc-evrow.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);}
-  .cc-evrow .cc-seal{width:30px;height:30px;}
-  .cc-evrow-b{display:flex;flex-direction:column;gap:3px;min-width:0;}
-  .cc-evrow-t{font-family:'Cinzel',serif;font-size:15.5px;font-weight:600;color:var(--title);line-height:1.22;}
-  .cc-evrow-s{font-size:15.5px;line-height:1.42;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .cc-relrow{display:flex;align-items:center;gap:12px;padding:6px 12px 6px 6px;min-height:52px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);}
-  .cc-relrow:hover{border-color:var(--card-border-hover);}
+  /* Related rows (events, quests, relations): one list, hairline separators, hover tint */
+  .cc-rows{display:grid;}
+  .cc-rows>*+*{border-top:1px solid var(--line-faint);}
+  .cc-evrow,.cc-relrow{display:flex;gap:12px;align-items:center;min-height:52px;padding:9px 8px;border-radius:0;transition:background .15s ease;}
+  .cc-evrow{align-items:flex-start;}
+  .cc-evrow:hover,.cc-relrow:hover{background:var(--card-bg);}
+  .cc-evrow.is-sel{background:var(--card-bg-sel);}
+  .cc-evrow .cc-seal{width:28px;height:28px;margin-top:2px;}
+  .cc-evrow-b{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .cc-evrow-m{font-size:14.5px;font-style:italic;color:var(--muted);}
+  .cc-evrow-t{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);line-height:1.25;}
+  .cc-evrow-s{font-size:15.5px;line-height:1.45;color:var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .cc-relrow-b{display:flex;flex-direction:column;min-width:0;}
   .cc-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   @media (max-width:560px){ .cc-two{grid-template-columns:1fr;} }
-  .cc-note{padding:11px 13px;border-radius:11px;border:1px solid var(--row-border);background:var(--row-bg);}
-  .cc-note-k{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
-  .cc-note-t{font-size:16px;line-height:1.45;color:var(--body2);}
-  .cc-note-r{font-size:13.5px;font-style:italic;color:var(--muted);margin-top:4px;}
-  .cc-disc{margin-top:16px;border:1px solid var(--card-border);border-radius:14px;background:var(--card-bg);overflow:hidden;}
-  .cc-disc>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:50px;padding:0 16px;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--section);}
+  .cc-note{padding:2px 0 2px 14px;border-left:2px solid var(--line);}
+  .cc-rows>.cc-note{border-top:0;margin-top:14px;}
+  .cc-rows>.cc-note:first-child{margin-top:0;}
+  .cc-note-k{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--accent);margin-bottom:3px;}
+  .cc-note-t{font-size:16.5px;line-height:1.5;color:var(--body2);}
+  .cc-note-r{font-size:14.5px;font-style:italic;color:var(--muted);margin-top:3px;}
+  /* Disclosures: a hairline and a caret — secondary material stays one tap away */
+  .cc-disc{margin-top:22px;border-top:1px solid var(--line-faint);border-bottom:1px solid var(--line-faint);}
+  .cc-disc+.cc-disc{margin-top:0;border-top:0;}
+  .cc-disc>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 4px;cursor:pointer;font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--section);}
   .cc-disc>summary::-webkit-details-marker{display:none;}
   .cc-disc>summary::after{content:"\25BE";margin-left:auto;color:var(--accent);transition:transform .2s ease;}
   .cc-disc:not([open])>summary::after{transform:rotate(-90deg);}
   .cc-disc>summary .cc-ico{width:18px;height:18px;color:var(--accent);}
-  .cc-disc-b{padding:0 16px 16px;}
-  .cc-plot{position:relative;padding:13px 14px;border-radius:13px;border:1px solid var(--card-border);background:var(--card-bg);box-shadow:0 6px 14px rgba(0,0,0,.1);}
-  .cc-plot+.cc-plot{margin-top:12px;}
-  .cc-plot.done{border-color:var(--done-border);background:var(--done-bg);}
-  .cc-plot-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-  .cc-plot-n{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--title);}
-  .cc-plot-q{font-size:16px;line-height:1.48;color:var(--body);margin:0 0 6px;}
-  .cc-plot-k{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:10px 0 5px;}
-  .cc-plot-npcs{display:grid;gap:5px;margin:0;padding:0;list-style:none;}
-  .cc-plot-npcs li{position:relative;padding-left:14px;font-size:15px;line-height:1.4;color:var(--body2);}
-  .cc-plot-npcs li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;background:#b89a5a;border-radius:50%;}
+  .cc-disc>summary .n{font-family:'EB Garamond',serif;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:0;}
+  .cc-disc-b{padding:2px 4px 18px;}
+  .cc-disc-b>.cc-h2:first-child{margin-top:4px;}
+  /* Session-log plots: a ruled paragraph; NPC lists and notes fold away */
+  .cc-plot{position:relative;padding:2px 0 2px 16px;border-left:2px solid var(--accent);}
+  .cc-plot+.cc-plot{margin-top:20px;}
+  .cc-plot.done{border-left-color:var(--done-color);}
+  .cc-plot-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
+  .cc-plot-n{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);}
+  .cc-plot-h a.cc-badge{position:relative;}
+  .cc-plot-h a.cc-badge::after{content:"";position:absolute;inset:-11px -6px;}   /* 44px touch target around the small badge */
+  .cc-plot-q{font-size:16.5px;line-height:1.5;color:var(--body2);margin:0 0 4px;}
+  .cc-plot-more>summary{list-style:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;cursor:pointer;font-size:15px;font-style:italic;color:var(--accent);}
+  .cc-plot-more>summary::-webkit-details-marker{display:none;}
+  .cc-plot-more>summary::before{content:"\25B8";font-style:normal;font-size:12px;transition:transform .2s ease;}
+  .cc-plot-more[open]>summary::before{transform:rotate(90deg);}
+  .cc-plot-k{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.04em;color:var(--accent);margin:6px 0 5px;}
+  .cc-plot-npcs{display:grid;gap:5px;margin:0 0 6px;padding:0;list-style:none;}
+  .cc-plot-npcs li{position:relative;padding-left:14px;font-size:15.5px;line-height:1.45;color:var(--body2);}
+  .cc-plot-npcs li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;background:#b89a5a;border-radius:50%;}
   .cc-steps{position:relative;padding-left:26px;}
   .cc-steps::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--tl-line);}
-  .cc-step{position:relative;margin-bottom:20px;}
+  .cc-step{position:relative;margin-bottom:22px;}
   .cc-step::before{content:"";position:absolute;left:-24px;top:7px;width:14px;height:14px;border-radius:50%;background:#2a1c0a;border:2px solid #c7a24b;box-shadow:0 0 0 3px rgba(199,162,75,.18);}
-  .cc-step-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:9px;}
-  .cc-step-h a{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--title);}
-  .cc-step-h span{font-size:14px;font-style:italic;color:var(--muted);}
-  .cc-step .cc-rows{margin-bottom:10px;}
+  .cc-step-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .cc-step-h a{font-family:'Cinzel',serif;font-size:16px;font-weight:600;color:var(--title);}
+  .cc-step-h span{font-size:15px;font-style:italic;color:var(--muted);}
+  .cc-step .cc-rows{margin-bottom:12px;}
   .cc-prevnext{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;padding-top:18px;border-top:1px solid var(--line-faint);}
   .cc-pn{display:flex;flex-direction:column;gap:3px;min-height:58px;padding:10px 13px;border-radius:12px;border:1px solid var(--card-border);background:var(--card-bg);min-width:0;}
   .cc-pn:hover{border-color:var(--card-border-hover);}
@@ -462,21 +508,17 @@
       <!-- ═══ CHRONICLE ═══ -->
       <sc-if value="{{ v.chronicle }}">
       <div class="cc-page">
-        <div class="cc-hero">
-          <div class="cc-hero-glow"></div>
-          <div class="cc-kicker">Exandria</div>
-          <h1 class="cc-h1">Chronicle</h1>
-          <div class="cc-flourish">✦</div>
-          <p class="cc-tagline">An interactive record of the journeys, deeds, and entanglements of Bund Der Vier.</p>
+        <div class="cc-sechead cc-chead">
+          <h1 class="cc-sec-h">Chronicle</h1>
+          <span class="cc-flex"></span>
+          <sc-if value="{{ c.latest }}">
+            <a class="cc-latest" href="{{ c.latest.href }}" title="{{ c.latest.sub }}">
+              <span class="cc-latest-k">Latest</span>
+              <span class="cc-latest-t">Session {{ c.latest.no }} <i>· {{ c.latest.title }}</i></span>
+              <span class="cc-chev">›</span>
+            </a>
+          </sc-if>
         </div>
-
-        <sc-if value="{{ c.latest }}">
-          <a class="cc-latest" href="{{ c.latest.href }}">
-            <span class="cc-latest-k">Latest</span>
-            <span class="cc-latest-m"><span class="cc-latest-t">Session {{ c.latest.no }} · {{ c.latest.title }}</span><span class="cc-latest-s">{{ c.latest.sub }}</span></span>
-            <span class="cc-chev">›</span>
-          </a>
-        </sc-if>
 
         <div class="cc-toolbar">
           <div class="cc-searchrow">
@@ -525,26 +567,26 @@
               </div>
             </div>
           </sc-if>
-
-          <sc-if value="{{ c.hasActives }}">
-            <div class="cc-actives">
-              <sc-for list="{{ c.actives }}" as="a">
-                <button class="cc-active" onClick="{{ a.onRemove }}" aria-label="Remove filter {{ a.label }}"><span class="cc-active-l">{{ a.label }}</span><span class="cc-active-x">✕</span></button>
-              </sc-for>
-              <button class="cc-linkbtn" onClick="{{ onReset }}">Clear all</button>
-            </div>
-          </sc-if>
-
-          <div class="cc-results">
-            <span class="cc-results-t" aria-live="polite">{{ c.resultsText }}</span>
-            <span class="cc-flex"></span>
-            <div class="cc-seg" role="group" aria-label="Group events">
-              <button class="{{ c.byDayCls }}" onClick="{{ onGroupDay }}" aria-pressed="{{ c.byDay }}">By day</button>
-              <button class="{{ c.bySessCls }}" onClick="{{ onGroupSession }}" aria-pressed="{{ c.bySession }}">By session</button>
-            </div>
-            <div class="cc-seg"><button onClick="{{ onToggleSort }}" title="{{ c.sortTitle }}" aria-label="{{ c.sortTitle }}">{{ c.sortLabel }}</button></div>
-          </div>
         </div>
+
+        <div class="cc-results">
+          <span class="cc-results-t" aria-live="polite">{{ c.resultsText }}</span>
+          <span class="cc-flex"></span>
+          <div class="cc-seg" role="group" aria-label="Group events by">
+            <button class="{{ c.byDayCls }}" onClick="{{ onGroupDay }}" aria-pressed="{{ c.byDay }}" title="Group by campaign day">Day</button>
+            <button class="{{ c.bySessCls }}" onClick="{{ onGroupSession }}" aria-pressed="{{ c.bySession }}" title="Group by session">Session</button>
+          </div>
+          <div class="cc-seg"><button onClick="{{ onToggleSort }}" title="{{ c.sortTitle }}" aria-label="{{ c.sortTitle }}">{{ c.sortLabel }}</button></div>
+        </div>
+
+        <sc-if value="{{ c.hasActives }}">
+          <div class="cc-actives">
+            <sc-for list="{{ c.actives }}" as="a">
+              <button class="cc-active" onClick="{{ a.onRemove }}" aria-label="Remove filter {{ a.label }}"><span class="cc-active-l">{{ a.label }}</span><span class="cc-active-x">✕</span></button>
+            </sc-for>
+            <button class="cc-linkbtn" onClick="{{ onReset }}">Clear all</button>
+          </div>
+        </sc-if>
 
         <sc-if value="{{ c.hasQuick }}">
           <div class="cc-quick">
@@ -574,14 +616,9 @@
                 <sc-for list="{{ g.events }}" as="ev">
                   <a class="{{ ev.cls }}" href="{{ ev.href }}" data-ev="{{ ev.id }}">
                     <span class="{{ ev.nodeCls }}" style="{{ ev.nodeStyle }}">{{ ev.nodeText }}</span>
-                    <span class="cc-meta"><span>{{ ev.glyph }} {{ ev.typeLabel }}</span><span class="cc-dot"></span><span>{{ ev.when }}</span><span class="cc-sesstag">Session {{ ev.session }}</span></span>
+                    <span class="cc-meta"><span class="cc-meta-l">{{ ev.meta }}</span><span class="cc-sesstag">{{ ev.sessTag }}<b aria-hidden="true">›</b></span></span>
                     <span class="cc-card-t">{{ ev.title }}</span>
                     <span class="cc-card-s">{{ ev.summary }}</span>
-                    <span class="cc-card-f">
-                      <sc-if value="{{ ev.hasPeople }}"><span class="cc-seals"><sc-for list="{{ ev.seals }}" as="s"><span class="{{ s.cls }}" style="{{ s.style }}">{{ s.mono }}</span></sc-for></span></sc-if>
-                      <sc-if value="{{ ev.place }}"><span class="cc-place">{{ icons.pin }}{{ ev.place }}</span></sc-if>
-                      <sc-if value="{{ ev.onMap }}"><span class="cc-dot"></span><span>on the map</span></sc-if>
-                    </span>
                   </a>
                 </sc-for>
               </div>
@@ -609,12 +646,11 @@
             <sc-if value="{{ it.isGap }}"><div class="cc-gap">{{ it.text }}</div></sc-if>
             <sc-if value="{{ it.isSession }}">
               <a class="{{ it.cls }}" href="{{ it.href }}">
-                <span class="cc-scard-no"><small>Session</small><b>{{ it.no }}</b></span>
+                <span class="cc-scard-no" aria-label="Session {{ it.no }}">{{ it.no }}</span>
                 <span class="cc-cbody">
                   <span class="cc-ctitle">{{ it.title }}</span>
                   <span class="cc-cmeta">{{ it.meta }}</span>
-                  <span class="cc-ctext">{{ it.opening }}</span>
-                  <span class="cc-cfoot"><span class="cc-seals"><sc-for list="{{ it.seals }}" as="s"><span class="{{ s.cls }}" style="{{ s.style }}">{{ s.mono }}</span></sc-for></span>{{ it.counts }}</span>
+                  <sc-if value="{{ it.opening }}"><span class="cc-ctext">{{ it.opening }}</span></sc-if>
                 </span>
               </a>
             </sc-if>
@@ -638,9 +674,9 @@
           <div class="cc-list">
             <sc-for list="{{ grp.items }}" as="q">
               <a class="{{ q.cls }}" href="{{ q.href }}">
-                <span class="cc-qhead"><span class="cc-ctitle">{{ q.title }}</span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></span>
-                <span class="cc-ctext l3">{{ q.summary }}</span>
-                <span class="cc-cfoot"><span class="cc-seals"><sc-for list="{{ q.seals }}" as="s"><span class="{{ s.cls }}" style="{{ s.style }}">{{ s.mono }}</span></sc-for></span><span>{{ q.foot }}</span></span>
+                <span class="cc-ctitle">{{ q.title }}</span>
+                <span class="cc-ctext">{{ q.summary }}</span>
+                <sc-if value="{{ q.foot }}"><span class="cc-cmeta">{{ q.foot }}</span></sc-if>
               </a>
             </sc-for>
           </div>
@@ -664,10 +700,9 @@
           <h2 class="cc-h2">Bund Der Vier</h2>
           <div class="cc-party">
             <sc-for list="{{ pl.party }}" as="p">
-              <a class="{{ p.cls }}" href="{{ p.href }}">
-                <span class="cc-pcard-stripe" style="{{ p.stripe }}"></span>
+              <a class="{{ p.cls }}" href="{{ p.href }}" style="{{ p.stripe }}">
                 <span class="cc-seal" style="{{ p.seal }}"></span>
-                <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><span class="cc-row-sub">{{ p.role }}</span><span class="cc-cmeta">{{ p.stats }}</span></span>
+                <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><sc-if value="{{ p.role }}"><span class="cc-row-sub">{{ p.role }}</span></sc-if></span>
               </a>
             </sc-for>
           </div>
@@ -679,7 +714,6 @@
               <a class="{{ p.cls }}" href="{{ p.href }}">
                 <span class="{{ p.sealCls }}">{{ p.mono }}</span>
                 <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><sc-if value="{{ p.sub }}"><span class="cc-row-sub">{{ p.sub }}</span></sc-if></span>
-                <span class="cc-row-n">{{ p.count }}</span>
               </a>
             </sc-for>
           </div>
@@ -697,11 +731,13 @@
         </div>
         <div class="cc-tree">
           <sc-for list="{{ pll.items }}" as="p">
-            <a class="{{ p.cls }}" href="{{ p.href }}" style="{{ p.indent }}">
-              <span class="cc-seal mono-type mono sm">{{ p.glyph }}</span>
-              <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><span class="cc-row-sub">{{ p.sub }}</span></span>
-              <span class="cc-row-n">{{ p.count }}</span>
-            </a>
+            <div class="cc-prow" style="{{ p.indent }}">
+              <a class="{{ p.cls }}" href="{{ p.href }}">
+                <span class="cc-seal mono-type mono sm">{{ p.glyph }}</span>
+                <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><span class="cc-row-sub">{{ p.sub }}</span></span>
+              </a>
+              <sc-if value="{{ p.mapHref }}"><a class="cc-prow-map" href="{{ p.mapHref }}" title="{{ p.mapTitle }}" aria-label="{{ p.mapTitle }}">{{ icons.target }}</a></sc-if>
+            </div>
           </sc-for>
         </div>
       </div>
@@ -780,6 +816,7 @@
           <button class="cc-back" onClick="{{ d.onBack }}">{{ icons.back }}<span>Back</span></button>
           <span class="cc-dockind">{{ d.kindLabel }}</span>
           <span class="cc-flex"></span>
+          <sc-if value="{{ d.mapHref }}"><a class="cc-back cc-docmap" href="{{ d.mapHref }}" title="View on map">{{ icons.target }}<span>Map</span></a></sc-if>
           <sc-if value="{{ d.prevHref }}"><a class="cc-iconbtn sm" href="{{ d.prevHref }}" title="{{ d.prevTitle }}" aria-label="{{ d.prevTitle }}">‹</a></sc-if>
           <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">›</a></sc-if>
           <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="Close" aria-label="Close">✕</button>
@@ -789,14 +826,9 @@
 
         <!-- EVENT -->
         <sc-if value="{{ d.event }}">
-          <div class="cc-kickrow"><span class="cc-typebadge">{{ e.glyph }} {{ e.typeLabel }}</span><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}</a></div>
+          <div class="cc-kick"><span>{{ e.typeLabel }}</span><span class="cc-dot"></span><span>{{ e.kickWhen }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ e.title }}</h1>
-          <dl class="cc-facts">
-            <div class="cc-fact"><dt>In the world</dt><dd>{{ e.worldWhen }}<sc-if value="{{ e.worldSub }}"><span class="sub">{{ e.worldSub }}</span></sc-if></dd></div>
-            <div class="cc-fact"><dt>At the table</dt><dd><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}{{ e.sessionTitle }}</a><sc-if value="{{ e.playedText }}"><span class="sub">{{ e.playedText }}</span></sc-if></dd></div>
-            <sc-if value="{{ e.place }}"><div class="cc-fact"><dt>Where</dt><dd><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a><sc-if value="{{ e.place.trail }}"><span class="sub">{{ e.place.trail }}</span></sc-if></dd></div></sc-if>
-          </dl>
-          <sc-if value="{{ e.mapHref }}"><div class="cc-btnrow"><a class="cc-btn ghost" href="{{ e.mapHref }}">{{ icons.target }}View on map</a></div></sc-if>
+          <p class="cc-byline"><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}{{ e.sessionTitle }}</a><sc-if value="{{ e.place }}"><span class="cc-sep">·</span><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a></sc-if><sc-if value="{{ e.placeOnly }}"><span class="cc-sep">·</span>{{ e.placeOnly }}</sc-if></p>
           <p class="cc-lead drop">{{ e.summary }}</p>
           <sc-if value="{{ e.description }}"><div class="cc-prose">{{ e.description }}</div></sc-if>
           <sc-if value="{{ e.hasConsequences }}">
@@ -818,21 +850,26 @@
           <sc-if value="{{ e.hasRelated }}">
             <h2 class="cc-h2">Connected events</h2>
             <div class="cc-rows">
-              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-cmeta">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
+              <sc-for list="{{ e.related }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for>
             </div>
           </sc-if>
-          <sc-if value="{{ e.hasCoords }}">
-            <details class="cc-disc" open="{{ miniOpenDefault }}">
-              <summary>{{ icons.map }}Map position</summary>
-              <div class="cc-disc-b">
+          <details class="cc-disc">
+            <summary>{{ icons.map }}Where &amp; when</summary>
+            <div class="cc-disc-b">
+              <dl class="cc-facts">
+                <div class="cc-fact"><dt>In the world</dt><dd>{{ e.worldWhen }}<sc-if value="{{ e.worldSub }}"><span class="sub">{{ e.worldSub }}</span></sc-if></dd></div>
+                <div class="cc-fact"><dt>At the table</dt><dd><a class="cc-a" href="{{ e.sessionHref }}">Session {{ e.session }}{{ e.sessionTitle }}</a><sc-if value="{{ e.playedText }}"><span class="sub">{{ e.playedText }}</span></sc-if></dd></div>
+                <sc-if value="{{ e.place }}"><div class="cc-fact"><dt>Where</dt><dd><a class="cc-a" href="{{ e.place.href }}">{{ e.place.name }}</a><sc-if value="{{ e.place.trail }}"><span class="sub">{{ e.place.trail }}</span></sc-if></dd></div></sc-if>
+              </dl>
+              <sc-if value="{{ e.hasCoords }}">
                 <a class="cc-minimap" href="{{ e.mapHref }}" aria-label="Open this place on the full map">
                   <img src="assets/exandria-map-preview.jpeg" alt="" loading="lazy" draggable="false" style="{{ e.mini.img }}" />
                   <span class="cc-minipin" style="{{ e.mini.pin }}"></span>
                 </a>
                 <div class="cc-mini-cap"><span>{{ e.mini.caption }}</span><a class="cc-btn ghost" href="{{ e.mapHref }}">{{ icons.target }}Open full map</a></div>
-              </div>
-            </details>
-          </sc-if>
+              </sc-if>
+            </div>
+          </details>
           <sc-if value="{{ e.hasPlots }}">
             <details class="cc-disc">
               <summary>{{ icons.sessions }}From the session {{ e.session }} log</summary>
@@ -851,50 +888,32 @@
 
         <!-- SESSION -->
         <sc-if value="{{ d.session }}">
-          <div class="cc-kickrow"><span class="cc-pill">Session {{ s.noPad }}</span><sc-if value="{{ s.isLatest }}"><span class="cc-badge">Latest</span></sc-if></div>
+          <div class="cc-kick"><span>Session {{ s.no }}</span><sc-if value="{{ s.isLatest }}"><span class="cc-badge">Latest</span></sc-if></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ s.title }}</h1>
-          <dl class="cc-facts">
-            <div class="cc-fact"><dt>At the table</dt><dd>{{ s.playedText }}</dd></div>
-            <div class="cc-fact"><dt>In the world</dt><dd>{{ s.worldText }}<sc-if value="{{ s.worldSub }}"><span class="sub">{{ s.worldSub }}</span></sc-if></dd></div>
-          </dl>
-          <div class="cc-btnrow"><button class="cc-btn ghost" onClick="{{ s.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button><sc-if value="{{ s.mapHref }}"><a class="cc-btn ghost" href="{{ s.mapHref }}">{{ icons.target }}View on map</a></sc-if></div>
+          <p class="cc-byline">{{ s.playedText }}<span class="cc-sep">·</span>{{ s.worldText }}</p>
+          <div class="cc-actrow"><button class="cc-act" onClick="{{ s.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div>
           <sc-if value="{{ s.isStub }}"><p class="cc-muted">No session log has been written for this session yet.</p></sc-if>
-          <sc-if value="{{ s.hasEnds }}">
-            <div class="cc-two" style="margin-top:12px;">
-              <div class="cc-note"><div class="cc-note-k">We started here</div><div class="cc-note-t">{{ s.startedHere }}</div></div>
-              <div class="cc-note"><div class="cc-note-k">We ended here</div><div class="cc-note-t">{{ s.endedHere }}</div></div>
-            </div>
-          </sc-if>
-          <sc-if value="{{ s.hasIg }}">
-            <h2 class="cc-h2">In-game time</h2>
+          <sc-if value="{{ s.hasTime }}">
             <dl class="cc-facts">
-              <div class="cc-fact"><dt>Start</dt><dd>{{ s.igStart }}</dd></div>
-              <div class="cc-fact"><dt>End</dt><dd>{{ s.igEnd }}</dd></div>
-              <div class="cc-fact"><dt>Last long rest</dt><dd>{{ s.igRest }}</dd></div>
+              <sc-if value="{{ s.hasStart }}"><div class="cc-fact"><dt>Began</dt><dd>{{ s.startedHere }}<sc-if value="{{ s.igStart }}"><span class="sub">{{ s.igStart }}</span></sc-if></dd></div></sc-if>
+              <sc-if value="{{ s.hasEnd }}"><div class="cc-fact"><dt>Ended</dt><dd>{{ s.endedHere }}<sc-if value="{{ s.igEnd }}"><span class="sub">{{ s.igEnd }}</span></sc-if></dd></div></sc-if>
+              <sc-if value="{{ s.igRest }}"><div class="cc-fact"><dt>Last long rest</dt><dd>{{ s.igRest }}</dd></div></sc-if>
             </dl>
           </sc-if>
           <h2 class="cc-h2">What happened <span class="n">{{ s.eventCount }}</span></h2>
           <sc-if value="{{ s.noEvents }}"><p class="cc-muted">No events recorded for this session.</p></sc-if>
           <div class="cc-rows">
-            <sc-for list="{{ s.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-cmeta">{{ r.glyph }} {{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for>
+            <sc-for list="{{ s.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for>
           </div>
+          <sc-if value="{{ s.hasEffects }}">
+            <h2 class="cc-h2">Active effects at session's end</h2>
+            <ul class="cc-bullets"><sc-for list="{{ s.effects }}" as="x"><li>{{ x }}</li></sc-for></ul>
+          </sc-if>
           <sc-if value="{{ s.hasQuests }}">
             <h2 class="cc-h2">Quests in play</h2>
             <div class="cc-rows">
               <sc-for list="{{ s.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-seal mono mono-type sm">⚑</span><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badge }}</span></a></sc-for>
             </div>
-          </sc-if>
-          <sc-if value="{{ s.hasPeople }}">
-            <h2 class="cc-h2">Characters</h2>
-            <div class="cc-chips"><sc-for list="{{ s.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
-          </sc-if>
-          <sc-if value="{{ s.hasPlaces }}">
-            <h2 class="cc-h2">Places</h2>
-            <div class="cc-chips"><sc-for list="{{ s.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
-          </sc-if>
-          <sc-if value="{{ s.hasEffects }}">
-            <h2 class="cc-h2">Active effects at session's end</h2>
-            <ul class="cc-bullets"><sc-for list="{{ s.effects }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ s.hasActive }}">
             <h2 class="cc-h2">Unresolved threads</h2>
@@ -902,8 +921,12 @@
               <div class="{{ p.cls }}">
                 <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">Quest ›</a></sc-if></div>
                 <p class="cc-plot-q">{{ p.qt }}</p>
-                <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
-                <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                <sc-if value="{{ p.hasMore }}">
+                  <details class="cc-plot-more"><summary>{{ p.moreLabel }}</summary>
+                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                  </details>
+                </sc-if>
               </div>
             </sc-for>
           </sc-if>
@@ -913,24 +936,32 @@
               <div class="{{ p.cls }}">
                 <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><span class="cc-badge tone-done">{{ p.closed }}</span><sc-if value="{{ p.questHref }}"><a class="cc-badge" href="{{ p.questHref }}">Quest ›</a></sc-if></div>
                 <p class="cc-plot-q">{{ p.qt }}</p>
-                <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
-                <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                <sc-if value="{{ p.hasMore }}">
+                  <details class="cc-plot-more"><summary>{{ p.moreLabel }}</summary>
+                    <sc-if value="{{ p.hasNpcs }}"><div class="cc-plot-k">NPCs &amp; Locations</div><ul class="cc-plot-npcs"><sc-for list="{{ p.npcs }}" as="n"><li><sc-if value="{{ n.href }}"><a class="cc-a" href="{{ n.href }}">{{ n.name }}</a></sc-if><sc-if value="{{ n.plain }}"><span class="cc-strong">{{ n.name }}</span></sc-if>{{ n.rest }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNotes }}"><div class="cc-plot-k">Notes</div><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                  </details>
+                </sc-if>
               </div>
             </sc-for>
+          </sc-if>
+          <sc-if value="{{ s.hasCast }}">
+            <details class="cc-disc">
+              <summary>{{ icons.characters }}Characters &amp; places <span class="n">{{ s.castCount }}</span></summary>
+              <div class="cc-disc-b">
+                <sc-if value="{{ s.hasPeople }}"><div class="cc-chips"><sc-for list="{{ s.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
+                <sc-if value="{{ s.hasPlaces }}"><div class="cc-chips" style="margin-top:12px;"><sc-for list="{{ s.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
+              </div>
+            </details>
           </sc-if>
         </sc-if>
 
         <!-- QUEST -->
         <sc-if value="{{ d.quest }}">
-          <div class="cc-kickrow"><span class="{{ q.badgeCls }}">{{ q.badge }}</span><span class="cc-dockind">{{ q.sessText }}</span></div>
+          <div class="cc-kick"><span class="{{ q.badgeCls }}">{{ q.badge }}</span><span>{{ q.tableText }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ q.title }}</h1>
-          <dl class="cc-facts">
-            <sc-if value="{{ q.giver }}"><div class="cc-fact"><dt>Given by</dt><dd><sc-if value="{{ q.giverHref }}"><a class="cc-a" href="{{ q.giverHref }}">{{ q.giver }}</a></sc-if><sc-if value="{{ q.giverPlain }}">{{ q.giver }}</sc-if></dd></div></sc-if>
-            <div class="cc-fact"><dt>At the table</dt><dd>{{ q.tableText }}</dd></div>
-            <sc-if value="{{ q.dayText }}"><div class="cc-fact"><dt>In the world</dt><dd>{{ q.dayText }}</dd></div></sc-if>
-          </dl>
-          <div class="cc-btnrow"><button class="cc-btn ghost" onClick="{{ q.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div>
-          <h2 class="cc-h2">Where things stand</h2>
+          <sc-if value="{{ q.hasByline }}"><p class="cc-byline"><sc-if value="{{ q.giver }}">Given by <sc-if value="{{ q.giverHref }}"><a class="cc-a" href="{{ q.giverHref }}">{{ q.giver }}</a></sc-if><sc-if value="{{ q.giverPlain }}">{{ q.giver }}</sc-if></sc-if><sc-if value="{{ q.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ q.dayText }}">{{ q.dayText }}</sc-if></p></sc-if>
+          <div class="cc-actrow"><button class="cc-act" onClick="{{ q.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div>
           <p class="cc-lead">{{ q.summary }}</p>
           <sc-if value="{{ q.hasObjectives }}">
             <h2 class="cc-h2">Objectives</h2>
@@ -949,12 +980,12 @@
             <sc-for list="{{ q.steps }}" as="st">
               <div class="cc-step">
                 <div class="cc-step-h"><a href="{{ st.href }}">Session {{ st.session }}</a><span>{{ st.sub }}</span></div>
-                <sc-if value="{{ st.hasEvents }}"><div class="cc-rows"><sc-for list="{{ st.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-cmeta">{{ r.glyph }} {{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for></div></sc-if>
+                <sc-if value="{{ st.hasEvents }}"><div class="cc-rows"><sc-for list="{{ st.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div></sc-if>
                 <sc-for list="{{ st.plots }}" as="p">
                   <div class="{{ p.cls }}">
                     <div class="cc-plot-h"><span class="cc-plot-n">{{ p.name }}</span><sc-if value="{{ p.closed }}"><span class="cc-badge tone-done">{{ p.closed }}</span></sc-if></div>
                     <p class="cc-plot-q">{{ p.qt }}</p>
-                    <sc-if value="{{ p.hasNotes }}"><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></sc-if>
+                    <sc-if value="{{ p.hasNotes }}"><details class="cc-plot-more"><summary>{{ p.notesLabel }}</summary><ul class="cc-bullets notes"><sc-for list="{{ p.notes }}" as="nt"><li>{{ nt }}</li></sc-for></ul></details></sc-if>
                   </div>
                 </sc-for>
                 <sc-if value="{{ st.isEmpty }}"><p class="cc-muted" style="margin:0;">Touched this session — no details recorded.</p></sc-if>
@@ -967,7 +998,7 @@
         <sc-if value="{{ d.character }}">
           <div class="cc-phead">
             <span class="{{ p.sealCls }}" style="{{ p.seal }}">{{ p.mono }}</span>
-            <div style="min-width:0;"><div class="cc-dockind">{{ p.categoryLabel }}</div><h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ p.name }}</h1><sc-if value="{{ p.role }}"><div class="cc-psub">{{ p.role }}</div></sc-if></div>
+            <div style="min-width:0;"><div class="cc-kick" style="margin-top:0;">{{ p.categoryLabel }}</div><h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ p.name }}</h1><sc-if value="{{ p.role }}"><div class="cc-psub">{{ p.role }}</div></sc-if></div>
           </div>
           <sc-if value="{{ p.hasFacts }}">
             <dl class="cc-facts">
@@ -976,7 +1007,11 @@
               <sc-if value="{{ p.sessText }}"><div class="cc-fact"><dt>Appears in</dt><dd>{{ p.sessText }}</dd></div></sc-if>
             </dl>
           </sc-if>
-          <sc-if value="{{ p.canFilter }}"><div class="cc-btnrow"><button class="cc-btn ghost" onClick="{{ p.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div></sc-if>
+          <sc-if value="{{ p.canFilter }}"><div class="cc-actrow" style="margin-top:-6px;"><button class="cc-act" onClick="{{ p.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div></sc-if>
+          <sc-if value="{{ p.hasNotes }}">
+            <h2 class="cc-h2">From the session logs</h2>
+            <div class="cc-rows"><sc-for list="{{ p.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">Session {{ n.session }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
+          </sc-if>
           <sc-if value="{{ p.hasFactions }}">
             <h2 class="cc-h2">Belongs to</h2>
             <div class="cc-chips"><sc-for list="{{ p.factions }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
@@ -995,36 +1030,29 @@
           </sc-if>
           <sc-if value="{{ p.hasEvents }}">
             <h2 class="cc-h2">Appearances <span class="n">{{ p.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-cmeta">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+            <div class="cc-rows"><sc-for list="{{ p.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.hasPlaces }}">
             <h2 class="cc-h2">Places</h2>
             <div class="cc-chips"><sc-for list="{{ p.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
-          </sc-if>
-          <sc-if value="{{ p.hasNotes }}">
-            <h2 class="cc-h2">From the session logs</h2>
-            <div class="cc-rows"><sc-for list="{{ p.notes }}" as="n"><div class="cc-note"><div class="cc-note-k"><a href="{{ n.href }}">Session {{ n.session }}</a> · {{ n.plot }}</div><div class="cc-note-t">{{ n.text }}</div><sc-if value="{{ n.recordedAs }}"><div class="cc-note-r">{{ n.recordedAs }}</div></sc-if></div></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.isSparse }}"><p class="cc-muted">Little more than a name has been recorded so far.</p></sc-if>
         </sc-if>
 
         <!-- PLACE -->
         <sc-if value="{{ d.place }}">
-          <div class="cc-kickrow"><span class="cc-typebadge">{{ pp.kindLabel }}</span><sc-if value="{{ pp.hasCrumbs }}"><span class="cc-crumbs"><sc-for list="{{ pp.crumbs }}" as="cr"><a class="cc-a" href="{{ cr.href }}">{{ cr.label }}</a><span>›</span></sc-for></span></sc-if></div>
+          <div class="cc-kick"><span>{{ pp.kindLabel }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ pp.name }}</h1>
-          <sc-if value="{{ pp.aliases }}"><p class="cc-psub" style="margin-top:-6px;">Also recorded as {{ pp.aliases }}</p></sc-if>
-          <div class="cc-btnrow">
-            <sc-if value="{{ pp.canFilter }}"><button class="cc-btn ghost" onClick="{{ pp.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></sc-if>
-            <sc-if value="{{ pp.mapHref }}"><a class="cc-btn ghost" href="{{ pp.mapHref }}">{{ icons.target }}View on map</a></sc-if>
-          </div>
+          <sc-if value="{{ pp.hasByline }}"><p class="cc-byline"><sc-if value="{{ pp.hasCrumbs }}"><span>In </span><sc-for list="{{ pp.crumbs }}" as="cr"><sc-if value="{{ cr.sep }}"><span class="cc-sep">›</span></sc-if><a class="cc-a" href="{{ cr.href }}">{{ cr.label }}</a></sc-for></sc-if><sc-if value="{{ pp.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ pp.aliases }}"><span>Also recorded as {{ pp.aliases }}</span></sc-if></p></sc-if>
+          <sc-if value="{{ pp.canFilter }}"><div class="cc-actrow"><button class="cc-act" onClick="{{ pp.onFilter }}">{{ icons.chronicle }}Show in Chronicle</button></div></sc-if>
           <sc-if value="{{ pp.planarNote }}"><p class="cc-muted">{{ pp.planarNote }}</p></sc-if>
+          <sc-if value="{{ pp.hasEvents }}">
+            <h2 class="cc-h2">What happened here <span class="n">{{ pp.eventCount }}</span></h2>
+            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
+          </sc-if>
           <sc-if value="{{ pp.hasChildren }}">
             <h2 class="cc-h2">Within</h2>
             <div class="cc-chips"><sc-for list="{{ pp.children }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for></div>
-          </sc-if>
-          <sc-if value="{{ pp.hasEvents }}">
-            <h2 class="cc-h2">What happened here <span class="n">{{ pp.eventCount }}</span></h2>
-            <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.sealCls }}" style="{{ r.seal }}">{{ r.mono }}</span><span class="cc-evrow-b"><span class="cc-cmeta">{{ r.when }} · Session {{ r.session }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasQuests }}">
             <h2 class="cc-h2">Quests</h2>
@@ -1084,8 +1112,8 @@
         </div>
         <div class="cc-tut"><span class="cc-tut-i">{{ icons.chronicle }}</span><div><div class="cc-tut-t">The Chronicle</div><div class="cc-tut-d">Every event of the campaign, in in-world order. Search, filter by character, quest, session, type, place or period, and open any entry to read it in full.</div></div></div>
         <div class="cc-tut"><span class="cc-tut-i">{{ icons.quests }}</span><div><div class="cc-tut-t">Sessions, Quests, Characters &amp; Places</div><div class="cc-tut-d">Each has its own section, and everything is linked: from an event jump to its session, quests, people and places — and back again.</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.map }}</span><div><div class="cc-tut-t">The Map</div><div class="cc-tut-d">Loads only when you open it. Drag to pan, scroll or pinch to zoom; pins are captioned with their session. Use “View on map” from an event, and “Read entry” from a pin.</div></div></div>
-        <div class="cc-tut"><span class="cc-tut-i">{{ icons.search }}</span><div><div class="cc-tut-t">At the table</div><div class="cc-tut-d">On a phone, Chronicle, Sessions and Quests sit in the bottom bar; Characters, Places and the Map are under More. Your filters and place in the list are kept when you go back. On a keyboard, press / to search.</div></div></div>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.map }}</span><div><div class="cc-tut-t">The Map</div><div class="cc-tut-d">Loads only when you open it. Drag to pan, scroll or pinch to zoom; pins are captioned with their session. Use “Map” at the top of an entry, and “Read entry” from a pin.</div></div></div>
+        <div class="cc-tut"><span class="cc-tut-i">{{ icons.search }}</span><div><div class="cc-tut-t">At the table</div><div class="cc-tut-d">On a phone, Chronicle, Sessions and Quests sit in the bottom bar; Characters, Places, the Map, light/dark mode and this guide are under More. Your filters and place in the list are kept when you go back. On a keyboard, press / to search.</div></div></div>
         <button class="cc-btn" onClick="{{ onCloseTutorial }}" style="width:100%;margin-top:16px;">Enter the Chronicle</button>
       </div>
     </div>
@@ -1461,10 +1489,17 @@ class Component extends DCLogic {
     if(p) return {cls:this.sealCls(p),style:this.seal(p),mono:this.mono(p)};
     return {cls:"cc-seal mono mono-type",style:"",mono:ev.typeGlyph};
   }
+  // Timeline/list marker: a portrait only when it says something (a lone party member's scene);
+  // otherwise the event-type glyph, so the marker tells events apart instead of repeating the party seal.
+  evNode(ev){
+    const pcs=ev.characterIds, p=pcs.length===1?this.model.personById.get(pcs[0]):null;
+    if(p&&p.sealImg) return {cls:this.sealCls(p),style:this.seal(p),mono:""};
+    return {cls:"cc-seal mono mono-type",style:"",mono:ev.typeGlyph};
+  }
   personChip(p,sub){ return { href:this.href("character",p.id), label:p.name, sub:sub||"", cls:"cc-chip", hasSeal:true, sealCls:this.sealCls(p), seal:this.seal(p), mono:this.mono(p) }; }
   questRow(q)     { return { href:this.href("quest",q.id), title:q.title, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}` }; }
   placeChip(pl)   { return { href:this.href("place",pl.id), label:pl.name, sub:pl.kindLabel }; }
-  evRow(ev)       { const s=this.evSeal(ev); return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:this.dayText(ev), session:ev.session, glyph:ev.typeGlyph,
+  evRow(ev)       { const s=this.evNode(ev); return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:this.dayText(ev), session:ev.session, glyph:ev.typeGlyph,
                       cls:"cc-evrow"+(this.isOpen("event",ev.id)?" is-sel":""), sealCls:s.cls, seal:s.style, mono:s.mono }; }
   plotVm(p){
     const npcs=(p.npcs||[]).map(n=>{
@@ -1474,8 +1509,12 @@ class Component extends DCLogic {
       return { name:n.name, rest, href, plain:!href };
     });
     const q=p.questId&&this.model.questById.get(p.questId);
+    const notes=p.notes||[];
     return { name:p.name, qt:p.qt, closed:p.isClosed?(p.closed||"Closed"):"", cls:"cc-plot"+(p.isClosed?" done":""),
-      npcs, hasNpcs:npcs.length>0, notes:p.notes||[], hasNotes:(p.notes||[]).length>0, questHref:q?this.href("quest",q.id):null };
+      npcs, hasNpcs:npcs.length>0, notes, hasNotes:notes.length>0, questHref:q?this.href("quest",q.id):null,
+      // The thread's state stays visible; the who's-who list and notes fold behind one line.
+      hasMore:npcs.length>0||notes.length>0, notesLabel:`Notes (${notes.length})`,
+      moreLabel:[npcs.length?`NPCs & locations (${npcs.length})`:"", notes.length?`Notes (${notes.length})`:""].filter(Boolean).join(" · ") };
   }
   sessionSub(s){ return [s.playedLabel?`Played ${s.playedLabel}`:"", s.dayText].filter(Boolean).join(" · "); }
   options(list,anyLabel){ return [h("option",{key:"_",value:""},anyLabel),...list.map(o=>h("option",{key:o.value,value:o.value},o.label))]; }
@@ -1502,18 +1541,18 @@ class Component extends DCLogic {
         label=first.campaignDay!=null?`Day ${first.campaignDay}`:"Undated";
         sub=[m.dayLabels[first.campaignDay]||"", sess.length>1?`Sessions ${sess.join(", ")}`:`Session ${sess[0]}`].filter(Boolean).join(" · ");
       }
+      // Cards only carry what the group header doesn't already say: the day when grouped by session,
+      // the session only when one day spans several. People, place, quests and map live in the entry.
+      const multiSession=st.groupBy==="day"&&new Set(g.evs.map(e=>e.session)).size>1;
       return {
         key:g.key, label, sub, aria:`${label} — ${sub}`, count:g.evs.length, isOpen, cls:"cc-group"+(isOpen?"":" is-closed"),
         onToggle:()=>this.toggleGroup(g.key),
         events:isOpen?g.evs.map(ev=>{
-          const s=this.evSeal(ev), pl=ev.locationId&&m.placeById.get(ev.locationId);
-          const people=ev.characterIds.map(id=>m.personById.get(id));
+          const s=this.evNode(ev);
           return {
-            id:ev.id, href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, session:ev.session,
-            glyph:ev.typeGlyph, typeLabel:ev.typeLabel,
-            when:st.groupBy==="session"?this.dayText(ev):(ev.placeLabel||this.dayText(ev)),
-            place:st.groupBy==="session"?(ev.placeLabel||(pl&&pl.name)||""):"", onMap:ev.hasCoords,
-            hasPeople:people.length>0, seals:people.map(p=>({cls:this.sealCls(p),style:this.seal(p),mono:this.mono(p)})),
+            id:ev.id, href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary,
+            meta:st.groupBy==="session"?`${this.dayText(ev)} · ${ev.typeLabel}`:ev.typeLabel,
+            sessTag:multiSession?`Session ${ev.session}`:"",
             cls:"cc-card"+(this.isOpen("event",ev.id)?" is-sel":""),
             nodeCls:"cc-node", nodeStyle:s.style, nodeText:s.mono,
           };
@@ -1585,10 +1624,10 @@ class Component extends DCLogic {
     asc.forEach((s,i)=>{
       const prev=asc[i-1];
       if(prev&&s.no-prev.no>1){ const a=prev.no+1,b=s.no-1; items.push({isGap:true,text:a===b?`Session ${a} not chronicled`:`Sessions ${a}–${b} not chronicled`}); }
+      // Number, title, when, and the opening line; who took part and which quests moved are in the log.
       items.push({ isSession:true, no:s.no, href:this.href("session",s.no), title:s.title||`Session ${s.no}`,
-        meta:this.sessionSub(s)||"No date recorded", opening:s.startedHere||(s.isStub?"No session log written yet.":""),
-        seals:s.characterIds.map(id=>m.personById.get(id)).map(p=>({cls:this.sealCls(p),style:this.seal(p),mono:this.mono(p)})),
-        counts:`${s.eventIds.length} event${s.eventIds.length===1?"":"s"} · ${s.questIds.length} quest${s.questIds.length===1?"":"s"}`,
+        meta:[this.sessionSub(s)||"No date recorded", s.eventIds.length?`${s.eventIds.length} event${s.eventIds.length===1?"":"s"}`:""].filter(Boolean).join(" · "),
+        opening:s.startedHere||(s.isStub?"No session log written yet.":""),
         cls:"cc-scard"+(this.isOpen("session",s.no)?" is-sel":"") });
     });
     if(desc) items.reverse();
@@ -1603,26 +1642,27 @@ class Component extends DCLogic {
     const labelOf=st=>m.quests.find(q=>q.status===st).statusLabel;
     const tabs=[{key:"all",label:"All",count:m.quests.length},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length}))]
       .map(t=>({...t,on:sel===t.key,cls:"cc-btn ghost"+(sel===t.key?" is-on":""),onClick:()=>this.setState({questStatus:t.key})}));
-    const card=q=>({ href:this.href("quest",q.id), title:q.title, summary:q.summary, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`,
+    // Status is carried by the group heading and the card's edge colour, so no badge per card;
+    // the cast, places and events of each quest stay in its page.
+    const card=q=>({ href:this.href("quest",q.id), title:q.title, summary:q.summary,
       cls:"cc-qcard"+(q.statusTone==="done"?" tone-done":"")+(this.isOpen("quest",q.id)?" is-sel":""),
-      seals:q.characterIds.map(id=>m.personById.get(id)).map(p=>({cls:this.sealCls(p),style:this.seal(p),mono:this.mono(p)})),
-      foot:[q.giver?`From ${q.giver}`:"", q.sessionNos.length?q.sessionNos.map(n=>`S${n}`).join(" · "):"", q.eventIds.length?`${q.eventIds.length} event${q.eventIds.length===1?"":"s"}`:""].filter(Boolean).join("  ·  ") });
+      foot:[q.giver?`Given by ${q.giver}`:"", q.lastSession!=null?`last in Session ${q.lastSession}`:""].filter(Boolean).join(" · ") });
     const recent=(a,b)=>(b.lastSession||0)-(a.lastSession||0)||a.title.localeCompare(b.title);
     const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st).sort(recent).map(card); return {label:labelOf(st),count:items.length,items}; });
     const active=m.quests.filter(q=>q.status==="active").length;
-    return { tabs, groups, sub:`${active} in progress · ${m.quests.length} recorded. Open a quest to follow it from its first session to where it stands now.` };
+    return { tabs, groups, sub:`${active} in progress · ${m.quests.length} recorded.` };
   }
   _buildPeople(){
     const m=this.model, q=this.state.peopleQuery.trim().toLowerCase();
     const hit=p=>!q||[p.name,...p.aliases,p.race||"",p.role||""].join(" ").toLowerCase().includes(q);
     const party=m.pcs.filter(hit).map(p=>({ href:this.href("character",p.id), name:p.name, role:p.role||"", seal:this.seal(p),
-      stripe:`background:${p.color||"#b58f3e"};`, stats:`${p.eventIds.length} events · ${p.questIds.length} quests`,
+      stripe:`--pc-color:${p.color||"#b58f3e"};`,
       cls:"cc-pcard"+(this.isOpen("character",p.id)?" is-sel":"") }));
     const cats=Object.entries(M.PERSON_CATEGORIES).filter(([k])=>k!=="party").sort((a,b)=>a[1].order-b[1].order);
     const groups=cats.map(([k,c])=>{
       const items=m.npcs.filter(p=>p.category===k&&hit(p)).sort((a,b)=>b.eventIds.length-a.eventIds.length||a.name.localeCompare(b.name))
         .map(p=>({ href:this.href("character",p.id), name:p.name, sub:[p.race,p.memberIds.length?`${p.memberIds.length} members`:""].filter(Boolean).join(" · "),
-          sealCls:this.sealCls(p), mono:this.mono(p), count:p.eventIds.length?`${p.eventIds.length}`:"", cls:"cc-row"+(this.isOpen("character",p.id)?" is-sel":"") }));
+          sealCls:this.sealCls(p), mono:this.mono(p), cls:"cc-row"+(this.isOpen("character",p.id)?" is-sel":"") }));
       return {label:c.label,count:items.length,items};
     }).filter(g=>g.items.length);
     return { query:this.state.peopleQuery, onQuery:e=>this.setState({peopleQuery:e.target.value}), onClear:()=>this.setState({peopleQuery:""}),
@@ -1630,9 +1670,10 @@ class Component extends DCLogic {
   }
   _buildPlaces(){
     const KIND_GLYPH={continent:"◐",region:"◑",sea:"≈",city:"♜",district:"▦",site:"⌂",plane:"◈"};
+    // Name + kind; the map stays one tap away for every place that has a pin.
     return { items:this._placeOrder().map(p=>({ href:this.href("place",p.id), name:p.name, glyph:KIND_GLYPH[p.kind]||"✦",
-      sub:[p.kindLabel, p.notes.length?`${p.notes.length} log note${p.notes.length===1?"":"s"}`:""].filter(Boolean).join(" · "),
-      count:p.allEventIds.length?`${p.allEventIds.length}`:"", indent:`margin-left:${Math.min(p.depth,4)*18}px;`,
+      sub:p.kindLabel, indent:`margin-left:${Math.min(p.depth,4)*(this.state.isMobile?12:18)}px;`,
+      mapHref:this.placeMapHref(p), mapTitle:`${p.name} on the map`,
       cls:"cc-row"+(this.isOpen("place",p.id)?" is-sel":"") })) };
   }
 
@@ -1644,15 +1685,16 @@ class Component extends DCLogic {
     if(r.kind==="event"){
       const ev=m.eventById.get(r.id); if(!ev) return [notFound,{}];
       const prev=m.events[ev.chronoIndex-1], next=m.events[ev.chronoIndex+1];
-      return [{...base,event:true,...this._pn(prev&&this.href("event",prev.id),prev&&this.title(prev),next&&this.href("event",next.id),next&&this.title(next),"Earlier","Later")},this._eventVm(ev)];
+      return [{...base,event:true,mapHref:this.mapHref(ev),...this._pn(prev&&this.href("event",prev.id),prev&&this.title(prev),next&&this.href("event",next.id),next&&this.title(next),"Earlier","Later")},this._eventVm(ev)];
     }
     if(r.kind==="session"){
       const s=m.sessionByNo.get(Number(r.id)); if(!s) return [notFound,{}];
-      return [{...base,session:true,...this._pn(s.prevNo!=null&&this.href("session",s.prevNo),s.prevNo!=null&&`Session ${s.prevNo}`,s.nextNo!=null&&this.href("session",s.nextNo),s.nextNo!=null&&`Session ${s.nextNo}`,"Previous session","Next session")},this._sessionVm(s)];
+      const firstMapped=s.eventIds.map(id=>m.eventById.get(id)).find(e=>e.hasCoords);
+      return [{...base,session:true,mapHref:firstMapped?this.mapHref(firstMapped):null,...this._pn(s.prevNo!=null&&this.href("session",s.prevNo),s.prevNo!=null&&`Session ${s.prevNo}`,s.nextNo!=null&&this.href("session",s.nextNo),s.nextNo!=null&&`Session ${s.nextNo}`,"Previous session","Next session")},this._sessionVm(s)];
     }
     if(r.kind==="quest"){ const q=m.questById.get(r.id); return q?[{...base,quest:true},this._questVm(q)]:[notFound,{}]; }
     if(r.kind==="character"){ const p=m.personById.get(r.id); return p?[{...base,character:true,kindLabel:p.kind==="pc"?"Party member":p.categoryLabel},this._personVm(p)]:[notFound,{}]; }
-    if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true},this._placeVm(p)]:[notFound,{}]; }
+    if(r.kind==="place"){ const p=m.placeById.get(r.id); return p?[{...base,place:true,mapHref:this.placeMapHref(p)},this._placeVm(p)]:[notFound,{}]; }
     return [{open:false},{}];
   }
   _pn(prevHref,prevName,nextHref,nextName,prevKind,nextKind){
@@ -1664,7 +1706,7 @@ class Component extends DCLogic {
     const m=this.model, s=m.sessionByNo.get(ev.session);
     const pl=ev.locationId&&m.placeById.get(ev.locationId);
     const people=[...ev.characterIds.map(id=>this.personChip(m.personById.get(id))),
-                  ...ev.npcIds.map(id=>{ const p=m.personById.get(id); return this.personChip(p,p.race||""); })];
+                  ...ev.npcIds.map(id=>this.personChip(m.personById.get(id)))];
     // Session-log snapshots of this event's quests, from the same session.
     const plots=s?[...s.activePlots,...s.completedPlots].filter(p=>p.questId&&ev.questIds.includes(p.questId)).map(p=>this.plotVm(p)):[];
     let mini=null;
@@ -1680,6 +1722,7 @@ class Component extends DCLogic {
     if(ev.igDate) worldParts.push(ev.igDate);
     return {
       title:this.title(ev), summary:ev.summary, description:ev.description, glyph:ev.typeGlyph, typeLabel:ev.typeLabel,
+      kickWhen:this.dayText(ev), placeOnly:!pl&&ev.placeLabel?ev.placeLabel:"",
       session:ev.session, sessionHref:this.href("session",ev.session), sessionTitle:s&&s.title?` — ${s.title}`:"",
       playedText:s&&s.playedLabel?`Played ${s.playedLabel}`:"",
       worldWhen:worldParts.join(" · ")||ev.igLabel||"Not recorded",
@@ -1695,21 +1738,22 @@ class Component extends DCLogic {
   }
   _sessionVm(s){
     const m=this.model, evs=s.eventIds.map(id=>m.eventById.get(id));
-    const firstMapped=evs.find(e=>e.hasCoords);
     const last=m.sessions.filter(x=>!x.isStub).slice(-1)[0];
+    const people=[...s.characterIds,...s.npcIds], hasStart=!!(s.startedHere||s.igStart), hasEnd=!!(s.endedHere||s.igEnd);
     return {
-      noPad:String(s.no).padStart(2,"0"), title:s.title||`Session ${s.no}`, isStub:s.isStub, isLatest:last&&last.no===s.no,
+      no:s.no, title:s.title||`Session ${s.no}`, isStub:s.isStub, isLatest:last&&last.no===s.no,
       playedText:s.playedLabel?`Played ${s.playedLabel}`:"Date not recorded",
-      worldText:s.dayText?(s.days.length>1?`${s.dayText} · ${m.dayLabels[s.days[0]]||""}${m.dayLabels[s.days[s.days.length-1]]?` – ${m.dayLabels[s.days[s.days.length-1]]}`:""}`:`${s.dayText}${m.dayLabels[s.days[0]]?` · ${m.dayLabels[s.days[0]]}`:""}`):"Not recorded",
-      worldSub:"",
-      onFilter:()=>this.filterBy("session",String(s.no)), mapHref:firstMapped?this.mapHref(firstMapped):null,
-      startedHere:s.startedHere||"—", endedHere:s.endedHere||"—", hasEnds:!!(s.startedHere||s.endedHere),
-      igStart:s.igStart||"—", igEnd:s.igEnd||"—", igRest:s.igRest||"—", hasIg:!!(s.igStart||s.igEnd||s.igRest),
-      events:evs.map(ev=>({...this.evRow(ev),summary:ev.summary,when:`${this.dayText(ev)}${ev.placeLabel?` · ${ev.placeLabel}`:""}`})),
+      worldText:s.dayText?(s.days.length>1?`${s.dayText} · ${m.dayLabels[s.days[0]]||""}${m.dayLabels[s.days[s.days.length-1]]?` – ${m.dayLabels[s.days[s.days.length-1]]}`:""}`:`${s.dayText}${m.dayLabels[s.days[0]]?` · ${m.dayLabels[s.days[0]]}`:""}`):"In-world date not recorded",
+      onFilter:()=>this.filterBy("session",String(s.no)),
+      // Where the session began and ended, with the in-game clock beside each — one block instead of two.
+      startedHere:s.startedHere||"Not recorded", endedHere:s.endedHere||"Not recorded", igStart:s.igStart||"", igEnd:s.igEnd||"", igRest:s.igRest||"",
+      hasStart, hasEnd, hasTime:hasStart||hasEnd||!!s.igRest,
+      events:evs.map(ev=>({...this.evRow(ev),summary:ev.summary,when:`${this.dayText(ev)} · ${ev.typeLabel}${ev.placeLabel?` · ${ev.placeLabel}`:""}`})),
       eventCount:evs.length, noEvents:evs.length===0,
       quests:s.questIds.map(id=>m.questById.get(id)).sort((a,b)=>a.statusOrder-b.statusOrder).map(q=>this.questRow(q)), hasQuests:s.questIds.length>0,
-      people:[...s.characterIds,...s.npcIds].map(id=>this.personChip(m.personById.get(id))), hasPeople:(s.characterIds.length+s.npcIds.length)>0,
+      people:people.map(id=>this.personChip(m.personById.get(id))), hasPeople:people.length>0,
       places:s.placeIds.map(id=>this.placeChip(m.placeById.get(id))), hasPlaces:s.placeIds.length>0,
+      hasCast:people.length+s.placeIds.length>0, castCount:`${people.length+s.placeIds.length}`,
       effects:s.effects, hasEffects:s.effects.length>0,
       activePlots:s.activePlots.map(p=>this.plotVm(p)), hasActive:s.activePlots.length>0,
       completedPlots:s.completedPlots.map(p=>this.plotVm(p)), hasCompleted:s.completedPlots.length>0,
@@ -1722,7 +1766,7 @@ class Component extends DCLogic {
                   ...q.npcIds.filter(id=>!q.characterIds.includes(id)).map(id=>{ const p=m.personById.get(id); return this.personChip(p,p.id===q.giverId?"gave the quest":""); })];
     const steps=q.progress.map(st=>{
       const s=m.sessionByNo.get(st.session);
-      const events=st.eventIds.map(id=>{ const ev=m.eventById.get(id); return {...this.evRow(ev),when:this.dayText(ev)}; });
+      const events=st.eventIds.map(id=>{ const ev=m.eventById.get(id); return {...this.evRow(ev),when:`${this.dayText(ev)} · ${ev.typeLabel}`}; });
       const plots=st.plots.map(p=>this.plotVm(p));
       return { session:st.session, href:this.href("session",st.session), sub:[s&&s.title, s&&s.playedLabel?`played ${s.playedLabel}`:""].filter(Boolean).join(" · "),
         events, hasEvents:events.length>0, plots, isEmpty:!events.length&&!plots.length };
@@ -1731,6 +1775,7 @@ class Component extends DCLogic {
       title:q.title, summary:q.summary, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`,
       sessText:q.sessionNos.length?q.sessionNos.map(n=>`S${n}`).join(" · "):"",
       giver:q.giver, giverHref:giver?this.href("character",giver.id):null, giverPlain:!giver,
+      hasByline:!!(q.giver||q.dayText), bothByline:!!(q.giver&&q.dayText),
       tableText:q.firstSession!=null?(q.firstSession===q.lastSession?`Session ${q.firstSession}`:`Sessions ${q.firstSession}–${q.lastSession} (${q.progress.length} recorded)`):"Not yet linked to a session",
       dayText:q.dayText, onFilter:()=>this.filterBy("quest",q.id),
       objectives:q.objectives, hasObjectives:q.objectives.length>0,
@@ -1769,10 +1814,11 @@ class Component extends DCLogic {
     const notes=pl.notes.map(n=>({ session:n.session, href:this.href("session",n.session), plot:n.plot, text:n.text||"Mentioned",
       recordedAs:n.recordedAs&&n.recordedAs.toLowerCase()!==pl.name.toLowerCase()?`Recorded as “${n.recordedAs}”`:"" }));
     const people=pl.personIds.map(id=>m.personById.get(id)).sort((a,b)=>(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)).map(p=>this.personChip(p));
+    const aliases=pl.aliases.filter(a=>a.toLowerCase()!==pl.name.toLowerCase()).map(a=>`“${a}”`).join(", ");
     return {
       name:pl.name, kindLabel:pl.kindLabel,
-      crumbs:pl.ancestorIds.slice().reverse().map(id=>({href:this.href("place",id),label:m.placeById.get(id).name})), hasCrumbs:pl.ancestorIds.length>0,
-      aliases:pl.aliases.filter(a=>a.toLowerCase()!==pl.name.toLowerCase()).map(a=>`“${a}”`).join(", "),
+      crumbs:pl.ancestorIds.slice().reverse().map((id,i)=>({href:this.href("place",id),label:m.placeById.get(id).name,sep:i>0})), hasCrumbs:pl.ancestorIds.length>0,
+      aliases, hasByline:!!(pl.ancestorIds.length||aliases), bothByline:!!(pl.ancestorIds.length&&aliases),
       mapHref:this.placeMapHref(pl), canFilter:pl.allEventIds.length>0, onFilter:()=>this.filterBy("place",pl.id),
       planarNote:pl.isPlanar?"Another plane of existence — it has no place on the map of Exandria.":"",
       children:pl.childIds.map(id=>this.placeChip(m.placeById.get(id))), hasChildren:pl.childIds.length>0,
@@ -1905,7 +1951,7 @@ class Component extends DCLogic {
       pl:v.characters?this._buildPeople():{}, pll:v.places?this._buildPlaces():{},
       mp:v.map?this._buildMap():{},
       d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{},
-      miniOpenDefault:!st.isMobile, dateType:"date",
+      dateType:"date",
       onText:e=>this.setF("text",e.target.value), onClearText:()=>{ this.setF("text",""); if(this._searchEl) this._searchEl.focus(); },
       onNpc:e=>this.setF("npc",e.target.value), onQuest:e=>this.setF("quest",e.target.value), onSession:e=>this.setF("session",e.target.value),
       onType:e=>this.setF("type",e.target.value), onPlace:e=>this.setF("place",e.target.value),
