@@ -18,6 +18,10 @@
 <script src="./js/chronicle-model.js"></script>
 <script src="./js/chronicle-map.js"></script>
 <script src="./js/chronicle-library.js"></script>
+<!-- Interactive tours: Driver.js 1.8.0 (MIT, vendored unchanged from the npm package) + the tour steps. -->
+<link rel="stylesheet" href="./vendor/driver.js/driver.css">
+<script src="./vendor/driver.js/driver.js.iife.js"></script>
+<script src="./js/chronicle-tour.js"></script>
 <script src="./js/i18n.js"></script>
 <script src="./locales/en.js"></script>
 <script src="./locales/es-AR.js"></script>
@@ -42,8 +46,9 @@
   /* ── Design tokens — one dark theme (there is no light mode) ──
      Structure: ink-brown surfaces, parchment text, gold for what you can press.
      Meaning:   --ev-* (kind of event) and --st-* (quest status) only tint icons, card edges and
-                small chips — never a filled surface — and always sit next to a text label.  */
-  .cc-app{color-scheme:dark;
+                small chips — never a filled surface — and always sit next to a text label.
+     .cc-tour is the tour popover (Driver.js appends it to <body>, outside .cc-app): same tokens. */
+  .cc-app,.cc-tour{color-scheme:dark;
     --app-bg:linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 26% 16%,#1e1610,#141008);
     --panel-bg:linear-gradient(180deg,rgba(18,12,6,.98),rgba(14,10,5,.99)),radial-gradient(900px 760px at 74% 16%,#1e1610,#141008);
     --bar-bg:linear-gradient(180deg,rgba(24,17,8,.98),rgba(16,11,5,.98));
@@ -131,7 +136,7 @@
     .cc-tabs{display:none;}
     .cc-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px;min-height:50px;justify-content:space-between;}
     .cc-brand-t{font-size:19px;}
-    .cc-top .cc-actions{display:none;}                 /* the guide lives in the More sheet on phones */
+    .cc-top .cc-actions{display:none;}                 /* help and Saved live in the More sheet on phones */
     .cc-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:20;background:var(--bar-bg);border-top:1px solid var(--border);box-shadow:0 -10px 24px rgba(0,0,0,.25);padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
   }
   .cc-bn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:60px;padding:6px 2px;border:0;background:none;color:var(--muted);font-family:var(--font-ui);font-size:12px;font-weight:500;cursor:pointer;}
@@ -532,46 +537,38 @@
   .cc-popup-n{margin-top:7px;font-family:var(--font-ui);font-size:12.5px;color:var(--muted);}
   .cc-marker:focus-visible{outline:2px solid #f5ead0;outline-offset:2px;}
 
-  /* ── Tutorial & status overlays ── */
+  /* ── Help & status overlays ── */
   .cc-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom));background:rgba(8,5,2,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:chr-pop .2s ease both;}
   .cc-modal{position:relative;width:min(580px,100%);max-height:100%;overflow-y:auto;overscroll-behavior:contain;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:18px;padding:26px 22px 20px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
-  /* Guide: three short steps, each with a real example from the chronicle; the glossary is its second tab */
-  .cc-guide{width:min(560px,100%);padding:14px 20px 16px;}
-  .cc-guide-top{display:flex;align-items:center;gap:10px;}
-  .cc-guide-k{flex:1;min-width:0;font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--accent);}
-  .cc-guide-tabs{margin-top:8px;display:flex;}
-  .cc-guide-tabs button{flex:1 1 0;justify-content:center;}
-  .cc-guide-ill{margin:14px 0 2px;padding:12px;border-radius:14px;border:1px solid var(--line-faint);background:rgba(0,0,0,.2);display:flex;flex-direction:column;gap:8px;min-height:158px;justify-content:center;}
-  .cc-guide-ex{font-family:var(--font-ui);font-size:12.5px;font-weight:600;color:var(--muted);}
-  .cc-guide-ill .cc-card{cursor:default;}
-  .cc-guide-ill .cc-card:hover{background:var(--card-bg);border-color:transparent;}
-  .cc-guide-n{margin:14px 0 2px;font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--accent);}
-  .cc-guide-h{margin:0 0 6px;font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1.15;color:var(--h1);outline:none;}
-  .cc-guide-d{margin:0 0 8px;font-size:17.5px;line-height:1.5;color:var(--body2);}
-  .cc-guide-pts{display:grid;gap:6px;margin:0 0 4px;padding:0;list-style:none;}
-  .cc-guide-pts li{display:flex;gap:10px;font-size:16px;line-height:1.45;color:var(--body);}
-  .cc-guide-pts li .cc-ico{width:18px;height:18px;margin-top:3px;color:var(--accent);}
-  .cc-guide-nav{display:flex;align-items:center;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-faint);}
-  .cc-guide-nav .cc-btn{min-width:96px;}
-  .cc-guide-nav .cc-btn[disabled]{opacity:.4;cursor:default;filter:none;}
-  .cc-gdots{display:flex;margin:0 auto;}
-  .cc-gdot{display:inline-flex;align-items:center;justify-content:center;width:30px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
-  .cc-gdot::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--line);transition:transform .15s ease,background .15s ease;}
-  .cc-gdot.is-on::before{background:var(--accent);transform:scale(1.3);}
-  .cc-guide-foot{display:flex;justify-content:center;margin-top:2px;}
-  @media (max-width:419px){
-    .cc-guide-nav{flex-wrap:wrap;justify-content:space-between;padding-top:4px;}
-    .cc-guide-nav .cc-btn{min-width:0;}
-    .cc-gdots{order:-1;flex-basis:100%;justify-content:center;}
-  }
-  .cc-gsearch{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--accent);background:var(--input-bg);box-shadow:0 0 0 3px rgba(199,162,75,.16);font-family:var(--font-ui);font-size:16px;color:var(--input-color);}
-  .cc-gsearch .cc-ico{color:var(--muted);}
-  .cc-gres{display:grid;}
-  .cc-gres-r{display:flex;align-items:center;gap:10px;min-height:38px;font-family:var(--font-ui);font-size:14px;color:var(--body2);}
-  .cc-gres-r .cc-hitico{width:26px;height:26px;}
-  .cc-gres-r .cc-hitico .cc-ico{width:17px;height:17px;}
-  .cc-gres-r .n{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap;}
-  .cc-gmap{display:block;width:100%;height:auto;border-radius:10px;}
+  /* Help: the guided tours, short answers to frequent questions, and the glossary as its second tab */
+  .cc-help{width:min(560px,100%);padding:14px 20px 18px;}
+  .cc-help-top{display:flex;align-items:center;gap:10px;}
+  .cc-help-k{flex:1;min-width:0;font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--accent);}
+  .cc-help-tabs{margin-top:8px;display:flex;}
+  .cc-help-tabs button{flex:1 1 0;justify-content:center;}
+  .cc-help-h{margin:16px 0 4px;font-family:var(--font-head);font-size:22px;font-weight:700;line-height:1.15;color:var(--h1);outline:none;}
+  .cc-help-d{margin:0 0 4px;font-size:16.5px;line-height:1.45;color:var(--body);}
+  .cc-tours{display:grid;gap:8px;margin-top:12px;}
+  .cc-tourrow{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:9px 12px;border-radius:12px;border:1px solid var(--chip-border);background:var(--card-bg);text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease;}
+  .cc-tourrow:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
+  .cc-tourrow.is-main{border-color:var(--btn-border);background:var(--card-bg-sel);}
+  .cc-tourrow-b{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+  .cc-tourrow-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;line-height:1.25;color:var(--title);}
+  .cc-tourrow-s{font-family:var(--font-ui);font-size:13px;line-height:1.35;color:var(--muted);}
+  .cc-tourrow .cc-badge{flex:none;}
+  .cc-faq{display:grid;}
+  .cc-faq-i{border-bottom:1px solid var(--line-faint);}
+  .cc-faq-i>summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 2px;cursor:pointer;font-family:var(--font-ui);font-size:15px;font-weight:600;line-height:1.35;color:var(--title);}
+  .cc-faq-i>summary::-webkit-details-marker{display:none;}
+  .cc-faq-i>summary::after{content:"\25BE";margin-left:auto;flex:none;color:var(--accent);transition:transform .2s ease;}
+  .cc-faq-i:not([open])>summary::after{transform:rotate(-90deg);}
+  .cc-faq-a{margin:0 0 12px;padding:0 2px;font-size:16.5px;line-height:1.5;color:var(--body2);}
+  .cc-secs{display:grid;margin:0 0 10px;padding:0;}
+  .cc-sec{display:flex;gap:10px;align-items:baseline;padding:5px 2px;}
+  .cc-sec dt{flex:none;display:flex;align-items:center;gap:7px;width:122px;font-family:var(--font-ui);font-size:14px;font-weight:600;color:var(--title);}
+  .cc-sec dt .cc-ico{width:17px;height:17px;color:var(--accent);}
+  .cc-sec dd{margin:0;min-width:0;font-size:16px;line-height:1.4;color:var(--body2);}
+  @media (max-width:419px){ .cc-sec{flex-direction:column;gap:0;} }
   /* Glossary */
   .cc-gl-intro{margin:14px 0 4px;font-size:16.5px;line-height:1.5;color:var(--body);}
   .cc-gl-h{margin:20px 0 6px;font-family:var(--font-head);font-size:16px;font-weight:600;letter-spacing:.03em;color:var(--section);}
@@ -587,12 +584,76 @@
   .cc-gl-sym .cc-ico{width:20px;height:20px;}
   .cc-gl-approx{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;}
   .cc-gl-lore{width:22px;height:22px;color:var(--lore);}
-  /* First visit: a quiet invitation inside the Chronicle, never a window in the way */
-  .cc-invite{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;padding:6px 6px 6px 12px;border-radius:12px;border:1px solid var(--chip-border);background:var(--chip-soft);font-family:var(--font-ui);font-size:14.5px;line-height:1.4;color:var(--body2);}
+  /* First visit: what this is + a quiet invitation inside the Chronicle (never a window in the way).
+     Always: two quick actions — catch up ("Previously on…") and find anything — and a quiet way to the help. */
+  .cc-intro{margin:0 0 12px;padding:14px 16px 12px;border-radius:14px;border:1px solid var(--chip-border);background:var(--chip-soft);}
+  .cc-intro-h{margin:0;font-family:var(--font-head);font-size:19px;font-weight:700;line-height:1.2;color:var(--h1);}
+  .cc-intro-t{margin:4px 0 0;font-size:17px;line-height:1.45;color:var(--body2);max-width:40em;}
+  .cc-invite{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line-faint);font-family:var(--font-ui);font-size:14.5px;line-height:1.4;color:var(--body2);}
   .cc-invite>.cc-ico{color:var(--accent);}
-  .cc-invite-t{flex:1 1 200px;min-width:0;}
-  .cc-invite-a{display:flex;align-items:center;gap:4px;margin-left:auto;}
-  .cc-invite .cc-btn{min-height:40px;padding:0 13px;font-size:13.5px;}
+  .cc-invite-t{flex:1 1 220px;min-width:0;}
+  .cc-invite-t b{font-weight:600;color:var(--title);}
+  .cc-invite-a{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-left:auto;}
+  .cc-qa{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:0 0 12px;}
+  .cc-qa-i{flex:1 1 210px;display:flex;align-items:center;gap:10px;min-width:0;min-height:56px;padding:8px 12px;border-radius:12px;border:1px solid var(--chip-border);background:var(--card-bg);color:var(--title);text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease;}
+  .cc-qa-i:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
+  .cc-qa-i>.cc-ico{width:22px;height:22px;color:var(--accent);}
+  .cc-qa-b{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .cc-qa-t{font-family:var(--font-ui);font-size:15px;font-weight:600;line-height:1.25;color:var(--title);}
+  .cc-qa-s{font-family:var(--font-ui);font-size:13px;line-height:1.3;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-qa-help{flex:none;align-self:center;display:inline-flex;align-items:center;gap:6px;}
+  .cc-qa-help .cc-ico{width:18px;height:18px;}
+  @media (max-width:719px){
+    .cc-qa{display:grid;grid-template-columns:1fr 1fr 44px;gap:6px;margin-bottom:8px;}
+    .cc-qa.no-recap{grid-template-columns:1fr 44px;}
+    .cc-qa-i{min-height:48px;padding:6px 9px;gap:7px;}
+    .cc-qa-i>.cc-ico{width:19px;height:19px;}
+    .cc-qa-t{font-size:14px;}
+    .cc-qa-s{display:none;}
+    .cc-qa-help{width:44px;min-height:48px;align-self:stretch;justify-content:center;padding:0;border-radius:12px;border:1px solid var(--chip-border);background:var(--card-bg);}
+    .cc-qa-help span{display:none;}
+    .cc-intro{padding:12px 14px 10px;}
+    .cc-intro-h{font-size:17px;}
+    .cc-intro-t{font-size:16px;}
+  }
+  /* A one-line hint where combining controls is not obvious (filters, recap) */
+  .cc-hint{display:flex;gap:8px;margin:0 0 12px;font-family:var(--font-ui);font-size:13.5px;line-height:1.45;color:var(--muted);}
+  .cc-hint>.cc-ico{width:17px;height:17px;margin-top:1px;color:var(--accent);}
+
+  /* ── Interactive tours (Driver.js 1.8 + js/chronicle-tour.js) ──
+     The popover is appended to <body>, so it carries its own font and the shared tokens (.cc-tour). */
+  .driver-popover.cc-tour{font-family:var(--font-ui);color:var(--body2);background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:14px;padding:14px 16px 12px;min-width:0;width:min(340px,calc(100vw - 24px));max-width:calc(100vw - 24px);box-shadow:0 24px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);transition:opacity .15s ease;}
+  .driver-popover.cc-tour .driver-popover-title{margin:0;padding-right:40px;font-family:var(--font-head);font-size:18px;font-weight:700;line-height:1.2;color:var(--h1);}
+  /* Only the text scrolls when a very short screen cannot hold it (the arrow sits outside the box) */
+  .driver-popover.cc-tour .driver-popover-description{margin-top:6px;max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;font-family:var(--font-read);font-size:17px;line-height:1.45;color:var(--body2);}
+  .driver-popover.cc-tour .driver-popover-close-btn{top:3px;right:3px;width:44px;height:44px;line-height:44px;border-radius:10px;font-family:var(--font-ui);font-size:16px;color:var(--muted);}
+  .driver-popover.cc-tour .driver-popover-close-btn:hover,.driver-popover.cc-tour .driver-popover-close-btn:focus{color:var(--title);}
+  .driver-popover.cc-tour .driver-popover-footer{margin-top:12px;gap:8px;flex-wrap:wrap;}
+  .driver-popover.cc-tour .driver-popover-progress-text{font-family:var(--font-ui);font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--accent);}
+  .driver-popover.cc-tour .driver-popover-navigation-btns{flex-wrap:wrap;gap:6px;justify-content:flex-end;}
+  .driver-popover.cc-tour .driver-popover-navigation-btns button+button{margin-left:0;}
+  .driver-popover.cc-tour .driver-popover-footer-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--btn-border);background:var(--btn-bg);color:var(--btn-color);font-family:var(--font-ui);font-size:14px;font-weight:600;line-height:1.2;text-shadow:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);cursor:pointer;}
+  .driver-popover.cc-tour .driver-popover-footer-btn:hover,.driver-popover.cc-tour .driver-popover-footer-btn:focus{background:var(--btn-bg);filter:brightness(1.1);}
+  .driver-popover.cc-tour .driver-popover-prev-btn,.driver-popover.cc-tour .cc-tour-alt{background:var(--chip-soft);border-color:var(--chip-border);color:var(--chip-color);box-shadow:none;}
+  .driver-popover.cc-tour .driver-popover-prev-btn:hover,.driver-popover.cc-tour .driver-popover-prev-btn:focus,.driver-popover.cc-tour .cc-tour-alt:hover,.driver-popover.cc-tour .cc-tour-alt:focus{background:var(--chip-soft);border-color:var(--card-border-hover);color:var(--title);filter:none;}
+  .driver-popover.cc-tour button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .driver-popover.cc-tour .cc-tour-try{display:flex;align-items:center;gap:8px;margin:10px 0 0;min-height:44px;padding:0 15px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--title);font-family:var(--font-ui);font-size:14.5px;font-weight:600;cursor:pointer;}
+  .driver-popover.cc-tour .cc-tour-try:hover{border-color:var(--card-border-hover);}
+  .driver-popover.cc-tour .cc-tour-try[hidden]{display:none;}
+  .driver-popover.cc-tour .driver-popover-arrow{border:8px solid transparent;}
+  .driver-popover.cc-tour .driver-popover-arrow-side-left{border-left-color:#7a6130;}
+  .driver-popover.cc-tour .driver-popover-arrow-side-right{border-right-color:#7a6130;}
+  .driver-popover.cc-tour .driver-popover-arrow-side-top{border-top-color:#7a6130;}
+  .driver-popover.cc-tour .driver-popover-arrow-side-bottom{border-bottom-color:#7a6130;}
+  .cc-tour-busy .driver-popover{opacity:0;pointer-events:none;}        /* waiting for the next screen to render */
+  .cc-tour-hold .driver-active-element,.cc-tour-hold .driver-active-element *{pointer-events:none!important;}
+  .driver-popover.cc-tour.cc-tour-nudge{animation:cc-nudge .35s ease;}
+  @keyframes cc-nudge{0%,100%{transform:none}30%{transform:translateX(-5px)}65%{transform:translateX(4px)}}
+  @media (max-width:719px){
+    .driver-popover.cc-tour{padding:12px 14px 10px;}
+    .driver-popover.cc-tour .driver-popover-description{font-size:16.5px;}
+  }
+  @media (max-width:359px){ .driver-popover.cc-tour .driver-popover-footer-btn{padding:0 11px;} }
   /* Universal search: a palette over the page (desktop), a full screen of its own (phones) */
   .cc-sov{align-items:flex-start;padding:max(9vh,20px) 16px 20px;z-index:70;}
   .cc-spanel{position:relative;display:flex;flex-direction:column;width:min(680px,100%);max-height:min(80vh,760px);overflow:hidden;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
@@ -637,9 +698,8 @@
     .cc-sback{display:inline-flex!important;}
     .cc-sclose,.cc-sfoot{display:none;}
     .cc-sbody{padding:2px max(8px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));}
-    .cc-guide{padding:12px 16px 14px;}
-    .cc-guide-h{font-size:22px;}
-    .cc-guide-d{font-size:17px;}
+    .cc-help{padding:12px 16px 14px;}
+    .cc-help-h{font-size:20px;}
   }
   /* "Previously on…": where the party was left, set apart like a margin note */
   .cc-where{margin:2px 0 18px;padding:2px 0 2px 14px;border-left:2px solid var(--accent);}
@@ -687,6 +747,7 @@
   .cc-popup-nav .cc-linkbtn{min-height:36px;padding:4px;font-size:13px;}
   .cc-popup-step{width:36px;height:36px;border:1px solid var(--chip-border);border-radius:9px;background:var(--chip-soft);color:var(--accent);font-size:18px;line-height:1;cursor:pointer;padding:0;}
   @media (max-width:719px){ .cc-mapwrap.has-popup .cc-zoom{display:none;} }   /* the popup needs the whole phone screen */
+  @media (max-width:719px){ .cc-maphelp{width:44px;padding:0;justify-content:center;} .cc-maphelp span{display:none;} }
 </style>
 </helmet>
 <div class="{{ appCls }}">
@@ -696,7 +757,7 @@
     <a class="cc-brand" href="#/chronicle" aria-label="{{ t.app.homeAria }}"><span class="cc-brand-k">{{ t.app.brandKicker }}</span><span class="cc-brand-t">{{ t.app.brandTitle }}</span></a>
     <nav class="cc-tabs" aria-label="{{ t.app.sectionsAria }}">
       <sc-for list="{{ nav }}" as="n">
-        <a class="{{ n.cls }}" href="{{ n.href }}" aria-current="{{ n.current }}" title="{{ n.label }}">{{ n.icon }}<span class="cc-tab-label">{{ n.label }}</span></a>
+        <a class="{{ n.cls }}" href="{{ n.href }}" aria-current="{{ n.current }}" title="{{ n.title }}">{{ n.icon }}<span class="cc-tab-label">{{ n.label }}</span></a>
       </sc-for>
     </nav>
     <button class="cc-iconbtn cc-searchbtn" onClick="{{ onOpenSearch }}" title="{{ searchTitle }}" aria-label="{{ t.search.dialogAria }}" aria-haspopup="dialog" aria-keyshortcuts="{{ searchKeys }}">{{ icons.search }}<span class="cc-searchbtn-l">{{ t.search.open }}</span><kbd class="cc-kbd">{{ searchKbd }}</kbd></button>
@@ -705,7 +766,7 @@
     </div>
     <div class="cc-actions">
       <a class="{{ savedBtnCls }}" href="#/saved" title="{{ t.saved.open }}" aria-label="{{ t.saved.open }}" aria-current="{{ savedCurrent }}">{{ icons.star }}</a>
-      <button class="cc-iconbtn" onClick="{{ onOpenTutorial }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}" aria-haspopup="dialog">?</button>
+      <button class="cc-iconbtn" onClick="{{ onOpenHelp }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}" aria-haspopup="dialog">?</button>
     </div>
   </header>
 
@@ -720,22 +781,29 @@
       <div class="cc-page">
         <div class="cc-sechead cc-chead">
           <h1 class="cc-sec-h">{{ t.chronicle.title }}</h1>
-          <span class="cc-flex"></span>
-          <sc-if value="{{ recapEntry }}">
-            <a class="cc-latest" href="{{ recapEntry.href }}" title="{{ recapEntry.sub }}" aria-label="{{ recapEntry.aria }}">
-              <span class="cc-latest-k">{{ t.recap.entry }}</span>
-              <span class="cc-latest-t">{{ recapEntry.label }} <i>{{ recapEntry.title }}</i></span>
-              <span class="cc-chev">{{ icons.next }}</span>
-            </a>
-          </sc-if>
+          <sc-if value="{{ c.tagline }}"><p class="cc-sec-sub">{{ t.chronicle.introH }}</p></sc-if>
         </div>
 
-        <sc-if value="{{ c.invite }}">
-          <div class="cc-invite" role="note">
-            {{ icons.help }}<span class="cc-invite-t">{{ t.guide.inviteText }}</span>
-            <span class="cc-invite-a"><button class="cc-btn" onClick="{{ onOpenTutorial }}" aria-haspopup="dialog">{{ t.guide.inviteOpen }}</button><button class="cc-linkbtn" onClick="{{ onDismissInvite }}" aria-label="{{ t.guide.inviteDismissAria }}">{{ t.guide.inviteDismiss }}</button></span>
-          </div>
+        <!-- First visit: what this is, and a quiet invitation to the interactive tour (never a window in the way). -->
+        <sc-if value="{{ c.intro }}">
+          <section class="cc-intro" aria-label="{{ t.chronicle.introH }}">
+            <p class="cc-intro-h">{{ t.chronicle.introH }}</p>
+            <p class="cc-intro-t">{{ t.chronicle.introT }}</p>
+            <div class="cc-invite" role="note">
+              {{ icons.help }}<span class="cc-invite-t"><b>{{ t.tour.inviteH }}</b> {{ c.inviteText }}</span>
+              <span class="cc-invite-a"><button class="cc-btn" onClick="{{ onStartTour }}">{{ t.tour.inviteGo }}</button><button class="cc-linkbtn" onClick="{{ onDismissInvite }}" aria-label="{{ t.tour.inviteNoAria }}">{{ t.tour.inviteNo }}</button></span>
+            </div>
+          </section>
         </sc-if>
+
+        <!-- Quick actions: catch up (the latest session's recap) and find anything; the help stays one tap away. -->
+        <div class="{{ c.qaCls }}">
+          <sc-if value="{{ recapEntry }}">
+            <a class="cc-qa-i cc-latest" href="{{ recapEntry.href }}" title="{{ recapEntry.sub }}" aria-label="{{ recapEntry.aria }}">{{ icons.recap }}<span class="cc-qa-b"><span class="cc-qa-t">{{ t.chronicle.qaRecap }}</span><span class="cc-qa-s">{{ recapEntry.qaSub }}</span></span></a>
+          </sc-if>
+          <button class="cc-qa-i" onClick="{{ onOpenSearch }}" aria-haspopup="dialog">{{ icons.search }}<span class="cc-qa-b"><span class="cc-qa-t">{{ t.chronicle.qaSearch }}</span><span class="cc-qa-s">{{ t.chronicle.qaSearchSub }}</span></span></button>
+          <button class="cc-linkbtn cc-qa-help" onClick="{{ onOpenHelp }}" title="{{ t.chronicle.qaHelpAria }}" aria-label="{{ t.chronicle.qaHelpAria }}" aria-haspopup="dialog">{{ icons.help }}<span>{{ t.chronicle.qaHelp }}</span></button>
+        </div>
 
         <div class="cc-toolbar">
           <div class="cc-searchrow">
@@ -749,6 +817,7 @@
 
           <sc-if value="{{ c.filtersOpen }}">
             <div class="cc-filters cc-scroll" id="cc-filters">
+              <p class="cc-hint">{{ icons.help }}<span>{{ t.chronicle.filtersHint }}</span></p>
               <div class="cc-fsec">
                 <span class="cc-flabel">{{ t.chronicle.partyMembers }}</span>
                 <div class="cc-pcchips">
@@ -1007,7 +1076,7 @@
             <div class="cc-routes">{{ mp.routesSvg }}</div>
             <sc-for list="{{ mp.pins }}" as="p">
               <div>
-                <button class="cc-marker" onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" aria-label="{{ p.title }}" aria-haspopup="{{ p.haspopup }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}">{{ p.inner }}</span></button>
+                <button class="cc-marker" data-ev="{{ p.evIds }}" data-kind="{{ p.kind }}" onClick="{{ p.onSelect }}" onMouseDown="{{ stop }}" title="{{ p.title }}" aria-label="{{ p.title }}" aria-haspopup="{{ p.haspopup }}" style="{{ p.style }}"><span style="{{ p.sealStyle }}">{{ p.inner }}</span></button>
                 <sc-if value="{{ p.badge }}"><span aria-hidden="true" style="{{ p.badgeStyle }}">{{ p.badge }}</span></sc-if>
                 <div style="{{ p.labelStyle }}">{{ p.labelText }}</div>
               </div>
@@ -1049,11 +1118,13 @@
           <button class="cc-mapbtn" onClick="{{ mp.onTogglePanel }}" aria-expanded="{{ mp.panelOpen }}">{{ icons.layers }}<span>{{ t.map.partyFilters }}</span><sc-if value="{{ mp.activeCount }}"><span class="cc-count">{{ mp.activeCount }}</span></sc-if></button>
           <span class="cc-flex"></span>
           <sc-if value="{{ mp.canBack }}"><button class="cc-mapbtn" onClick="{{ mp.onBack }}">{{ icons.back }}<span>{{ mp.backLabel }}</span></button></sc-if>
+          <sc-if value="{{ mp.canTour }}"><button class="cc-mapbtn cc-maphelp" onClick="{{ mp.onTour }}" title="{{ t.map.howToAria }}" aria-label="{{ t.map.howToAria }}">{{ icons.help }}<span>{{ t.map.howTo }}</span></button></sc-if>
         </div>
 
         <sc-if value="{{ mp.panelOpen }}">
           <div class="cc-mappanel cc-scroll" data-nopan="1" onMouseDown="{{ stop }}">
             <div class="cc-mp-h"><span>{{ t.characters.partyName }}</span><span class="cc-flex"></span><button class="cc-iconbtn sm" onClick="{{ mp.onTogglePanel }}" aria-label="{{ t.map.closePanel }}">✕</button></div>
+            <div data-tour="party-rows">
             <sc-for list="{{ mp.party }}" as="c">
               <button class="{{ c.cls }}" onClick="{{ c.onToggle }}" aria-pressed="{{ c.on }}">
                 <span class="{{ c.sealCls }}" style="{{ c.seal }}">{{ c.mono }}</span>
@@ -1064,6 +1135,7 @@
             <label class="cc-check"><input type="checkbox" checked="{{ mp.showRoute }}" onChange="{{ mp.onToggleRoute }}" />{{ t.map.showRoutes }}</label>
             <sc-if value="{{ mp.hasShared }}"><div class="cc-legend-row"><span class="cc-swatch">{{ mp.sharedSwatch }}</span><span><span class="cc-strong">{{ t.map.sharedRoute }}</span> · {{ mp.sharedSub }}</span></div></sc-if>
             <p class="cc-muted cc-mp-note">{{ t.map.routesNote }}</p>
+            </div>
             <div class="cc-mp-h" style="margin-top:8px;">{{ t.map.eventsOnMap }}</div>
             <p class="cc-muted" style="margin:0 0 8px;font-size:15px;">{{ mp.countText }}</p>
             <sc-if value="{{ mp.activeCount }}">
@@ -1117,15 +1189,19 @@
             <ul class="cc-bullets notes"><sc-for list="{{ e.unresolved }}" as="x"><li>{{ x }}</li></sc-for></ul>
           </sc-if>
           <sc-if value="{{ e.hasPeople }}">
+            <div data-tour="event-people">
             <h2 class="cc-h2">{{ t.event.who }}</h2>
             <div class="cc-chips">
               <sc-for list="{{ e.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for>
             </div>
+            </div>
           </sc-if>
           <sc-if value="{{ e.hasQuests }}">
+            <div data-tour="event-quests">
             <h2 class="cc-h2">{{ t.event.quests }}</h2>
             <div class="cc-rows">
               <sc-for list="{{ e.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for>
+            </div>
             </div>
           </sc-if>
           <sc-if value="{{ e.hasRelated }}">
@@ -1359,9 +1435,12 @@
           <sc-if value="{{ rc.summary }}"><p class="cc-lead" lang="{{ rc.summaryLang }}">{{ rc.summary }}</p></sc-if>
           <sc-if value="{{ rc.summaryFallback }}"><p class="cc-lore-note">{{ t.recap.inEnglish }}</p></sc-if>
           <sc-if value="{{ rc.isStub }}"><p class="cc-muted">{{ t.recap.noLog }}</p></sc-if>
-          <sc-if value="{{ rc.endedHere }}"><div class="cc-where"><div class="cc-where-k">{{ t.recap.where }}</div><p class="cc-where-t">{{ rc.endedHere }}</p></div></sc-if>
+          <p class="cc-hint">{{ icons.help }}<span>{{ rc.source }}</span></p>
+          <sc-if value="{{ rc.endedHere }}"><div class="cc-where" data-tour="recap-where"><div class="cc-where-k">{{ t.recap.where }}</div><p class="cc-where-t">{{ rc.endedHere }}</p></div></sc-if>
+          <div data-tour="recap-events">
           <h2 class="cc-h2">{{ rc.eventsHeading }} <span class="n">{{ rc.eventCount }}</span></h2>
           <sc-if value="{{ rc.noEvents }}"><p class="cc-muted">{{ t.recap.noEvents }}</p></sc-if>
+          </div>
           <div class="cc-rows"><sc-for list="{{ rc.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for></div>
           <sc-if value="{{ rc.hasDecisions }}">
             <h2 class="cc-h2">{{ t.recap.decisions }}</h2>
@@ -1444,58 +1523,50 @@
       </div>
       <div class="cc-sheet-grid" style="margin-top:10px;">
         <a class="{{ savedSheetCls }}" href="#/saved">{{ icons.star }}<span>{{ t.nav.saved }}</span></a>
-        <button class="cc-sheet-item" onClick="{{ onOpenTutorial }}" aria-haspopup="dialog">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
+        <button class="cc-sheet-item" onClick="{{ onOpenHelp }}" aria-haspopup="dialog">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
         <button class="cc-sheet-item" onClick="{{ onOpenGlossary }}" aria-haspopup="dialog">{{ icons.legend }}<span>{{ t.guide.tabGlossary }}</span></button>
       </div>
     </div>
   </sc-if>
 
-  <!-- ═══ GUIDE: three steps with real examples + the glossary of icons and colours ═══ -->
-  <sc-if value="{{ gd.open }}">
-    <div class="cc-overlay" onClick="{{ gd.onClose }}">
-      <div class="cc-modal cc-guide cc-scroll" onClick="{{ stop }}" onKeyDown="{{ gd.onKey }}" role="dialog" aria-modal="true" aria-label="{{ t.guide.dialogAria }}" data-dialog="guide">
-        <div class="cc-guide-top">
-          <span class="cc-guide-k">{{ t.guide.kicker }}</span>
-          <button class="cc-iconbtn sm" onClick="{{ gd.onClose }}" title="{{ t.guide.closeAria }}" aria-label="{{ t.guide.closeAria }}">✕</button>
+  <!-- ═══ HELP: the guided tours (Driver.js, on the real page), short answers, and the glossary of icons and colours ═══ -->
+  <sc-if value="{{ hp.open }}">
+    <div class="cc-overlay" onClick="{{ hp.onClose }}">
+      <div class="cc-modal cc-help cc-scroll" onClick="{{ stop }}" role="dialog" aria-modal="true" aria-label="{{ t.guide.dialogAria }}" data-dialog="help">
+        <div class="cc-help-top">
+          <span class="cc-help-k">{{ t.guide.kicker }}</span>
+          <button class="cc-iconbtn sm" onClick="{{ hp.onClose }}" title="{{ t.guide.closeAria }}" aria-label="{{ t.guide.closeAria }}">✕</button>
         </div>
-        <div class="cc-seg cc-guide-tabs" role="group" aria-label="{{ t.guide.tabsAria }}">
-          <button class="{{ gd.tabGuideCls }}" onClick="{{ gd.onTabGuide }}" aria-pressed="{{ gd.isSteps }}">{{ icons.help }}{{ t.guide.tabGuide }}</button>
-          <button class="{{ gd.tabGlossaryCls }}" onClick="{{ gd.onTabGlossary }}" aria-pressed="{{ gd.isGlossary }}">{{ icons.legend }}{{ t.guide.tabGlossary }}</button>
+        <div class="cc-seg cc-help-tabs" role="group" aria-label="{{ t.guide.tabsAria }}">
+          <button class="{{ hp.tabHelpCls }}" onClick="{{ hp.onTabHelp }}" aria-pressed="{{ hp.isHelp }}">{{ icons.help }}{{ t.guide.tabHelp }}</button>
+          <button class="{{ hp.tabGlossaryCls }}" onClick="{{ hp.onTabGlossary }}" aria-pressed="{{ hp.isGlossary }}">{{ icons.legend }}{{ t.guide.tabGlossary }}</button>
         </div>
 
-        <sc-if value="{{ gd.isSteps }}">
-          <div class="cc-guide-ill">
-            <span class="cc-guide-ex">{{ gd.exampleLabel }}</span>
-            <sc-if value="{{ gd.s1 }}">
-              <sc-if value="{{ gd.ex.day }}"><div class="cc-ghead" style="cursor:default;min-height:30px;"><span class="cc-glabel" style="font-size:17px;">{{ gd.ex.day }}</span><span class="cc-gsub">{{ gd.ex.daySub }}</span><span class="cc-gline"></span></div></sc-if>
-              <div class="{{ gd.ex.cls }}">
-                <span class="cc-kind">{{ gd.ex.icon }}<span class="cc-kind-l">{{ gd.ex.meta }}</span></span>
-                <span class="cc-card-t">{{ gd.ex.title }}</span>
-                <span class="cc-card-s">{{ gd.ex.summary }}</span>
-                <span class="cc-go">{{ icons.next }}</span>
-              </div>
-            </sc-if>
-            <sc-if value="{{ gd.s2 }}">
-              <div class="cc-gsearch" aria-hidden="true">{{ icons.search }}<span>{{ gd.sx.query }}</span></div>
-              <div class="cc-gres"><sc-for list="{{ gd.sx.rows }}" as="r"><div class="cc-gres-r"><span class="{{ r.icoCls }}" style="{{ r.icoStyle }}">{{ r.icon }}</span><span>{{ r.label }}</span><span class="n">{{ r.count }}</span></div></sc-for></div>
-            </sc-if>
-            <sc-if value="{{ gd.s3 }}">{{ gd.mapSketch }}</sc-if>
+        <sc-if value="{{ hp.isHelp }}">
+          <h2 class="cc-help-h" tabIndex="-1" ref="{{ helpHeadRef }}">{{ t.help.title }}</h2>
+          <p class="cc-help-d">{{ t.help.intro }}</p>
+          <sc-if value="{{ hp.canTour }}">
+            <div class="cc-tours" role="group" aria-label="{{ t.help.toursH }}">
+              <sc-for list="{{ hp.tours }}" as="tr">
+                <button class="{{ tr.cls }}" onClick="{{ tr.onStart }}"><span class="cc-hitico">{{ tr.icon }}</span><span class="cc-tourrow-b"><span class="cc-tourrow-t">{{ tr.title }}</span><span class="cc-tourrow-s">{{ tr.sub }}</span></span><sc-if value="{{ tr.done }}"><span class="cc-badge tone-done">{{ icons.check }}{{ tr.done }}</span></sc-if><span class="cc-chev">{{ icons.next }}</span></button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hp.noTour }}"><p class="cc-hint" style="margin-top:12px;">{{ icons.help }}<span>{{ t.help.unavailable }}</span></p></sc-if>
+          <h3 class="cc-gl-h">{{ t.help.faqH }}</h3>
+          <div class="cc-faq">
+            <details class="cc-faq-i">
+              <summary>{{ t.help.sectionsQ }}</summary>
+              <dl class="cc-secs"><sc-for list="{{ hp.sections }}" as="sc"><div class="cc-sec"><dt>{{ sc.icon }}{{ sc.label }}</dt><dd>{{ sc.text }}</dd></div></sc-for></dl>
+            </details>
+            <sc-for list="{{ hp.faq }}" as="fq">
+              <details class="cc-faq-i"><summary>{{ fq.q }}</summary><p class="cc-faq-a">{{ fq.a }}</p></details>
+            </sc-for>
           </div>
-          <p class="cc-guide-n" aria-live="polite">{{ gd.stepLabel }}</p>
-          <h2 class="cc-guide-h" tabIndex="-1" ref="{{ guideHeadRef }}">{{ gd.title }}</h2>
-          <p class="cc-guide-d">{{ gd.text }}</p>
-          <ul class="cc-guide-pts"><sc-for list="{{ gd.points }}" as="pt"><li>{{ pt.icon }}<span>{{ pt.text }}</span></li></sc-for></ul>
-          <sc-if value="{{ gd.tryLabel }}"><button class="cc-act" onClick="{{ gd.onTry }}">{{ gd.tryIcon }}{{ gd.tryLabel }}</button></sc-if>
-          <div class="cc-guide-nav">
-            <button class="cc-btn ghost" onClick="{{ gd.onPrev }}" disabled="{{ gd.isFirst }}">{{ icons.back }}{{ t.guide.prev }}</button>
-            <div class="cc-gdots" role="group" aria-label="{{ t.guide.tabGuide }}"><sc-for list="{{ gd.dots }}" as="dt"><button class="{{ dt.cls }}" onClick="{{ dt.onClick }}" aria-label="{{ dt.label }}" aria-current="{{ dt.current }}"></button></sc-for></div>
-            <button class="cc-btn" onClick="{{ gd.onNext }}">{{ gd.nextLabel }}<sc-if value="{{ gd.notLast }}">{{ icons.next }}</sc-if></button>
-          </div>
-          <sc-if value="{{ gd.notLast }}"><div class="cc-guide-foot"><button class="cc-linkbtn" onClick="{{ gd.onSkip }}">{{ t.guide.skip }}</button></div></sc-if>
         </sc-if>
 
-        <sc-if value="{{ gd.isGlossary }}">
-          <h2 class="cc-guide-h" tabIndex="-1" ref="{{ guideHeadRef }}" style="margin-top:16px;">{{ t.glossary.title }}</h2>
+        <sc-if value="{{ hp.isGlossary }}">
+          <h2 class="cc-help-h" tabIndex="-1" ref="{{ helpHeadRef }}">{{ t.glossary.title }}</h2>
           <p class="cc-gl-intro" style="margin-top:0;">{{ t.glossary.intro }}</p>
           <h3 class="cc-gl-h">{{ t.glossary.events }}</h3>
           <div class="cc-gl-fams">
@@ -1758,10 +1829,10 @@ const SECTION_IDS = SECTIONS.map(s=>s.id);
 // Detail kinds open the reading pane; "at" (map only) just focuses a pin. "recap" = "Previously on…" for a session.
 const KINDS = { event:1, session:1, quest:1, character:1, place:1, recap:1 };
 const FAV_KINDS = { event:1, session:1, quest:1, character:1, place:1 };
-const GUIDE_KEY = "chronicle-tutorial-seen";       // "done" | "dismissed" ("1" from older versions): the invitation is not shown again
-const GUIDE_STEPS = 3;
-const guideSeen = ()=>{ try{ return !!localStorage.getItem(GUIDE_KEY); }catch(e){ return true; } };   // no storage: never nag
-const SEARCH_LIMIT = 5;                            // results per group before "show more"
+// Interactive tours (js/chronicle-tour.js on top of Driver.js): optional, never opened by themselves.
+const Tour = window.ChronicleTour;
+const TOUR_IDS = ["main","map","search"];
+const SEARCH_LIMIT = 5;                           // results per group before "show more"
 const RECENT_DWELL = 1200;                         // ms an entry stays open before it counts as viewed
 const IS_MAC = /Mac|iPhone|iPad/.test((navigator.platform||"")+(navigator.userAgent||""));
 const GROUP_ICON = { character:"characters", event:"chronicle", quest:"quests", place:"places", session:"sessions", recent:"recent" };
@@ -1809,8 +1880,9 @@ class Component extends DCLogic {
       isMobile:this._mqMobile.matches, isWide:this._mqWide.matches,
       docs:{}, dataError:null, loaded:false,
       moreOpen:false,
-      guide:null,                                    // { view:"steps"|"glossary", step } while the guide is open
-      inviteSeen:guideSeen(),                        // the first-visit invitation (never a window in the way)
+      help:null,                                     // { view:"help"|"glossary" } while the help centre is open
+      tourOn:null,                                   // the running tour (main | map | search), or null
+      onboardingRev:0,                               // bumped when the invitation or a tour's completion changes
       search:{ open:false, q:"", active:0, more:{} },
       libRev:0, liveMsg:"",
       servedOffline:false, netOffline:navigator.onLine===false, offlineHidden:false,
@@ -1820,6 +1892,14 @@ class Component extends DCLogic {
     this.viewport = new MapViewport({ max:6, aspectRatio:5400/8100 });
     this.store    = new DocsStore("chronicle-docs");
     this.lib      = window.ChronicleLibrary.createLibrary(safeStorage());   // favourites + recently viewed (this browser only)
+    // Onboarding: the first-visit invitation and completed tours (versioned keys, js/chronicle-tour.js),
+    // and the tour runtime on top of Driver.js. Without either script the page simply has no tours.
+    this.onboarding = Tour ? Tour.createProgress(safeStorage()) : { showInvite:()=>false, isCompleted:()=>false, complete(){}, dismissInvite(){}, migrate(){} };
+    this.onboarding.migrate();
+    this.tour = Tour&&window.driver&&window.driver.js ? Tour.createRunner({ driver:window.driver.js.driver, app:{
+      t:()=>this.t, ctx:()=>this._tourCtx(), go:hash=>this.navigate(hash,{replace:true}),
+      act:(name,value,run)=>this._tourAct(name,value,run), say:msg=>this._say(msg), ended:info=>this._tourEnded(info),
+    } }) : null;
     this._overlay=null; this._returnFocus=null; this._recentTimer=null;
     this._stack=[routeHash(this.state.route)];
     this._scroll={}; this._dscroll={}; this._interact=0; this._mapCentered=false; this._memo={};
@@ -1849,7 +1929,7 @@ class Component extends DCLogic {
     };
     this.searchRef = el=>{ this._searchEl=el; };
     this.headRef   = el=>{ this._headEl=el; };
-    this.guideHeadRef = el=>{ this._guideHead=el; };
+    this.helpHeadRef = el=>{ this._helpHead=el; };
     this.searchBodyRef = el=>{ this._sBody=el; };
     // The search field takes the focus as soon as the panel mounts (inside the tap, so phones open the keyboard).
     this.searchAllRef = el=>{ this._sInput=el; if(el&&this._focusSearchInput){ this._focusSearchInput=false; el.focus({preventScroll:true}); if(el.value) el.select(); } };
@@ -1866,9 +1946,23 @@ class Component extends DCLogic {
     window.addEventListener("hashchange",this._onHash);
     this._onKey=e=>this._handleKey(e);
     document.addEventListener("keydown",this._onKey);
-    // Back (browser button, Android gesture) closes an open guide or search instead of leaving the page.
-    this._onPop=()=>this._overlayPopped();
+    // Back (browser button, Android gesture) closes an open help or search instead of leaving the page,
+    // and ends a running tour where it started (the tour owns one history entry, see startTour).
+    this._onPop=()=>{
+      if(this._tourPopping){ this._tourPopping=false; return; }
+      if(this.state.tourOn&&!(history.state&&history.state.ccTour)){ if(this.tour) this.tour.stop("back"); return; }
+      this._overlayPopped();
+    };
     window.addEventListener("popstate",this._onPop);
+    // During a tour, links move the tour's own history entry instead of adding new ones, so Back
+    // still means "leave the tour" and the visitor's history is not filled with tour screens.
+    this._onTourClick=e=>{
+      if(!this.state.tourOn||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
+      const a=e.target&&e.target.closest&&e.target.closest('a[href^="#/"]');
+      if(!a||a.target||a.closest("[data-dialog]")) return;
+      e.preventDefault(); this.navigate(a.getAttribute("href"));
+    };
+    document.addEventListener("click",this._onTourClick,true);
     // Favourites/history changed in another tab.
     this._onStorage=e=>{ if(e.key===window.ChronicleLibrary.FAV_KEY||e.key===window.ChronicleLibrary.RECENT_KEY){ this.lib.reload(); this.setState(s=>({libRev:s.libRev+1})); } };
     window.addEventListener("storage",this._onStorage);
@@ -1876,7 +1970,7 @@ class Component extends DCLogic {
     window.addEventListener("online",this._onNet); window.addEventListener("offline",this._onNet);
     const saved=this.store.load(); if(Object.keys(saved).length) this.setState({docs:saved});
     // A reload while an overlay was open leaves its history entry behind: it no longer opens anything.
-    try{ if(history.state&&history.state.ccOverlay) history.replaceState(null,"",location.href); }catch(e){}
+    try{ if(history.state&&(history.state.ccOverlay||history.state.ccTour)) history.replaceState(null,"",location.href); }catch(e){}
     if(!location.hash) history.replaceState(null,"",routeHash(this.state.route));
 
     // Required files fail loudly; npcs/locations/lore are optional (a 404 simply means "none yet").
@@ -1922,8 +2016,12 @@ class Component extends DCLogic {
       this._hiImg.onload=()=>this.setState({hiLoaded:true});
       this._hiImg.src=HI_RES_MAP;
     }
+    // A running tour follows the app: the action a step waits for, re-rendered elements, layout changes.
+    if(this.state.tourOn&&this.tour) this.tour.sync();
   }
   componentWillUnmount(){
+    if(this.tour&&this.tour.isActive()) this.tour.stop("unmount");
+    document.removeEventListener("click",this._onTourClick,true);
     this.viewport.detach();
     [this._mqMobile,this._mqWide].forEach(mq=>{ if(mq.removeEventListener) mq.removeEventListener("change",this._mqH); else mq.removeListener(this._mqH); });
     window.removeEventListener("resize",this.reflow);
@@ -1956,11 +2054,16 @@ class Component extends DCLogic {
     this._memo={};
     this._applyDocLang(code);
     this.setState({lang:code});
+    // A running tour keeps its step and reads its texts again in the new language.
+    if(this.state.tourOn&&this.tour) this.setState({},()=>this.tour.rerender());
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────
+  // During a tour every navigation replaces the tour's own history entry (keeping its marker), so a
+  // tour never adds entries: Back leaves it, exactly where it started.
   navigate(hash,{replace=false}={}){
-    if(replace){ history.replaceState(null,"",hash); this._routeChanged(true); }
+    if(this.state.tourOn) replace=true;
+    if(replace){ history.replaceState(this.state.tourOn&&history.state&&history.state.ccTour?history.state:null,"",hash); this._routeChanged(true); }
     else if(location.hash===hash) this._routeChanged();
     else location.hash=hash;
   }
@@ -1971,12 +2074,12 @@ class Component extends DCLogic {
     else if(st[st.length-1]!==hash) st.push(hash);
     if(st.length>60) st.splice(0,st.length-60);
     const prev=this.state.route;
-    this._overlay=null;                                            // any route change closes the guide and the search
-    this.setState(s=>({route:r,moreOpen:false,guide:null,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._afterRoute(prev,r));
+    this._overlay=null;                                            // any route change closes the help and the search
+    this.setState(s=>({route:r,moreOpen:false,help:null,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._afterRoute(prev,r));
   }
   canGoBack(){ return this._stack.length>1; }
   goBack(){
-    if(this.canGoBack()) history.back();
+    if(this.canGoBack()&&!this.state.tourOn) history.back();
     else { const r=this.state.route; this.navigate(routeHash({section:r.section}),{replace:true}); }
   }
   closeDetail(){ const r=this.state.route; this.navigate(routeHash({section:r.section})); }
@@ -2009,20 +2112,27 @@ class Component extends DCLogic {
   }
   _handleKey(e){
     const typing=/^(INPUT|SELECT|TEXTAREA)$/.test((e.target&&e.target.tagName)||"");
+    // A running tour owns Esc (leave it) and ← → (previous / next step, unless typing); Tab is
+    // Driver.js's own focus trap (popover + highlighted element). Other shortcuts wait for the end.
+    if(this.state.tourOn&&this.tour){
+      if(e.key==="Escape"){ e.preventDefault(); return this.tour.stop("close"); }
+      if(!typing&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!e.shiftKey&&(e.key==="ArrowRight"||e.key==="ArrowLeft")){ e.preventDefault(); return e.key==="ArrowRight"?this.tour.next():this.tour.prev(); }
+      return;
+    }
     // Ctrl+K / ⌘K: the universal search, from anywhere (again to close it).
     if((e.ctrlKey||e.metaKey)&&!e.altKey&&!e.shiftKey&&(e.key==="k"||e.key==="K")){ e.preventDefault(); return this.state.search.open?this.closeSearch():this.openSearch(); }
-    if(e.key==="Tab"&&(this.state.search.open||this.state.guide)) return this._trapFocus(e);
+    if(e.key==="Tab"&&(this.state.search.open||this.state.help)) return this._trapFocus(e);
     if(e.key==="Escape"){
       if(this.state.search.open) return this.closeSearch();
-      if(this.state.guide) return this.closeGuide("dismissed");
+      if(this.state.help) return this.closeHelp();
       if(this.state.moreOpen) return this.setState({moreOpen:false});
       if(this.state.filtersOpen) return this.setState({filtersOpen:false});
       if(this.state.mapList) return this.setState({mapList:null});
       if(!typing&&this.state.route.kind) return this.closeDetail();
     }
-    if(e.key==="/"&&!typing&&!e.ctrlKey&&!e.metaKey&&!this.state.search.open&&!this.state.guide){ e.preventDefault(); this.focusSearch(); }
+    if(e.key==="/"&&!typing&&!e.ctrlKey&&!e.metaKey&&!this.state.search.open&&!this.state.help){ e.preventDefault(); this.focusSearch(); }
   }
-  // Keyboard focus stays inside an open dialog (guide, search) until it is closed.
+  // Keyboard focus stays inside an open dialog (help, search) until it is closed.
   _trapFocus(e){
     const dlg=document.querySelector("[data-dialog]"); if(!dlg) return;
     const all=[...dlg.querySelectorAll('a[href]:not([tabindex="-1"]),button:not([disabled]),input,summary,[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null);
@@ -2033,66 +2143,139 @@ class Component extends DCLogic {
     else if(!e.shiftKey&&cur===last){ e.preventDefault(); first.focus(); }
   }
 
-  // ── Overlays (guide, search) ──────────────────────────────────────────────
+  // ── Overlays (help, search) ───────────────────────────────────────────────
   // An open overlay owns one history entry (same URL), so Back — the browser button or Android's
   // gesture — closes it instead of leaving the page. Closing it with ✕/Esc consumes that entry;
   // following a link from it replaces the entry with the destination (no dead Back press).
+  // During a tour the search adds no entry of its own: the tour's entry already means "Back leaves".
   _pushOverlay(name){
-    if(!this._overlay){ try{ history.pushState({ccOverlay:name},"",location.href); }catch(e){} }
+    if(!this._overlay&&!this.state.tourOn){ try{ history.pushState({ccOverlay:name},"",location.href); }catch(e){} }
     this._overlay=name;
   }
-  _popOverlay(){
+  // `then` runs once the overlay's history entry is gone (at once when it has none).
+  _popOverlay(then){
     const had=this._overlay; this._overlay=null;
-    if(had&&history.state&&history.state.ccOverlay){ this._ignorePop=true; history.back(); }
+    if(had&&history.state&&history.state.ccOverlay){ this._ignorePop=true; this._afterPop=then||null; history.back(); }
+    else if(then) then();
   }
   _overlayPopped(){
-    if(this._ignorePop){ this._ignorePop=false; return; }
+    if(this._ignorePop){ this._ignorePop=false; const then=this._afterPop; this._afterPop=null; if(then) then(); return; }
     if(!this._overlay) return;
     this._overlay=null;
-    this.setState(s=>({guide:null,search:{...s.search,open:false}}),()=>this._restoreFocus());
+    this.setState(s=>({help:null,search:{...s.search,open:false}}),()=>this._restoreFocus());
   }
   _goFromOverlay(hash){
     const inOverlay=this._overlay&&history.state&&history.state.ccOverlay;
     this._focusHeadNext=true;
     if(inOverlay&&hash!==location.hash){ this._overlay=null; history.replaceState(null,"",hash); this._routeChanged(); }
-    else { this._popOverlay(); this.setState(s=>({guide:null,search:{...s.search,open:false}})); this.navigate(hash); }
+    else { this._popOverlay(); this.setState(s=>({help:null,search:{...s.search,open:false}})); this.navigate(hash); }
   }
   _keepFocus(){ const a=document.activeElement; this._returnFocus=a&&a!==document.body?a:null; }
   _restoreFocus(){ const el=this._returnFocus; this._returnFocus=null; if(el&&el.isConnected&&el.focus) requestAnimationFrame(()=>el.focus({preventScroll:true})); }
 
-  // ── Guide ─────────────────────────────────────────────────────────────────
-  openGuide(view){
-    if(!this.state.guide) this._keepFocus();
-    this._pushOverlay("guide");
-    this.setState(s=>({guide:{view:view==="glossary"?"glossary":"steps",step:0},moreOpen:false,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._focusGuideHead());
+  // ── Help centre: guided tours, frequent questions, glossary ───────────────
+  openHelp(view){
+    if(this.state.tourOn) return;
+    if(!this.state.help) this._keepFocus();
+    this._pushOverlay("help");
+    this.setState(s=>({help:{view:view==="glossary"?"glossary":"help"},moreOpen:false,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._focusHelpHead());
   }
-  _focusGuideHead(){ if(this._guideHead) this._guideHead.focus({preventScroll:true}); }
-  // Finishing or dismissing it once is remembered: the first-visit invitation does not come back.
-  _markGuideSeen(how){ try{ localStorage.setItem(GUIDE_KEY,how); }catch(e){} if(!this.state.inviteSeen) this.setState({inviteSeen:true}); }
-  closeGuide(how){ this._markGuideSeen(how||"dismissed"); this._popOverlay(); this.setState({guide:null},()=>this._restoreFocus()); }
-  guideStep(n){ const g=this.state.guide; if(!g) return; const step=Math.max(0,Math.min(GUIDE_STEPS-1,n)); if(step!==g.step) this.setState({guide:{...g,step}},()=>this._focusGuideHead()); }
-  guideView(view){ const g=this.state.guide; if(g&&g.view!==view) this.setState({guide:{...g,view}},()=>this._focusGuideHead()); }
-  _guideKey(e){
-    const g=this.state.guide; if(!g||g.view!=="steps"||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-    if(e.key==="ArrowRight"){ e.preventDefault(); this.guideStep(g.step+1); }
-    else if(e.key==="ArrowLeft"){ e.preventDefault(); this.guideStep(g.step-1); }
+  _focusHelpHead(){ if(this._helpHead) this._helpHead.focus({preventScroll:true}); }
+  closeHelp(){ this._popOverlay(); this.setState({help:null},()=>this._restoreFocus()); }
+  helpView(view){ const h=this.state.help; if(h&&h.view!==view) this.setState({help:{...h,view}},()=>this._focusHelpHead()); }
+  // "Ahora no": the first-visit invitation does not come back (until the tours change version).
+  dismissInvite(){ this.onboarding.dismissInvite(); this.setState(s=>({onboardingRev:s.onboardingRev+1})); }
+
+  // ── Interactive tours (js/chronicle-tour.js drives Driver.js over the real interface) ──
+  // A tour owns one history entry (same URL, marked ccTour). Every navigation during the tour replaces
+  // it, so Back — the browser's or Android's — ends the tour where it started. Leaving early (✕, Esc,
+  // "Omitir", Back) restores that place: route, list and pane scroll, map view, panels and filters.
+  // Reaching the last step marks the tour completed and leaves the visitor where it ended.
+  startTour(id){
+    if(!this.tour||!this.model||!TOUR_IDS.includes(id)) return;
+    if(this.state.tourOn) this.tour.stop("restart");
+    const begin=()=>{
+      const st=this.state, a=document.activeElement;
+      this._tourSnap={ id, hash:routeHash(st.route), stack:this._stack.slice(), scroll:{...this._scroll}, dscroll:{...this._dscroll},
+        filters:st.filters, filtersOpen:st.filtersOpen, view:st.view, mapSelId:st.mapSelId, mapList:st.mapList, mapPanelOpen:st.mapPanelOpen,
+        focus:this._returnFocus||(a&&a!==document.body?a:null) };
+      this._returnFocus=null;
+      try{ history.pushState({ccTour:id},"",location.href); }catch(e){}
+      this._stack.push(this._tourSnap.hash);
+      this.setState({tourOn:id,moreOpen:false,filtersOpen:false});
+      this.tour.start(id);
+    };
+    // From the help centre (or the search): close it first, its history entry included.
+    if(this.state.help||this.state.search.open){ this.setState(s=>({help:null,search:{...s.search,open:false}})); this._popOverlay(begin); }
+    else begin();
   }
-  // "Try it": each step's example does the real thing — opens the event, runs the search, opens the map.
-  guideTry(step){
-    const ex=this.model?M.guideExamples(this.model):{};
-    this._markGuideSeen("done");
-    if(step===1&&ex.person){ this._overlay="search"; this._focusSearchInput=true; this.setState({guide:null,search:{open:true,q:ex.person.name,active:0,more:{}}}); return; }
-    this.setState({guide:null});
-    if(step===0&&ex.event) return this._goFromOverlay(`#/chronicle/event/${enc(ex.event.id)}`);
-    this._goFromOverlay("#/map");
+  // What the tour steps read: the route, the panels, and real examples from the data (never invented).
+  _tourCtx(){
+    const st=this.state, m=this.model, r=st.route, t=this.t;
+    const ex=m?M.guideExamples(m):{}, last=m?M.latestSession(m):null;
+    let mapPopup=null;
+    if(m&&r.section==="map"&&(!r.kind||r.kind==="at"||st.isWide)){
+      const evs=this._mapEvents(), shown=id=>evs.some(e=>e.id===id);
+      if(st.mapList&&st.mapList.some(shown)) mapPopup="list";
+      else { const sel=(r.kind==="event"||r.kind==="at")?r.id:st.mapSelId; if(sel&&shown(sel)) mapPopup="sel"; }
+    }
+    return {
+      route:r, hash:routeHash(r), isMobile:st.isMobile, isWide:st.isWide,
+      moreOpen:st.moreOpen, mapPanelOpen:st.mapPanelOpen, mapPopup, search:{ open:st.search.open, q:st.search.q||"" },
+      latest:last?last.no:null,
+      example:{ eventId:ex.event?ex.event.id:null, personId:ex.person?ex.person.id:null, personName:ex.person?ex.person.name:"", mapEventId:ex.mapEvent?ex.mapEvent.id:null },
+      labels:{ app:t("app.docTitle"), party:t("characters.partyName"), partyFilters:t("map.partyFilters"), inChronicle:t("common.showInChronicle"), keys:IS_MAC?"⌘K":"Ctrl+K" },
+    };
+  }
+  // The few things a step may open or close for the visitor (false = cannot, the step is skipped).
+  _tourAct(name,value,run){
+    if(name==="more"){ this.setState({moreOpen:!!value}); return true; }
+    if(name==="search"){ if(value) this.openSearch(); else if(this.state.search.open) this.closeSearch(); return true; }
+    if(name==="searchQ"){ if(this.state.search.open) this.setSearchQ(value); else this.openSearch(value); return true; }
+    if(name==="mapPanel"){ this.setState({mapPanelOpen:!!value}); return true; }
+    if(name==="mapPopup"){
+      if(!value){ this.setState({mapSelId:null,mapList:null}); const r=this.state.route; if(r.section==="map"&&r.kind) this.navigate("#/map"); return true; }
+      const ids=run&&run.pin; if(!ids||!ids.length) return false;
+      if(ids.length>1) this.openList(ids); else this.selectPin(ids[0],{keep:true});
+      return true;
+    }
+    return false;
+  }
+  _tourEnded({id,completed,reason,step}){
+    const snap=this._tourSnap; this._tourSnap=null;
+    if(completed) this.onboarding.complete(id);
+    else if(id==="main"&&step==="welcome"&&reason==="close") this.onboarding.dismissInvite();   // "Omitir" at the welcome = "not now"
+    this._overlay=null;
+    const base={ tourOn:null, onboardingRev:this.state.onboardingRev+1, moreOpen:false, search:{...this.state.search,open:false} };
+    if(completed||!snap){
+      // Finished: stay where the tour ended; its history entry becomes an ordinary one.
+      try{ if(history.state&&history.state.ccTour) history.replaceState(null,"",location.href); }catch(e){}
+      this.setState({...base, mapList:null, mapPanelOpen:snap?snap.mapPanelOpen:false});
+    } else {
+      // Left early: back where it started.
+      const popEntry=reason!=="back"&&!!(history.state&&history.state.ccTour), start=parseHash(snap.hash);
+      this._scroll={...snap.scroll}; this._dscroll={...snap.dscroll};
+      Prefs.setS("chronicle-filters",snap.filters);
+      this.setState({...base, filters:snap.filters, filtersOpen:snap.filtersOpen, view:snap.view, mapSelId:snap.mapSelId, mapList:snap.mapList, mapPanelOpen:snap.mapPanelOpen});
+      if(routeHash(this.state.route)!==snap.hash) this.navigate(snap.hash,{replace:true});
+      if(popEntry){ this._tourPopping=true; history.back(); }
+      this._stack=snap.stack.slice();
+      requestAnimationFrame(()=>{ if(this._mainEl&&start.section!=="map"&&(!start.kind||this.state.isWide)) this._mainEl.scrollTop=snap.scroll[start.section]||0; });
+    }
+    const el=snap&&snap.focus;
+    requestAnimationFrame(()=>{
+      if(reason==="more") return this.openHelp("help");
+      const f=el&&el.isConnected&&el.getClientRects().length?el:document.querySelector(".cc-brand");
+      if(f&&f.focus) f.focus({preventScroll:true});
+    });
   }
 
   // ── Universal search ──────────────────────────────────────────────────────
   openSearch(q){
-    if(!this.state.search.open&&!this.state.guide) this._keepFocus();
+    if(!this.state.search.open&&!this.state.help) this._keepFocus();
     this._pushOverlay("search");
     this._focusSearchInput=true;
-    this.setState(s=>({search:{open:true,q:q!=null?q:s.search.q,active:0,more:{}},guide:null,moreOpen:false}),()=>{ if(this._sInput&&document.activeElement!==this._sInput){ this._sInput.focus({preventScroll:true}); this._focusSearchInput=false; } });
+    this.setState(s=>({search:{open:true,q:q!=null?q:s.search.q,active:0,more:{}},help:null,moreOpen:false}),()=>{ if(this._sInput&&document.activeElement!==this._sInput){ this._sInput.focus({preventScroll:true}); this._focusSearchInput=false; } });
   }
   closeSearch(){ this._popOverlay(); this.setState(s=>({search:{...s.search,open:false}}),()=>this._restoreFocus()); }
   setSearchQ(q){ if(this._sBody) this._sBody.scrollTop=0; this.setState(s=>({search:{...s.search,q,active:0,more:{}}})); }
@@ -2293,10 +2476,13 @@ class Component extends DCLogic {
     }
 
     const activeCount=M.activeFilterCount(f);
+    // First visit: the intro and the tour invitation, until the main tour is completed or "Ahora no".
+    const intro=!st.tourOn&&this.onboarding.showInvite();
     return {
       groups:vm, count:evs.length, isEmpty:evs.length===0, opt, pcChips, actives, hasActives:actives.length>0, activeCount,
       quick, hasQuick:quick.length>0, filtersOpen:st.filtersOpen,
-      invite:!st.inviteSeen&&!st.guide,
+      intro, tagline:!intro, inviteText:t("tour.inviteT",{party:t("characters.partyName")}),
+      qaCls:"cc-qa"+(M.latestSession(m)?"":" no-recap"),
       filterBtnCls:"cc-btn ghost"+(st.filtersOpen||activeCount?" is-on":""),
       filterLabel:activeCount?t("chronicle.filtersActive",{count:activeCount}):t("chronicle.filters"),
       showLabel:t("chronicle.showEvents",{count:evs.length}),
@@ -2446,64 +2632,24 @@ class Component extends DCLogic {
     };
   }
 
-  // ── Guide + glossary ──────────────────────────────────────────────────────
-  _buildGuide(){
-    const g=this.state.guide, t=this.t, m=this.model;
-    if(!g) return { open:false };
-    const isGlossary=g.view==="glossary";
-    const base={ open:true, isSteps:!isGlossary, isGlossary,
-      tabGuideCls:isGlossary?"":"is-on", tabGlossaryCls:isGlossary?"is-on":"",
-      onTabGuide:()=>this.guideView("steps"), onTabGlossary:()=>this.guideView("glossary"),
-      onClose:()=>this.closeGuide("dismissed"), onKey:e=>this._guideKey(e) };
+  // ── Help centre + glossary ────────────────────────────────────────────────
+  // The tours start from here (and from the Chronicle's invitation and the map); the questions are
+  // short answers; "What's in each section?" uses the same one-line descriptions as the tab titles.
+  _buildHelp(){
+    const hs=this.state.help, t=this.t;
+    if(!hs) return { open:false };
+    const isGlossary=hs.view==="glossary";
+    const base={ open:true, isHelp:!isGlossary, isGlossary,
+      tabHelpCls:isGlossary?"":"is-on", tabGlossaryCls:isGlossary?"is-on":"",
+      onTabHelp:()=>this.helpView("help"), onTabGlossary:()=>this.helpView("glossary"), onClose:()=>this.closeHelp() };
     if(isGlossary) return base;
-    const n=g.step, ex=m?M.guideExamples(m):{}, key=`s${n+1}`;
-    const titles=[1,2,3].map(i=>t(`guide.s${i}T`));
-    const pointIcons=[[ICONS.sort,EVENT_ICONS.combat,ICONS.next],[ICONS.lore,ICONS.characters,ICONS.star],[ICONS.pin,ICONS.layers,ICONS.back]][n];
-    const name=ex.person?ex.person.name:"";
-    const out={ ...base, s1:n===0, s2:n===1, s3:n===2, isFirst:n===0, notLast:n<GUIDE_STEPS-1,
-      stepLabel:t("guide.step",{n:n+1,total:GUIDE_STEPS}), title:titles[n], text:t(`guide.${key}D`),
-      points:["a","b","c"].map((x,i)=>({ text:t(`guide.${key}${x}`,{name}), icon:pointIcons[i] })),
-      exampleLabel:t("guide.example"),
-      nextLabel:n<GUIDE_STEPS-1?t("guide.next"):t("guide.done"),
-      onPrev:()=>this.guideStep(n-1), onNext:()=>n<GUIDE_STEPS-1?this.guideStep(n+1):this.closeGuide("done"), onSkip:()=>this.closeGuide("dismissed"),
-      dots:titles.map((ti,i)=>({ cls:"cc-gdot"+(i===n?" is-on":""), label:t("guide.stepAria",{n:i+1,title:ti}), current:i===n?"step":undefined, onClick:()=>this.guideStep(i) })),
-      onTry:()=>this.guideTry(n), tryIcon:[ICONS.chronicle,ICONS.search,ICONS.map][n],
-      tryLabel:n===0?(ex.event?t("guide.s1Try"):""):n===1?(name?t("guide.s2Try",{name}):""):t("guide.s3Try"),
-      ex:{}, sx:{rows:[]}, mapSketch:null };
-    if(n===0&&ex.event){
-      const ev=ex.event;
-      out.ex={ day:ev.campaignDay!=null?t("common.day",{n:ev.campaignDay}):"", daySub:[m.dayLabels[ev.campaignDay]||"",this.sessLabel(ev.session)].filter(Boolean).join(" · "),
-        cls:`cc-card ${this.evFamily(ev)}`, icon:this.evIcon(ev), meta:ev.typeLabel, title:this.title(ev), summary:ev.summary };
-    }
-    if(n===1&&ex.person){
-      // The real result groups for that name — the same search the magnifier runs.
-      const r=this._searchMemo(name);
-      out.sx={ query:name, rows:r.groups.map(gr=>{
-        const top=gr.items[0];
-        if(gr.kind==="character"&&top.entity===ex.person) return { icoCls:this.sealCls(top.entity,"sm"), icoStyle:this.seal(top.entity), icon:this.mono(top.entity), label:top.entity.name, count:t("kinds.partyMember") };
-        return { icoCls:"cc-hitico", icoStyle:"", icon:ICONS[GROUP_ICON[gr.kind]], label:t(`search.group.${gr.kind}`), count:t("guide.s2Count",{count:gr.items.length}) };
-      }) };
-    }
-    if(n===2) out.mapSketch=this._mapSketch();
-    return out;
-  }
-  // A small drawing of the map (no image download): two pins, a group of nearby places, journeys
-  // in the party's colours and a shared one — the same marks the real map uses.
-  _mapSketch(){
-    if(this._memo.sketch&&this._memo.sketch.lang===this.state.lang) return this._memo.sketch.val;
-    const pcs=this.model?this.model.pcs:[], c=i=>routeStyle(pcs[i],i);
-    const line=(key,pts,stroke,w,dash)=>h("polyline",{key,points:pts,fill:"none",stroke,strokeWidth:w,strokeDasharray:dash,strokeLinecap:"round",strokeLinejoin:"round"});
-    const pin=(key,x,y,fill)=>h("g",{key,transform:`translate(${x} ${y})`},h("path",{d:"M0 0c-6-7-9-11-9-15a9 9 0 0 1 18 0c0 4-3 8-9 15z",fill,stroke:"#f5ead0",strokeWidth:1.6}),h("circle",{cx:0,cy:-15,r:3.4,fill:"#f5ead0"}));
-    const shared="40,96 92,78 150,86", a="150,86 196,58 248,46", b="150,86 206,104 262,100";
-    const val=h("svg",{className:"cc-gmap",viewBox:"0 0 300 136",role:"img","aria-label":this.t("guide.mapAria")},
-      h("rect",{key:"bg",width:300,height:136,rx:10,fill:"#1a140b"}),
-      h("path",{key:"land",d:"M14 40C52 16 104 22 136 38S204 54 236 28 296 34 290 70 254 124 206 122 122 130 86 112 22 122 12 90Z",fill:"#2b2113",stroke:"rgba(208,171,76,.4)",strokeWidth:1.2}),
-      line("c1",shared,ROUTE_CASING,6), line("c2",a,ROUTE_CASING,4.6), line("c3",b,ROUTE_CASING,4.6),
-      line("s",shared,SHARED_INK,2.8,"7 5"), line("a",a,c(2).color,2.2,c(2).dash), line("b",b,c(3).color,2.2,c(3).dash),
-      pin("p1",40,96,"#b58f3e"), pin("p2",248,46,c(2).color), pin("p3",262,100,c(3).color),
-      h("g",{key:"cl",transform:"translate(150 86)"},h("circle",{r:12,fill:"#2a1c0c",stroke:"#d6b46b",strokeWidth:2}),h("text",{y:5,textAnchor:"middle",fill:"#f5ead0",fontSize:13,fontWeight:700,fontFamily:"Cinzel, serif"},"3")));
-    this._memo.sketch={lang:this.state.lang,val};
-    return val;
+    const canTour=!!(this.tour&&this.model), icon={ main:"chronicle", map:"map", search:"search" };
+    const tours=TOUR_IDS.map(id=>({ id, cls:"cc-tourrow"+(id==="main"?" is-main":""), icon:ICONS[icon[id]],
+      title:t(`help.tour.${id}`), sub:t(`help.tour.${id}Sub`), done:this.onboarding.isCompleted(id)?t("help.completed"):"",
+      onStart:()=>this.startTour(id) }));
+    const sections=SECTIONS.filter(s=>!s.hidden).map(s=>({ icon:ICONS[s.icon], label:t(`nav.${s.id}`), text:t(`nav.desc.${s.id}`) }));
+    const faq=[1,2,3,4,5,6].map(n=>({ q:t(`help.faq.q${n}`), a:t(`help.faq.a${n}`) }));
+    return { ...base, canTour, noTour:!canTour, tours, sections, faq };
   }
   _buildGlossary(){
     const t=this.t, m=this.model;
@@ -2557,6 +2703,8 @@ class Component extends DCLogic {
       quests:rc.quests.map(q=>this.questRow(q)), hasQuests:rc.quests.length>0, questCount:String(rc.quests.length), questsKey:`rq:${s.no}`,
       effects:rc.effects, hasEffects:rc.effects.length>0, effectCount:String(rc.effects.length),
       canFilter:s.eventIds.length>0, onFilter:()=>this.filterBy("session",String(s.no)),
+      // Where the recap comes from: the recorded session, never inference (curated highlights say so).
+      source:t(rc.curated?"recap.sourceCurated":"recap.source",{n:s.no}),
     };
   }
 
@@ -2812,20 +2960,20 @@ class Component extends DCLogic {
       const caption=`position:absolute;left:${mk.xp}%;top:${mk.yp}%;padding:1px 7px;pointer-events:none;white-space:nowrap;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#f7edd0;background:rgba(20,14,6,.62);border-radius:999px;transform:translate(-50%,${(mk.isCluster?22:18)*inv}px) scale(${inv});transform-origin:50% 0;text-shadow:0 1px 2px rgba(0,0,0,.95);z-index:${z};`;
       if(mk.isCluster){
         // Several nearby places: a round numbered seal (not a pin), so it never reads as one location.
-        return { title:t("map.clusterTitle",{count:n,spots:mk.spots.length}), haspopup:"dialog", inner:String(n), badge:"",
+        return { kind:"cluster", title:t("map.clusterTitle",{count:n,spots:mk.spots.length}), haspopup:"dialog", inner:String(n), badge:"",
           onSelect:()=>this.openList(ids),
           style:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;width:36px;height:36px;padding:0;cursor:pointer;border-radius:50%;background:radial-gradient(circle at 38% 30%,#4a3a20,#1e140a);border:2px ${isSel?"solid #f5ead0":"solid rgba(214,180,107,.95)"};box-shadow:0 4px 10px rgba(0,0,0,.55),0 0 0 4px rgba(20,14,6,.45),inset 0 1px 0 rgba(255,255,255,.25);transform:translate(-50%,-50%) scale(${k});transform-origin:center;z-index:${z};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}`,
           sealStyle:`display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:#f5ead0;text-shadow:0 1px 2px rgba(0,0,0,.8);`,
-          labelText:sessText, labelStyle:caption };
+          labelText:sessText, labelStyle:caption, evIds:ids.join(" ") };
       }
       const seal=this._markerSeal(mk.events);
-      return { title:n>1?t("map.pinMany",{count:n}):this.title(mk.events[0]), haspopup:n>1?"dialog":undefined, inner:"",
+      return { kind:"pin", title:n>1?t("map.pinMany",{count:n}):this.title(mk.events[0]), haspopup:n>1?"dialog":undefined, inner:"",
         onSelect:()=>n>1?this.openList(ids):this.selectPin(ids[0]),
         style:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;width:26px;height:26px;padding:0;cursor:pointer;border-radius:50% 50% 50% 0;background:radial-gradient(circle at 38% 30%,${seal.outer},${seal.outer}cc);box-shadow:0 4px 9px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.45);border:2px solid ${isSel?"#f5ead0":"rgba(255,252,244,.9)"};transform:translate(-50%,-50%) scale(${k}) rotate(-45deg);transform-origin:center;z-index:${z};${isSel?"animation:chr-pulse 1.8s ease-in-out infinite;":""}transition:none;`,
         sealStyle:`display:block;width:100%;height:100%;transform:rotate(45deg);border-radius:50%;overflow:hidden;background:${seal.inner};`,
         badge:n>1?String(n):"",
         badgeStyle:`position:absolute;left:${mk.xp}%;top:${mk.yp}%;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#c4a040;color:#1a1208;border:1.5px solid #f5ead0;font-family:'EB Garamond',serif;font-weight:600;font-size:12px;line-height:15px;text-align:center;pointer-events:none;transform:translate(-50%,-50%) translate(${12*k}px,${-14*k}px) scale(${inv});z-index:${z+1};box-shadow:0 2px 4px rgba(0,0,0,.5);`,
-        labelText:sessText, labelStyle:caption };
+        labelText:sessText, labelStyle:caption, evIds:ids.join(" ") };
     });
   }
   // Popup frame anchored on a marker. It always stays on screen: shifted sideways near the edges,
@@ -2922,6 +3070,7 @@ class Component extends DCLogic {
       countText:t("map.countText",{events:t("common.events",{count:evs.length}),places:t("map.countPlaces",{count:spots})})+(mapless?` ${t("map.mapless",{count:mapless})}`:""),
       activeCount,
       canBack:this.canGoBack()&&!lastHash.startsWith("#/map"), onBack:()=>this.goBack(),
+      canTour:!!this.tour&&!st.tourOn, onTour:()=>this.startTour("map"),
       backLabel:lastHash.includes("/event/")&&!st.isMobile?t("map.backToEntry"):t("map.back"),
     };
   }
@@ -2932,7 +3081,7 @@ class Component extends DCLogic {
     const sec=r.section, hasDetail=ready&&!!(r.kind&&r.kind in KINDS);
     const latest=ready?M.latestSession(m):null, lastSess=latest?latest.no:0;
     const label=s=>t(`nav.${s.id}`);
-    const nav=SECTIONS.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
+    const nav=SECTIONS.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), title:`${label(s)} — ${t(`nav.desc.${s.id}`)}`, icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
     const secondary=SECTIONS.filter(s=>!s.primary), onSecondary=secondary.find(s=>s.id===sec);
     const bottomNav=[...SECTIONS.filter(s=>s.primary).map(s=>({ isLink:true, href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-bn"+(s.id===sec?" is-on":"") })),
       { isMore:true, label:onSecondary?label(onSecondary):t("nav.more"), icon:onSecondary?ICONS[onSecondary.icon]:ICONS.more, cls:"cc-bn"+(onSecondary||st.moreOpen?" is-on":"") }];
@@ -2944,7 +3093,8 @@ class Component extends DCLogic {
     // The star in the reading pane (not built into the memoized pane, so toggling it is instant).
     const favRef=hasDetail&&d.open&&!d.notFound&&r.kind in FAV_KINDS?{kind:r.kind,id:String(r.id)}:null, favOn=!!favRef&&this.lib.isFavorite(favRef);
     const recapEntry=latest&&(v.chronicle||v.sessions)?{ href:this.href("recap",latest.no), label:this.sessLabel(latest.no), title:latest.title?`· ${latest.title}`:"",
-      sub:this.sessionSub(latest), aria:t("recap.entryAria",{party:t("characters.partyName"),session:[this.sessLabel(latest.no),latest.title].filter(Boolean).join(" — ")}) }:null;
+      sub:this.sessionSub(latest), aria:t("recap.entryAria",{party:t("characters.partyName"),session:[this.sessLabel(latest.no),latest.title].filter(Boolean).join(" — ")}),
+      qaSub:t("chronicle.qaRecapSub",{label:t("recap.entry"),session:this.sessLabel(latest.no)}) }:null;
     return {
       t:t.dict, htmlLang:t.meta.htmlLang, langs,
       appCls:"cc-app",
@@ -2953,8 +3103,9 @@ class Component extends DCLogic {
       icons:ICONS, nav, bottomNav,
       moreItems:secondary.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
       moreOpen:st.moreOpen, onOpenMore:()=>this.setState(s=>({moreOpen:!s.moreOpen})), onCloseMore:()=>this.setState({moreOpen:false}),
-      onOpenTutorial:()=>this.openGuide("steps"), onOpenGlossary:()=>this.openGuide("glossary"), onDismissInvite:()=>this._markGuideSeen("dismissed"),
-      gd:this._buildGuide(), gl:st.guide&&st.guide.view==="glossary"?this._buildGlossary():{},
+      onOpenHelp:()=>this.openHelp("help"), onOpenGlossary:()=>this.openHelp("glossary"),
+      onStartTour:()=>this.startTour("main"), onDismissInvite:()=>this.dismissInvite(),
+      hp:this._buildHelp(), gl:st.help&&st.help.view==="glossary"?this._buildGlossary():{},
       sr:this._buildSearch(), onOpenSearch:()=>this.openSearch(),
       searchKbd:IS_MAC?"⌘K":"Ctrl K", searchKeys:"Control+K Meta+K", searchTitle:t("search.openTitle",{keys:IS_MAC?"⌘K":"Ctrl+K"}),
       savedBtnCls:"cc-iconbtn"+(sec==="saved"?" is-on":""), savedCurrent:sec==="saved"?"page":undefined, savedSheetCls:"cc-sheet-item"+(sec==="saved"?" is-on":""),
@@ -2980,7 +3131,7 @@ class Component extends DCLogic {
       onGroupDay:()=>this.setGroupBy("day"), onGroupSession:()=>this.setGroupBy("session"),
       onToggleSort:()=>this.setChronicleOrder(!st.sortDesc),
       mainRef:this.mainRef, detailRef:this.detailRef, searchRef:this.searchRef, headRef:this.headRef, vpRef:this.vpRef,
-      guideHeadRef:this.guideHeadRef, searchAllRef:this.searchAllRef, searchBodyRef:this.searchBodyRef,
+      helpHeadRef:this.helpHeadRef, searchAllRef:this.searchAllRef, searchBodyRef:this.searchBodyRef,
       stop:e=>e.stopPropagation(),
       sampleNote:t("chronicle.endnote",{n:lastSess}),
     };

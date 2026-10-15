@@ -12,13 +12,14 @@
 // Favourites, history and preferences live in localStorage — never in these caches — so updates,
 // cache clean-ups and new versions never touch them. Bump VERSION when the precache list changes
 // (adding a file); old caches are deleted when the new worker activates.
-const VERSION = "2026-10-14.1";
+const VERSION = "2026-10-14.2";
 const SHELL = `chronicle-shell-${VERSION}`;
 const RUNTIME = `chronicle-runtime-${VERSION}`;
 
 const PRECACHE = [
   "./", "index.html", "support.js", "manifest.webmanifest",
-  "js/chronicle-model.js", "js/chronicle-map.js", "js/chronicle-library.js", "js/i18n.js",
+  "js/chronicle-model.js", "js/chronicle-map.js", "js/chronicle-library.js", "js/chronicle-tour.js", "js/i18n.js",
+  "vendor/driver.js/driver.js.iife.js", "vendor/driver.js/driver.css",
   "locales/en.js", "locales/es-AR.js",
   "data/characters.json", "data/routes.json", "data/events.json", "data/sessions.json", "data/quests.json",
   "data/npcs.json", "data/locations.json", "data/lore.json", "data/i18n/es-AR.json",

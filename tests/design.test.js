@@ -53,7 +53,8 @@ test("4 · one dark theme: no light tokens, no toggle, no theme strings", () => 
     assert.ok(!html.includes(gone), `index.html still mentions ${gone}`);
   assert.match(html, /<meta name="color-scheme" content="dark">/);
   assert.match(html, /<meta name="theme-color" content="#[0-9a-f]{6}">/);
-  assert.match(css, /\.cc-app\{color-scheme:dark;/);
+  // The tour popover (.cc-tour, appended to <body> by Driver.js) shares the same dark tokens.
+  assert.match(css, /\.cc-app,\.cc-tour\{color-scheme:dark;/);
   // The page is painted dark before any script runs (inline style in <head>, ahead of support.js).
   const head = html.slice(0, html.indexOf("</head>"));
   assert.ok(head.indexOf("background:#0c0a06") >= 0 && head.indexOf("background:#0c0a06") < head.indexOf("support.js"));

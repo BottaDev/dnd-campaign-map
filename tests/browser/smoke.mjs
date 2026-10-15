@@ -48,7 +48,7 @@ const eq = (a, b, msg) => assert(JSON.stringify(a) === JSON.stringify(b), `${msg
 
 async function open(ctxOpts, hash, { keepGuide = false } = {}) {
   const ctx = await browser.newContext(ctxOpts);
-  if (!keepGuide) await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); } catch (e) {} });
+  if (!keepGuide) await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tour-version", "2"); localStorage.setItem("chronicle-tour-invite", "dismissed"); } catch (e) {} });
   const page = await ctx.newPage();
   page.on("pageerror", e => errors.push(`${hash}: ${e.message}`));
   page.on("console", m => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push(`${hash}: ${m.text()}`); });
@@ -68,7 +68,7 @@ await check("i18n · Spanish is the initial language (no saved preference)", asy
   const { ctx, page } = await open(DESKTOP, "", { keepGuide: true });
   eq(await page.getAttribute("html", "lang"), "es-AR", "html lang");
   eq(await page.title(), "Crónica de Exandria", "title");
-  assert(await page.isVisible(".cc-invite:has-text('Mirá cómo funciona la Crónica')"), "the guide invitation is in Spanish");
+  assert(await page.isVisible(".cc-invite:has-text('Descubrí cómo explorar las aventuras de Bund Der Vier')"), "the tour invitation is in Spanish");
   eq((await page.textContent(".cc-tab.is-on")).trim(), "Crónica", "active tab");
   eq((await page.textContent(".cc-lang .is-on")).trim(), "ES", "ES pressed");
   await ctx.close();
@@ -232,7 +232,7 @@ for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024
       const sw = await page.evaluate(() => document.documentElement.scrollWidth);
       assert(sw <= w, `${hash}: scrollWidth ${sw} > ${w}`);
     }
-    // The search and the guide (both views) fit too — no sideways scroll inside them either.
+    // The search and the help (both views, every answer open) fit too — no sideways scroll inside them either.
     const inside = sel => page.$eval(sel, el => [el.scrollWidth, el.clientWidth, document.documentElement.scrollWidth]);
     await page.click(".cc-searchbtn");
     await page.fill(".cc-spanel input", "Vasselheim");
@@ -242,15 +242,13 @@ for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024
     await page.keyboard.press("Escape");
     await page.evaluate(() => { location.hash = "#/chronicle"; });
     await page.locator(phone ? ".cc-bottom button.cc-bn" : ".cc-actions button").first().click();
-    if (phone) await page.locator(".cc-sheet-item", { hasText: "Guía" }).click();
-    for (let s = 0; s < 3; s++) {
-      const [a, b, c] = await inside(".cc-guide");
-      assert(a <= b && c <= w, `guide step ${s + 1}: ${a}/${b}, page ${c}`);
-      if (s < 2) await page.locator(".cc-guide-nav .cc-btn").last().click();
-    }
-    if (w === 320 || w === 1280) await page.screenshot({ path: path.join(OUT, `guide-${w}.png`) });
-    await page.click(".cc-guide-tabs button:last-child");
-    { const [a, b, c] = await inside(".cc-guide"); assert(a <= b && c <= w, `glossary ${a}/${b}, page ${c}`); }
+    if (phone) await page.locator(".cc-sheet-item", { hasText: "Ayuda" }).click();
+    await page.waitForSelector("[data-dialog=help]");
+    await page.$$eval(".cc-faq-i", ds => ds.forEach(d => { d.open = true; }));
+    { const [a, b, c] = await inside(".cc-help"); assert(a <= b && c <= w, `help ${a}/${b}, page ${c}`); }
+    if (w === 320 || w === 1280) await page.screenshot({ path: path.join(OUT, `help-${w}-open.png`) });
+    await page.click(".cc-help-tabs button:last-child");
+    { const [a, b, c] = await inside(".cc-help"); assert(a <= b && c <= w, `glossary ${a}/${b}, page ${c}`); }
     await page.keyboard.press("Escape");
     const lang = await page.locator(".cc-lang").boundingBox(), brand = await page.locator(".cc-brand").boundingBox();
     assert(lang && lang.width > 0 && lang.x + lang.width <= w, "language switch visible");
@@ -361,7 +359,7 @@ for (const w of [320, 360, 390, 430]) {
 const lum = rgb => { const [r, g, b] = rgb.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 await check("theme · always dark: no toggle, an old light preference is ignored and removed, dark browser chrome", async () => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, colorScheme: "light" });
-  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); if (!sessionStorage.getItem("seeded")) { localStorage.setItem("chronicle-theme", JSON.stringify("light")); sessionStorage.setItem("seeded", "1"); } } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tour-version", "2"); localStorage.setItem("chronicle-tour-invite", "dismissed"); if (!sessionStorage.getItem("seeded")) { localStorage.setItem("chronicle-theme", JSON.stringify("light")); sessionStorage.setItem("seeded", "1"); } } catch (e) {} });
   const page = await ctx.newPage();
   page.on("pageerror", e => errors.push(`theme: ${e.message}`));
   await page.goto(BASE + "#/places/place/vasselheim");
@@ -485,92 +483,425 @@ await check("cards · every event card has its type icon (family colour) and lab
   await ctx.close();
 });
 
-// ── Guide: optional, three steps, remembered, never in the way ──────────────
-const guideText = page => page.evaluate(() => ({ n: document.querySelector(".cc-guide-n").textContent, h: document.querySelector(".cc-guide-h").textContent }));
+// ── Onboarding: first visit, interactive tours (Driver.js), help centre ─────
+// The tours run on the real page: these checks click the real controls the popovers point at.
+const TOUR = page => page.evaluate(() => {
+  const p = document.querySelector(".driver-popover.cc-tour");
+  if (!p || getComputedStyle(p).display === "none" || document.body.classList.contains("cc-tour-busy")) return null;
+  const r = p.getBoundingClientRect(), a = document.querySelector(".driver-active-element"), ar = a && a.getBoundingClientRect();
+  const q = s => { const e = p.querySelector(s); return e && getComputedStyle(e).display !== "none" ? e.textContent.trim() : ""; };
+  return { title: q(".driver-popover-title"), progress: q(".driver-popover-progress-text"), next: q(".driver-popover-next-btn"),
+    box: [r.left, r.top, r.right, r.bottom].map(Math.round),
+    active: a && a.id !== "driver-dummy-element" ? { cls: a.className, tour: a.getAttribute("data-tour") || "", box: [ar.left, ar.top, ar.right, ar.bottom].map(Math.round), inert: a.classList.contains("driver-no-interaction") } : null };
+});
+// Waits for the next popover (optionally a given title, or any title but `not`), placed and settled.
+async function tourAt(page, title, { not, timeout = 10000 } = {}) {
+  await page.waitForFunction(([t, n]) => {
+    const p = document.querySelector(".driver-popover.cc-tour");
+    if (!p || getComputedStyle(p).display === "none" || document.body.classList.contains("cc-tour-busy")) return false;
+    const h = p.querySelector(".driver-popover-title"), s = h ? h.textContent.trim() : "";
+    return (!t || s === t) && (!n || s !== n);
+  }, [title || "", not || ""], { timeout });
+  await page.waitForTimeout(80);                                    // Driver.js places it on the next frames
+  return TOUR(page);
+}
+const tourNext = page => page.click(".driver-popover.cc-tour .driver-popover-next-btn");
+async function tourStepNext(page) { const s = await TOUR(page); await tourNext(page); return tourAt(page, null, { not: s.title }); }
+async function tourNextTo(page, title) { let s = await TOUR(page); for (let i = 0; i < 12 && s.title !== title; i++) s = await tourStepNext(page); eq(s.title, title, "reached"); return s; }
+const tourGone = page => page.waitForFunction(() => !document.querySelector(".driver-popover") && !document.body.classList.contains("driver-active"), null, { timeout: 5000 });
+const onboarding = page => page.evaluate(() => ({ version: localStorage.getItem("chronicle-tour-version"), completed: JSON.parse(localStorage.getItem("chronicle-tour-completed") || "[]"), invite: localStorage.getItem("chronicle-tour-invite") }));
+// The popover is on screen, does not cover the control it explains, and that control can still be
+// tapped (the point at its centre belongs to it); the page never scrolls sideways. Measured once the
+// highlight has finished moving (Driver.js animates the cut-out; map popups settle once more).
+const FIT = ([w, h]) => {
+  const p = document.querySelector(".driver-popover.cc-tour");
+  if (!p || getComputedStyle(p).display === "none" || document.body.classList.contains("cc-tour-busy")) return { ok: false, why: "no popover" };
+  const r = p.getBoundingClientRect(), title = p.querySelector(".driver-popover-title").textContent.trim();
+  if (r.left < 0 || r.top < 0 || r.right > w || r.bottom > h) return { ok: false, why: `“${title}”: popover ${[r.left, r.top, r.right, r.bottom].map(Math.round)} outside ${w}×${h}` };
+  if (document.documentElement.scrollWidth > w) return { ok: false, why: `horizontal scroll (${document.documentElement.scrollWidth}px)` };
+  const a = document.querySelector(".driver-active-element");
+  if (!a || a.id === "driver-dummy-element") return { ok: true };
+  const q = a.getBoundingClientRect();
+  const ix = Math.max(0, Math.min(r.right, q.right) - Math.max(r.left, q.left)), iy = Math.max(0, Math.min(r.bottom, q.bottom) - Math.max(r.top, q.top));
+  const cover = ix * iy / Math.max(1, q.width * q.height);
+  if (cover >= 0.35) return { ok: false, why: `“${title}”: the popover covers ${Math.round(100 * cover)}% of its control` };
+  if (!a.classList.contains("driver-no-interaction")) {
+    const x = Math.round((Math.max(q.left, 0) + Math.min(q.right, w)) / 2), y = Math.round((Math.max(q.top, 0) + Math.min(q.bottom, h)) / 2), e = document.elementFromPoint(x, y);
+    if (!(e && a.contains(e))) return { ok: false, why: `“${title}”: its control cannot be tapped at ${x},${y}` };
+  }
+  return { ok: true };
+};
+async function fits(page, w, h, label) {
+  try { await page.waitForFunction(FIT, [w, h], { timeout: 2500 }); }
+  catch (e) { const r = await page.evaluate(FIT, [w, h]); throw new Error(`${label}: ${r.why}`); }
+  return TOUR(page);
+}
 
-await check("guide · first visit: a quiet invitation, no window; 3 steps with next/previous/dots/arrows; Done is remembered", async () => {
+await check("tour · first visit: an introduction and an invitation, no window; the main tour follows real clicks across screens; remembered", async () => {
   const { ctx, page } = await open(DESKTOP, "#/chronicle", { keepGuide: true });
-  eq(await page.locator("[data-dialog]").count(), 0, "no dialog opens by itself");
-  assert(await page.isVisible(".cc-invite"), "invitation shown in the Chronicle");
+  eq(await page.locator(".driver-popover, [data-dialog]").count(), 0, "nothing opens by itself");
+  assert(await page.isVisible(".cc-intro:has-text('Nuestra historia, en un solo lugar.')"), "what this is");
+  assert(await page.isVisible(".cc-invite:has-text('¿Primera vez por acá?')"), "the invitation");
+  const len0 = await page.evaluate(() => history.length);
   await page.click(".cc-invite .cc-btn");
-  await page.waitForSelector("[data-dialog=guide]");
-  eq(await guideText(page), { n: "Paso 1 de 3", h: "Explorá la historia" }, "step 1");
-  await page.waitForTimeout(50);
-  eq(await page.evaluate(() => document.activeElement.className), "cc-guide-h", "focus moves into the dialog");
-  assert(await page.locator(".cc-guide-ill .cc-card").count() === 1, "a real event card as the example");
-  eq(await page.locator(".cc-guide-nav .cc-btn").first().isDisabled(), true, "Previous disabled on step 1");
-  await page.keyboard.press("ArrowRight");
-  eq(await guideText(page), { n: "Paso 2 de 3", h: "Encontrá información" }, "arrow → step 2");
-  assert((await page.locator(".cc-gres-r").count()) >= 3, "real result groups as the example");
-  await page.click(".cc-guide-nav .cc-btn:has-text('Anterior')");
-  eq((await guideText(page)).h, "Explorá la historia", "Previous");
-  await page.locator(".cc-gdot").nth(2).click();
-  eq(await guideText(page), { n: "Paso 3 de 3", h: "Explorá el mundo" }, "dot 3");
-  assert(await page.locator(".cc-guide-ill svg.cc-gmap").count() === 1, "a drawn map sketch, not an image");
-  await page.click(".cc-guide-nav .cc-btn:has-text('Listo')");
-  eq(await page.locator("[data-dialog]").count(), 0, "closed");
-  eq(await page.evaluate(() => localStorage.getItem("chronicle-tutorial-seen")), "done", "completion remembered");
-  eq(await page.locator(".cc-invite").count(), 0, "invitation gone");
+  let s = await tourAt(page, "Crónica de Exandria");
+  eq([s.progress, s.next], ["1 de 7", "Comenzar"], "welcome");
+  eq(await page.evaluate(() => document.activeElement.classList.contains("driver-popover-next-btn")), true, "focus on “Comenzar”");
+  eq(await page.locator(".driver-popover .cc-tour-alt:has-text('Omitir')").count(), 1, "can be skipped");
+  await page.screenshot({ path: path.join(OUT, "tour-desktop-welcome.png") });
+  await tourNext(page);
+  s = await tourAt(page, "Recordá la última sesión");
+  assert(/cc-latest/.test(s.active.cls), "the real “Previously on…” entry");
+  await page.click(".cc-latest");                                                   // the visitor does it
+  await page.waitForFunction(() => location.hash === "#/chronicle/recap/12");
+  s = await tourAt(page, "Anteriormente en…");
+  eq(s.active.tour, "recap-where", "what the recap holds");
+  await tourNext(page);
+  s = await tourAt(page, "Explorá la Crónica");
+  eq(await page.evaluate(() => location.hash), "#/chronicle", "back on the list");
+  assert(/cc-card/.test(s.active.cls), "a real event card");
+  await page.click(".driver-active-element");
+  await page.waitForFunction(() => /^#\/chronicle\/event\//.test(location.hash));
+  s = await tourAt(page, "Descubrí las conexiones");
+  eq(s.active.tour, "event-people", "one clear relation: who was there");
+  await page.screenshot({ path: path.join(OUT, "tour-desktop-links.png") });
+  await page.locator(".driver-active-element a.cc-chip").nth(2).click();
+  await page.waitForFunction(() => /^#\/chronicle\/character\//.test(location.hash));
+  s = await tourAt(page, "Encontrá cualquier cosa");
+  assert(/cc-searchbtn/.test(s.active.cls), "the real search button");
+  await page.click(".cc-searchbtn");
+  s = await tourAt(page, "Escribí lo que buscás");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("role")), "combobox", "focus stays in the field");
+  assert(await page.isVisible(".cc-tour-try:has-text('Buscar «Sorfon»')"), "a real name to try");
+  await page.keyboard.type("Mortis");
+  await page.waitForFunction(() => document.querySelector(".cc-tour-try").hidden);
+  await tourNext(page);
+  s = await tourAt(page, "Resultados al instante");
+  assert(/cc-sgroup/.test(s.active.cls), "the real result groups");
+  await page.locator(".driver-active-element .cc-hit").first().click();
+  await page.waitForFunction(() => location.hash === "#/chronicle/character/mortis");
+  s = await tourAt(page, "Explorá el mapa");
+  assert(/cc-tab/.test(s.active.cls), "the Map tab");
+  await page.click(".driver-active-element");
+  await page.waitForFunction(() => location.hash === "#/map");
+  s = await tourAt(page, "Los marcadores");
+  assert(/cc-marker/.test(s.active.cls), "a real marker");
+  eq(await page.evaluate(() => { const a = document.querySelector(".driver-active-element").getBoundingClientRect(), v = document.querySelector(".cc-vp").getBoundingClientRect(); return a.left >= v.left && a.right <= v.right && a.top >= v.top && a.bottom <= v.bottom; }), true, "inside the visible map");
+  await page.screenshot({ path: path.join(OUT, "tour-desktop-marker.png") });
+  await page.click(".driver-active-element");
+  s = await tourAt(page, null, { not: "Los marcadores" });
+  assert(["Leé lo que pasó acá", "Varios acontecimientos acá"].includes(s.title), `the marker's card: ${s.title}`);
+  eq(await page.locator(".driver-active-element[data-popup]").count(), 1, "the popup is highlighted");
+  await tourNext(page);
+  s = await tourAt(page, "Personajes y recorridos");
+  eq(s.progress, "7 de 7", "Map B");
+  await page.click(".driver-active-element");
+  s = await tourAt(page, "Las líneas punteadas");
+  assert(await page.isVisible(".cc-mappanel"), "the party filter is open");
+  await page.screenshot({ path: path.join(OUT, "tour-desktop-routes.png") });
+  await tourNext(page);
+  s = await tourAt(page, "¡Listo!");
+  eq(s.next, "Empezar a explorar", "finish");
+  assert(await page.isVisible(".driver-popover .cc-tour-alt:has-text('Ver más tutoriales')"), "more tutorials");
+  await tourNext(page);
+  await tourGone(page);
+  eq((await onboarding(page)).completed, ["main"], "completion remembered");
+  eq(await page.evaluate(() => [history.length, history.state]), [len0 + 1, null], "one ordinary history entry for the whole tour");
+  eq(await page.getAttribute(".cc-searchbtn", "aria-haspopup"), "dialog", "the app's own aria attributes are back");
+  eq(await markerTotal(page), 33, "the map works as before");
+  await page.locator(".cc-marker").first().click();
+  await page.waitForSelector("[data-popup]");
+  await page.goBack();
+  await page.waitForFunction(() => location.hash === "#/chronicle");
+  eq(await page.locator(".cc-intro").count(), 0, "the introduction steps back once the tour is done");
+  assert(await page.isVisible(".cc-sec-sub:has-text('Nuestra historia')"), "…leaving the one-line tagline");
+  await ctx.close();
+});
+
+await check("tour · leaving early restores the start (route, list scroll, filters, panels) — Esc, ✕, Back; “Omitir” = not now", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/chronicle", { keepGuide: true });
+  await page.click("button[aria-controls=cc-filters]");
+  await page.locator(".cc-pcchip", { hasText: "Mortis" }).click();
+  await page.click(".cc-factions .cc-btn:not(.ghost)");
+  await page.evaluate(() => { document.querySelector(".cc-main").scrollTop = 700; });
+  await page.waitForTimeout(150);
+  const state = () => page.evaluate(() => ({ hash: location.hash, top: Math.round(document.querySelector(".cc-main") ? document.querySelector(".cc-main").scrollTop : -1), filters: sessionStorage.getItem("chronicle-filters"), len: history.length, marker: history.state }));
+  const before = await state();
+  // Esc after the tour moved to the recap (another screen).
+  await page.click(".cc-invite .cc-btn");
+  await tourAt(page, "Crónica de Exandria"); await tourNext(page);
+  await tourAt(page, "Recordá la última sesión"); await tourNext(page);
+  await tourAt(page, "Anteriormente en…");
+  await page.keyboard.press("Escape");
+  await tourGone(page);
+  await page.waitForTimeout(200);
+  let after = await state();
+  // history.length keeps the tour's entry as a "forward" one until the next navigation replaces it.
+  eq({ ...after, top: Math.abs(after.top - before.top) <= 2, len: after.len - before.len <= 1 }, { ...before, top: true, len: true }, "Esc: route, scroll, filters and current history entry as before");
+  eq((await onboarding(page)).completed, [], "not completed");
+  assert(await page.isVisible(".cc-invite"), "the invitation stays (it was not dismissed)");
+  // ✕ in the map tutorial after toggling a party member: filters and panel come back.
+  await page.evaluate(() => { location.hash = "#/map"; });
+  await page.waitForSelector(".cc-mapbar");
+  await page.waitForTimeout(400);
+  await page.click(".cc-maphelp");
+  await tourAt(page, "Los marcadores");
+  await tourNextTo(page, "Las líneas punteadas");
+  await page.locator(".driver-active-element .cc-partyrow, .cc-partyrow.driver-active-element").first().click();
+  assert((await page.evaluate(() => sessionStorage.getItem("chronicle-filters"))) !== before.filters, "the visitor changed a filter during the tour");
+  await page.click(".driver-popover .driver-popover-close-btn");
+  await tourGone(page);
+  await page.waitForTimeout(150);
+  eq(await page.evaluate(() => [location.hash, sessionStorage.getItem("chronicle-filters"), !!document.querySelector(".cc-mappanel"), !!document.querySelector("[data-popup]")]), ["#/map", before.filters, false, false], "✕: filters, panel and popups as before");
+  // Back (browser / Android gesture) during the main tour started from the help centre.
+  await page.evaluate(() => { location.hash = "#/sessions"; });
+  await page.waitForSelector(".cc-scard");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");
+  await page.waitForSelector("[data-dialog=help]");
+  await page.locator(".cc-tourrow").first().click();
+  await tourAt(page, "Crónica de Exandria"); await tourNext(page);
+  await tourAt(page, "Recordá la última sesión");
+  eq(await page.evaluate(() => location.hash), "#/chronicle", "the tour moved to the Chronicle");
+  await page.goBack();
+  await tourGone(page);
+  await page.waitForTimeout(150);
+  eq(await page.evaluate(() => [location.hash, history.state, document.querySelectorAll("[data-dialog]").length]), ["#/sessions", null, 0], "Back: the tour ends where it started");
+  // "Omitir" on the welcome = "not now".
+  await page.evaluate(() => { location.hash = "#/chronicle"; });
+  await page.waitForSelector(".cc-invite");
+  await page.click(".cc-invite .cc-btn");
+  await tourAt(page, "Crónica de Exandria");
+  await page.click(".driver-popover .cc-tour-alt:has-text('Omitir')");
+  await tourGone(page);
+  eq(await onboarding(page), { version: "2", completed: [], invite: "dismissed" }, "the invitation is dismissed, the tour not completed");
+  eq(await page.locator(".cc-intro").count(), 0, "the introduction steps back");
   await page.reload();
   await page.waitForSelector(".cc-card");
-  eq(await page.locator(".cc-invite").count(), 0, "still gone after reload");
+  eq(await page.locator(".cc-intro, .driver-popover").count(), 0, "and stays back after a reload");
   await ctx.close();
 });
 
-await check("guide · skip / Esc / ✕ dismiss it; the help button reopens it any time; English; Try-it actions work", async () => {
-  const { ctx, page } = await open(DESKTOP, "#/chronicle", { keepGuide: true });
-  await page.click(".cc-invite .cc-btn");
-  await page.click(".cc-guide-foot .cc-linkbtn");                             // "Saltar la guía"
-  eq(await page.evaluate(() => localStorage.getItem("chronicle-tutorial-seen")), "dismissed", "skip remembered");
-  await page.click(".cc-actions button[aria-haspopup=dialog]");               // "?"
-  await page.waitForSelector("[data-dialog=guide]");
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(100);
-  eq(await page.locator("[data-dialog]").count(), 0, "Esc closes");
-  eq(await page.evaluate(() => document.activeElement.getAttribute("aria-haspopup")), "dialog", "focus back on the help button");
-  await page.click(".cc-lang button:has-text('EN')");
-  await page.click(".cc-actions button[aria-haspopup=dialog]");
-  eq((await guideText(page)).h, "Explore the story", "English step 1");
-  await page.click(".cc-act");                                                // "Open this event"
-  await page.waitForFunction(() => /^#\/chronicle\/event\//.test(location.hash));
-  eq(await page.locator("[data-dialog]").count(), 0, "the guide closed to show the event");
-  await page.click(".cc-actions button[aria-haspopup=dialog]");
-  await page.keyboard.press("ArrowRight");
-  await page.click(".cc-act");                                                // "Search for “…”"
-  await page.waitForSelector("[data-dialog=search]");
-  assert((await page.inputValue(".cc-spanel input")).length > 0, "search opened with the example name");
-  assert(await page.locator(".cc-hit").count() > 3, "and its results");
+await check("tour · phone 375: “More” → map, every popover on screen and off its control; touch still works after", async () => {
+  const { ctx, page } = await open(PHONE, "#/chronicle", { keepGuide: true });
+  const tap = sel => page.locator(sel).first().tap();
+  await tap(".cc-invite .cc-btn");
+  await tourAt(page, "Crónica de Exandria"); await fits(page, 375, 812, "phone");
+  await tap(".driver-popover-next-btn");
+  await tourAt(page, "Recordá la última sesión"); await fits(page, 375, 812, "phone");
+  await tap(".cc-latest");
+  await tourAt(page, "Anteriormente en…"); await fits(page, 375, 812, "phone");
+  await tap(".driver-popover-next-btn");
+  await tourAt(page, "Explorá la Crónica"); await fits(page, 375, 812, "phone");
+  await tap(".driver-active-element");
+  await tourAt(page, "Descubrí las conexiones"); await fits(page, 375, 812, "phone");
+  await tap(".driver-popover-next-btn");
+  await tourAt(page, "Encontrá cualquier cosa"); await fits(page, 375, 812, "phone");
+  await tap(".cc-searchbtn");
+  await tourAt(page, "Escribí lo que buscás"); await fits(page, 375, 812, "phone");
+  await tap(".cc-tour-try");                                                         // "Buscar «Sorfon»"
+  await tourAt(page, "Resultados al instante"); await fits(page, 375, 812, "phone");
+  eq(await page.evaluate(() => document.activeElement.tagName === "INPUT"), false, "the keyboard is put away to show the results");
+  await tap(".driver-popover-next-btn");
+  let s = await tourAt(page, "El mapa está en «Más»"); await fits(page, 375, 812, "phone");
+  assert(/cc-bn/.test(s.active.cls), "the bottom bar's More");
+  await tap(".driver-active-element");
+  s = await tourAt(page, "Explorá el mapa"); await fits(page, 375, 812, "phone");
+  assert(await page.isVisible(".cc-sheet"), "the More sheet is open");
+  await tap(".driver-active-element");
+  await page.waitForFunction(() => location.hash === "#/map");
+  s = await tourAt(page, "Los marcadores"); await fits(page, 375, 812, "phone");
+  await page.screenshot({ path: path.join(OUT, "tour-phone-marker.png") });
+  await tap(".driver-active-element");
+  s = await tourAt(page, null, { not: "Los marcadores" }); await fits(page, 375, 812, "phone");
+  await tap(".driver-popover-next-btn");
+  await tourAt(page, "Personajes y recorridos"); await fits(page, 375, 812, "phone");
+  await tap(".driver-active-element");
+  await tourAt(page, "Las líneas punteadas"); await fits(page, 375, 812, "phone");
+  await page.screenshot({ path: path.join(OUT, "tour-phone-routes.png") });
+  await tap(".driver-popover-next-btn");
+  await tourAt(page, "¡Listo!"); await fits(page, 375, 812, "phone");
+  await tap(".driver-popover-next-btn");
+  await tourGone(page);
+  eq((await onboarding(page)).completed, ["main"], "completed on the phone");
+  await page.locator(".cc-marker").first().tap();
+  await page.waitForSelector("[data-popup]");
+  eq(await page.evaluate(() => document.documentElement.scrollWidth), 375, "no sideways scroll");
   await ctx.close();
 });
 
-await check("guide · a direct link to an entry is never blocked (first visit, phone and desktop)", async () => {
-  for (const opts of [PHONE, DESKTOP]) {
-    // A fresh visitor (no stored guide flag) arriving straight on an entry; wait for the entry itself.
-    const ctx = await browser.newContext(opts), page = await ctx.newPage();
-    page.on("pageerror", e => errors.push(`deep link: ${e.message}`));
-    await page.goto(BASE + "#/chronicle/event/s12_03");
-    await page.waitForSelector(".cc-doc-h", { timeout: 15000 });
-    eq(await page.locator("[data-dialog]").count(), 0, "no dialog");
-    eq(await page.textContent(".cc-doc-h"), "Mortis muere para llegar a la Reina Cuervo", "the entry is there");
-    if (opts === PHONE) eq(await page.locator(".cc-invite").isVisible().catch(() => false), false, "no invitation over the entry on a phone");
+// Next all the way (the tour does each action itself) at every width.
+for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024], [1280, 820]]) {
+  await check(`tour · ${w}px: every step of the main tour fits, keeps its control usable, and “Next” carries on across screens`, async () => {
+    const phone = w < 720;
+    const { ctx, page } = await open({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone }, "#/chronicle", { keepGuide: true });
+    await page.click(".cc-invite .cc-btn");
+    let s = await tourAt(page);
+    const titles = [];
+    for (let i = 0; i < 20; i++) {
+      titles.push(s.title);
+      await fits(page, w, h, `${w}px`);
+      if (w === 320 || w === 1280) await page.screenshot({ path: path.join(OUT, `tour-${w}-${String(i + 1).padStart(2, "0")}.png`) });
+      if (s.title === "¡Listo!") break;
+      s = await tourStepNext(page);
+    }
+    const expected = ["Crónica de Exandria", "Recordá la última sesión", "Anteriormente en…", "Explorá la Crónica", "Descubrí las conexiones",
+      "Encontrá cualquier cosa", "Escribí lo que buscás", "Resultados al instante", ...(phone ? ["El mapa está en «Más»"] : []), "Explorá el mapa",
+      "Los marcadores", "", "Personajes y recorridos", "Las líneas punteadas", "¡Listo!"];
+    eq(titles.map((t, i) => expected[i] === "" ? "" : t), expected, "the steps, in order");
+    await tourNext(page);
+    await tourGone(page);
+    eq((await onboarding(page)).completed, ["main"], "completed");
     await ctx.close();
+  });
+}
+
+await check("tour · keyboard and screen readers: labelled dialog, focus in it, → ← Tab, Esc gives focus back; reduced motion", async () => {
+  const { ctx, page } = await open({ ...DESKTOP, reducedMotion: "reduce" }, "#/chronicle", { keepGuide: true });
+  await page.focus(".cc-actions button[aria-haspopup=dialog]");
+  await page.keyboard.press("Enter");
+  await page.waitForSelector("[data-dialog=help]");
+  await page.locator(".cc-tourrow").first().focus();
+  await page.keyboard.press("Enter");
+  await tourAt(page, "Crónica de Exandria");
+  const a11y = await page.evaluate(() => { const p = document.querySelector(".driver-popover"); return { role: p.getAttribute("role"), name: document.getElementById(p.getAttribute("aria-labelledby")).textContent, desc: !!document.getElementById(p.getAttribute("aria-describedby")), close: p.querySelector(".driver-popover-close-btn").getAttribute("aria-label"), focus: document.activeElement.textContent.trim(), lang: p.getAttribute("lang"), progress: p.querySelector(".driver-popover-progress-text").getAttribute("aria-label"), motion: document.body.className }; });
+  eq(a11y, { role: "dialog", name: "Crónica de Exandria", desc: true, close: "Cerrar el recorrido", focus: "Comenzar", lang: "es-AR", progress: "Paso 1 de 7", motion: a11y.motion }, "labelled dialog, focus on its main button");
+  assert(/driver-simple/.test(a11y.motion) && !/driver-fade/.test(a11y.motion), "no animation with reduced motion");
+  await page.keyboard.press("ArrowRight");
+  await tourAt(page, "Recordá la última sesión");
+  await page.keyboard.press("ArrowLeft");
+  await tourAt(page, "Crónica de Exandria");
+  for (let i = 0; i < 5; i++) {
+    await page.keyboard.press("Tab");
+    eq(await page.evaluate(() => !!document.activeElement.closest(".driver-popover")), true, `Tab ${i + 1} stays in the tour`);
   }
+  await page.keyboard.press("Escape");
+  await tourGone(page);
+  await page.waitForTimeout(150);
+  eq(await page.evaluate(() => document.activeElement.getAttribute("aria-label")), "Ayuda: cómo funciona la Crónica", "focus back where the tour was started from");
+  await ctx.close();
 });
 
-await check("guide · phone: from More; the glossary lists every event type, quest status and map mark", async () => {
-  const { ctx, page } = await open(PHONE, "#/chronicle");
+await check("tour · language: started in English it speaks English; switching language re-reads the step", async () => {
+  const ctx = await browser.newContext(DESKTOP);
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-lang", "en"); } catch (e) {} });
+  const page = await ctx.newPage();
+  page.on("pageerror", e => errors.push(`tour lang: ${e.message}`));
+  await page.goto(BASE + "#/chronicle");
+  await page.waitForSelector(".cc-invite");
+  assert(await page.isVisible(".cc-invite:has-text('First time here?')"), "English invitation");
+  await page.click(".cc-invite .cc-btn");
+  let s = await tourAt(page, "Exandria Chronicle");
+  eq([s.progress, s.next], ["1 of 7", "Start"], "English welcome");
+  await tourNext(page);
+  await tourAt(page, "Catch up on the last session");
+  // The switch sits under the tour's dimmed layer; any language change re-reads the open step.
+  await page.evaluate(() => document.querySelector(".cc-lang button[lang='es-AR']").click());
+  s = await tourAt(page, "Recordá la última sesión");
+  eq([s.progress, s.next], ["2 de 7", "Siguiente"], "the same step, now in Spanish");
+  await page.keyboard.press("Escape");
+  await tourGone(page);
+  await ctx.close();
+});
+
+await check("tour · map tutorial from the map's “¿Cómo funciona?”: waits for the lazy map, real marker, party lines, zoom; the map works after", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/map");
+  await page.waitForSelector(".cc-maphelp");
+  await page.click(".cc-maphelp");
+  let s = await tourAt(page, "Los marcadores");
+  eq(s.progress, "1 de 3", "three ideas");
+  assert(/cc-marker/.test(s.active.cls), "a real marker");
+  eq(await page.locator(".cc-maphelp").count(), 0, "no second tour button during the tour");
+  const titles = [s.title];
+  while (s.title !== "Ya sabés usar el mapa" && titles.length < 10) { s = await tourStepNext(page); titles.push(s.title); await fits(page, 1280, 820, "map tour"); }
+  ["Las líneas punteadas", "Moverse por el mapa", "Ya sabés usar el mapa"].forEach(t => assert(titles.includes(t), `${t} in ${titles}`));
+  eq(s.next, "Explorar el mapa", "finish label");
+  await tourNext(page);
+  await tourGone(page);
+  assert((await onboarding(page)).completed.includes("map"), "remembered");
+  const z0 = await page.textContent(".cc-zlabel");
+  await page.mouse.move(640, 430); await page.mouse.wheel(0, -400);
+  await page.waitForTimeout(200);
+  assert((await page.textContent(".cc-zlabel")) !== z0, "wheel zoom still works");
+  await page.click(".cc-zoom .cc-zbtn.solo");
+  await page.waitForTimeout(150);
+  eq(await markerTotal(page), 33, "every marker still there");
+  assert(await page.isVisible(".cc-maphelp"), "the map's help is back");
+  await ctx.close();
+});
+
+await check("tour · search tutorial: open, try a real name, results, open one, its connections", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/quests");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");
+  await page.locator(".cc-tourrow").nth(2).click();
+  let s = await tourAt(page, "Encontrá cualquier cosa");
+  eq(s.progress, "1 de 2", "two ideas");
+  await page.click(".cc-searchbtn");
+  await tourAt(page, "Escribí lo que buscás");
+  await page.click(".cc-tour-try");
+  s = await tourAt(page, "Resultados al instante");
+  eq(await page.inputValue(".cc-spanel input"), "Sorfon", "a real party member");
+  await page.locator(".driver-active-element .cc-hit").first().click();
+  await page.waitForFunction(() => location.hash === "#/quests/character/sorfon");
+  s = await tourAt(page, "Todo está conectado");
+  assert(/cc-actrow/.test(s.active.cls), "“Ver en la Crónica”");
+  await tourNext(page);
+  s = await tourAt(page, "Ya sabés buscar");
+  await tourNext(page);
+  await tourGone(page);
+  eq(await page.evaluate(() => location.hash), "#/quests/character/sorfon", "it ends where the visitor got to");
+  assert((await onboarding(page)).completed.includes("search"), "remembered");
+  await ctx.close();
+});
+
+await check("help · centre: three tours with “Hecho”, answers that fold, every section explained; glossary tab; phone 320 from More", async () => {
+  const ctx = await browser.newContext({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true });
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tour-version", "2"); localStorage.setItem("chronicle-tour-completed", "[\"main\"]"); } catch (e) {} });
+  const page = await ctx.newPage();
+  page.on("pageerror", e => errors.push(`help: ${e.message}`));
+  await page.goto(BASE + "#/chronicle");
+  await page.waitForSelector(".cc-card");
+  eq(await page.locator(".cc-intro").count(), 0, "no introduction after the main tour");
   await page.locator("button.cc-bn").tap();
-  await page.locator(".cc-sheet-item", { hasText: "Íconos y colores" }).tap();
-  await page.waitForSelector("[data-dialog=guide]");
+  await page.locator(".cc-sheet-item", { hasText: "Ayuda" }).tap();
+  await page.waitForSelector("[data-dialog=help]");
+  eq(await page.locator(".cc-tourrow").count(), 3, "three tours");
+  eq(await page.locator(".cc-tourrow").first().locator(".cc-badge").textContent(), "Hecho", "the main tour is marked done");
+  eq(await page.locator(".cc-faq-i").count(), 7, "sections + six answers");
+  eq(await page.locator(".cc-faq-i[open]").count(), 0, "all folded");
+  await page.locator(".cc-faq-i summary").first().tap();
+  eq(await page.locator(".cc-sec").count(), 6, "every section in one line");
+  await page.locator(".cc-faq-i summary", { hasText: "líneas punteadas" }).tap();
+  assert(await page.isVisible(".cc-faq-a:has-text('viajes registrados')"), "a short answer");
+  eq(await page.$eval(".cc-help", el => [el.scrollWidth <= el.clientWidth, document.documentElement.scrollWidth]), [true, 320], "no sideways scroll");
+  await page.screenshot({ path: path.join(OUT, "help-320.png") });
+  await page.locator(".cc-help-tabs button").last().tap();
   eq(await page.locator(".cc-gl-row").count(), 13, "13 event types");
   eq(await page.locator(".cc-gl-badges .cc-badge").count(), 4, "4 quest statuses");
   assert((await page.locator(".cc-gl-mrow").count()) >= 11, "map marks + other marks");
   const famColours = await page.$$eval(".cc-gl-famh", els => els.map(e => getComputedStyle(e).color));
   eq(new Set(famColours).size, famColours.length, "each family its own colour");
-  await page.locator(".cc-guide-tabs button").first().tap();
-  eq((await guideText(page)).n, "Paso 1 de 3", "the Guide tab shows the steps");
-  await page.screenshot({ path: path.join(OUT, "guide-phone.png") });
+  await page.goBack();
+  await page.waitForTimeout(200);
+  eq(await page.locator("[data-dialog]").count(), 0, "Back closes the help");
+  await page.locator("button.cc-bn").tap();
+  await page.locator(".cc-sheet-item", { hasText: "Íconos y colores" }).tap();
+  await page.waitForSelector(".cc-gl-row");
   await ctx.close();
+});
+
+await check("tour · a direct link to an entry is never interrupted (first visit, phone and desktop)", async () => {
+  for (const opts of [PHONE, DESKTOP]) {
+    // A fresh visitor (nothing stored) arriving straight on an entry; wait for the entry itself.
+    const ctx = await browser.newContext(opts), page = await ctx.newPage();
+    page.on("pageerror", e => errors.push(`deep link: ${e.message}`));
+    await page.goto(BASE + "#/chronicle/event/s12_03");
+    await page.waitForSelector(".cc-doc-h", { timeout: 15000 });
+    await page.waitForTimeout(400);
+    eq(await page.locator("[data-dialog], .driver-popover").count(), 0, "no dialog, no tour");
+    eq(await page.textContent(".cc-doc-h"), "Mortis muere para llegar a la Reina Cuervo", "the entry is there");
+    if (opts === PHONE) eq(await page.locator(".cc-intro").isVisible().catch(() => false), false, "no introduction over the entry on a phone");
+    await ctx.close();
+  }
 });
 
 // ── Universal search ────────────────────────────────────────────────────────
@@ -669,7 +1000,8 @@ await check("search · phone: full screen, typing right away, readable 44px rows
 // ── Previously on… ──────────────────────────────────────────────────────────
 await check("recap · from the Chronicle: the latest session (12, by number), real events only, link to the full log; EN", async () => {
   const { ctx, page } = await open(DESKTOP, "#/chronicle");
-  eq((await page.textContent("a.cc-latest .cc-latest-k")).trim(), "Anteriormente en…", "entry label");
+  eq((await page.textContent("a.cc-latest .cc-qa-t")).trim(), "Ponete al día", "quick action");
+  eq((await page.textContent("a.cc-latest .cc-qa-s")).trim(), "Anteriormente en… · Sesión 12", "entry label");
   await page.click("a.cc-latest");
   await page.waitForFunction(() => location.hash === "#/chronicle/recap/12");
   eq(await page.textContent(".cc-doc-h"), "Anteriormente en Bund Der Vier…", "heading");
@@ -735,7 +1067,7 @@ await check("saved · star an event and a character; listed newest first; histor
 
 await check("saved · stale references are dropped; storage blocked → still works for the visit, with a note", async () => {
   const ctx = await browser.newContext(DESKTOP);
-  await ctx.addInitScript(() => { try { if (!sessionStorage.getItem("seeded")) { sessionStorage.setItem("seeded", "1"); localStorage.setItem("chronicle-tutorial-seen", "1");
+  await ctx.addInitScript(() => { try { if (!sessionStorage.getItem("seeded")) { sessionStorage.setItem("seeded", "1"); localStorage.setItem("chronicle-tour-version", "2"); localStorage.setItem("chronicle-tour-invite", "dismissed");
     localStorage.setItem("chronicle-favorites", JSON.stringify({ v: 1, items: [{ kind: "character", id: "baxcazhak", at: 1 }, { kind: "event", id: "s1_01", at: 2 }, { kind: "potion", id: "x" }] })); } } catch (e) {} });
   const page = await ctx.newPage();
   page.on("pageerror", e => errors.push(`saved: ${e.message}`));
@@ -762,7 +1094,7 @@ await check("saved · stale references are dropped; storage blocked → still wo
 await check("pwa · installable; after one visit it opens offline (favourites kept); new content shows when back online", async () => {
   const srv = await startServer();
   const ctx = await browser.newContext(DESKTOP);
-  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tutorial-seen", "1"); localStorage.setItem("chronicle-lang", "en"); } catch (e) {} });
+  await ctx.addInitScript(() => { try { localStorage.setItem("chronicle-tour-version", "2"); localStorage.setItem("chronicle-tour-invite", "dismissed"); localStorage.setItem("chronicle-lang", "en"); } catch (e) {} });
   const page = await ctx.newPage();
   page.on("pageerror", e => errors.push(`pwa: ${e.message}`));
   await page.goto(srv.base + "#/chronicle/event/s12_03");
