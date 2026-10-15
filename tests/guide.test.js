@@ -1,14 +1,13 @@
 // The help centre ("How the Chronicle works"): the guided tours (tests/tour.test.js), short answers
 // to frequent questions, what each section holds, and the glossary of icons and colours; the
-// first-visit introduction and invitation; the contextual hints. Optional — never opened on its own.
+// first-visit welcome (it appears by itself on the Chronicle's home, never as a modal and never over
+// a direct link); the contextual hints. The help itself never opens on its own.
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("fs");
-const path = require("path");
-const { Model, I18N, ROOT } = require("./helpers");
+const { Model, I18N, readText } = require("./helpers");
 
-const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+const html = readText("index.html");
 const mount = html.slice(html.indexOf("componentDidMount(){"), html.indexOf("componentDidUpdate(){"));
 const helpTpl = html.slice(html.indexOf("<!-- ═══ HELP"), html.indexOf("<!-- ═══ UNIVERSAL SEARCH"));
 const SECTIONS = ["chronicle", "sessions", "quests", "characters", "places", "map"];
@@ -35,14 +34,36 @@ test("1 · help centre: the three tours, what each section holds, six short answ
   assert.match(html, /title:`\$\{label\(s\)\} — \$\{t\(`nav\.desc\.\$\{s\.id\}`\)\}`/);
 });
 
-test("2 · optional and quiet: nothing opens by itself; a first visit gets an introduction and an invitation in the Chronicle", () => {
-  assert.ok(!/openHelp\(|startTour\(|help:\{/.test(mount), "componentDidMount opens nothing");
-  assert.match(html, /const intro=!st\.tourOn&&this\.onboarding\.showInvite\(\);/, "the introduction is for first visits only");
-  assert.match(html, /<sc-if value="\{\{ c\.intro \}\}">\s*<section class="cc-intro"/);
-  assert.match(html, /onClick="\{\{ onStartTour \}\}">\{\{ t\.tour\.inviteGo \}\}/, "“Show me how it works” starts the tour");
-  assert.match(html, /onClick="\{\{ onDismissInvite \}\}"[^>]*>\{\{ t\.tour\.inviteNo \}\}/, "“Not now” dismisses it");
-  // Afterwards: the tagline under the heading (desktop) and the quiet "How does it work?" link.
-  assert.match(html, /<sc-if value="\{\{ c\.tagline \}\}"><p class="cc-sec-sub">\{\{ t\.chronicle\.introH \}\}<\/p><\/sc-if>/);
+test("2 · first visit: a welcome to the tour appears by itself on the Chronicle's home — a card, not a modal; never over a direct link", () => {
+  assert.ok(!/openHelp\(|startTour\(|help:\{/.test(mount), "componentDidMount opens no help and starts no tour");
+  // Shown once the chronicle is loaded, on the home only (no entry open, no panel, no tour), until answered.
+  const welcome = html.slice(html.indexOf("_buildWelcome(){"), html.indexOf("// ── Interactive tours"));
+  assert.match(welcome, /const on=!!this\.model&&!!this\.tour&&r\.section==="chronicle"&&!r\.kind&&!st\.tourOn&&!st\.help&&!st\.search\.open&&!st\.moreOpen&&!st\.filtersOpen&&this\.onboarding\.showInvite\(\);/);
+  assert.match(welcome, /Tour\.plan\("main",this\._tourCtx\(\)\)\.length/, "it says how many steps the tour has");
+  assert.match(html, /wc:v\.chronicle\?this\._buildWelcome\(\):\{ on:false \}/);
+  // Non-modal: a labelled dialog without a backdrop, focus taken once only when nothing else has it.
+  assert.match(html, /<section class="cc-welcome" role="dialog" aria-modal="false" aria-labelledby="cc-welcome-h" aria-describedby="cc-welcome-d" tabIndex="-1" ref="\{\{ welcomeRef \}\}">/);
+  assert.match(html, /if\(el&&!this\._welcomeFocused\)\{ this\._welcomeFocused=true; const a=document\.activeElement; if\(!a\|\|a===document\.body\) el\.focus\(\{preventScroll:true\}\); \}/);
+  assert.ok(!/cc-welcome[^{]*\{[^}]*inset:0/.test(html), "no full-screen layer");
+  assert.match(html, /onClick="\{\{ wc\.onStart \}\}">\{\{ t\.tour\.inviteGo \}\}/, "“Comenzar recorrido” starts the tour");
+  assert.match(html, /onClick="\{\{ wc\.onLater \}\}" aria-label="\{\{ t\.tour\.inviteNoAria \}\}">\{\{ t\.tour\.inviteNo \}\}/, "“Ahora no” dismisses it");
+  assert.match(html, /e\.key==="Escape"&&this\._welcomeEl&&this\._welcomeEl\.isConnected&&this\._welcomeEl\.contains\(document\.activeElement\)\)\{ e\.preventDefault\(\); return this\.dismissInvite\(\); \}/, "Esc inside it = “Ahora no”");
+  // Phones: above the bottom bar, inside the screen; desktop: a corner card.
+  assert.match(html, /\.cc-welcome\{left:max\(12px,env\(safe-area-inset-left\)\);right:max\(12px,env\(safe-area-inset-right\)\);width:auto;bottom:calc\(70px \+ env\(safe-area-inset-bottom\)\)/);
+  for (const code of ["es-AR", "en"]) {
+    const t = I18N.createTranslator(code);
+    ["inviteKicker", "inviteTour", "inviteGo", "inviteNo", "inviteNoAria", "inviteLater", "inviteLaterPhone"].forEach(k => assert.ok(t(`tour.${k}`), `${code} tour.${k}`));
+    assert.ok(t("tour.inviteT", { party: "Bund Der Vier" }).includes("Bund Der Vier"));
+    assert.ok(t("tour.inviteNoAria").startsWith(t("tour.inviteNo")), `${code}: the visible label is in the accessible name`);
+  }
+  const es = I18N.createTranslator("es-AR");
+  assert.equal(es("tour.inviteT", { party: "Bund Der Vier" }), "Descubrí las aventuras de Bund Der Vier, explorá los lugares que visitaron y seguí las historias, personajes y misiones de la campaña.");
+  assert.equal(es("tour.inviteTour"), "Te mostramos cómo funciona todo con un breve recorrido interactivo.");
+  assert.deepEqual([es("tour.inviteGo"), es("tour.inviteNo"), es("tour.inviteSteps", { count: 8 })], ["Comenzar recorrido", "Ahora no", "8 pasos"]);
+  // The old inline introduction is gone (one welcome, not two explaining the same thing).
+  for (const gone of ["cc-intro", "cc-invite", "c.intro", "onStartTour", "onDismissInvite"]) assert.ok(!html.includes(gone), gone);
+  // The tagline under the heading (desktop) and the quiet "How does it work?" link stay.
+  assert.match(html, /<h1 class="cc-sec-h">\{\{ t\.chronicle\.title \}\}<\/h1>\s*<p class="cc-sec-sub">\{\{ t\.chronicle\.introH \}\}<\/p>/);
   // The help is reachable from the top bar, the Chronicle, the More sheet (phones) and the map.
   assert.match(html, /class="cc-iconbtn" onClick="\{\{ onOpenHelp \}\}"/);
   assert.match(html, /class="cc-linkbtn cc-qa-help" onClick="\{\{ onOpenHelp \}\}"/);
@@ -56,7 +77,7 @@ test("2 · optional and quiet: nothing opens by itself; a first visit gets an in
 test("3 · quick actions: catch up (the real latest recap) and find anything", () => {
   assert.match(html, /<a class="cc-qa-i cc-latest" href="\{\{ recapEntry\.href \}\}"/);
   assert.match(html, /<button class="cc-qa-i" onClick="\{\{ onOpenSearch \}\}" aria-haspopup="dialog">/);
-  for (const code of ["es-AR", "en"]) ["qaRecap", "qaSearch", "qaSearchSub", "qaHelp", "qaHelpAria", "introH", "introT"].forEach(k => assert.ok(I18N.dicts[code].chronicle[k], `${code} chronicle.${k}`));
+  for (const code of ["es-AR", "en"]) ["qaRecap", "qaSearch", "qaSearchSub", "qaHelp", "qaHelpAria", "introH"].forEach(k => assert.ok(I18N.dicts[code].chronicle[k], `${code} chronicle.${k}`));
   assert.equal(I18N.createTranslator("es-AR")("chronicle.introH"), "Nuestra historia, en un solo lugar.");
 });
 

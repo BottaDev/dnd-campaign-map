@@ -4,11 +4,9 @@
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("fs");
-const path = require("path");
-const { Model, I18N, ROOT } = require("./helpers");
+const { Model, I18N, readText } = require("./helpers");
 
-const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
+const html = readText("index.html");
 const block = name => {
   const start = html.indexOf(`const ${name} = {`);
   assert.ok(start >= 0, `${name} is defined`);

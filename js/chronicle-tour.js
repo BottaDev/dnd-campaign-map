@@ -1,24 +1,28 @@
 // ── Campaign Chronicle — interactive tours on the real interface (Driver.js) ─
-// The tours point at the app's own controls and let the visitor use them. A step can wait for an
-// action (open the recap, tap a card, open the search, open the map, tap a marker) and the tour
-// follows to the screen that action leads to; "Next" does the same action on the visitor's behalf.
+// The tours point at the app's own controls. Each step highlights one real element and explains it;
+// where it is safe the visitor can use that element (tap a marker, filter the quests, type a search)
+// and the tour follows; "Siguiente" does the same on their behalf and moves on, across screens.
 //
 //   • STEPS / TOURS — the step definitions: plain data plus small functions of a context object
-//     (the app's state: route, panels, examples from the data). No DOM except inside `target`.
-//       screen   where the step needs to be — ok(ctx), go(ctx) → hash (null = cannot, skip it)
+//     (the app's state: route, panels, layout, what the campaign holds). No DOM except in `target`.
+//       screen   where the step needs to be — ok(ctx), go(ctx) → hash (null = cannot)
 //       ui       panels that must be open or closed: more, search, mapPanel, mapPopup
-//       target   the real element to highlight ($ = first match that is really on screen);
-//                no target = a centred popover
-//       text     key of the title/description in locales/*.js (tour.<text>T / tour.<text>D);
-//                a function picks a variant by the element found (all listed in `variants`)
+//       target   the real element to highlight ($ = first match really on screen); none = centred
+//       text     key of the title/description in locales/*.js (tour.<text>T / tour.<text>D); a
+//                function picks a variant from the context and the element found (all in `variants`)
 //       done     the expected action happened → the next step follows by itself
-//       perform  what "Next" does for the visitor before moving on (navigate, open a panel…)
-//       fallback what to show when the element never appears (the step is never left blank)
-//       optional skip the step when its element is not there (instead of a fallback)
-//   • createProgress(storage) — completed tours and the first-visit invitation, versioned.
-//   • createRunner({ driver, app }) — the runtime: establishes each step's screen, waits until its
-//     element is rendered and still, drives Driver.js's highlight() and keeps the highlight on
-//     its element while the app re-renders, pans the map or scrolls.
+//       perform  what "Siguiente" does for the visitor before moving on (open a marker's card…)
+//       fallback what to show when the screen cannot be reached or the element never appears: a
+//                step is never skipped in silence and never points at something that is not there
+//       none     the screen is there and the element cannot come (e.g. no marker at all): the
+//                fallback shows at once instead of after the wait's time limit
+//       when     the step exists only in that context, decided before the tour starts so that
+//                "Paso 3 de 8" stays true (no located event → no "what a marker opens")
+//   • createProgress(storage) — completed tours and the dismissed welcome, versioned.
+//   • createRunner({ driver, app }) — the runtime: establishes each step's screen (the page stays
+//     dimmed while it changes), waits until the element is rendered and still, drives Driver.js's
+//     highlight() and keeps the highlight and its popover on that element while the app
+//     re-renders, scrolls, resizes or loads its fonts.
 //
 // window.ChronicleTour in the page; module.exports in Node (tests/tour.test.js).
 (function (root, factory) {
@@ -28,158 +32,147 @@
   "use strict";
 
   // Bump VERSION when the tours change enough to be offered again: completion and the dismissed
-  // invitation are remembered per version (v1 was the old three-card guide).
-  const VERSION = 2;
+  // welcome are remembered per version (v1: the old three-card guide; v2: the first, longer tours).
+  const VERSION = 3;
   const KEYS = { version: "chronicle-tour-version", completed: "chronicle-tour-completed", invite: "chronicle-tour-invite" };
   const LEGACY_KEY = "chronicle-tutorial-seen";
 
   const enc = s => encodeURIComponent(s);
-  const cssq = s => (typeof CSS !== "undefined" && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"));
   const val = (v, c) => (typeof v === "function" ? v(c) : v);
+  const is = (el, sel) => !!(el && el.matches && el.matches(sel));
   const onList = (c, section) => c.route.section === section && !c.route.kind;
-  const notMap = c => c.route.section !== "map";
+  const list = section => ({ ok: c => onList(c, section), go: () => `#/${section}` });
+  const HOME = list("chronicle");
+  const CALM = { search: false, more: false };                      // no panel over the page
   // The map itself is on screen: a pin focus keeps it; an open entry covers it below 1024px.
   const mapVisible = c => c.route.section === "map" && (!c.route.kind || c.route.kind === "at" || c.isWide);
-  const toMap = () => "#/map";
+  const MAP = { ok: mapVisible, go: () => "#/map" };
   const fillExample = (api, c) => { if (!c.search.q.trim() && c.example.personName) api.act("searchQ", c.example.personName); };
+  // The map is on screen with no marker on it at all (filters hide every event): nothing to wait for.
+  const noMarker = $ => { const vp = $(".cc-vp"); return !!vp && !vp.querySelectorAll(".cc-marker").length; };
+
+  // Shared by the main tour and the map tour: the same logic, their own words.
+  // A real marker near the centre of the visible map; tapping it (or "Siguiente") opens its card.
+  const MARKER = { screen: MAP, ui: { more: false, search: false, mapPanel: false, mapPopup: false },
+    target: ($, c, env) => env.marker(c), settle: 3, timeout: 4000,          // after the lazy map has laid out and centred
+    none: noMarker,
+    side: "bottom", interactive: true,
+    remember: el => ({ pin: (el.getAttribute("data-ev") || "").split(" ").filter(Boolean) }),
+    done: c => !!c.mapPopup,
+    perform: api => api.act("mapPopup", true) };
+  // The card a marker opens. A list (several events) can be used — choosing one shows its card; a
+  // card is read-only here, so "Leer entrada" never takes the visitor off the map mid-tour.
+  const CARD = { screen: MAP, ui: { more: false, mapPanel: false, mapPopup: true }, when: c => !!c.mapHasMarkers,
+    target: $ => $(".cc-vp [data-popup]"), settle: 3, side: "bottom",
+    interactive: c => c.mapPopup === "list" };
 
   const STEPS = {
-    // ① What this is
-    welcome: { chapter: "welcome", text: "welcome", nextLabel: "start", skipButton: true },
+    // ── The main tour: eight steps, one idea each ──
+    // ① What the Chronicle is, and the bar that moves between its sections ("Más" on phones)
+    sections: { screen: HOME, ui: CALM,
+      target: ($, c) => $(c.isMobile ? ".cc-bottom" : ".cc-tabs"),
+      text: c => (c.isMobile ? "sectionsPhone" : "sections"), variants: ["sections", "sectionsPhone"],
+      side: c => (c.isMobile ? "top" : "bottom"), align: "center" },
+    // ② The Chronicle: the first day (or session) on screen when it fits, else its first card
+    chronicle: { screen: HOME, ui: CALM,
+      target: ($, c, env) => env.compact(env.inView(".cc-group"), env.inView(".cc-evlist .cc-card")) || $(".cc-empty") || $(".cc-chead"),
+      text: (c, el) => (is(el, ".cc-group, .cc-card") ? "chronicle" : "chronicleNone"), variants: ["chronicle", "chronicleNone"],
+      side: "bottom" },
+    // ③ Sessions: always explained — a real session as the example, the heading while there is none
+    sessions: { screen: list("sessions"), ui: CALM,
+      target: ($, c, env) => env.inView(".cc-list .cc-scard") || $(".cc-sechead"),
+      text: (c, el) => (is(el, ".cc-scard") ? "sessions" : "sessionsNone"), variants: ["sessions", "sessionsNone"],
+      side: "bottom" },
+    // ④ Quests: grouped by status; the status filter is the real control and can be used
+    quests: { screen: list("quests"), ui: CALM,
+      target: ($, c) => (c.hasQuests && $(".cc-statusbar")) || $(".cc-sechead"),
+      text: (c, el) => (is(el, ".cc-statusbar") ? "quests" : "questsNone"), variants: ["quests", "questsNone"],
+      side: "bottom", interactive: c => !!c.hasQuests },
+    // ⑤ ⑥ The map: a real marker to tap, then the card it opens (and that the map has its own tour)
+    map: { ...MARKER, text: "map",
+      fallback: { target: $ => $(".cc-vp"), text: c => (c.mapHasMarkers ? "mapNone" : "mapEmpty"), variants: ["mapNone", "mapEmpty"] } },
+    mapCard: { ...CARD, text: c => (c.mapPopup === "list" ? "mapCardList" : "mapCard"), variants: ["mapCard", "mapCardList"],
+      fallback: { target: $ => $(".cc-vp"), text: "popupNone" } },
+    // ⑦ The search: the magnifier in the top bar, on every screen (its own tour shows it in use)
+    find: { screen: HOME, ui: CALM,
+      target: $ => $(".cc-top .cc-searchbtn"),
+      text: c => (c.isMobile ? "findPhone" : "find"), variants: ["find", "findPhone"], side: "bottom", align: "end" },
+    // ⑧ Help, last — so it is what stays: "?" in the top bar; on phones More → Help (the sheet opens)
+    help: { final: true, more: true, screen: HOME, ui: { search: false, more: c => !!c.isMobile },
+      target: ($, c) => $(c.isMobile ? ".cc-sheet [data-tour=help]" : ".cc-top [data-tour=help]"),
+      text: c => (c.isMobile ? "helpPhone" : "help"), variants: ["help", "helpPhone"],
+      side: c => (c.isMobile ? "top" : "bottom"), align: c => (c.isMobile ? "center" : "end") },
 
-    // ② Previously on… — the real recap of the latest session
-    recap: { chapter: "recap", when: c => c.latest != null,
-      screen: { ok: c => onList(c, "chronicle"), go: () => "#/chronicle" }, ui: { search: false, more: false },
-      target: $ => $(".cc-latest"), text: "recap", side: "bottom", interactive: true,
-      done: c => c.route.kind === "recap",
-      perform: (api, c) => api.go(`#/chronicle/recap/${c.latest}`) },
-    recapView: { chapter: "recap", when: c => c.latest != null,
-      screen: { ok: c => c.route.kind === "recap", go: c => `#/chronicle/recap/${c.latest}` }, ui: { search: false, more: false },
-      target: $ => $("[data-tour=recap-where]") || $("[data-tour=recap-events]") || $(".cc-detail .cc-doc-h"),
-      text: "recapView", side: c => (c.isWide ? "left" : "bottom") },
-    // No session has a log yet: the Sessions section is the real alternative (nothing is invented).
-    sessions: { chapter: "recap", when: c => c.latest == null, ui: { search: false, more: false },
-      target: ($, c) => $(c.isMobile ? '.cc-bottom a[href="#/sessions"]' : '.cc-tabs a[href="#/sessions"]'),
-      text: "sessions", side: c => (c.isMobile ? "top" : "bottom") },
+    // ── The map tour: markers, groups, the party filter and its journeys, moving around ──
+    marker: { ...MARKER, text: "marker",
+      fallback: { target: $ => $(".cc-vp"), text: c => (c.mapHasMarkers ? "markerNone" : "mapEmpty"), variants: ["markerNone", "mapEmpty"] } },
+    popup: { ...CARD, text: c => (c.mapPopup === "list" ? "popupList" : "popup"), variants: ["popup", "popupList"],
+      fallback: { target: $ => $(".cc-vp"), text: "popupNone" } },
+    cluster: { screen: MAP, ui: { more: false, mapPanel: false, mapPopup: false },
+      target: ($, c, env) => env.marker(c, { group: true }), settle: 3, timeout: 3000,
+      none: $ => { const vp = $(".cc-vp"); return !!vp && ![...vp.querySelectorAll(".cc-marker")].some(m => (m.getAttribute("data-ev") || "").includes(" ")); },
+      text: "cluster", side: "bottom",
+      fallback: { target: $ => $(".cc-vp"), text: "clusterNone" } },      // no group in view: explained over the map
+    party: { screen: MAP, ui: { more: false, mapPanel: false, mapPopup: false },
+      target: $ => $(".cc-mapbar .cc-mapbtn"), text: "party", side: "bottom", align: "start", interactive: true,
+      done: c => c.mapPanelOpen,
+      perform: api => api.act("mapPanel", true) },
+    partyRows: { screen: MAP, ui: { more: false, mapPanel: true },
+      target: ($, c, env) => env.compact($("[data-tour=party-rows]"), $(".cc-mappanel .cc-partyrow")),
+      text: "partyRows", side: c => (c.isMobile ? "bottom" : "right"), interactive: true },
+    zoom: { screen: MAP, ui: { more: false, mapPanel: false, mapPopup: false },
+      target: $ => $(".cc-zoom"), text: "zoom", side: "top", align: "start", interactive: true },
+    doneMap: { final: true, more: true, text: "doneMap", ui: { more: false, mapPanel: false } },
 
-    // ③ The Chronicle — a real card (the well-connected example when it is on screen)
-    card: { chapter: "chronicle",
-      screen: { ok: c => onList(c, "chronicle"), go: () => "#/chronicle" }, ui: { search: false, more: false },
-      target: ($, c) => (c.example.eventId && $(`.cc-card[data-ev="${cssq(c.example.eventId)}"]`)) || $(".cc-evlist .cc-card") || $(".cc-ghead"),
-      text: "card", side: "bottom", interactive: true,
-      done: c => c.route.kind === "event",
-      perform: (api, c, el) => { const id = (el && el.getAttribute("data-ev")) || c.example.eventId; if (id) api.go(`#/chronicle/event/${enc(id)}`); } },
-
-    // ④ Connections — one relation of the open event (people, else quests, else its session/place)
-    links: { chapter: "links",
-      screen: { ok: c => c.route.kind === "event", go: c => (c.example.eventId ? `#/chronicle/event/${enc(c.example.eventId)}` : null) },
-      ui: { search: false, more: false },
-      target: $ => $("[data-tour=event-people]") || $("[data-tour=event-quests]") || $(".cc-detail .cc-byline"),
-      text: (c, el) => variant(el, { "event-people": "links", "event-quests": "linksQuests" }, "linksByline"),
-      variants: ["links", "linksQuests", "linksByline"],
-      side: c => (c.isWide ? "left" : "bottom"), interactive: true,
-      done: (c, mem) => c.hash !== mem.hash },
-
-    // ⑤ The universal search — open it, type, see the real results, open one
-    search: { chapter: "search", ui: { search: false, more: false },
+    // ── The search tour: open it, type, see the real results, open one and follow its links ──
+    search: { ui: CALM,
       target: $ => $(".cc-searchbtn"), text: "search", side: "bottom", align: "end", interactive: true,
       reset: run => { run.searchedAway = false; },
       done: c => c.search.open,
       perform: api => api.act("search", true) },
-    searchType: { chapter: "search", ui: { search: true },
+    searchType: { ui: { search: true },
       target: $ => $(".cc-spanel .cc-shead .cc-search"), text: "searchType", side: "bottom", interactive: true, keepFocus: true,
       tryName: c => c.example.personName || "",                     // a real name from the campaign, one tap
       done: (c, mem, run) => !c.search.open && (run.searchedAway = true),   // Enter opened a result
       perform: fillExample },
-    searchResults: { chapter: "search", ui: { search: true },
+    searchResults: { ui: { search: true },
       skip: (c, run, dir) => dir > 0 && !!run.searchedAway,
       prepare: fillExample,
       target: $ => $(".cc-spanel .cc-sgroup") || $(".cc-spanel .cc-snone"),
-      text: (c, el) => (el && el.matches(".cc-snone") ? "searchNone" : "searchResults"), variants: ["searchResults", "searchNone"],
+      text: (c, el) => (is(el, ".cc-snone") ? "searchNone" : "searchResults"), variants: ["searchResults", "searchNone"],
       side: "bottom", interactive: true, keepFocus: c => !c.isMobile, blur: c => c.isMobile,
       done: (c, mem, run) => !c.search.open && (run.searchedAway = true),   // a result was opened
       perform: api => api.act("search", false) },
-
-    // ⑥ The map — how to get there (More on phones), a real marker, what it opens
-    mapMore: { chapter: "map", when: c => c.isMobile,
-      screen: { ok: notMap, go: () => "#/chronicle" }, ui: { search: false, more: false },
-      target: $ => $(".cc-bottom button.cc-bn"), text: "mapMore", side: "top", interactive: true,
-      done: c => c.moreOpen || c.route.section === "map",
-      perform: api => api.act("more", true) },
-    mapOpen: { chapter: "map",
-      screen: { ok: notMap, go: () => "#/chronicle" }, ui: { search: false, more: c => !!c.isMobile },
-      target: ($, c) => $(c.isMobile ? '.cc-sheet a[href="#/map"]' : '.cc-tabs a[href="#/map"]'),
-      text: "mapOpen", side: c => (c.isMobile ? "top" : "bottom"), interactive: true,
-      done: c => c.route.section === "map",
-      perform: api => api.go("#/map") },
-    marker: { chapter: "map",
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, search: false, mapPanel: false, mapPopup: false },
-      target: ($, c, env) => env.marker(c), settle: 3, timeout: 6000,     // after the lazy map has laid out and centred
-      text: "marker", side: "bottom", interactive: true,
-      fallback: { target: $ => $(".cc-vp"), text: "markerNone" },        // no marker in view (filters, empty map)
-      remember: el => ({ pin: (el.getAttribute("data-ev") || "").split(" ").filter(Boolean) }),
-      done: c => !!c.mapPopup,
-      perform: api => api.act("mapPopup", true) },
-    // A list (several events) can be used — choosing one shows its card; a card is read-only here, so
-    // "Read entry" never takes the visitor off the map in the middle of the tour.
-    popup: { chapter: "map",
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, mapPanel: false, mapPopup: true },
-      target: $ => $(".cc-vp [data-popup]"), settle: 3,
-      text: c => (c.mapPopup === "list" ? "popupList" : "popup"), variants: ["popup", "popupList"], side: "bottom",
-      interactive: c => c.mapPopup === "list" },
-    cluster: { chapter: "map", optional: true,
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, mapPanel: false, mapPopup: false },
-      target: ($, c, env) => env.marker(c, { group: true }), settle: 3, timeout: 3000,
-      text: "cluster", side: "bottom" },
-
-    // ⑦ Party & journeys — the party filter and what the dashed lines are
-    party: { chapter: "party",
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, mapPanel: false, mapPopup: false },
-      target: $ => $(".cc-mapbar .cc-mapbtn"), text: "party", side: "bottom", align: "start", interactive: true,
-      done: c => c.mapPanelOpen,
-      perform: api => api.act("mapPanel", true) },
-    partyRows: { chapter: "party",
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, mapPanel: true },
-      target: ($, c, env) => env.compact($("[data-tour=party-rows]"), $(".cc-mappanel .cc-partyrow")),
-      text: "partyRows", side: c => (c.isMobile ? "bottom" : "right"), interactive: true },
-    zoom: { chapter: "zoom",
-      screen: { ok: mapVisible, go: toMap }, ui: { more: false, mapPanel: false, mapPopup: false },
-      target: $ => $(".cc-zoom"), text: "zoom", side: "top", align: "start", interactive: true },
-
-    // Search tour: an opened entry and its connections ("Show in Chronicle" filters the story by it)
-    entry: { chapter: "links",
+    // An opened entry and its connections ("Ver en la Crónica" filters the story by it)
+    entry: {
       screen: { ok: c => !!c.route.kind && c.route.kind !== "recap" && c.route.kind !== "at",
         go: c => (c.example.personId ? `#/${c.route.section === "map" ? "chronicle" : c.route.section}/character/${enc(c.example.personId)}` : null) },
-      ui: { search: false, more: false },
+      ui: CALM,
       target: $ => $(".cc-detail .cc-actrow") || $("[data-tour=event-people]") || $(".cc-detail .cc-byline"),
-      text: (c, el) => (el && el.matches(".cc-actrow") ? "entry" : "links"), variants: ["entry", "links"],
+      text: (c, el) => (is(el, ".cc-actrow") ? "entry" : "links"), variants: ["entry", "links"],
       side: c => (c.isWide ? "left" : "bottom"), interactive: true,
-      done: (c, mem) => c.hash !== mem.hash },
-
-    // Endings
-    doneMain:   { final: true, text: "doneMain", nextLabel: "finish", more: true, ui: { more: false, search: false, mapPanel: false } },
-    doneMap:    { final: true, text: "doneMap", nextLabel: "finishMap", more: true, ui: { more: false, mapPanel: false } },
-    doneSearch: { final: true, text: "doneSearch", nextLabel: "finish", more: true, ui: { more: false, search: false } },
+      done: (c, mem) => c.hash !== mem.hash,
+      fallback: { text: "entryNone" } },                                 // no entry to open: said without pointing
+    doneSearch: { final: true, more: true, text: "doneSearch", ui: CALM },
   };
   Object.keys(STEPS).forEach(id => { STEPS[id].id = id; });
 
   const TOURS = {
-    // About six ideas (seven with the map in two parts): welcome, recap, Chronicle, connections, search, map, party.
-    main:   ["welcome", "recap", "recapView", "sessions", "card", "links", "search", "searchType", "searchResults", "mapMore", "mapOpen", "marker", "popup", "party", "partyRows", "doneMain"],
+    // Eight steps: the sections, the Chronicle, Sessions, Quests, the map (a marker and what it
+    // opens), the search, and — last, so it is what stays — where the help and these tours live.
+    main:   ["sections", "chronicle", "sessions", "quests", "map", "mapCard", "find", "help"],
+    // The specific tours go further than the introduction.
     map:    ["marker", "popup", "cluster", "party", "partyRows", "zoom", "doneMap"],
     search: ["search", "searchType", "searchResults", "entry", "doneSearch"],
   };
 
-  function variant(el, byTour, other) { const k = el && el.getAttribute && el.getAttribute("data-tour"); return (k && byTour[k]) || other; }
-
-  // The steps that apply in this context (phones add "More"; no recorded session → Sessions instead of the recap).
+  // The steps that apply in this context (decided by the campaign's content, never by the layout).
   function plan(tourId, c) { return (TOURS[tourId] || []).map(id => STEPS[id]).filter(s => !s.when || s.when(c)); }
 
-  // Progress counts ideas, not popovers: the sub-steps of one idea share its number.
+  // "Paso 3 de 8": every popover is one step, counted on the plan.
   function progress(steps, step) {
-    if (!step || !step.chapter) return null;
-    const chapters = [...new Set(steps.map(s => s.chapter).filter(Boolean))];
-    return { n: chapters.indexOf(step.chapter) + 1, total: chapters.length };
+    const i = steps.indexOf(step);
+    return i < 0 ? null : { n: i + 1, total: steps.length };
   }
 
   function params(c) {
@@ -191,11 +184,10 @@
   }
   // Every locale key a tour can show (tests check both languages have them, short).
   function textKeys(tourId) {
-    const keys = new Set(["tour.next", "tour.prev", "tour.close", "tour.progress", "tour.progressAria", "tour.skip", "tour.more", "tour.try"]);
+    const keys = new Set(["tour.next", "tour.prev", "tour.finish", "tour.skip", "tour.more", "tour.progress", "tour.try"]);
+    const texts = s => s.variants || (typeof s.text === "string" ? [s.text] : []);
     (tourId ? TOURS[tourId] : Object.keys(STEPS)).map(id => STEPS[id]).forEach(s => {
-      const texts = s.variants || (typeof s.text === "string" ? [s.text] : []);
-      if (s.fallback && s.fallback.text) texts.push(s.fallback.text);
-      texts.forEach(k => { keys.add(`tour.${k}T`); keys.add(`tour.${k}D`); });
+      texts(s).concat(s.fallback ? texts(s.fallback) : []).forEach(k => { keys.add(`tour.${k}T`); keys.add(`tour.${k}D`); });
       if (s.nextLabel) keys.add(`tour.${s.nextLabel}`);
     });
     return [...keys];
@@ -203,8 +195,8 @@
 
   const escapeHtml = s => String(s == null ? "" : s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
 
-  // ── Progress: which tours were completed, whether the invitation was dismissed ──
-  // Three separate keys: the version they refer to, the completed tours, the invitation. A newer
+  // ── Progress: which tours were completed, whether the welcome was dismissed ──
+  // Three separate keys: the version they refer to, the completed tours, the welcome. A newer
   // VERSION makes the older flags stale (the tours are offered again) without touching anything
   // else the visitor keeps (language, favourites, history, preferences).
   function createProgress(storage) {
@@ -227,7 +219,7 @@
       completed,
       isCompleted: id => completed().includes(id),
       inviteDismissed: dismissed,
-      // Without storage the invitation never nags (it could not be dismissed for good).
+      // Without storage the welcome never nags (it could not be dismissed for good).
       showInvite: () => usable && !completed().includes("main") && !dismissed(),
       complete(id) { mem.completed.add(id); stamp(); const c = stored(); if (!c.includes(id)) set(KEYS.completed, JSON.stringify([...c, id])); },
       dismissInvite() { mem.dismissed = true; stamp(); set(KEYS.invite, "dismissed"); },
@@ -242,7 +234,8 @@
   function createRunner(opts) {
     const app = opts.app, makeDriver = opts.driver, win = opts.window || window, doc = win.document;
     const ARIA = ["aria-haspopup", "aria-expanded", "aria-controls"];
-    let drv = null, run = null, seq = 0, syncQueued = false, clampQueued = false, probe = null;
+    const DURATION = 260;                                    // Driver.js's move from one element to the next
+    let drv = null, run = null, seq = 0, syncQueued = false, clampQueued = false, refreshQueued = false, probe = null, ro = null;
     const raf = cb => win.requestAnimationFrame(cb);
     const reduced = () => !!(win.matchMedia && win.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
@@ -254,6 +247,16 @@
       return r.width > 0 && r.height > 0;
     }
     const $ = sel => { for (const el of doc.querySelectorAll(sel)) if (shown(el)) return el; return null; };
+    // Where an element can be seen: the pane it scrolls in (list, reading pane, panel), inside the window.
+    function viewBox(el) {
+      const W = { top: 0, left: 0, bottom: win.innerHeight, right: win.innerWidth };
+      const pane = el.closest && el.closest(".cc-main, .cc-detail, .cc-sbody, .cc-mappanel");
+      if (!pane) return W;
+      const r = pane.getBoundingClientRect();
+      return { top: Math.max(W.top, r.top), left: Math.max(W.left, r.left), bottom: Math.min(W.bottom, r.bottom), right: Math.min(W.right, r.right) };
+    }
+    function whole(el) { const r = el.getBoundingClientRect(), b = viewBox(el); return r.top >= b.top - 1 && r.bottom <= b.bottom + 1; }
+    function partly(el) { const r = el.getBoundingClientRect(), b = viewBox(el); return r.bottom > b.top && r.top < b.bottom; }
 
     const env = {
       // A real marker inside the visible map (never under its bars, never off screen). The marker step
@@ -279,16 +282,23 @@
         });
         return best;
       },
-      // The whole block when it leaves room for the popover; else its first row.
-      compact(block, row) { return block && block.getBoundingClientRect().height <= win.innerHeight * 0.45 ? block : (row || block); },
+      // The whole block when it is in view and leaves room for the popover; else its first row.
+      compact(block, row) { return block && whole(block) && block.getBoundingClientRect().height <= win.innerHeight * 0.45 ? block : (row || block); },
+      // The first match already visible where it scrolls (whole, else in part), so the tour does not
+      // move the page to reach it; only when none is visible, the first one (Driver.js scrolls to it).
+      inView(sel) {
+        const els = [...doc.querySelectorAll(sel)].filter(shown);
+        return els.find(whole) || els.find(partly) || els[0] || null;
+      },
     };
 
     // Waits for the element to exist, be visible and keep still for a few frames (layout, centring
-    // and lazy panels have settled). Condition-based; the timeout only ends a wait for an element
-    // that never comes (→ the step's fallback).
-    function waitFor(resolve, frames, timeout, token) {
+    // and lazy panels have settled). Condition-based: `none` (the screen says it cannot come, for a
+    // dozen frames in a row) ends the wait at once; the timeout only ends a wait for an element that
+    // never comes. Either way the step's fallback is shown.
+    function waitFor(resolve, frames, timeout, token, none) {
       return new Promise(done => {
-        let last = null, key = "", still = 0, over = false;
+        let last = null, key = "", still = 0, empty = 0, over = false;
         const timer = win.setTimeout(() => finish(null), timeout);
         function finish(v) { if (over) return; over = true; win.clearTimeout(timer); done(v); }
         (function tick() {
@@ -296,9 +306,15 @@
           if (token !== seq) return finish(null);
           let el = null; try { el = resolve(); } catch (e) { el = null; }
           if (el) {
+            empty = 0;
             const r = el.getBoundingClientRect(), k = [r.left, r.top, r.width, r.height].map(Math.round).join(",");
             if (el === last && k === key) { if (++still >= frames) return finish(el); } else { last = el; key = k; still = 0; }
-          } else { last = null; still = 0; }
+          } else {
+            last = null; still = 0;
+            let gone = false; try { gone = !!(none && none()); } catch (e) { gone = false; }
+            if (gone && ++empty >= 12) return finish(null);
+            if (!gone) empty = 0;
+          }
           raf(tick);
         })();
       });
@@ -307,10 +323,10 @@
     function ensure() {
       if (drv) return drv;
       drv = makeDriver({
-        animate: !reduced(), duration: 260, smoothScroll: false,
+        animate: !reduced(), duration: DURATION, smoothScroll: false,
         allowClose: false, allowKeyboardControl: false,         // Esc and ← → are handled by the page (tour.next/prev/stop)
         overlayClickBehavior: () => nudge(),                    // a tap outside never ends the tour by accident
-        overlayColor: "#070402", overlayOpacity: 0.7, stagePadding: 6, stageRadius: 12, popoverOffset: 12,
+        overlayColor: "#070402", overlayOpacity: 0.74, stagePadding: 6, stageRadius: 12, popoverOffset: 12,
         popoverClass: "cc-tour",
       });
       return drv;
@@ -321,7 +337,7 @@
       if (step.screen && !step.screen.ok(c)) return false;
       return !step.ui || Object.keys(step.ui).every(k => uiValue(c, k) === val(step.ui[k], c));
     }
-    // Brings the app to the step's screen and panels; false when that is impossible (skip the step).
+    // Brings the app to the step's screen and panels; false when that is impossible (→ its fallback).
     function establish(step) {
       let c = app.ctx();
       if (step.screen && !step.screen.ok(c)) {
@@ -339,10 +355,26 @@
 
     const api = { go: hash => app.go(hash), act: (name, value) => app.act(name, value, run) };
 
+    // Between screens the spotlight closes first — the whole page dimmed, no popover — while the app
+    // changes screen, and opens again on the next element: the cut-out never shows the old place over
+    // the new screen, and the change is never a jump. Resolves once Driver.js has finished that move
+    // (on the next frame without animations; a timer only covers a move that was interrupted).
+    function park() {
+      if (!drv || !drv.isActive() || !run || !run.el) return Promise.resolve();
+      const left = run.el; run.el = null; run.settled = false;
+      return new Promise(done => {
+        let over = false;
+        const finish = () => { if (over) return; over = true; win.clearTimeout(timer); done(); };
+        const timer = win.setTimeout(finish, DURATION + 240);
+        drv.highlight({ element: undefined, onHighlighted: finish });
+        restoreAria(left);
+      });
+    }
+
     async function show(i, dir, o) {
       if (!run) return;
       const token = ++seq, follow = !!(o && o.follow);
-      run.busy = true;
+      run.busy = true; run.ready = false;
       doc.body.classList.add("cc-tour-busy");                 // the popover waits, hidden, for the next screen
       for (;;) {
         if (!run || token !== seq) return;
@@ -352,14 +384,20 @@
         const step = steps[i];
         if (step.skip && step.skip(app.ctx(), run, dir)) { i += dir || 1; continue; }
         if (step.reset) step.reset(run);
-        if (!establish(step)) { i += dir || 1; continue; }
-        if (step.prepare) step.prepare(api, app.ctx());
-        let el = null, fallback = false;
-        if (step.target) {
-          el = await waitFor(() => step.target($, app.ctx(), env), step.settle || 2, step.timeout || 4000, token);
+        // Another screen or other panels: close the spotlight before the page changes under it.
+        if (!follow && !satisfied(step, app.ctx())) { await park(); if (!run || token !== seq) return; }
+        const reached = establish(step);
+        if (reached && step.prepare) step.prepare(api, app.ctx());
+        let el = null, missing = !reached;
+        if (reached && step.target) {
+          el = await waitFor(() => step.target($, app.ctx(), env), step.settle || 2, step.timeout || 4000, token, step.none && (() => step.none($, app.ctx())));
           if (!run || token !== seq) return;
-          if (!el && step.optional) { i += dir || 1; continue; }
-          if (!el) { fallback = !!step.fallback; el = fallback && step.fallback.target ? step.fallback.target($, app.ctx(), env) : null; }
+          missing = !el;
+        }
+        const fallback = missing && !!step.fallback;
+        if (fallback && step.fallback.target) {
+          el = await waitFor(() => step.fallback.target($, app.ctx(), env), 2, 1500, token);
+          if (!run || token !== seq) return;
         }
         run.busy = false;
         doc.body.classList.remove("cc-tour-busy");
@@ -379,22 +417,25 @@
       ensure();
       const c = app.ctx(), t = app.t(), steps = plan(run.id, c), idx = steps.indexOf(step);
       const prog = progress(steps, step), fb = o.fallback && step.fallback;
-      const tx = textOf(fb ? { text: step.fallback.text } : step, c, el, t);
+      const tx = textOf(fb || step, c, el, t);
       const left = run.el;
       if (el && !run.saved.has(el)) run.saved.set(el, snapshotAria(el));
-      run.step = step; run.el = el || null; run.fallback = !!fb;
+      run.step = step; run.el = el || null; run.fallback = !!fb; run.ready = false; run.settled = false;
       if (!o.follow) { run.mem = { hash: c.hash }; run.repairs = 0; }
       if (el && step.remember && !fb) Object.assign(run, step.remember(el));
       const keep = !!val(step.keepFocus, c), quiet = o.follow || keep;
-      const buttons = ["next", "close"].concat(idx > 0 && !step.final ? ["previous"] : []);
+      // Siguiente / Finalizar, Anterior from the second step on, "Omitir tutorial" until the last one.
+      const buttons = ["next"].concat(step.final ? [] : ["close"], idx > 0 ? ["previous"] : []);
+      observe(el);
       drv.highlight({
         element: el || undefined,
         disableActiveInteraction: !val(step.interactive, c) || !!fb,
+        onHighlighted: () => { if (run && run.step === step) { run.settled = true; refreshSoon(); } },
         popover: {
           title: escapeHtml(tx.title), description: escapeHtml(tx.body),
           side: val(step.side, c) || "bottom", align: val(step.align, c) || "start",
           showButtons: buttons, showProgress: !!prog, progressText: prog ? escapeHtml(t("tour.progress", prog)) : "",
-          nextBtnText: escapeHtml(t(`tour.${step.nextLabel || "next"}`)), prevBtnText: escapeHtml(t("tour.prev")),
+          nextBtnText: escapeHtml(t(`tour.${step.nextLabel || (step.final ? "finish" : "next")}`)), prevBtnText: escapeHtml(t("tour.prev")),
           onNextClick: () => next(), onPrevClick: () => prev(), onCloseClick: () => stop("close"),
           onPopoverRender: p => decorate(p, step, c, { quiet, prog, t }),
         },
@@ -407,7 +448,7 @@
       });
       if (val(step.blur, c) && doc.activeElement && doc.activeElement.blur) doc.activeElement.blur();
       // Focus stays in the page (typing in the search): say the instruction instead.
-      if (quiet && !o.follow) app.say([prog ? t("tour.progressAria", prog) : "", tx.title, tx.body].filter(Boolean).join(". "));
+      if (quiet && !o.follow) app.say([prog ? t("tour.progress", prog) : "", tx.title, tx.body].filter(Boolean).join(". "));
     }
 
     function button(parent, label, fn, first) {
@@ -418,19 +459,28 @@
       return b;
     }
     function decorate(p, step, c, o) {
+      if (!run || run.step !== step) return;                   // a popover Driver.js drew late for a step already left
       const t = o.t, w = p.wrapper;
+      run.ready = true;                                        // its buttons exist: Siguiente / Anterior can act
       w.setAttribute("lang", (t.meta && t.meta.htmlLang) || "");
-      p.closeButton.textContent = "✕";
-      p.closeButton.setAttribute("aria-label", t("tour.close")); p.closeButton.title = t("tour.close");
+      // Top row: "Paso 3 de 8" and a thin bar, with "Omitir tutorial" (Driver.js's close button) on its right.
+      if (o.prog) {
+        const head = doc.createElement("div"), bar = doc.createElement("span"), fill = doc.createElement("i");
+        head.className = "cc-tour-head"; bar.className = "cc-tour-bar"; bar.setAttribute("aria-hidden", "true");
+        fill.style.width = `${Math.round((100 * o.prog.n) / o.prog.total)}%`;
+        bar.appendChild(fill); head.appendChild(p.progress); head.appendChild(bar);
+        w.insertBefore(head, p.title);
+      }
+      p.closeButton.textContent = t("tour.skip");
+      p.closeButton.removeAttribute("aria-label");             // its name is the visible "Omitir tutorial"
+      p.closeButton.classList.add("cc-tour-skip");
       w.appendChild(p.closeButton);                            // last in the tab order; still drawn top-right
-      if (o.prog) p.progress.setAttribute("aria-label", t("tour.progressAria", o.prog));
       const name = step.tryName && step.tryName(c);
       if (name && !c.search.q.trim()) {
         const b = button(p.description, t("tour.try", { name }), () => { if (!run) return; app.act("searchQ", name, run); next(); });
         b.className = "cc-tour-try";
       }
-      if (step.skipButton) button(p.footerButtons, t("tour.skip"), () => stop("close"), true);
-      if (step.more) button(p.footerButtons, t("tour.more"), () => stop("more"), true);
+      if (step.more) button(p.footer, t("tour.more"), () => stop("more"), true);
       if (o.quiet) {
         // Driver.js focuses the popover's first control; while the visitor types (or the element just
         // re-rendered) nothing should move: nothing is focusable for that one moment.
@@ -441,6 +491,7 @@
       } else {
         Promise.resolve().then(() => { if (p.nextButton.isConnected) p.nextButton.focus({ preventScroll: true }); });
       }
+      if (ro) ro.observe(w);
       clampSoon();
     }
 
@@ -452,8 +503,9 @@
       p.classList.remove("cc-tour-nudge"); void p.offsetWidth; p.classList.add("cc-tour-nudge");
     }
 
-    // Keep the popover inside the visible area: safe areas (notches, home bar) and the part of the
-    // screen the virtual keyboard leaves (visualViewport). Driver.js places it; this only nudges.
+    // Keep the popover inside the visible area — safe areas (notches, home bar) and the part of the
+    // screen the virtual keyboard leaves (visualViewport) — and off the element it explains. Driver.js
+    // places it; this only nudges.
     function insets() {
       if (!probe) {
         probe = doc.createElement("div");
@@ -468,48 +520,87 @@
       clampQueued = false;
       const p = doc.querySelector(".driver-popover.cc-tour"); if (!p || !run) return;
       p.style.translate = "";
-      const r = p.getBoundingClientRect(); if (!r.width) return;
+      let r = p.getBoundingClientRect(); if (!r.width) return;
       const s = insets(), vv = win.visualViewport;
       const W = win.innerWidth, H = vv ? Math.min(win.innerHeight, vv.offsetTop + vv.height) : win.innerHeight;
       const L = s.left + 8, R = W - s.right - 8, T = s.top + 8, B = H - s.bottom - 8;
       let dx = 0, dy = 0;
-      if (r.right > R) dx = R - r.right;
+      // No side had room (a low screen, a tall card): Driver.js then lays the popover over the element.
+      // Move it to the larger free band above or below the element instead, shortening its text (which
+      // then scrolls, faded at the edge) when that band is a little too short. The shortened height is
+      // kept for the step, so the next placement measures the same popover (no back and forth).
+      const e = run.el && shown(run.el) ? run.el.getBoundingClientRect() : null, gap = 14;
+      if (e && r.left < e.right && r.right > e.left && r.top < e.bottom + gap && r.bottom > e.top - gap) {
+        const above = e.top - gap - T, below = B - (e.bottom + gap), band = Math.max(above, below);
+        const d = p.querySelector(".driver-popover-description");
+        const shorten = by => { d.style.maxHeight = `${Math.max(48, d.clientHeight - by)}px`; d.classList.add("cc-tour-cut"); r = p.getBoundingClientRect(); };
+        if (d && r.height > band && band >= 150) shorten(r.height - band);
+        if (r.height <= band) dy = below >= above ? e.bottom + gap - r.top : e.top - gap - r.bottom;
+        else {
+          // Neither above nor below (a phone on its side): beside the element, narrower.
+          const lw = e.left - gap - L, rw = R - (e.right + gap), w = Math.max(lw, rw);
+          if (w >= 200) {
+            p.classList.add("cc-tour-narrow"); p.style.width = `${Math.floor(Math.min(w, r.width))}px`;
+            r = p.getBoundingClientRect();
+            if (d && r.height > B - T) shorten(r.height - (B - T));
+            dx = rw >= lw ? e.right + gap - r.left : e.left - gap - r.right;
+            dy = (e.top + e.bottom) / 2 - (r.top + r.bottom) / 2;
+          }
+        }
+      }
+      if (r.right + dx > R) dx = R - r.right;
       if (r.left + dx < L) dx = L - r.left;
-      if (r.bottom > B) dy = B - r.bottom;
+      if (r.bottom + dy > B) dy = B - r.bottom;
       if (r.top + dy < T) dy = T - r.top;
       if (dx || dy) p.style.translate = `${Math.round(dx)}px ${Math.round(dy)}px`;
     }
     function clampSoon() { if (clampQueued) return; clampQueued = true; raf(() => raf(clamp)); }
 
-    function refresh() { if (run && !run.busy && drv) { drv.refresh(); clampSoon(); } }
-    const onScroll = () => refresh();                         // the app scrolls inside its panes, not the window
-    const onViewport = () => refresh();
+    // Re-place the highlight and the popover — only once Driver.js has finished moving to the element
+    // (refreshing mid-move would snap the spotlight back to the previous one).
+    function refresh() { if (run && !run.busy && run.settled && drv) { drv.refresh(); clampSoon(); } }
+    function refreshSoon() { if (refreshQueued) return; refreshQueued = true; raf(() => { refreshQueued = false; refresh(); }); }
+    // The highlight follows its element and the popover when they change size (a font arriving, a list
+    // filling in, a longer text): at most one refresh per frame.
+    function observe(el) {
+      if (!win.ResizeObserver) return;
+      if (!ro) ro = new win.ResizeObserver(() => refreshSoon());
+      ro.disconnect();
+      if (el) ro.observe(el);
+    }
+    const onScroll = () => refreshSoon();                    // the app scrolls inside its panes, not the window
+    const onViewport = () => refreshSoon();                  // window or keyboard resize, fonts loaded
 
     function start(tourId) {
       if (!TOURS[tourId] || typeof makeDriver !== "function") return false;
       if (run) stop("restart", { silent: true });
-      run = { id: tourId, step: null, el: null, mem: {}, busy: false, pin: null, searchedAway: false, saved: new Map() };
+      run = { id: tourId, step: null, el: null, mem: {}, busy: false, ready: false, settled: false, pin: null, searchedAway: false, saved: new Map() };
       ensure();
       doc.addEventListener("scroll", onScroll, true);
+      win.addEventListener("resize", onViewport);
       if (win.visualViewport) win.visualViewport.addEventListener("resize", onViewport);
+      if (doc.fonts && doc.fonts.addEventListener) doc.fonts.addEventListener("loadingdone", onViewport);
       show(0, 1);
       return true;
     }
+    // Siguiente / Anterior act only once the step's popover is there (no flying through steps while
+    // the next screen is still on its way).
     function next() {
-      if (!run || run.busy || !run.step) return;
+      if (!run || run.busy || !run.ready || !run.step) return;
       const step = run.step;
       if (step.final) return stop("done");
       if (step.perform && !run.fallback) step.perform(api, app.ctx(), run.el);
       go(1);
     }
-    function prev() { if (run && !run.busy && run.step) go(-1); }
+    function prev() { if (run && !run.busy && run.ready && run.step) go(-1); }
     function go(dir) {
       const steps = plan(run.id, app.ctx());
       let i = steps.indexOf(run.step);
       if (i < 0) i = afterIndex(steps, run.step) - (dir > 0 ? 1 : 0);
+      if (i + dir < 0) return;                                 // ← on the first step: nothing before it
       show(i + dir, dir);
     }
-    // Where a step that no longer applies (e.g. "More" after rotating to a tablet) would have been.
+    // Where a step that no longer applies would have been.
     function afterIndex(steps, step) {
       const order = TOURS[run.id], at = order.indexOf(step.id);
       const k = steps.findIndex(s => order.indexOf(s.id) > at);
@@ -524,9 +615,9 @@
       const c = app.ctx(), steps = plan(run.id, c), step = run.step, i = steps.indexOf(step);
       if (i < 0) return show(afterIndex(steps, step), 1);
       if (step.done && !run.fallback && step.done(c, run.mem, run)) return show(i + 1, 1);
-      // The screen changed under the step (rare: the highlighted element can only do the step's
-      // own action): set it up again — a few times at most, never a loop.
-      if (!satisfied(step, c) && (run.repairs = (run.repairs || 0) + 1) <= 6) return show(i, 1, { follow: true });
+      // The screen changed under the step (rare: the highlighted element can only do the step's own
+      // action, or the layout crossed a breakpoint): set it up again — a few times at most, never a loop.
+      if (!run.fallback && !satisfied(step, c) && (run.repairs = (run.repairs || 0) + 1) <= 6) return show(i, 1, { follow: true });
       if (step.target && !run.fallback && !shown(run.el)) {
         const el = step.target($, c, env);
         if (el) return render(step, el, { follow: true });
@@ -542,9 +633,12 @@
     function stop(reason, o) {
       if (!run) return;
       const r = run, completed = reason === "done" || reason === "more" || !!(r.step && r.step.final);
-      run = null; seq++; syncQueued = false;
+      run = null; seq++; syncQueued = false; refreshQueued = false;
       doc.removeEventListener("scroll", onScroll, true);
+      win.removeEventListener("resize", onViewport);
       if (win.visualViewport) win.visualViewport.removeEventListener("resize", onViewport);
+      if (doc.fonts && doc.fonts.removeEventListener) doc.fonts.removeEventListener("loadingdone", onViewport);
+      if (ro) ro.disconnect();
       if (drv && drv.isActive()) drv.destroy();
       r.saved.forEach((s, el) => { if (el.isConnected) ARIA.forEach(a => { if (s[a] == null) el.removeAttribute(a); else el.setAttribute(a, s[a]); }); });
       doc.body.classList.remove("cc-tour-busy", "cc-tour-hold");

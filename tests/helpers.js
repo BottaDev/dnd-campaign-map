@@ -11,6 +11,9 @@ I18N.register("es-AR", require("../locales/es-AR.js"));
 
 const ROOT = path.resolve(__dirname, "..");
 const readJson = rel => JSON.parse(fs.readFileSync(path.join(ROOT, rel), "utf8"));
+// Source text with LF line ends: on Windows checkouts (core.autocrlf) the files are CRLF on disk,
+// and the tests read index.html by its lines.
+const readText = rel => fs.readFileSync(path.join(ROOT, rel), "utf8").replace(/\r\n/g, "\n");
 
 const PCS = [
   { id: "ayante", name: "Ayante", color: "#3D3830" },
@@ -48,4 +51,4 @@ function buildReal(locale) {
 
 const ids = list => list.map(e => e.id);
 
-module.exports = { Model, MapL, I18N, ROOT, PCS, ev, campaign, loadRealData, loadContent, buildReal, readJson, ids };
+module.exports = { Model, MapL, I18N, ROOT, PCS, ev, campaign, loadRealData, loadContent, buildReal, readJson, readText, ids };

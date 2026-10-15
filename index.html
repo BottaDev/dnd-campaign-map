@@ -584,16 +584,25 @@
   .cc-gl-sym .cc-ico{width:20px;height:20px;}
   .cc-gl-approx{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;}
   .cc-gl-lore{width:22px;height:22px;color:var(--lore);}
-  /* First visit: what this is + a quiet invitation inside the Chronicle (never a window in the way).
+  /* First visit: a welcome card to the guided tour, floating over the Chronicle's home — not a modal:
+     no backdrop, the page stays usable, two answers (start / not now). Above the bottom bar on phones.
      Always: two quick actions — catch up ("Previously on…") and find anything — and a quiet way to the help. */
-  .cc-intro{margin:0 0 12px;padding:14px 16px 12px;border-radius:14px;border:1px solid var(--chip-border);background:var(--chip-soft);}
-  .cc-intro-h{margin:0;font-family:var(--font-head);font-size:19px;font-weight:700;line-height:1.2;color:var(--h1);}
-  .cc-intro-t{margin:4px 0 0;font-size:17px;line-height:1.45;color:var(--body2);max-width:40em;}
-  .cc-invite{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line-faint);font-family:var(--font-ui);font-size:14.5px;line-height:1.4;color:var(--body2);}
-  .cc-invite>.cc-ico{color:var(--accent);}
-  .cc-invite-t{flex:1 1 220px;min-width:0;}
-  .cc-invite-t b{font-weight:600;color:var(--title);}
-  .cc-invite-a{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-left:auto;}
+  .cc-welcome{position:fixed;z-index:46;right:max(24px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));width:min(420px,calc(100vw - 48px));max-height:calc(100vh - 110px);max-height:calc(100dvh - 110px);overflow-y:auto;overscroll-behavior:contain;padding:18px 20px 14px;border-radius:18px;border:1px solid var(--popup-border);background:var(--popup-bg);box-shadow:0 28px 70px rgba(0,0,0,.62),0 0 0 1px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);animation:cc-welcome-in .4s cubic-bezier(.2,.8,.2,1) both;}
+  .cc-welcome:focus{outline:none;}
+  @keyframes cc-welcome-in{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:none}}
+  .cc-welcome-top{display:flex;align-items:center;gap:13px;}
+  .cc-welcome-seal{flex:none;width:48px;height:48px;border-radius:50%;background:url("assets/icon-bund-der-vier.png") center/cover,#4a3a20;border:2px solid rgba(214,180,107,.9);box-shadow:0 0 0 4px rgba(20,14,6,.5),0 6px 14px rgba(0,0,0,.5);}
+  .cc-welcome-k{margin:0;font-family:var(--font-head);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+  .cc-welcome-h{margin:3px 0 0;font-family:var(--font-display);font-size:24px;font-weight:900;line-height:1.1;color:var(--h1);text-shadow:var(--h1-shadow);}
+  .cc-welcome-t{margin:12px 0 0;font-size:17px;line-height:1.5;color:var(--body2);}
+  .cc-welcome-t+.cc-welcome-t{margin-top:6px;}
+  .cc-welcome-meta{display:flex;align-items:center;gap:7px;margin:10px 0 0;font-family:var(--font-ui);font-size:13.5px;line-height:1.35;color:var(--muted);}
+  .cc-welcome-meta .cc-ico{width:17px;height:17px;color:var(--accent);}
+  /* The answers stay in view even when a low screen (a phone on its side) makes the card scroll */
+  .cc-welcome-a{position:sticky;bottom:-14px;z-index:1;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:4px -20px -14px;padding:10px 20px 14px;background:var(--popup-bottom);}
+  .cc-welcome-a .cc-btn{min-height:46px;font-size:15px;}
+  .cc-welcome-go{padding:0 16px 0 18px;}
+  .cc-welcome-go .cc-ico{width:18px;height:18px;}
   .cc-qa{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:0 0 12px;}
   .cc-qa-i{flex:1 1 210px;display:flex;align-items:center;gap:10px;min-width:0;min-height:56px;padding:8px 12px;border-radius:12px;border:1px solid var(--chip-border);background:var(--card-bg);color:var(--title);text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease;}
   .cc-qa-i:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
@@ -612,31 +621,54 @@
     .cc-qa-s{display:none;}
     .cc-qa-help{width:44px;min-height:48px;align-self:stretch;justify-content:center;padding:0;border-radius:12px;border:1px solid var(--chip-border);background:var(--card-bg);}
     .cc-qa-help span{display:none;}
-    .cc-intro{padding:12px 14px 10px;}
-    .cc-intro-h{font-size:17px;}
-    .cc-intro-t{font-size:16px;}
+    .cc-welcome{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));width:auto;bottom:calc(70px + env(safe-area-inset-bottom));max-height:calc(100vh - 136px);max-height:calc(100dvh - 136px - env(safe-area-inset-top) - env(safe-area-inset-bottom));padding:14px 16px 12px;border-radius:16px;}
+    .cc-welcome-seal{width:40px;height:40px;}
+    .cc-welcome-k{font-size:11px;}
+    .cc-welcome-h{font-size:20px;}
+    .cc-welcome-t{margin-top:10px;font-size:16px;line-height:1.45;}
+    .cc-welcome-a{bottom:-12px;margin:2px -16px -12px;padding:10px 16px 12px;}
+    .cc-welcome-a .cc-btn{flex:1 1 auto;}
+  }
+  /* The smallest phones: the title on one line, both answers side by side — about half the screen */
+  @media (max-width:359px){
+    .cc-welcome-seal{display:none;}
+    .cc-welcome-h{font-size:18px;}
+    .cc-welcome-t{font-size:15.5px;line-height:1.4;}
+    .cc-welcome-a .cc-btn{padding:0 11px;font-size:14.5px;}
+    .cc-welcome-go .cc-ico{display:none;}
   }
   /* A one-line hint where combining controls is not obvious (filters, recap) */
   .cc-hint{display:flex;gap:8px;margin:0 0 12px;font-family:var(--font-ui);font-size:13.5px;line-height:1.45;color:var(--muted);}
   .cc-hint>.cc-ico{width:17px;height:17px;margin-top:1px;color:var(--accent);}
 
   /* ── Interactive tours (Driver.js 1.8 + js/chronicle-tour.js) ──
-     The popover is appended to <body>, so it carries its own font and the shared tokens (.cc-tour). */
-  .driver-popover.cc-tour{font-family:var(--font-ui);color:var(--body2);background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:14px;padding:14px 16px 12px;min-width:0;width:min(340px,calc(100vw - 24px));max-width:calc(100vw - 24px);box-shadow:0 24px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);transition:opacity .15s ease;}
-  .driver-popover.cc-tour .driver-popover-title{margin:0;padding-right:40px;font-family:var(--font-head);font-size:18px;font-weight:700;line-height:1.2;color:var(--h1);}
+     The popover is appended to <body>, so it carries its own font and the shared tokens (.cc-tour).
+     Top row: "Paso 3 de 8" + a thin bar, "Omitir tutorial" on the right (Driver.js's close button);
+     then the title, the text, and the buttons: Anterior · Siguiente / Finalizar. */
+  .driver-popover.cc-tour{font-family:var(--font-ui);color:var(--body2);background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:14px;padding:8px 16px 12px;min-width:0;width:min(360px,calc(100vw - 24px));max-width:calc(100vw - 24px);box-shadow:0 24px 60px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);transition:opacity .15s ease;}
+  .driver-popover.cc-tour .cc-tour-head{display:flex;align-items:center;gap:10px;min-height:36px;margin:0 0 4px;padding-right:122px;}
+  .driver-popover.cc-tour .driver-popover-progress-text{flex:none;font-family:var(--font-ui);font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--accent);}
+  .driver-popover.cc-tour .cc-tour-bar{flex:1 1 auto;min-width:24px;max-width:110px;height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;}
+  .driver-popover.cc-tour .cc-tour-bar>i{display:block;height:100%;border-radius:inherit;background:var(--accent);}
+  .driver-popover.cc-tour .driver-popover-title{margin:0;font-family:var(--font-head);font-size:18px;font-weight:700;line-height:1.2;color:var(--h1);}
   /* Only the text scrolls when a very short screen cannot hold it (the arrow sits outside the box) */
-  .driver-popover.cc-tour .driver-popover-description{margin-top:6px;max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;font-family:var(--font-read);font-size:17px;line-height:1.45;color:var(--body2);}
-  .driver-popover.cc-tour .driver-popover-close-btn{top:3px;right:3px;width:44px;height:44px;line-height:44px;border-radius:10px;font-family:var(--font-ui);font-size:16px;color:var(--muted);}
-  .driver-popover.cc-tour .driver-popover-close-btn:hover,.driver-popover.cc-tour .driver-popover-close-btn:focus{color:var(--title);}
-  .driver-popover.cc-tour .driver-popover-footer{margin-top:12px;gap:8px;flex-wrap:wrap;}
-  .driver-popover.cc-tour .driver-popover-progress-text{font-family:var(--font-ui);font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--accent);}
-  .driver-popover.cc-tour .driver-popover-navigation-btns{flex-wrap:wrap;gap:6px;justify-content:flex-end;}
+  .driver-popover.cc-tour .driver-popover-description{margin-top:6px;max-height:calc(100vh - 200px);max-height:calc(100dvh - 200px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;font-family:var(--font-read);font-size:17px;line-height:1.45;color:var(--body2);}
+  .driver-popover.cc-tour .cc-tour-skip{top:2px;right:6px;width:auto;height:auto;min-height:44px;padding:0 10px;line-height:44px;border-radius:10px;font-family:var(--font-ui);font-size:13.5px;font-weight:600;color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
+  .driver-popover.cc-tour .cc-tour-skip:hover,.driver-popover.cc-tour .cc-tour-skip:focus{color:var(--title);text-decoration-color:var(--accent);}
+  .driver-popover.cc-tour .driver-popover-footer{margin-top:12px;gap:6px 8px;flex-wrap:wrap;justify-content:flex-end;}
+  .driver-popover.cc-tour .driver-popover-navigation-btns{flex:1 0 auto;flex-wrap:wrap;gap:6px;justify-content:flex-end;}
   .driver-popover.cc-tour .driver-popover-navigation-btns button+button{margin-left:0;}
   .driver-popover.cc-tour .driver-popover-footer-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--btn-border);background:var(--btn-bg);color:var(--btn-color);font-family:var(--font-ui);font-size:14px;font-weight:600;line-height:1.2;text-shadow:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);cursor:pointer;}
   .driver-popover.cc-tour .driver-popover-footer-btn:hover,.driver-popover.cc-tour .driver-popover-footer-btn:focus{background:var(--btn-bg);filter:brightness(1.1);}
-  .driver-popover.cc-tour .driver-popover-prev-btn,.driver-popover.cc-tour .cc-tour-alt{background:var(--chip-soft);border-color:var(--chip-border);color:var(--chip-color);box-shadow:none;}
-  .driver-popover.cc-tour .driver-popover-prev-btn:hover,.driver-popover.cc-tour .driver-popover-prev-btn:focus,.driver-popover.cc-tour .cc-tour-alt:hover,.driver-popover.cc-tour .cc-tour-alt:focus{background:var(--chip-soft);border-color:var(--card-border-hover);color:var(--title);filter:none;}
+  .driver-popover.cc-tour .driver-popover-prev-btn{background:var(--chip-soft);border-color:var(--chip-border);color:var(--chip-color);box-shadow:none;}
+  .driver-popover.cc-tour .driver-popover-prev-btn:hover,.driver-popover.cc-tour .driver-popover-prev-btn:focus{background:var(--chip-soft);border-color:var(--card-border-hover);color:var(--title);filter:none;}
+  /* "Ver más tutoriales": a link-like button on the left of the last step's footer */
+  .driver-popover.cc-tour .cc-tour-alt{padding:0 6px;border-color:transparent;background:none;box-shadow:none;color:var(--accent);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;}
+  .driver-popover.cc-tour .cc-tour-alt:hover,.driver-popover.cc-tour .cc-tour-alt:focus{background:none;color:var(--title);text-decoration-color:var(--accent);filter:none;}
   .driver-popover.cc-tour button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* The highlighted control gets a gold ring inside the cut-out: it stands out from the dimmed page
+     (markers keep their own shape and selection ring) */
+  .driver-active .driver-active-element:not(.cc-marker):not(#driver-dummy-element){outline:2px solid rgba(208,171,76,.9);outline-offset:3px;}
   .driver-popover.cc-tour .cc-tour-try{display:flex;align-items:center;gap:8px;margin:10px 0 0;min-height:44px;padding:0 15px;border-radius:999px;border:1px solid var(--chip-border);background:var(--chip-soft);color:var(--title);font-family:var(--font-ui);font-size:14.5px;font-weight:600;cursor:pointer;}
   .driver-popover.cc-tour .cc-tour-try:hover{border-color:var(--card-border-hover);}
   .driver-popover.cc-tour .cc-tour-try[hidden]{display:none;}
@@ -650,10 +682,25 @@
   .driver-popover.cc-tour.cc-tour-nudge{animation:cc-nudge .35s ease;}
   @keyframes cc-nudge{0%,100%{transform:none}30%{transform:translateX(-5px)}65%{transform:translateX(4px)}}
   @media (max-width:719px){
-    .driver-popover.cc-tour{padding:12px 14px 10px;}
+    .driver-popover.cc-tour{padding:6px 14px 10px;}
     .driver-popover.cc-tour .driver-popover-description{font-size:16.5px;}
   }
-  @media (max-width:359px){ .driver-popover.cc-tour .driver-popover-footer-btn{padding:0 11px;} }
+  @media (max-width:359px){ .driver-popover.cc-tour .driver-popover-footer-btn{padding:0 11px;} .driver-popover.cc-tour .cc-tour-head{padding-right:116px;} }
+  /* Text shortened to keep the popover off its element (js/chronicle-tour.js clamp): it scrolls, faded at the edge */
+  .driver-popover.cc-tour .driver-popover-description.cc-tour-cut{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent);padding-bottom:10px;}
+  /* Beside its element on a low screen (js/chronicle-tour.js clamp): "Omitir tutorial" goes under the buttons */
+  .driver-popover.cc-tour.cc-tour-narrow .cc-tour-head{padding-right:0;}
+  .driver-popover.cc-tour.cc-tour-narrow .cc-tour-skip{position:static;display:block;margin:2px 0 -6px auto;}
+  /* Low screens (a phone on its side): a more compact popover, so the element keeps room beside it */
+  @media (max-height:520px){
+    .driver-popover.cc-tour{padding:4px 14px 8px;}
+    .driver-popover.cc-tour .cc-tour-head{min-height:32px;margin:0 0 2px;}
+    .driver-popover.cc-tour .driver-popover-title{font-size:16.5px;}
+    .driver-popover.cc-tour .driver-popover-description{margin-top:3px;font-size:15.5px;line-height:1.38;}
+    .driver-popover.cc-tour .driver-popover-footer{margin-top:8px;}
+    .driver-popover.cc-tour .driver-popover-footer-btn{min-height:40px;}
+    .driver-popover.cc-tour .cc-tour-skip{min-height:40px;line-height:40px;}
+  }
   /* Universal search: a palette over the page (desktop), a full screen of its own (phones) */
   .cc-sov{align-items:flex-start;padding:max(9vh,20px) 16px 20px;z-index:70;}
   .cc-spanel{position:relative;display:flex;flex-direction:column;width:min(680px,100%);max-height:min(80vh,760px);overflow:hidden;background:var(--popup-bg);border:1px solid var(--popup-border);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.6);}
@@ -766,7 +813,7 @@
     </div>
     <div class="cc-actions">
       <a class="{{ savedBtnCls }}" href="#/saved" title="{{ t.saved.open }}" aria-label="{{ t.saved.open }}" aria-current="{{ savedCurrent }}">{{ icons.star }}</a>
-      <button class="cc-iconbtn" onClick="{{ onOpenHelp }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}" aria-haspopup="dialog">?</button>
+      <button class="cc-iconbtn" onClick="{{ onOpenHelp }}" title="{{ t.guide.open }}" aria-label="{{ t.guide.open }}" aria-haspopup="dialog" data-tour="help">?</button>
     </div>
   </header>
 
@@ -781,17 +828,25 @@
       <div class="cc-page">
         <div class="cc-sechead cc-chead">
           <h1 class="cc-sec-h">{{ t.chronicle.title }}</h1>
-          <sc-if value="{{ c.tagline }}"><p class="cc-sec-sub">{{ t.chronicle.introH }}</p></sc-if>
+          <p class="cc-sec-sub">{{ t.chronicle.introH }}</p>
         </div>
 
-        <!-- First visit: what this is, and a quiet invitation to the interactive tour (never a window in the way). -->
-        <sc-if value="{{ c.intro }}">
-          <section class="cc-intro" aria-label="{{ t.chronicle.introH }}">
-            <p class="cc-intro-h">{{ t.chronicle.introH }}</p>
-            <p class="cc-intro-t">{{ t.chronicle.introT }}</p>
-            <div class="cc-invite" role="note">
-              {{ icons.help }}<span class="cc-invite-t"><b>{{ t.tour.inviteH }}</b> {{ c.inviteText }}</span>
-              <span class="cc-invite-a"><button class="cc-btn" onClick="{{ onStartTour }}">{{ t.tour.inviteGo }}</button><button class="cc-linkbtn" onClick="{{ onDismissInvite }}" aria-label="{{ t.tour.inviteNoAria }}">{{ t.tour.inviteNo }}</button></span>
+        <!-- First visit: a welcome to the guided tour, shown on its own once the chronicle has loaded — a
+             floating card, not a modal (the page stays usable); never over a direct link to an entry. -->
+        <sc-if value="{{ wc.on }}">
+          <section class="cc-welcome" role="dialog" aria-modal="false" aria-labelledby="cc-welcome-h" aria-describedby="cc-welcome-d" tabIndex="-1" ref="{{ welcomeRef }}">
+            <div class="cc-welcome-top">
+              <span class="cc-welcome-seal" aria-hidden="true"></span>
+              <div><p class="cc-welcome-k">{{ t.tour.inviteKicker }}</p><h2 class="cc-welcome-h" id="cc-welcome-h">{{ wc.title }}</h2></div>
+            </div>
+            <div id="cc-welcome-d">
+              <p class="cc-welcome-t">{{ wc.text }}</p>
+              <p class="cc-welcome-t">{{ t.tour.inviteTour }}</p>
+            </div>
+            <p class="cc-welcome-meta">{{ icons.help }}<span>{{ wc.meta }}</span></p>
+            <div class="cc-welcome-a">
+              <button class="cc-btn cc-welcome-go" onClick="{{ wc.onStart }}">{{ t.tour.inviteGo }}{{ icons.next }}</button>
+              <button class="cc-btn ghost" onClick="{{ wc.onLater }}" aria-label="{{ t.tour.inviteNoAria }}">{{ t.tour.inviteNo }}</button>
             </div>
           </section>
         </sc-if>
@@ -1197,11 +1252,9 @@
             </div>
           </sc-if>
           <sc-if value="{{ e.hasQuests }}">
-            <div data-tour="event-quests">
             <h2 class="cc-h2">{{ t.event.quests }}</h2>
             <div class="cc-rows">
               <sc-for list="{{ e.quests }}" as="q"><a class="cc-relrow" href="{{ q.href }}"><span class="cc-relrow-b"><span class="cc-evrow-t">{{ q.title }}</span></span><span class="cc-flex"></span><span class="{{ q.badgeCls }}">{{ q.badgeIcon }}{{ q.badge }}</span></a></sc-for>
-            </div>
             </div>
           </sc-if>
           <sc-if value="{{ e.hasRelated }}">
@@ -1436,11 +1489,9 @@
           <sc-if value="{{ rc.summaryFallback }}"><p class="cc-lore-note">{{ t.recap.inEnglish }}</p></sc-if>
           <sc-if value="{{ rc.isStub }}"><p class="cc-muted">{{ t.recap.noLog }}</p></sc-if>
           <p class="cc-hint">{{ icons.help }}<span>{{ rc.source }}</span></p>
-          <sc-if value="{{ rc.endedHere }}"><div class="cc-where" data-tour="recap-where"><div class="cc-where-k">{{ t.recap.where }}</div><p class="cc-where-t">{{ rc.endedHere }}</p></div></sc-if>
-          <div data-tour="recap-events">
+          <sc-if value="{{ rc.endedHere }}"><div class="cc-where"><div class="cc-where-k">{{ t.recap.where }}</div><p class="cc-where-t">{{ rc.endedHere }}</p></div></sc-if>
           <h2 class="cc-h2">{{ rc.eventsHeading }} <span class="n">{{ rc.eventCount }}</span></h2>
           <sc-if value="{{ rc.noEvents }}"><p class="cc-muted">{{ t.recap.noEvents }}</p></sc-if>
-          </div>
           <div class="cc-rows"><sc-for list="{{ rc.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }}</span><span class="cc-evrow-t">{{ r.title }}</span><span class="cc-evrow-s">{{ r.summary }}</span></span></a></sc-for></div>
           <sc-if value="{{ rc.hasDecisions }}">
             <h2 class="cc-h2">{{ t.recap.decisions }}</h2>
@@ -1523,7 +1574,7 @@
       </div>
       <div class="cc-sheet-grid" style="margin-top:10px;">
         <a class="{{ savedSheetCls }}" href="#/saved">{{ icons.star }}<span>{{ t.nav.saved }}</span></a>
-        <button class="cc-sheet-item" onClick="{{ onOpenHelp }}" aria-haspopup="dialog">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
+        <button class="cc-sheet-item" onClick="{{ onOpenHelp }}" aria-haspopup="dialog" data-tour="help">{{ icons.help }}<span>{{ t.guide.short }}</span></button>
         <button class="cc-sheet-item" onClick="{{ onOpenGlossary }}" aria-haspopup="dialog">{{ icons.legend }}<span>{{ t.guide.tabGlossary }}</span></button>
       </div>
     </div>
@@ -1930,6 +1981,12 @@ class Component extends DCLogic {
     this.searchRef = el=>{ this._searchEl=el; };
     this.headRef   = el=>{ this._headEl=el; };
     this.helpHeadRef = el=>{ this._helpHead=el; };
+    // The first-visit welcome takes the focus once, the first time it appears and only while nothing
+    // else has it: keyboard and screen-reader visitors land in it (Tab → its buttons); nothing moves.
+    this.welcomeRef = el=>{
+      this._welcomeEl=el;
+      if(el&&!this._welcomeFocused){ this._welcomeFocused=true; const a=document.activeElement; if(!a||a===document.body) el.focus({preventScroll:true}); }
+    };
     this.searchBodyRef = el=>{ this._sBody=el; };
     // The search field takes the focus as soon as the panel mounts (inside the tap, so phones open the keyboard).
     this.searchAllRef = el=>{ this._sInput=el; if(el&&this._focusSearchInput){ this._focusSearchInput=false; el.focus({preventScroll:true}); if(el.value) el.select(); } };
@@ -2122,6 +2179,8 @@ class Component extends DCLogic {
     // Ctrl+K / ⌘K: the universal search, from anywhere (again to close it).
     if((e.ctrlKey||e.metaKey)&&!e.altKey&&!e.shiftKey&&(e.key==="k"||e.key==="K")){ e.preventDefault(); return this.state.search.open?this.closeSearch():this.openSearch(); }
     if(e.key==="Tab"&&(this.state.search.open||this.state.help)) return this._trapFocus(e);
+    // Esc inside the first-visit welcome = "Ahora no".
+    if(e.key==="Escape"&&this._welcomeEl&&this._welcomeEl.isConnected&&this._welcomeEl.contains(document.activeElement)){ e.preventDefault(); return this.dismissInvite(); }
     if(e.key==="Escape"){
       if(this.state.search.open) return this.closeSearch();
       if(this.state.help) return this.closeHelp();
@@ -2183,8 +2242,29 @@ class Component extends DCLogic {
   _focusHelpHead(){ if(this._helpHead) this._helpHead.focus({preventScroll:true}); }
   closeHelp(){ this._popOverlay(); this.setState({help:null},()=>this._restoreFocus()); }
   helpView(view){ const h=this.state.help; if(h&&h.view!==view) this.setState({help:{...h,view}},()=>this._focusHelpHead()); }
-  // "Ahora no": the first-visit invitation does not come back (until the tours change version).
-  dismissInvite(){ this.onboarding.dismissInvite(); this.setState(s=>({onboardingRev:s.onboardingRev+1})); }
+  // "Ahora no": the first-visit welcome does not come back by itself (until the tours change version);
+  // the tour stays one tap away in the help — said aloud, and the focus (when it was in the welcome)
+  // moves to the Chronicle's own "¿Cómo funciona?".
+  dismissInvite(){
+    const inside=!!(this._welcomeEl&&this._welcomeEl.isConnected&&this._welcomeEl.contains(document.activeElement));
+    this.onboarding.dismissInvite();
+    this.setState(s=>({onboardingRev:s.onboardingRev+1}),()=>{ if(inside){ const q=this._shown(".cc-qa-help")||document.querySelector(".cc-brand"); if(q) q.focus({preventScroll:true}); } });
+    this._say(this.t(this.state.isMobile?"tour.inviteLaterPhone":"tour.inviteLater"));
+  }
+  _shown(sel){ return [...document.querySelectorAll(sel)].find(el=>el.getClientRects().length)||null; }
+  // First visit: the welcome to the guided tour, on the Chronicle's home only — never over a direct
+  // link, an open entry, the filters, the More sheet, the search, the help or a running tour (it steps
+  // aside while the visitor uses them) — until the visitor starts the tour, says "Ahora no" or finishes
+  // it (a link to an entry first leaves it pending until home).
+  _buildWelcome(){
+    const st=this.state, r=st.route, t=this.t;
+    const on=!!this.model&&!!this.tour&&r.section==="chronicle"&&!r.kind&&!st.tourOn&&!st.help&&!st.search.open&&!st.moreOpen&&!st.filtersOpen&&this.onboarding.showInvite();
+    if(!on) return { on:false };
+    const steps=Tour.plan("main",this._tourCtx()).length;
+    return { on:true, title:t("app.docTitle"), text:t("tour.inviteT",{party:t("characters.partyName")}),
+      meta:`${t("tour.inviteSteps",{count:steps})} · ${t(st.isMobile?"tour.inviteLaterPhone":"tour.inviteLater")}`,
+      onStart:()=>this.startTour("main"), onLater:()=>this.dismissInvite() };
+  }
 
   // ── Interactive tours (js/chronicle-tour.js drives Driver.js over the real interface) ──
   // A tour owns one history entry (same URL, marked ccTour). Every navigation during the tour replaces
@@ -2198,7 +2278,7 @@ class Component extends DCLogic {
       const st=this.state, a=document.activeElement;
       this._tourSnap={ id, hash:routeHash(st.route), stack:this._stack.slice(), scroll:{...this._scroll}, dscroll:{...this._dscroll},
         filters:st.filters, filtersOpen:st.filtersOpen, view:st.view, mapSelId:st.mapSelId, mapList:st.mapList, mapPanelOpen:st.mapPanelOpen,
-        focus:this._returnFocus||(a&&a!==document.body?a:null) };
+        questStatus:st.questStatus, focus:this._returnFocus||(a&&a!==document.body?a:null) };
       this._returnFocus=null;
       try{ history.pushState({ccTour:id},"",location.href); }catch(e){}
       this._stack.push(this._tourSnap.hash);
@@ -2223,11 +2303,13 @@ class Component extends DCLogic {
       route:r, hash:routeHash(r), isMobile:st.isMobile, isWide:st.isWide,
       moreOpen:st.moreOpen, mapPanelOpen:st.mapPanelOpen, mapPopup, search:{ open:st.search.open, q:st.search.q||"" },
       latest:last?last.no:null,
+      // What the campaign holds: steps adapt their example and words to it (they never point at nothing).
+      hasEvents:!!m&&m.events.length>0, hasSessions:!!m&&m.sessions.length>0, hasQuests:!!m&&m.quests.length>0, mapHasMarkers:!!ex.mapEvent,
       example:{ eventId:ex.event?ex.event.id:null, personId:ex.person?ex.person.id:null, personName:ex.person?ex.person.name:"", mapEventId:ex.mapEvent?ex.mapEvent.id:null },
       labels:{ app:t("app.docTitle"), party:t("characters.partyName"), partyFilters:t("map.partyFilters"), inChronicle:t("common.showInChronicle"), keys:IS_MAC?"⌘K":"Ctrl+K" },
     };
   }
-  // The few things a step may open or close for the visitor (false = cannot, the step is skipped).
+  // The few things a step may open or close for the visitor (false = cannot: the step shows its fallback).
   _tourAct(name,value,run){
     if(name==="more"){ this.setState({moreOpen:!!value}); return true; }
     if(name==="search"){ if(value) this.openSearch(); else if(this.state.search.open) this.closeSearch(); return true; }
@@ -2235,7 +2317,9 @@ class Component extends DCLogic {
     if(name==="mapPanel"){ this.setState({mapPanelOpen:!!value}); return true; }
     if(name==="mapPopup"){
       if(!value){ this.setState({mapSelId:null,mapList:null}); const r=this.state.route; if(r.section==="map"&&r.kind) this.navigate("#/map"); return true; }
-      const ids=run&&run.pin; if(!ids||!ids.length) return false;
+      // The marker the step pointed at; without one (none was in view), the campaign's example event.
+      const ex=this.model?M.guideExamples(this.model).mapEvent:null;
+      const ids=run&&run.pin&&run.pin.length?run.pin:ex?[ex.id]:null; if(!ids) return false;
       if(ids.length>1) this.openList(ids); else this.selectPin(ids[0],{keep:true});
       return true;
     }
@@ -2244,19 +2328,21 @@ class Component extends DCLogic {
   _tourEnded({id,completed,reason,step}){
     const snap=this._tourSnap; this._tourSnap=null;
     if(completed) this.onboarding.complete(id);
-    else if(id==="main"&&step==="welcome"&&reason==="close") this.onboarding.dismissInvite();   // "Omitir" at the welcome = "not now"
+    // Left early ("Omitir tutorial", ✕, Esc, Back): the visitor chose — the welcome does not come back by itself.
+    else if(id==="main") this.onboarding.dismissInvite();
     this._overlay=null;
     const base={ tourOn:null, onboardingRev:this.state.onboardingRev+1, moreOpen:false, search:{...this.state.search,open:false} };
     if(completed||!snap){
-      // Finished: stay where the tour ended; its history entry becomes an ordinary one.
+      // Finished: stay where the tour ended (no marker's card left open for later); its history entry becomes an ordinary one.
       try{ if(history.state&&history.state.ccTour) history.replaceState(null,"",location.href); }catch(e){}
-      this.setState({...base, mapList:null, mapPanelOpen:snap?snap.mapPanelOpen:false});
+      const onMap=this.state.route.section==="map";
+      this.setState({...base, mapList:null, mapSelId:onMap?this.state.mapSelId:null, mapPanelOpen:snap?snap.mapPanelOpen:false});
     } else {
       // Left early: back where it started.
       const popEntry=reason!=="back"&&!!(history.state&&history.state.ccTour), start=parseHash(snap.hash);
       this._scroll={...snap.scroll}; this._dscroll={...snap.dscroll};
       Prefs.setS("chronicle-filters",snap.filters);
-      this.setState({...base, filters:snap.filters, filtersOpen:snap.filtersOpen, view:snap.view, mapSelId:snap.mapSelId, mapList:snap.mapList, mapPanelOpen:snap.mapPanelOpen});
+      this.setState({...base, filters:snap.filters, filtersOpen:snap.filtersOpen, view:snap.view, mapSelId:snap.mapSelId, mapList:snap.mapList, mapPanelOpen:snap.mapPanelOpen, questStatus:snap.questStatus});
       if(routeHash(this.state.route)!==snap.hash) this.navigate(snap.hash,{replace:true});
       if(popEntry){ this._tourPopping=true; history.back(); }
       this._stack=snap.stack.slice();
@@ -2265,7 +2351,8 @@ class Component extends DCLogic {
     const el=snap&&snap.focus;
     requestAnimationFrame(()=>{
       if(reason==="more") return this.openHelp("help");
-      const f=el&&el.isConnected&&el.getClientRects().length?el:document.querySelector(".cc-brand");
+      // Back where it was started from; when that is gone (the welcome), the Chronicle's "¿Cómo funciona?".
+      const f=el&&el.isConnected&&el.getClientRects().length?el:(this._shown(".cc-qa-help")||document.querySelector(".cc-brand"));
       if(f&&f.focus) f.focus({preventScroll:true});
     });
   }
@@ -2476,12 +2563,9 @@ class Component extends DCLogic {
     }
 
     const activeCount=M.activeFilterCount(f);
-    // First visit: the intro and the tour invitation, until the main tour is completed or "Ahora no".
-    const intro=!st.tourOn&&this.onboarding.showInvite();
     return {
       groups:vm, count:evs.length, isEmpty:evs.length===0, opt, pcChips, actives, hasActives:actives.length>0, activeCount,
       quick, hasQuick:quick.length>0, filtersOpen:st.filtersOpen,
-      intro, tagline:!intro, inviteText:t("tour.inviteT",{party:t("characters.partyName")}),
       qaCls:"cc-qa"+(M.latestSession(m)?"":" no-recap"),
       filterBtnCls:"cc-btn ghost"+(st.filtersOpen||activeCount?" is-on":""),
       filterLabel:activeCount?t("chronicle.filtersActive",{count:activeCount}):t("chronicle.filters"),
@@ -3070,7 +3154,7 @@ class Component extends DCLogic {
       countText:t("map.countText",{events:t("common.events",{count:evs.length}),places:t("map.countPlaces",{count:spots})})+(mapless?` ${t("map.mapless",{count:mapless})}`:""),
       activeCount,
       canBack:this.canGoBack()&&!lastHash.startsWith("#/map"), onBack:()=>this.goBack(),
-      canTour:!!this.tour&&!st.tourOn, onTour:()=>this.startTour("map"),
+      canTour:!!this.tour, onTour:()=>this.startTour("map"),     // stays in view (dimmed) during a tour: the main tour points the visitor to it
       backLabel:lastHash.includes("/event/")&&!st.isMobile?t("map.backToEntry"):t("map.back"),
     };
   }
@@ -3104,7 +3188,7 @@ class Component extends DCLogic {
       moreItems:secondary.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), icon:ICONS[s.icon], cls:"cc-sheet-item"+(s.id===sec?" is-on":"") })),
       moreOpen:st.moreOpen, onOpenMore:()=>this.setState(s=>({moreOpen:!s.moreOpen})), onCloseMore:()=>this.setState({moreOpen:false}),
       onOpenHelp:()=>this.openHelp("help"), onOpenGlossary:()=>this.openHelp("glossary"),
-      onStartTour:()=>this.startTour("main"), onDismissInvite:()=>this.dismissInvite(),
+      wc:v.chronicle?this._buildWelcome():{ on:false }, welcomeRef:this.welcomeRef,
       hp:this._buildHelp(), gl:st.help&&st.help.view==="glossary"?this._buildGlossary():{},
       sr:this._buildSearch(), onOpenSearch:()=>this.openSearch(),
       searchKbd:IS_MAC?"⌘K":"Ctrl K", searchKeys:"Control+K Meta+K", searchTitle:t("search.openTitle",{keys:IS_MAC?"⌘K":"Ctrl+K"}),
