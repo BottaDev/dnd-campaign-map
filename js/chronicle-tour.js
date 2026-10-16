@@ -326,7 +326,7 @@
         animate: !reduced(), duration: DURATION, smoothScroll: false,
         allowClose: false, allowKeyboardControl: false,         // Esc and ← → are handled by the page (tour.next/prev/stop)
         overlayClickBehavior: () => nudge(),                    // a tap outside never ends the tour by accident
-        overlayColor: "#070402", overlayOpacity: 0.74, stagePadding: 6, stageRadius: 12, popoverOffset: 12,
+        overlayColor: "#060504", overlayOpacity: 0.74, stagePadding: 6, stageRadius: 6, popoverOffset: 12,
         popoverClass: "cc-tour",
       });
       return drv;

@@ -79,6 +79,14 @@
       creature: "Criaturas y espíritus",
       faction: "Facciones y órdenes",
     },
+    // personCategory in the singular: the second line of a person's chip when they have no role.
+    personCategoryOne: {
+      party: "Miembro del grupo",
+      person: "Persona",
+      deity: "Deidad",
+      creature: "Criatura",
+      faction: "Facción",
+    },
     placeKind: {
       continent: "Continente",
       region: "Región",
@@ -198,6 +206,7 @@
       qaSearchSub: "Personajes, misiones, lugares…",
       qaHelp: "¿Cómo funciona?",
       qaHelpAria: "Cómo funciona la Crónica: recorridos guiados y ayuda",
+      latestGroup: "la última",
     },
     sessions: {
       title: "Sesiones",
@@ -549,7 +558,6 @@
       sample: "Día {n}",
     },
     search: {
-      open: "Buscar",
       openTitle: "Buscar en toda la crónica ({keys})",
       dialogAria: "Buscar en toda la crónica",
       placeholder: "Personajes, acontecimientos, misiones, lugares…",

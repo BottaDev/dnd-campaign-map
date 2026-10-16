@@ -53,7 +53,7 @@ test("6b · every key used by index.html exists (no raw keys on screen)", () => 
   for (const m of html.matchAll(/\{\{\s*t\.([\w.]+)\s*\}\}/g)) used.add(m[1]);
   for (const m of html.matchAll(/\bt\("([\w.]+)"/g)) used.add(m[1]);
   for (const m of html.matchAll(/\bthis\.t\("([\w.]+)"/g)) used.add(m[1]);
-  const dyn = { "eventType.": Object.keys(Model.EVENT_TYPES), "personCategory.": Object.keys(Model.PERSON_CATEGORIES), "nav.": ["chronicle", "sessions", "quests", "characters", "places", "map"], "kinds.": ["event", "session", "quest", "character", "place"] };
+  const dyn = { "eventType.": Object.keys(Model.EVENT_TYPES), "personCategory.": Object.keys(Model.PERSON_CATEGORIES), "personCategoryOne.": Object.keys(Model.PERSON_CATEGORIES), "nav.": ["chronicle", "sessions", "quests", "characters", "places", "map"], "kinds.": ["event", "session", "quest", "character", "place"] };
   Object.entries(dyn).forEach(([p, ks]) => ks.forEach(k => used.add(p + k)));
   const missing = [...used].filter(k => I18N.get(I18N.dicts.en, k) === undefined || I18N.get(I18N.dicts["es-AR"], k) === undefined);
   assert.deepEqual(missing, []);

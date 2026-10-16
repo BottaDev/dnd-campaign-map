@@ -5,14 +5,14 @@
 // marked with the "x-chronicle-offline: 1" header, so the page can say it is showing a saved copy.
 //
 //   • App shell, data/*.json and translations: precached on install, then network first.
-//   • Small images (portraits, icons, the 2400px map preview): stale-while-revalidate.
+//   • Small images (portraits, icons, the page textures, the 2400px map preview): stale-while-revalidate.
 //   • React from unpkg and Google Fonts: cache first (versioned / immutable URLs).
 //   • assets/exandria-map.jpeg (the 15 MB full-resolution map) is NEVER stored: it stays network-only.
 //
 // Favourites, history and preferences live in localStorage — never in these caches — so updates,
 // cache clean-ups and new versions never touch them. Bump VERSION when the precache list changes
 // (adding a file); old caches are deleted when the new worker activates.
-const VERSION = "2026-10-14.2";
+const VERSION = "2026-10-15.1";
 const SHELL = `chronicle-shell-${VERSION}`;
 const RUNTIME = `chronicle-runtime-${VERSION}`;
 
@@ -25,6 +25,7 @@ const PRECACHE = [
   "data/npcs.json", "data/locations.json", "data/lore.json", "data/i18n/es-AR.json",
   "assets/app-icon.svg", "assets/app-icon-192.png", "assets/icon-bund-der-vier.png",
   "assets/icon-ayante.jpeg", "assets/icon-ereldra.jpeg", "assets/icon-mortis.jpeg", "assets/icon-sorfon.jpeg",
+  "assets/textures/paper.webp", "assets/textures/leather.webp",
 ];
 // The runtime (support.js) loads React from unpkg with Subresource Integrity; the same bytes from the cache pass it.
 const CDN_PRECACHE = [

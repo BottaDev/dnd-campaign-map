@@ -12,7 +12,7 @@ import { chromium } from "playwright-core";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT = path.join(ROOT, "test-results");
 fs.mkdirSync(OUT, { recursive: true });
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript", ".json": "application/json; charset=utf-8", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".png": "image/png", ".css": "text/css", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript", ".json": "application/json; charset=utf-8", ".jpeg": "image/jpeg", ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".css": "text/css", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
 
 // A static server like `npx serve`. `rewrite(rel, text)` may change a text file on the fly (used to
 // publish "new content" in the offline/update test); `close()` drops every connection (= offline).
@@ -124,7 +124,7 @@ await check("map · party filter uses OR for shared events; routes follow the se
   const { ctx, page } = await open(DESKTOP, "#/map");
   await page.waitForTimeout(700);
   eq(await markerTotal(page), 33, "every event in exactly one marker");
-  eq(await routeInks(page), ["#1a1208|7 5"], "one shared journey line (not four, not chronological)");
+  eq(await routeInks(page), ["#5a1f24|2 7"], "one shared journey line (not four, not chronological), dotted in sealing wax");
   await page.click(".cc-mapbtn");
   await page.waitForSelector(".cc-mappanel");
   const row = name => page.locator(".cc-partyrow", { hasText: name }).click();
@@ -367,7 +367,7 @@ await check("theme · always dark: no toggle, an old light preference is ignored
   eq(await page.locator(".theme-light, .theme-dark").count(), 0, "no theme classes");
   eq(await page.evaluate(() => localStorage.getItem("chronicle-theme")), null, "old preference removed");
   eq(await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme), "dark", "color-scheme");
-  eq(await page.getAttribute("meta[name=theme-color]", "content"), "#140f08", "theme-color");
+  eq(await page.getAttribute("meta[name=theme-color]", "content"), "#1b1513", "theme-color (the leather of the bars)");
   const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   assert(lum(bg) < 0.02, `body background ${bg}`);
   // The reading pane fills the phone screen; go back to a list to reach the bottom bar's More sheet.
@@ -382,7 +382,7 @@ await check("theme · always dark: no toggle, an old light preference is ignored
   await page.evaluate(() => { location.hash = "#/places/place/vasselheim"; });
   await page.waitForSelector(".cc-lore");
   await page.locator(".cc-lore summary").tap();
-  eq(await page.$eval(".cc-lore-p", el => getComputedStyle(el).color), "rgb(205, 181, 136)", "lore text uses --body2");
+  eq(await page.$eval(".cc-lore-p", el => getComputedStyle(el).color), "rgb(217, 207, 190)", "lore text uses --body2");
   await page.screenshot({ path: path.join(OUT, "theme-dark-390.png") });
   await page.evaluate(() => { location.hash = "#/map"; });
   await page.waitForSelector(".cc-mapbtn");
@@ -480,6 +480,55 @@ await check("cards · every event card has its type icon (family colour) and lab
   Object.entries(byFam).forEach(([f, cs]) => eq(cs.size, 1, `one colour for ${f}`));
   eq(new Set(Object.values(byFam).map(s => [...s][0])).size, Object.keys(byFam).length, "families have distinct colours");
   await page.screenshot({ path: path.join(OUT, "cards-360.png") });
+  await ctx.close();
+});
+
+// ── Quest cards and people chips, as in the design ──────────────────────────
+await check("cards · quest cards show their status badge beside the title (under it below 360px); people chips put the role, kind or part played under the name", async () => {
+  // Every quest card of the list: the badge repeats its group's status with the icon, and the card stays inside the list.
+  const quests = page => page.$$eval(".cc-main .cc-list", lists => lists.flatMap(list => {
+    const lr = list.getBoundingClientRect(), group = list.previousElementSibling.textContent.replace(/\s*\d+\s*$/, "").trim();
+    return [...list.querySelectorAll("a.cc-qcard")].map(a => {
+      const r = a.getBoundingClientRect(), b = a.querySelector(".cc-qcard-h .cc-badge"), t = a.querySelector(".cc-qcard-h .cc-ctitle");
+      const br = b.getBoundingClientRect(), tr = t.getBoundingClientRect(), rib = a.classList.contains("is-sel") ? getComputedStyle(a, "::after") : null;
+      return { title: t.textContent, group, badge: b.textContent.trim(), icon: !!b.querySelector("svg[aria-hidden=true]"),
+        inside: r.left >= lr.left - 0.5 && r.right <= lr.right + 0.5, beside: br.left > tr.right && Math.abs(br.top - tr.top) < 4, below: br.top >= tr.bottom - 1,
+        clear: br.right <= r.right - 40 && (!rib || r.right - parseFloat(rib.right) - 16 >= br.right) };
+    });
+  }));
+  const chips = (page, sel) => page.$$eval(sel, cs => cs.map(c => {
+    const n = c.querySelector(".cc-chip-l"), s = c.querySelector(".cc-chip-sub");
+    return [n.textContent, s.textContent, s.getBoundingClientRect().top >= n.getBoundingClientRect().bottom - 1];
+  }));
+  let { ctx, page } = await open({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true }, "#/quests");
+  let cards = await quests(page);
+  eq(cards.length, 17, "every quest");
+  cards.forEach(c => assert(c.badge === c.group && c.icon && c.inside && c.below && c.clear, `320: ${JSON.stringify(c)}`));
+  await page.screenshot({ path: path.join(OUT, "quests-320.png") });
+  // On a phone the chips keep inside their row: a long role ends in an ellipsis instead of widening the chip.
+  await page.evaluate(() => { location.hash = "#/chronicle/event/s11_02"; });
+  await page.waitForSelector("[data-tour=event-people] .cc-chip");
+  const narrow = await page.$$eval("[data-tour=event-people] .cc-chip", cs => cs.map(c => {
+    const r = c.getBoundingClientRect(), row = c.parentElement.getBoundingClientRect(), s = c.querySelector(".cc-chip-sub");
+    return { name: c.querySelector(".cc-chip-l").textContent, inside: r.right <= row.right + 0.5, cut: s.scrollWidth > s.clientWidth };
+  }));
+  narrow.forEach(c => assert(c.inside, `320: chip inside its row ${JSON.stringify(c)}`));
+  eq(narrow.filter(c => c.cut).map(c => c.name), ["Mortis"], "only the longest role is cut");
+  await ctx.close();
+  // Desktop: beside the title; the open quest's ribbon hangs over the chevron, clear of the badge.
+  ({ ctx, page } = await open(DESKTOP, "#/quests/quest/corrupted-dragon"));
+  cards = await quests(page);
+  cards.forEach(c => assert(c.badge === c.group && c.icon && c.inside && c.beside && c.clear, `1280: ${JSON.stringify(c)}`));
+  // The quest's giver says what they did; a party member shows their class; anyone else what they are.
+  const giver = (await chips(page, ".cc-detail .cc-chips .cc-chip:not(.plain)")).find(c => c[0].startsWith("Bahamut"));
+  eq(giver, ["Bahamut, el Dragón de Platino", "encargó la misión", true], "the giver's chip");
+  await page.evaluate(() => { location.hash = "#/chronicle/event/s12_04"; });
+  await page.waitForSelector("[data-tour=event-people] .cc-chip");
+  eq(await chips(page, "[data-tour=event-people] .cc-chip"), [["Sorfon", "Paladín · Juramento de Venganza", true], ["Pelor", "Deidad", true], ["Torog, el Rey Reptante", "Deidad", true], ["Haftifaflmorhen", "Criatura", true]], "name over role or kind");
+  await page.locator("[data-tour=event-people]").screenshot({ path: path.join(OUT, "chips-1280.png") });
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForTimeout(200);
+  eq((await chips(page, "[data-tour=event-people] .cc-chip")).map(c => c[1]), ["Paladin · Oath of Vengeance", "Deity", "Deity", "Creature"], "in English too");
   await ctx.close();
 });
 

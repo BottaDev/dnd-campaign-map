@@ -19,7 +19,7 @@ test("1 · manifest: valid JSON, relative scope and start (GitHub Pages sub-path
   assert.ok(m.start_url.startsWith("./"), "relative start_url");
   assert.equal(m.display, "standalone");
   assert.equal(m.theme_color, /<meta name="theme-color" content="(#[0-9a-f]{6})">/.exec(html)[1], "same theme colour as the page");
-  assert.equal(m.background_color, "#0c0a06", "the page's first-paint background");
+  assert.equal(m.background_color, "#0e0d0c", "the page's first-paint background");
 });
 
 test("2 · manifest icons exist with the declared sizes, including a maskable one", () => {
