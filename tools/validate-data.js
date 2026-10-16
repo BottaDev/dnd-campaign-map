@@ -118,5 +118,9 @@ console.log(`\n${m.events.length} events (${mapless} without map position) · ${
 coverage.forEach(c => console.log("Translated " + c));
 console.log(`Pending to write: sessions not chronicled ${gaps.length ? gaps.join(", ") : "none"} · events with description/consequences/unresolved ${deep}/${m.events.length} · sessions with an editorial recap ${curated}/${m.sessions.filter(s => !s.isStub).length}`);
 if (unmatched.size) console.log(`Session-log entries not linked to an entity (fine for items; add an alias to link them): ${[...unmatched].join(", ")}`);
+// Places index: top-level places of the Atlas other than continents (informational — a parent is never inferred;
+// add parentId only when the campaign records where the place lies).
+const loose = m.places.filter(p => !p.parentId && !p.isPlanar && p.kind !== "continent");
+if (loose.length) console.log(`Places at the top level of the Atlas (no parentId; fine unless the campaign recorded where they lie): ${loose.map(p => p.nameEn).join(", ")}`);
 console.log(errors ? `\n${errors} error(s), ${warnings} warning(s)` : `\nOK — ${warnings} warning(s)`);
 process.exit(errors ? 1 : 0);

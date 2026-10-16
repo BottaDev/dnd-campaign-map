@@ -23,6 +23,16 @@ test("1 · every event type has its own icon (and no icon for a type that does n
   assert.equal(new Set(shapes).size, shapes.length, "each type is drawn differently");
 });
 
+test("1b · every kind of place has its own icon, plus a plain marker for a place without a known kind", () => {
+  const icons = keysOf(block("PLACE_ICON_SHAPES"));
+  assert.deepEqual(icons.slice().sort(), [...Object.keys(Model.PLACE_KINDS), "place"].sort());
+  const shapes = icons.map(k => block("PLACE_ICON_SHAPES").split("\n").find(l => l.trim().startsWith(`${k}:`)).replace(/^\s*\w+:\s*/, "").replace(/\/\/.*$/, "").trim());
+  assert.equal(new Set(shapes).size, shapes.length, "each kind is drawn differently");
+  assert.match(html, /placeIcon\(pl\)\s+\{ return PLACE_ICONS\[pl&&pl\.kindKey\]\|\|PLACE_ICONS\.place; \}/);
+  // Other planes take the arcane family's colour (a token), as "other plane" events do; the rest is gilt.
+  assert.match(css, /\.cc-node-row\.is-planar \.cc-node-ico\{color:var\(--ev-arcane\);\}/);
+});
+
 test("2 · every event family has a colour token and a class; every type belongs to one", () => {
   const families = [...new Set(Object.values(Model.EVENT_TYPES).map(t => t.family))];
   assert.ok(families.length >= 5 && families.every(Boolean));

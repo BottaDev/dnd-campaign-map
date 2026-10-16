@@ -345,20 +345,33 @@
       if (personById.has(l.id)) error(`Id "${l.id}" is used by both a person and a place`);
       const tr = overlay(content, "places", l.id);
       const nameEn = str(l.name) || l.id, aliasesEn = arr(l.aliases);
-      const kindLabel = L(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || cap(str(l.kind)) || "Place");
-      const place = { ...l, name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn, kindLabel,
+      // kindKey: one of PLACE_KINDS, or "place" for a missing or unknown kind (a plain place: generic icon).
+      const known = Object.prototype.hasOwnProperty.call(PLACE_KINDS, l.kind);
+      if (!known) warn(l.kind ? `Place "${l.id}": unknown kind "${l.kind}" (shown as a plain place)` : `Place "${l.id}": no kind (shown as a plain place)`);
+      const kindLabel = known ? L(`placeKind.${l.kind}`, PLACE_KINDS[l.kind]) : (l.kind ? cap(str(l.kind)) : L("kinds.place", "Place"));
+      const place = { ...l, name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn, kindLabel, kindKey: known ? l.kind : "place",
         childIds: [], eventIds: [], allEventIds: [], notes: [], questIds: [], personIds: [], sessionNos: [] };
       place.nameKeys = foldAll([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn)]);
       place.searchText = fold([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn),
-        ...vocab(`placeKind.${l.kind}`, PLACE_KINDS[l.kind] || "")].join(" • "));
+        ...(known ? vocab(`placeKind.${l.kind}`, PLACE_KINDS[l.kind]) : [kindLabel])].join(" • "));
       places.push(place); placeById.set(l.id, place);
     });
     places.forEach(p => {
       if (p.parentId && !placeById.has(p.parentId)) { error(`Place "${p.id}": unknown parentId "${p.parentId}"`); p.parentId = null; }
-      if (p.parentId) placeById.get(p.parentId).childIds.push(p.id);
     });
-    const ancestorsOf = (id) => { const out = []; let p = placeById.get(id), guard = 0;
-      while (p && p.parentId && guard++ < 20) { out.push(p.parentId); p = placeById.get(p.parentId); } return out; };
+    // A parentId chain that comes back to where it started (a → b → a, or a place inside itself) has no
+    // top: the first place of the loop (in file order) is shown at the top level, and the loop is reported.
+    places.forEach(p => {
+      const seen = [p.id]; let q = p;
+      while (q.parentId) {
+        if (q.parentId === p.id) { error(`Place "${p.id}": parentId loop (${[...seen, p.id].join(" → ")}) — shown at the top level`); p.parentId = null; break; }
+        if (seen.includes(q.parentId)) break;                  // a loop further up: reported from one of its own places
+        seen.push(q.parentId); q = placeById.get(q.parentId);
+      }
+    });
+    places.forEach(p => { if (p.parentId) placeById.get(p.parentId).childIds.push(p.id); });
+    const ancestorsOf = (id) => { const out = []; let p = placeById.get(id);
+      while (p && p.parentId && out.length < places.length) { out.push(p.parentId); p = placeById.get(p.parentId); } return out; };
     places.forEach(p => { p.ancestorIds = ancestorsOf(p.id); p.depth = p.ancestorIds.length; });
 
     // Exact-name index used only to attach session-log NPC/location notes.
@@ -925,6 +938,77 @@
     return ranges.reduce((out, r) => { const last = out[out.length - 1]; if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]); else out.push(r); return out; }, []);
   }
 
+  // ── The Places index: a tree of recorded parentId links ───────────────────
+  // Siblings in story order — the first event recorded there or inside — then by name (`cmp`; English
+  // names by default, so the order is the same in every language); places never visited come last.
+  // The top level is split into the Atlas (the world on the map) and other planes (kind "plane": isPlanar).
+  // Nothing is regrouped or inferred: a place without a parentId is simply a top-level place.
+  function placeIndex(model, opts) {
+    const o = opts || {}, byName = typeof o.cmp === "function" ? o.cmp : (a, b) => a.nameEn.localeCompare(b.nameEn);
+    const first = p => (p.allEventIds.length ? model.eventById.get(p.allEventIds[0]).chronoIndex : Infinity);
+    const sorted = list => list.slice().sort((a, b) => (first(a) - first(b)) || byName(a, b));
+    const childIds = new Map(model.places.map(p => [p.id, sorted(p.childIds.map(id => model.placeById.get(id))).map(c => c.id)]));
+    const size = id => childIds.get(id).reduce((n, c) => n + size(c), 1);
+    const roots = sorted(model.places.filter(p => !p.parentId));
+    const groups = [["atlas", roots.filter(p => !p.isPlanar)], ["planes", roots.filter(p => p.isPlanar)]]
+      .filter(([, list]) => list.length)
+      .map(([key, list]) => ({ key, rootIds: list.map(p => p.id), count: list.reduce((n, p) => n + size(p.id), 0) }));
+    return { groups, childIds, branchIds: model.places.filter(p => p.childIds.length).map(p => p.id) };
+  }
+
+  // Every place once, in index order: a place, then what it holds (the Chronicle's place filter uses it).
+  function placeOrder(model, index) {
+    const out = [], walk = ids => ids.forEach(id => { out.push(id); walk(index.childIds.get(id)); });
+    index.groups.forEach(g => walk(g.rootIds));
+    return out;
+  }
+
+  // Branches the visitor opened or closed: `open` = { <placeId>: true|false }. Any other branch shows its
+  // default — open at the top level, closed below — so the main places and their first level are in view.
+  function isPlaceOpen(model, open, id) {
+    const p = model.placeById.get(id);
+    if (!p || !p.childIds.length) return false;
+    return open && Object.prototype.hasOwnProperty.call(open, id) ? !!open[id] : !p.parentId;
+  }
+
+  // Opening a place shows it in the tree: its ancestors open. Nothing else changes — not the place itself
+  // (selecting never unfolds it), not the other branches. The same object comes back when nothing had to.
+  function revealPlace(model, open, id) {
+    const cur = open || {}, p = model.placeById.get(String(id));
+    const closed = p ? p.ancestorIds.filter(a => !isPlaceOpen(model, cur, a)) : [];
+    if (!closed.length) return cur;
+    const next = { ...cur };
+    closed.forEach(a => { next[a] = true; });
+    return next;
+  }
+
+  // What the tree shows: per group, nested nodes { id, depth, childCount, expanded, match, context, children }.
+  // With a query, the places the universal search finds for it (names, aliases and kinds, in either
+  // language, accents and case ignored) plus their ancestors as context, every branch on the way open.
+  // A search never touches `open`, so clearing it brings the tree back exactly as it was.
+  function placeTreeView(model, index, opts) {
+    const o = opts || {}, open = o.open || {}, q = fold(o.query);
+    const found = q ? searchAll(model, q, { kinds: ["place"] }).groups.flatMap(g => g.items.map(i => String(i.id))) : null;
+    const matches = found && new Set(found);
+    const keep = found && new Set(found.flatMap(id => [id, ...model.placeById.get(id).ancestorIds]));
+    const rootOf = id => { const a = model.placeById.get(id).ancestorIds; return a.length ? a[a.length - 1] : id; };
+    const node = (id, depth) => {
+      const kids = index.childIds.get(id), shown = keep ? kids.filter(k => keep.has(k)) : kids;
+      const expanded = keep ? shown.length > 0 : isPlaceOpen(model, open, id);
+      return { id, depth, childCount: kids.length, expanded, match: !!matches && matches.has(id), context: !!matches && !matches.has(id),
+        children: expanded ? shown.map(k => node(k, depth + 1)) : [] };
+    };
+    const groups = index.groups.map(g => {
+      const roots = keep ? g.rootIds.filter(id => keep.has(id)) : g.rootIds;
+      return { key: g.key, count: g.count, matchCount: matches ? found.filter(id => g.rootIds.includes(rootOf(id))).length : g.count,
+        nodes: roots.map(id => node(id, 0)) };
+    }).filter(g => g.nodes.length);
+    return {
+      query: q, searching: !!matches, total: model.places.length, matchCount: matches ? matches.size : model.places.length, groups,
+      allOpen: index.branchIds.every(id => isPlaceOpen(model, open, id)), allClosed: index.branchIds.every(id => !isPlaceOpen(model, open, id)),
+    };
+  }
+
   // ── Entries by reference (favourites, history, links) ─────────────────────
   function resolveRef(model, kind, id) {
     if (!model || id == null) return null;
@@ -977,6 +1061,7 @@
   }
 
   return { build, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, SEARCH_KINDS, resolveRef, latestSession, recapOf, guideExamples,
+    placeIndex, placeOrder, placeTreeView, isPlaceOpen, revealPlace,
     activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
     chronicleGroups, sessionListItems, normalizePrefs, sortOrders, DEFAULT_ORDER,
     checkTranslations, normalizeRoutes, normalizeLore, safeExternalUrl, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,

@@ -434,29 +434,117 @@
     .cc-pcard .cc-seal{width:72px;height:72px;}
     .cc-pcard .cc-row-sub{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
   }
-  /* NPC / place rows: a plain list with hairlines instead of a grid of boxes */
+  /* NPC rows: a plain list with hairlines instead of a grid of boxes */
   .cc-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));column-gap:20px;}
   .cc-row{align-items:center;gap:12px;padding:6px 8px;min-height:56px;border-color:transparent;background:none;box-shadow:none;}
-  .cc-people .cc-row,.cc-tree .cc-prow{border-bottom:1px solid var(--line-faint);border-radius:0;}
+  .cc-people .cc-row{border-bottom:1px solid var(--line-faint);border-radius:0;}
   .cc-row:hover{background:var(--card-bg-hover);}
   .cc-row .cc-ctitle{font-size:17px;}
   .cc-row .cc-cbody{gap:1px;}
   .cc-row-sub{font-family:var(--font-ui);font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cc-tree{display:grid;}
-  .cc-prow{display:flex;align-items:center;gap:4px;}
-  .cc-prow.is-nested{border-left:1px solid var(--line-faint);}
-  .cc-prow .cc-row{flex:1;min-width:0;min-height:52px;padding-left:12px;}
-  .cc-prow-map{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--r-sm);color:var(--muted);transition:color .15s ease,background .15s ease;}
-  .cc-prow-map:hover{background:var(--card-bg-hover);color:var(--gilt);}
-  .cc-prow-map .cc-ico{width:19px;height:19px;}
   /* The open entry: raised, a gilt edge, and the reading ribbon hanging over its top edge (left of the chevron).
      The ribbon is drawn with borders, not a clip, so it can cast its small shadow. */
   .cc-card.is-sel,.cc-scard.is-sel,.cc-qcard.is-sel,.cc-pcard.is-sel,.cc-row.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
-  .cc-people .cc-row.is-sel,.cc-tree .cc-row.is-sel{border-radius:var(--r-sm);}
+  .cc-people .cc-row.is-sel{border-radius:var(--r-sm);}
   .cc-card.is-sel::after,.cc-scard.is-sel::after,.cc-qcard.is-sel::after,.cc-pcard.is-sel::after,.cc-row.is-sel::after{content:"";position:absolute;top:-3px;right:46px;width:0;height:32px;border:8px solid var(--ribbon);border-top:0;border-bottom-color:transparent;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));pointer-events:none;}
   .cc-pcard.is-sel::after{right:18px;}
   .cc-qcard.is-sel::after{right:13px;}   /* over the chevron, clear of the status badge */
   .cc-row.is-sel::after{right:14px;height:20px;border-width:0 6px 6px;}
+
+  /* ── Places: the atlas index ──
+     Nested lists, one row per place: the fold caret (only where places lie inside), the kind's icon, the name
+     — larger the higher it sits —, the kind in quiet text ("· 3 lugares" while folded) and, like an index's
+     page references, dotted leaders to the number of events recorded there or inside; then the map action.
+     Hairline guides in a faint gilt run from each open caret to its places' elbows; the way down to the open
+     place is drawn a shade brighter. The open place is raised, gilt-edged and hangs the ribbon, like every
+     open entry. No plates, no texture: the page is the atlas. */
+  .cc-atlas{--ind:28px;--tw:30px;--elbow:22px;--tline:var(--gilt-hair);--tpath:var(--gilt-dim);}
+  .cc-atlas-tools{display:flex;align-items:center;flex-wrap:wrap;gap:0 2px;margin:8px 0 0;}
+  .cc-atlas-tools .cc-linkbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 6px;font-size:13.5px;}
+  .cc-atlas-tools .cc-linkbtn .cc-ico{width:16px;height:16px;}
+  .cc-atlas-tools .cc-linkbtn:disabled{color:var(--muted);cursor:default;text-decoration:none;opacity:.75;}
+  .cc-atlas-grp>.cc-h2{margin:20px 0 6px;}
+  .cc-atlas-grp.is-planes>.cc-h2>.cc-ico{color:var(--ev-arcane);}
+  .cc-atlas-note{margin:-2px 0 8px;font-family:var(--font-ui);font-size:13px;line-height:1.4;color:var(--muted);}
+  .cc-tree,.cc-tree-sub{list-style:none;margin:0;padding:0;}
+  .cc-tree-sub{padding-left:var(--ind);}
+  .cc-tree-sub[hidden]{display:none;}
+  .cc-tree>.cc-node+.cc-node{margin-top:4px;}
+  .cc-node{position:relative;}
+  .cc-node-row{position:relative;display:flex;align-items:flex-start;min-height:44px;border:1px solid transparent;border-radius:var(--r-sm);transition:background .15s ease,border-color .15s ease;}
+  .cc-node-row:hover{background:var(--card-bg-hover);}
+  .cc-twisty{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:var(--tw);height:42px;padding:0;border:0;border-radius:var(--r-sm);background:none;color:var(--muted);cursor:pointer;transition:color .15s ease;}
+  .cc-twisty::after{content:"";position:absolute;top:0;bottom:0;left:-8px;right:0;}            /* a wider target, out into the indent */
+  .cc-twisty:hover,.cc-node-row.is-path>.cc-twisty{color:var(--gilt);}
+  .cc-twisty .cc-ico{width:16px;height:16px;transition:transform .15s ease;}
+  .cc-twisty[aria-expanded=true] .cc-ico{transform:rotate(90deg);}
+  .cc-twisty.none{cursor:default;}
+  .cc-twisty.none::after{display:none;}
+  .cc-node-a{flex:1;min-width:0;display:flex;align-items:flex-start;gap:9px;min-height:42px;padding:10px 4px 9px 2px;border-radius:var(--r-sm);}
+  .cc-node-ico{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;color:var(--gilt);}
+  .cc-node-ico .cc-ico{width:19px;height:19px;}
+  .cc-node-row.is-planar .cc-node-ico{color:var(--ev-arcane);}
+  .cc-node-b{flex:0 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px;}
+  .cc-node-n{min-width:0;font-family:var(--font-read);font-size:17px;font-weight:600;line-height:22px;color:var(--title);overflow-wrap:break-word;}
+  .cc-node-n mark{padding:0 1px;border-radius:2px;background:rgba(207,166,80,.3);color:inherit;}
+  .cc-node-k{font-family:var(--font-ui);font-size:12.5px;line-height:22px;color:var(--muted);white-space:nowrap;}
+  .cc-node-lead{flex:1 1 auto;min-width:14px;height:15px;margin:0 2px;border-bottom:1px dotted var(--control-border);}
+  .cc-node-ev{flex:none;display:inline-flex;align-items:center;gap:5px;height:22px;font-family:var(--font-ui);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--body);}
+  .cc-node-ev .cc-ico{width:15px;height:15px;color:var(--gilt-dim);}
+  .cc-node-map{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:42px;border-radius:var(--r-sm);color:var(--muted);transition:color .15s ease,background .15s ease;}
+  .cc-node-map:hover,.cc-node-row.is-sel .cc-node-map{color:var(--gilt);}
+  .cc-node-map:hover{background:rgba(241,233,218,.05);}
+  .cc-node-map .cc-ico{width:19px;height:19px;}
+  .cc-node-map.none{visibility:hidden;}
+  /* Levels: the top of each branch heavier and roomier; the deepest places quieter and compact */
+  .cc-node.d0>.cc-node-row{min-height:50px;}
+  .cc-node.d0>.cc-node-row>.cc-twisty,.cc-node.d0>.cc-node-row>.cc-node-map{height:48px;}
+  .cc-node.d0>.cc-node-row .cc-node-a{padding-top:12px;}
+  .cc-node.d0>.cc-node-row .cc-node-n{font-size:19.5px;line-height:24px;}
+  .cc-node.d0>.cc-node-row .cc-node-ico{height:24px;}
+  .cc-node.d0>.cc-node-row .cc-node-ico .cc-ico{width:21px;height:21px;}
+  .cc-node.d0>.cc-node-row .cc-node-lead{height:17px;}
+  .cc-node.d0>.cc-node-row .cc-node-ev{height:24px;}
+  .cc-node.d2>.cc-node-row .cc-node-n,.cc-node.d3>.cc-node-row .cc-node-n{font-size:16.5px;font-weight:500;color:var(--body2);}
+  .cc-node.d2>.cc-node-row .cc-node-ico .cc-ico,.cc-node.d3>.cc-node-row .cc-node-ico .cc-ico{width:17px;height:17px;}
+  /* Guides: a stem under an open caret, a line down past its places, an elbow into each */
+  .cc-node.is-open>.cc-node-row::before{content:"";position:absolute;left:calc(var(--tw) / 2);top:31px;bottom:-1px;width:1px;background:var(--tline);pointer-events:none;}
+  .cc-node.d0.is-open>.cc-node-row::before{top:34px;}
+  .cc-tree-sub>.cc-node::before,.cc-tree-sub>.cc-node::after{content:"";position:absolute;left:calc(var(--tw) / 2 + 1px - var(--ind));background:var(--tline);pointer-events:none;}
+  .cc-tree-sub>.cc-node::before{top:0;bottom:0;width:1px;}
+  .cc-tree-sub>.cc-node:last-child::before{bottom:auto;height:var(--elbow);}
+  .cc-tree-sub>.cc-node::after{top:var(--elbow);height:1px;width:calc(var(--ind) - 5px);}
+  .cc-tree-sub>.cc-node.is-leaf::after{width:calc(var(--ind) + var(--tw) / 2 - 3px);}
+  /* …and the way down to the open place, a shade brighter */
+  .cc-node.is-open>.cc-node-row.is-path::before,.cc-tree-sub>.cc-node.is-pathline::before,.cc-tree-sub>.cc-node.is-pathnode::after{background:var(--tpath);}
+  .cc-tree-sub>.cc-node.is-pathnode::before{background:linear-gradient(var(--tpath),var(--tpath)) 0 0/1px var(--elbow) no-repeat,var(--tline);}
+  /* The open place */
+  .cc-node-row.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);box-shadow:var(--card-shadow-sel);}
+  .cc-atlas .cc-node-row.is-sel .cc-node-n{color:var(--h1);}
+  .cc-node-row.is-sel::after{content:"";position:absolute;top:-3px;right:16px;width:0;height:15px;border:6px solid var(--ribbon);border-top:0;border-bottom-color:transparent;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));pointer-events:none;}   /* over the map action, clear of the count */
+  /* While searching: the places found, and the places around them only as context */
+  .cc-atlas .cc-node-row.is-ctx .cc-node-n{color:var(--muted);font-weight:500;}
+  .cc-node-row.is-ctx .cc-node-ico{opacity:.55;}
+  @media (max-width:719px){
+    .cc-atlas{--ind:17px;--tw:28px;}
+    .cc-node-b{flex-direction:column;align-items:flex-start;}               /* the kind under the name */
+    .cc-node-k{line-height:18px;white-space:normal;}
+    .cc-node-lead{display:none;}
+    .cc-node-a{gap:8px;padding-right:2px;}
+    .cc-node-ev{margin-left:auto;padding-left:8px;}
+    .cc-node-map{width:42px;}
+    .cc-node-row.is-sel::after{right:15px;}
+    .cc-node.d0>.cc-node-row .cc-node-n{font-size:18.5px;}
+    .cc-atlas-tools{margin-top:4px;}
+    .cc-atlas-tools .cc-linkbtn{padding:8px 4px;}
+  }
+  /* The smallest phones: the names get the room — the count stays on each place's page */
+  @media (max-width:359px){ .cc-atlas{--ind:14px;} .cc-node-ev{display:none;} }
+  /* Place chips (sessions, quests, people, a place's own places): the kind's icon before the name */
+  .cc-chip.is-place{padding-left:11px;gap:7px;}
+  .cc-chip-ico{flex:none;display:inline-flex;color:var(--gilt);}
+  .cc-chip-ico .cc-ico{width:17px;height:17px;}
+  .cc-chip-ico.is-planar,.cc-hitico.is-planar{color:var(--ev-arcane);}
 
   /* ── The reading page ── */
   .cc-doc{max-width:720px;margin:0 auto;padding:0 max(26px,env(safe-area-inset-right)) 48px max(26px,env(safe-area-inset-left));}
@@ -615,12 +703,29 @@
   /* ── Mini-map: a framed plate of the map around the event, the event a crimson seal-pin ──
      The JS gives only the event's position (--x/--y, % of the map); the crop is computed here: 16:9 by
      default, 250px tall from 720px wide (container query units keep the pin exact at any width). */
-  .cc-minimap{--z:3.2;--l:clamp(calc(100% - var(--z) * 100%),calc(50% - var(--x) * var(--z) * 1%),0%);
+  .cc-minimap{--z:3.2;--mh:250px;--l:clamp(calc(100% - var(--z) * 100%),calc(50% - var(--x) * var(--z) * 1%),0%);
     --t:clamp(calc(100% - var(--z) * 118.52%),calc(50% - var(--y) * var(--z) * 1.1852%),0%);--dy:calc(var(--y) * var(--z) * 1.1852%);
     position:relative;display:block;aspect-ratio:16/9;border-radius:3px;overflow:hidden;background:#11100c;box-shadow:inset 0 0 0 1px rgba(207,166,80,.5);}
   @media (min-width:720px){ @supports (width:1cqw){
-    .cc-minimap{container-type:inline-size;aspect-ratio:auto;height:250px;--t:clamp(calc(250px - var(--z) * 66.667cqw),calc(125px - var(--y) * var(--z) * .66667cqw),0px);--dy:calc(var(--y) * var(--z) * .66667cqw);}
+    .cc-minimap{container-type:inline-size;aspect-ratio:auto;height:var(--mh);--t:clamp(calc(var(--mh) - var(--z) * 66.667cqw),calc(var(--mh) / 2 - var(--y) * var(--z) * .66667cqw),0px);--dy:calc(var(--y) * var(--z) * .66667cqw);}
   } }
+  /* A place's plate: lower (2:1 on phones, 180px from 720px), never opened by itself — a link to the full map */
+  .cc-minimap.is-place{--mh:180px;}
+  @media (max-width:719px){ .cc-minimap.is-place{aspect-ratio:2/1;--t:clamp(calc(100% - var(--z) * 133.33%),calc(50% - var(--y) * var(--z) * 1.3333%),0%);--dy:calc(var(--y) * var(--z) * 1.3333%);} }
+  .cc-placemap{margin:2px 0 8px;}
+  /* A place's location: its recorded parents, each a link one level up, and the place itself last */
+  .cc-crumbs{margin:18px 0 0;}
+  .cc-crumbs ol{display:flex;flex-wrap:wrap;align-items:center;margin:0;padding:0;list-style:none;font-family:var(--font-ui);font-size:13.5px;line-height:1.3;}
+  .cc-crumbs li{display:inline-flex;align-items:center;min-width:0;}
+  .cc-crumbs li:not(:last-child)::after{content:"\203A";content:"\203A" / "";padding:0 7px 0 6px;font-size:16px;color:var(--gilt-dim);}   /* stays with its step when the path wraps */
+  .cc-crumb{display:inline-flex;align-items:center;gap:6px;min-height:36px;min-width:0;color:var(--link);}
+  a.cc-crumb>span{text-decoration:underline;text-decoration-color:var(--gilt-dim);text-underline-offset:3px;}
+  a.cc-crumb:hover>span{text-decoration-color:var(--gilt);}
+  .cc-crumb .cc-ico{width:16px;height:16px;color:var(--gilt);}
+  .cc-crumbs.is-planar .cc-ico{color:var(--ev-arcane);}
+  .cc-crumb.is-here{color:var(--body2);}
+  .cc-crumbs+.cc-kick{margin-top:6px;}
+  @media (max-width:719px){ .cc-crumbs{margin-top:10px;} .cc-crumbs ol{row-gap:2px;} }
   .cc-minimap img{position:absolute;left:var(--l);top:var(--t);width:calc(var(--z) * 100%);max-width:none;height:auto;display:block;filter:var(--map-filter);user-select:none;-webkit-user-drag:none;}
   .cc-minimap::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(110% 100% at 50% 50%,transparent 40%,rgba(14,13,12,.75));outline:1px solid rgba(207,166,80,.35);outline-offset:-7px;}
   .cc-minipin{position:absolute;z-index:2;left:calc(var(--l) + var(--x) * var(--z) * 1%);top:calc(var(--t) + var(--dy));width:24px;height:24px;transform:translate(-50%,-50%) rotate(-45deg);border-radius:50% 50% 50% 0;background:var(--ribbon);border:2px solid var(--gilt);box-shadow:0 3px 8px rgba(0,0,0,.6);animation:chr-pulse 1.8s ease-in-out infinite;}
@@ -1239,25 +1344,45 @@
       </div>
       </sc-if>
 
-      <!-- ═══ PLACES ═══ -->
+      <!-- ═══ PLACES — the atlas index: nested lists built in _buildPlaces (g.tree). Each branch's caret is a
+           button (aria-expanded, aria-controls → its list); each name a link to the place; the map action a
+           link of its own. The filter narrows the tree to the places found and the places around them. ═══ -->
       <sc-if value="{{ v.places }}">
-      <div class="cc-page">
+      <div class="cc-page cc-atlas">
         <div class="cc-sechead">
           <p class="cc-kicker">{{ t.characters.partyName }}</p>
           <h1 class="cc-sec-h">{{ t.places.title }}</h1>
           <p class="cc-sec-sub">{{ t.places.sub }}</p>
           <div class="cc-orn" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="cc-tree">
-          <sc-for list="{{ pll.items }}" as="p">
-            <div class="{{ p.rowCls }}" style="{{ p.indent }}">
-              <a class="{{ p.cls }}" href="{{ p.href }}" aria-current="{{ p.current }}">
-                <span class="cc-cbody"><span class="cc-ctitle">{{ p.name }}</span><span class="cc-row-sub">{{ p.sub }}</span></span>
-              </a>
-              <sc-if value="{{ p.mapHref }}"><a class="cc-prow-map" href="{{ p.mapHref }}" title="{{ p.mapTitle }}" aria-label="{{ p.mapTitle }}">{{ icons.target }}</a></sc-if>
+        <sc-if value="{{ pll.hasPlaces }}">
+          <div class="cc-toolbar">
+            <div class="cc-search">
+              <span class="cc-search-ico">{{ icons.search }}</span>
+              <input class="cc-input" ref="{{ pll.inputRef }}" type="search" value="{{ pll.query }}" onChange="{{ pll.onQuery }}" placeholder="{{ t.places.findPlaceholder }}" aria-label="{{ t.places.findAria }}" aria-describedby="cc-atlas-status" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+              <sc-if value="{{ pll.query }}"><button class="cc-search-x" onClick="{{ pll.onClear }}" aria-label="{{ t.places.clearFind }}">✕</button></sc-if>
             </div>
-          </sc-for>
-        </div>
+          </div>
+          <div class="cc-atlas-tools">
+            <span class="cc-results-t" id="cc-atlas-status" aria-live="polite">{{ pll.status }}</span>
+            <span class="cc-flex"></span>
+            <sc-if value="{{ pll.showFold }}">
+              <button class="cc-linkbtn" onClick="{{ pll.onExpandAll }}" disabled="{{ pll.allOpen }}">{{ icons.unfold }}{{ t.places.expandAll }}</button>
+              <button class="cc-linkbtn" onClick="{{ pll.onCollapseAll }}" disabled="{{ pll.allClosed }}">{{ icons.fold }}{{ t.places.collapseAll }}</button>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-for list="{{ pll.groups }}" as="g">
+          <section class="{{ g.cls }}" aria-labelledby="{{ g.hid }}">
+            <h2 class="cc-h2" id="{{ g.hid }}">{{ g.icon }}{{ g.label }} <span class="n">{{ g.count }}</span></h2>
+            <sc-if value="{{ g.note }}"><p class="cc-atlas-note">{{ g.note }}</p></sc-if>
+            {{ g.tree }}
+          </section>
+        </sc-for>
+        <sc-if value="{{ pll.none }}">
+          <div class="cc-empty"><p style="margin:0 0 4px;">{{ pll.noneText }}</p><button class="cc-linkbtn" onClick="{{ pll.onClear }}">{{ t.places.clearFind }}</button> <button class="cc-linkbtn" onClick="{{ pll.onSearchAll }}">{{ t.places.searchAll }}</button></div>
+        </sc-if>
+        <sc-if value="{{ pll.noPlaces }}"><div class="cc-empty">{{ t.places.noneYet }}</div></sc-if>
       </div>
       </sc-if>
 
@@ -1531,7 +1656,7 @@
               <summary>{{ icons.characters }}{{ t.session.cast }} <span class="n">{{ s.castCount }}</span></summary>
               <div class="cc-disc-b">
                 <sc-if value="{{ s.hasPeople }}"><div class="cc-chips"><sc-for list="{{ s.people }}" as="it"><a class="{{ it.cls }}" href="{{ it.href }}"><sc-if value="{{ it.hasSeal }}"><span class="{{ it.sealCls }}" style="{{ it.seal }}">{{ it.mono }}</span></sc-if><span class="cc-chip-b"><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></span></a></sc-for></div></sc-if>
-                <sc-if value="{{ s.hasPlaces }}"><div class="cc-chips" style="margin-top:12px;"><sc-for list="{{ s.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
+                <sc-if value="{{ s.hasPlaces }}"><div class="cc-chips" style="margin-top:12px;"><sc-for list="{{ s.places }}" as="it"><a class="cc-chip plain is-place" href="{{ it.href }}"><span class="{{ it.icoCls }}">{{ it.icon }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div></sc-if>
               </div>
             </details>
           </sc-if>
@@ -1554,7 +1679,7 @@
           </sc-if>
           <sc-if value="{{ q.hasPlaces }}">
             <h2 class="cc-h2">{{ t.quest.places }}</h2>
-            <div class="cc-chips"><sc-for list="{{ q.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
+            <div class="cc-chips"><sc-for list="{{ q.places }}" as="it"><a class="cc-chip plain is-place" href="{{ it.href }}"><span class="{{ it.icoCls }}">{{ it.icon }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
           <h2 class="cc-h2">{{ t.quest.story }}</h2>
           <div class="cc-steps">
@@ -1615,25 +1740,42 @@
           </sc-if>
           <sc-if value="{{ p.hasPlaces }}">
             <h2 class="cc-h2">{{ t.person.places }}</h2>
-            <div class="cc-chips"><sc-for list="{{ p.places }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
+            <div class="cc-chips"><sc-for list="{{ p.places }}" as="it"><a class="cc-chip plain is-place" href="{{ it.href }}"><span class="{{ it.icoCls }}">{{ it.icon }}</span><span class="cc-chip-l">{{ it.label }}</span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ p.isSparse }}"><p class="cc-muted">{{ t.person.sparse }}</p></sc-if>
         </sc-if>
 
         <!-- PLACE -->
         <sc-if value="{{ d.place }}">
-          <div class="cc-kick"><span>{{ pp.kindLabel }}</span></div>
+          <!-- Where it lies (the recorded parentId chain, each step a link up — none is ever inferred), what it
+               is, where it is on the map (its first event with a position: places have no coordinates of their own). -->
+          <sc-if value="{{ pp.hasCrumbs }}">
+            <nav class="{{ pp.crumbsCls }}" aria-label="{{ t.place.crumbsAria }}">
+              <ol><sc-for list="{{ pp.crumbs }}" as="cr"><li><a class="cc-crumb" href="{{ cr.href }}">{{ cr.icon }}<span>{{ cr.label }}</span></a></li></sc-for><li><span class="cc-crumb is-here" aria-current="location">{{ pp.icon }}<span>{{ pp.name }}</span></span></li></ol>
+            </nav>
+          </sc-if>
+          <div class="{{ pp.kickCls }}">{{ pp.icon }}<span>{{ pp.kindLabel }}</span></div>
           <h1 class="cc-doc-h" tabIndex="-1" ref="{{ headRef }}">{{ pp.name }}</h1>
-          <sc-if value="{{ pp.hasByline }}"><p class="cc-byline"><sc-if value="{{ pp.hasCrumbs }}"><span>{{ t.place.inPrefix }} </span><sc-for list="{{ pp.crumbs }}" as="cr"><sc-if value="{{ cr.sep }}"><span class="cc-sep">›</span></sc-if><a class="cc-a" href="{{ cr.href }}">{{ cr.label }}</a></sc-for></sc-if><sc-if value="{{ pp.bothByline }}"><span class="cc-sep">·</span></sc-if><sc-if value="{{ pp.aliases }}"><span>{{ pp.aliases }}</span></sc-if></p></sc-if>
+          <sc-if value="{{ pp.aliases }}"><p class="cc-byline">{{ pp.aliases }}</p></sc-if>
           <sc-if value="{{ pp.canFilter }}"><div class="cc-actrow"><button class="cc-act" onClick="{{ pp.onFilter }}">{{ icons.chronicle }}{{ t.common.showInChronicle }}</button></div></sc-if>
+          <sc-if value="{{ pp.hasMap }}">
+            <div class="cc-placemap">
+              <a class="cc-minimap is-place" href="{{ pp.mapHref }}" aria-label="{{ pp.mapAria }}" style="{{ pp.mini.at }}">
+                <img src="assets/exandria-map-preview.jpeg" alt="" loading="lazy" draggable="false" />
+                <span class="cc-minipin"></span>
+              </a>
+              <div class="cc-mini-cap"><span>{{ pp.mini.caption }}</span><a class="cc-btn ghost" href="{{ pp.mapHref }}">{{ icons.target }}{{ t.common.viewOnMap }}</a></div>
+            </div>
+          </sc-if>
           <sc-if value="{{ pp.planarNote }}"><p class="cc-muted">{{ pp.planarNote }}</p></sc-if>
+          <sc-if value="{{ pp.noPosition }}"><p class="cc-muted">{{ pp.noPosition }}</p></sc-if>
           <sc-if value="{{ pp.hasEvents }}">
             <h2 class="cc-h2">{{ t.place.happened }} <span class="n">{{ pp.eventCount }}</span></h2>
             <div class="cc-rows"><sc-for list="{{ pp.events }}" as="r"><a class="{{ r.cls }}" href="{{ r.href }}"><span class="{{ r.icoCls }}">{{ r.icon }}</span><span class="cc-evrow-b"><span class="cc-evrow-m">{{ r.when }} · {{ r.sessionLabel }}</span><span class="cc-evrow-t">{{ r.title }}</span></span></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasChildren }}">
-            <h2 class="cc-h2">{{ t.place.within }}</h2>
-            <div class="cc-chips"><sc-for list="{{ pp.children }}" as="it"><a class="cc-chip plain" href="{{ it.href }}"><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for></div>
+            <h2 class="cc-h2">{{ t.place.within }} <span class="n">{{ pp.childCount }}</span></h2>
+            <div class="cc-chips"><sc-for list="{{ pp.children }}" as="it"><a class="cc-chip plain is-place" href="{{ it.href }}"><span class="{{ it.icoCls }}">{{ it.icon }}</span><span class="cc-chip-l">{{ it.label }}</span><sc-if value="{{ it.sub }}"><span class="cc-chip-sub">{{ it.sub }}</span></sc-if></a></sc-for></div>
           </sc-if>
           <sc-if value="{{ pp.hasQuests }}">
             <h2 class="cc-h2">{{ t.place.quests }}</h2>
@@ -1991,6 +2133,8 @@ const ICON_SHAPES = {
   recent:   ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M12 7.5V12l3.2 2"],
   legend:   ["M4 6.5h3","M10 6.5h10","M4 12h3","M10 12h10","M4 17.5h3","M10 17.5h10"],
   recap:    ["M11.5 6 5.5 12l6 6","M18.5 6l-6 6 6 6"],
+  unfold:   ["M7.5 9 12 4.5 16.5 9","M7.5 15l4.5 4.5 4.5-4.5"],     // expand every branch
+  fold:     ["M7.5 4.5 12 9l4.5-4.5","M7.5 19.5 12 15l4.5 4.5"],    // collapse every branch
 };
 // Event types — exactly one icon per type of ChronicleModel.EVENT_TYPES, always shown with the
 // type's label and tinted with its family colour (--ev-<family>). Same 24px stroke style as above.
@@ -2017,6 +2161,18 @@ const STATUS_ICON_SHAPES = {
   failed:  ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M9.2 9.2l5.6 5.6","M14.8 9.2l-5.6 5.6"],             // cross
   other:   ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z",{fill:"M12 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"}],
 };
+// Kinds of place — one icon per ChronicleModel.PLACE_KINDS key, plus "place" for a place recorded without
+// a known kind (place.kindKey). Always beside the kind's label or the place's name; planes in the arcane colour.
+const PLACE_ICON_SHAPES = {
+  continent: ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17z","M6.2 7.6c1.3.4 2.6 1.3 2.6 2.7 0 1.5-1.9 1.6-1.9 3.2 0 1.5 1.6 2 1.6 3.6","M14 4c-.5 1.4.4 2.6 1.8 2.8 1.3.2 2.2-.6 3.4 0","M20.3 13.6c-1.5-.3-2.8.5-3.2 1.8-.4 1.4.5 2.7.1 4"],   // a globe and its lands
+  region:    ["M2.5 19.5h19","M4 19.5 9.5 10l4 7","M11.5 19.5 15.5 13l4.5 6.5"],                                                                              // mountains
+  sea:       ["M2.5 8c1.5 0 2.3-1.5 4.75-1.5s3.25 1.5 4.75 1.5 2.3-1.5 4.75-1.5 3.25 1.5 4.75 1.5","M2.5 13c1.5 0 2.3-1.5 4.75-1.5s3.25 1.5 4.75 1.5 2.3-1.5 4.75-1.5 3.25 1.5 4.75 1.5","M2.5 18c1.5 0 2.3-1.5 4.75-1.5s3.25 1.5 4.75 1.5 2.3-1.5 4.75-1.5 3.25 1.5 4.75 1.5"], // waves
+  city:      ["M3.5 20.5V5.5h3.5v3h2.5v-3h5v3h2.5v-3h3.5v15h-6v-3.5a2.5 2.5 0 0 0-5 0v3.5z"],                                                              // castle walls and gate
+  district:  ["M3 20.5h18","M4 20.5V12l3.5-3 3.5 3v8.5","M11 20.5V9.5l4.5-3.5 4.5 3.5v11","M7.5 20.5v-3","M15.5 20.5v-3.5","M15.5 11.5v.01"],             // houses side by side
+  site:      ["M4 10.5 12 4l8 6.5","M5.5 9.3v11.2h13V9.3","M10 20.5v-4.5a2 2 0 0 1 4 0v4.5"],                                                            // one building
+  plane:     ["M12 11a2 2 0 0 1 4 0 4 4 0 0 1-8 0 6 6 0 0 1 12 0 8 8 0 0 1-16 0"],                                                                     // a spiral: another plane of existence
+  place:     ["M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z","M12 12.3a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6z"],                     // a map marker (no kind recorded)
+};
 // Decorative: every icon is aria-hidden; its meaning is always also given as text (label, title or aria-label).
 const svgIcon = (ds,sw) => h("svg",{className:"cc-ico",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:sw,strokeLinecap:"round",strokeLinejoin:"round","aria-hidden":"true",focusable:"false"},
   ds.map((d,i)=>typeof d==="string"?h("path",{key:i,d}):h("path",{key:i,d:d.fill,fill:"currentColor",stroke:"none"})));
@@ -2024,6 +2180,7 @@ const iconSet = (shapes,sw) => Object.fromEntries(Object.entries(shapes).map(([k
 const ICONS = iconSet(ICON_SHAPES,k=>k==="more"?3:1.7);
 const EVENT_ICONS = iconSet(EVENT_ICON_SHAPES,1.6);
 const STATUS_ICONS = iconSet(STATUS_ICON_SHAPES,1.8);
+const PLACE_ICONS = iconSet(PLACE_ICON_SHAPES,1.6);
 
 // ── Route line styles: one colour + dash pattern per party member (party order) ─
 const ROUTE_DASHES = ["8 4", "2 4", "11 4 2 4", "5 3 1 3"];
@@ -2098,6 +2255,8 @@ class Component extends DCLogic {
       collapsedGroups:{},
       questStatus:"all",
       peopleQuery:"",
+      placesQuery:"",                                // the Places filter (this visit only, like the Characters one)
+      placesOpen:{},                                 // { placeId: true|false } — branches opened/closed this visit (M.isPlaceOpen)
       showRoute:props.showRoutes??true,
       view:{ scale:1, x:0, y:0 },
       mapSelId:null, mapList:null, mapPanelOpen:false, hiLoaded:false,
@@ -2152,6 +2311,7 @@ class Component extends DCLogic {
       this._detailEl=el; if(el) el.addEventListener("scroll",this._onDetailScroll,{passive:true});
     };
     this.searchRef = el=>{ this._searchEl=el; };
+    this.placesInputRef = el=>{ this._placesInput=el; };
     this.headRef   = el=>{ this._headEl=el; };
     this.helpHeadRef = el=>{ this._helpHead=el; };
     // The first-visit welcome takes the focus once, the first time it appears and only while nothing
@@ -2224,7 +2384,7 @@ class Component extends DCLogic {
         // Favourites/history pointing at entries that no longer exist are dropped — but never against an
         // older offline copy, which may simply not have the newest entries yet.
         if(!this._servedOffline) this.lib.prune(ref=>!!M.resolveRef(this.model,ref.kind,ref.id));
-        this.setState({loaded:true,servedOffline:!!this._servedOffline},()=>this._afterRoute(null,this.state.route));
+        this.setState(s=>({loaded:true,servedOffline:!!this._servedOffline,placesOpen:this._revealPlace(s.placesOpen,s.route)}),()=>this._afterRoute(null,this.state.route));
       }).catch(err=>{
         console.error(err);
         this.setState({dataError:String(err&&err.message||err)});
@@ -2305,8 +2465,11 @@ class Component extends DCLogic {
     if(st.length>60) st.splice(0,st.length-60);
     const prev=this.state.route;
     this._overlay=null;                                            // any route change closes the help and the search
-    this.setState(s=>({route:r,moreOpen:false,help:null,search:s.search.open?{...s.search,open:false}:s.search}),()=>this._afterRoute(prev,r));
+    this.setState(s=>({route:r,moreOpen:false,help:null,search:s.search.open?{...s.search,open:false}:s.search,placesOpen:this._revealPlace(s.placesOpen,r)}),()=>this._afterRoute(prev,r));
   }
+  // A place opened in the Places section unfolds its ancestors in the index, so its row is in view
+  // (the place itself and every other branch stay as they were).
+  _revealPlace(open,r){ return this.model&&r.section==="places"&&r.kind==="place"?M.revealPlace(this.model,open,r.id):open; }
   canGoBack(){ return this._stack.length>1; }
   goBack(){
     if(this.canGoBack()&&!this.state.tourOn) history.back();
@@ -2321,9 +2484,10 @@ class Component extends DCLogic {
     if(main&&listVisible&&r.section!=="map"&&(!prev||prev.section!==r.section||(prev.kind&&!this.state.isWide))) main.scrollTop=this._scroll[r.section]||0;
     if(det&&r.kind&&(!prev||routeHash(prev)!==routeHash(r))) det.scrollTop=this._dscroll[routeHash(r)]||0;
     requestAnimationFrame(()=>{ this._restoring=false; });
-    // Keep the open event visible in the timeline beside the reading pane.
-    if(this.state.isWide&&r.section==="chronicle"&&r.kind==="event"&&main){
-      const card=main.querySelector(`[data-ev="${(window.CSS&&CSS.escape)?CSS.escape(r.id):r.id}"]`);
+    // Keep the open entry visible in the list beside the reading pane: an event in the timeline, a place in the index.
+    const keep=r.section==="chronicle"&&r.kind==="event"?"data-ev":r.section==="places"&&r.kind==="place"?"data-place":null;
+    if(this.state.isWide&&keep&&main){
+      const card=main.querySelector(`[${keep}="${(window.CSS&&CSS.escape)?CSS.escape(r.id):r.id}"]`);
       if(card){ const a=card.getBoundingClientRect(), b=main.getBoundingClientRect(); if(a.top<b.top+120||a.bottom>b.bottom) card.scrollIntoView({block:"center"}); }
     }
     // On phones the reading pane replaces the list: move focus to its heading for screen readers
@@ -2640,7 +2804,10 @@ class Component extends DCLogic {
   // Second line: what they did here (e.g. "gave the quest"), else their role (a party member's class · subclass), else their kind.
   personChip(p,sub){ return { href:this.href("character",p.id), label:p.name, sub:sub||p.role||this.t(`personCategoryOne.${p.category}`), cls:"cc-chip", hasSeal:true, sealCls:this.sealCls(p), seal:this.seal(p), mono:this.mono(p) }; }
   questRow(q)     { return { href:this.href("quest",q.id), title:q.title, badge:q.statusLabel, badgeCls:`cc-badge tone-${q.statusTone}`, badgeIcon:this.statusIcon(q.statusTone) }; }
-  placeChip(pl)   { return { href:this.href("place",pl.id), label:pl.name, sub:pl.kindLabel }; }
+  // A place is identified the same way everywhere (index, chips, search, its own page): its kind's icon
+  // (arcane-tinted on other planes) beside its name or the kind's label.
+  placeIcon(pl)   { return PLACE_ICONS[pl&&pl.kindKey]||PLACE_ICONS.place; }
+  placeChip(pl)   { return { href:this.href("place",pl.id), label:pl.name, sub:pl.kindLabel, icon:this.placeIcon(pl), icoCls:"cc-chip-ico"+(pl.isPlanar?" is-planar":"") }; }
   evRow(ev)       { return { href:this.href("event",ev.id), title:this.title(ev), summary:ev.summary, when:`${ev.typeLabel} · ${this.dayText(ev)}`, session:ev.session, sessionLabel:this.sessLabel(ev.session),
                       cls:"cc-evrow"+(this.isOpen("event",ev.id)?" is-sel":""), ...this.evIco(ev) }; }
   plotVm(p){
@@ -2755,13 +2922,10 @@ class Component extends DCLogic {
       sortLabel:st.sortDesc?t("chronicle.newest"):t("chronicle.oldest"), sortTitle:st.sortDesc?t("chronicle.newestTitle"):t("chronicle.oldestTitle"),
     };
   }
-  _placeOrder(){
-    const m=this.model, out=[];
-    const firstIdx=p=>p.allEventIds.length?m.eventById.get(p.allEventIds[0]).chronoIndex:1e9;
-    const walk=(list)=>list.slice().sort((a,b)=>firstIdx(a)-firstIdx(b)||this.cmp(a.name,b.name)).forEach(p=>{ out.push(p); walk(p.childIds.map(id=>m.placeById.get(id))); });
-    walk(m.places.filter(p=>!p.parentId));
-    return out;
-  }
+  // The places index (M.placeIndex): siblings by first appearance in the story, then by name in the
+  // reading language. One per model (= per language); the Places tree and the Chronicle's place filter share it.
+  _placeIndex(){ return this._memoize("placeIndex",this.model,()=>M.placeIndex(this.model,{cmp:(a,b)=>this.cmp(a.name,b.name)})); }
+  _placeOrder(){ const m=this.model; return M.placeOrder(m,this._placeIndex()).map(id=>m.placeById.get(id)); }
 
   // ── Section lists ─────────────────────────────────────────────────────────
   _buildSessions(){
@@ -2815,12 +2979,67 @@ class Component extends DCLogic {
     return { query:this.state.peopleQuery, onQuery:e=>this.setState({peopleQuery:e.target.value}), onClear:()=>this.setState({peopleQuery:""}),
       party, hasParty:party.length>0, groups, isEmpty:!party.length&&!groups.length };
   }
+  // ── Places: the atlas index ───────────────────────────────────────────────
+  // Which branches are open and what the filter finds come from the model (M.placeTreeView); here, the rows.
+  // Folding is remembered for this visit only (like the Chronicle's folded days); a search never changes it.
+  togglePlace(id){ this.setState(s=>({placesOpen:{...s.placesOpen,[id]:!M.isPlaceOpen(this.model,s.placesOpen,id)}})); }
+  setAllPlaces(open){ this.setState({placesOpen:Object.fromEntries(this._placeIndex().branchIds.map(id=>[id,open]))}); }
+  setPlacesQuery(q,focus){ this.setState({placesQuery:q}); if(focus&&this._placesInput) this._placesInput.focus(); }
   _buildPlaces(){
-    // Name + kind, indented under its parent like an index; the map stays one tap away for every place with a pin.
-    return { items:this._placeOrder().map(p=>({ href:this.href("place",p.id), name:p.name,
-      sub:p.kindLabel, indent:`margin-left:${Math.min(p.depth,4)*(this.state.isMobile?12:18)}px;`, rowCls:"cc-prow"+(p.depth?" is-nested":""),
-      mapHref:this.placeMapHref(p), mapTitle:this.t("places.onMap",{name:p.name}),
-      cls:"cc-row"+(this.isOpen("place",p.id)?" is-sel":""), current:this.curOf("place",p.id) })) };
+    // Memoized: the index only changes with the model, the folding, the filter, the open place and the map links' width.
+    const st=this.state, r=st.route, sel=r.kind==="place"?String(r.id):"", c=this._memo.places;
+    if(c&&c.model===this.model&&c.open===st.placesOpen&&c.q===st.placesQuery&&c.sel===sel&&c.wide===st.isWide) return c.val;
+    const val=this._buildPlacesNow(sel);
+    this._memo.places={model:this.model,open:st.placesOpen,q:st.placesQuery,sel,wide:st.isWide,val};
+    return val;
+  }
+  _buildPlacesNow(selId){
+    const m=this.model, st=this.state, t=this.t;
+    const view=M.placeTreeView(m,this._placeIndex(),{open:st.placesOpen,query:st.placesQuery});
+    const q=view.searching?st.placesQuery:"", listSep=t("common.listSep");
+    const sel=selId&&m.placeById.get(selId), path=new Set(sel?[sel.id,...sel.ancestorIds]:[]);
+    // One place: its row, then (for a branch) the list of what lies inside — kept in the DOM while folded
+    // (hidden and empty) so the caret's aria-controls always names a real element. `line` marks the guides
+    // that lead down to the open place: the siblings above it ("pathline") and the place on the way ("pathnode").
+    const node=(n,line)=>{
+      const p=m.placeById.get(n.id), isSel=n.id===selId, branch=n.childCount>0, listId=`cc-pt-${n.id}`;
+      const events=p.allEventIds.length, evText=events?t("common.events",{count:events}):"", mapHref=this.placeMapHref(p);
+      const folded=branch&&!n.expanded&&!view.searching?t("places.count",{count:n.childCount}):"";
+      const at=n.children.findIndex(k=>path.has(k.id));
+      const caret=branch&&!view.searching
+        ?h("button",{type:"button",className:"cc-twisty","aria-expanded":n.expanded?"true":"false","aria-controls":listId,
+            "aria-label":t("places.toggle",{count:n.childCount,name:p.name}),title:t(n.expanded?"places.hide":"places.show",{name:p.name}),
+            onClick:()=>this.togglePlace(n.id)},ICONS.next)
+        :h("span",{className:"cc-twisty none","aria-hidden":"true"});
+      const link=h("a",{className:"cc-node-a",href:this.href("place",n.id),"aria-current":isSel?"true":undefined,"aria-label":[p.name,p.kindLabel,evText,folded].filter(Boolean).join(listSep)},
+        h("span",{className:"cc-node-ico"},this.placeIcon(p)),
+        h("span",{className:"cc-node-b"},h("span",{className:"cc-node-n"},q?this.hl(p.name,q):p.name),h("span",{className:"cc-node-k"},folded?`${p.kindLabel} · ${folded}`:p.kindLabel)),
+        events?h("span",{className:"cc-node-lead","aria-hidden":"true"}):null,
+        events?h("span",{className:"cc-node-ev",title:evText},ICONS.chronicle,String(events)):null);
+      const map=mapHref?h("a",{className:"cc-node-map",href:mapHref,title:t("places.onMap",{name:p.name}),"aria-label":t("places.onMap",{name:p.name})},ICONS.target)
+        :h("span",{className:"cc-node-map none","aria-hidden":"true"});
+      return h("li",{key:n.id,className:`cc-node d${Math.min(n.depth,3)} ${branch?"is-branch":"is-leaf"}${n.expanded?" is-open":""}${line?` is-${line}`:""}`},
+        h("div",{className:"cc-node-row"+(isSel?" is-sel":path.has(n.id)?" is-path":"")+(n.context?" is-ctx":"")+(p.isPlanar?" is-planar":""),"data-place":n.id},caret,link,map),
+        branch?h("ul",{className:"cc-tree-sub",id:listId,role:"list",hidden:!n.expanded},n.children.map((k,i)=>node(k,at<0?"":i<at?"pathline":i===at?"pathnode":""))):null);
+    };
+    // The Atlas (the world on the map) and, apart, the other planes — split by the recorded kind "plane" only.
+    const groups=view.groups.map(g=>{
+      const planes=g.key==="planes";
+      return { key:g.key, hid:`cc-atlas-${g.key}`, cls:"cc-atlas-grp"+(planes?" is-planes":""), icon:PLACE_ICONS[planes?"plane":"continent"],
+        label:planes?t("places.planes"):t("places.atlas"), count:String(view.searching?g.matchCount:g.count), note:planes?t("places.planesNote"):"",
+        tree:h("ul",{className:"cc-tree",role:"list"},g.nodes.map(n=>node(n,""))) };
+    });
+    const query=st.placesQuery;
+    return {
+      hasPlaces:m.places.length>0, noPlaces:!m.places.length, query, inputRef:this.placesInputRef,
+      onQuery:e=>this.setPlacesQuery(e.target.value), onClear:()=>this.setPlacesQuery("",true),
+      status:view.searching?t("places.found",{count:view.matchCount,total:view.total}):t("places.count",{count:view.total}),
+      showFold:!view.searching&&this._placeIndex().branchIds.length>0, allOpen:view.allOpen, allClosed:view.allClosed,
+      onExpandAll:()=>this.setAllPlaces(true), onCollapseAll:()=>this.setAllPlaces(false),
+      groups, none:view.searching&&!view.matchCount, noneText:t("places.none",{q:query.trim()}),
+      // The index's filter only knows places; the whole chronicle is one tap away with the same words.
+      onSearchAll:()=>this.openSearch(query.trim()),
+    };
   }
 
   // ── One row per entry, everywhere (search results, favourites, history, guide) ──
@@ -2842,7 +3061,7 @@ class Component extends DCLogic {
     else if(kind==="quest"){ title=ent.title; sub=this.metaLine([ent.statusLabel,ent.lastSession!=null?t("search.subLast",{n:ent.lastSession}):""]);
       ico={ icoCls:`cc-hitico tone-${ent.statusTone}`, icon:this.statusIcon(ent.statusTone) }; }
     else if(kind==="place"){ const parent=ent.parentId&&m.placeById.get(ent.parentId); title=ent.name; sub=this.metaLine([ent.kindLabel,parent?parent.name:""]);
-      ico={ icoCls:"cc-hitico", icon:ICONS.places }; }
+      ico={ icoCls:"cc-hitico"+(ent.isPlanar?" is-planar":""), icon:this.placeIcon(ent) }; }
     else { title=ent.title||this.sessLabel(ent.no); sub=this.metaLine([this.sessLabel(ent.no),ent.playedLabel?t("common.played",{date:ent.playedLabel}):"",ent.dayText]);
       ico={ icoCls:"cc-hitno", icon:String(ent.no) }; }
     return { kind, id:String(id), key:`${kind}:${id}`, href:this.href(kind,id), title, titleNode:this.hl(title,q), sub, icoStyle:"", ...ico, cls:"cc-hit" };
@@ -3129,13 +3348,21 @@ class Component extends DCLogic {
       recordedAs:n.recordedAs&&!same(n.recordedAs,pl.nameEn)&&!same(n.recordedAs,pl.name)?t("person.recordedAs",{name:n.recordedAs}):"" }));
     const people=pl.personIds.map(id=>m.personById.get(id)).sort((a,b)=>(a.kind==="pc"?0:1)-(b.kind==="pc"?0:1)).map(p=>this.personChip(p));
     const aliasList=pl.aliases.filter(a=>!same(a,pl.name)).map(a=>`“${a}”`).join(t("common.listSep"));
+    // On the map: where its first event with a position happened (the same spot "Ver en el mapa" opens). A
+    // continent, region or sea is framed wider. Planes and places without such an event say so instead.
+    const fe=pl.focusEventId?m.eventById.get(pl.focusEventId):null, feAt=fe&&fe.locationId!==pl.id?m.placeById.get(fe.locationId):null;
+    const wide=pl.kindKey==="continent"||pl.kindKey==="region"||pl.kindKey==="sea";
     return {
-      name:pl.name, kindLabel:pl.kindLabel,
-      crumbs:pl.ancestorIds.slice().reverse().map((id,i)=>({href:this.href("place",id),label:m.placeById.get(id).name,sep:i>0})), hasCrumbs:pl.ancestorIds.length>0,
-      aliases:aliasList?t("place.aka",{list:aliasList}):"", hasByline:!!(pl.ancestorIds.length||aliasList), bothByline:!!(pl.ancestorIds.length&&aliasList),
+      name:pl.name, kindLabel:pl.kindLabel, icon:this.placeIcon(pl), kickCls:"cc-kick"+(pl.isPlanar?" ev-arcane":""),
+      // Its recorded parents, from the top: each one a link one level up (none is ever inferred).
+      crumbs:pl.ancestorIds.slice().reverse().map(id=>{ const a=m.placeById.get(id); return { href:this.href("place",id), label:a.name, icon:this.placeIcon(a) }; }),
+      hasCrumbs:pl.ancestorIds.length>0, crumbsCls:"cc-crumbs"+(pl.isPlanar?" is-planar":""),
+      aliases:aliasList?t("place.aka",{list:aliasList}):"",
       mapHref:this.placeMapHref(pl), canFilter:pl.allEventIds.length>0, onFilter:()=>this.filterBy("place",pl.id),
-      planarNote:pl.isPlanar?t("place.planar"):"",
-      children:pl.childIds.map(id=>this.placeChip(m.placeById.get(id))), hasChildren:pl.childIds.length>0,
+      hasMap:!!fe&&this.state.route.section!=="map", mapAria:t("places.onMap",{name:pl.name}),     // beside the full map, no preview
+      mini:fe?{ at:`--x:${fe.xp};--y:${fe.yp};${wide?"--z:1.8;":""}`, caption:feAt?t("place.mapByIn",{event:this.title(fe),place:feAt.name}):t("place.mapBy",{event:this.title(fe)}) }:{},
+      planarNote:pl.isPlanar?t("place.planar"):"", noPosition:!fe&&!pl.isPlanar?t("place.noPosition"):"",
+      children:this._placeIndex().childIds.get(pl.id).map(id=>this.placeChip(m.placeById.get(id))), hasChildren:pl.childIds.length>0, childCount:String(pl.childIds.length),
       events, eventCount:events.length, hasEvents:events.length>0,
       quests:pl.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:pl.questIds.length>0,
       people, hasPeople:people.length>0, notes, hasNotes:notes.length>0,

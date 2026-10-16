@@ -355,6 +355,151 @@ for (const w of [320, 360, 390, 430]) {
   });
 }
 
+// ── Places: the atlas index ─────────────────────────────────────────────────
+const placeRows = page => page.$$eval(".cc-app .cc-node-row", rows => rows.filter(r => r.getClientRects().length).map(r => r.dataset.place));
+const placeFind = ".cc-atlas input[type=search]";
+
+await check("places · main places and their first level in view; a caret folds without opening (mouse, Enter, Space); expand / collapse all", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places");
+  const rows = await placeRows(page);
+  eq(rows.slice(0, 5), ["taldorei", "emon", "kraghammer", "ozmit-sea", "vasselheim"], "story order, first level shown");
+  assert(!rows.includes("academic-district") && !rows.includes("chapel-of-pelor"), "deeper places folded");
+  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas de Exandria 25", "Otros planos 3"], "the Atlas and the other planes apart");
+  const caret = page.locator('[data-place="emon"] .cc-twisty');
+  eq([await caret.getAttribute("aria-expanded"), await caret.getAttribute("aria-controls"), await caret.getAttribute("aria-label")], ["false", "cc-pt-emon", "2 lugares dentro de Emon"], "caret state and name");
+  assert((await page.textContent('[data-place="emon"] .cc-node-k')).includes("2 lugares"), "a folded branch says what it holds");
+  await caret.click();
+  eq(await caret.getAttribute("aria-expanded"), "true", "unfolded");
+  assert((await placeRows(page)).includes("academic-district"), "its places shown");
+  eq(new URL(page.url()).hash, "#/places", "folding never opens the place");
+  await caret.focus();
+  await page.keyboard.press("Enter");
+  eq(await caret.getAttribute("aria-expanded"), "false", "Enter folds");
+  await page.keyboard.press(" ");
+  eq(await caret.getAttribute("aria-expanded"), "true", "Space unfolds");
+  eq(await caret.evaluate(el => getComputedStyle(el).outlineStyle), "solid", "visible focus");
+  await page.click(".cc-atlas-tools button:has-text('Expandir todo')");
+  eq((await placeRows(page)).length, 28, "every place");
+  assert(await page.locator(".cc-atlas-tools button:has-text('Expandir todo')").isDisabled(), "nothing left to expand");
+  await page.screenshot({ path: path.join(OUT, "places-1280-all.png"), fullPage: false });
+  await page.click(".cc-atlas-tools button:has-text('Contraer todo')");
+  eq((await placeRows(page)).length, 10, "the top level only");
+  assert(await page.locator(".cc-atlas-tools button:has-text('Contraer todo')").isDisabled(), "nothing left to collapse");
+  await ctx.close();
+});
+
+await check("places · opening a place: not unfolded, marked, its ancestors revealed; breadcrumbs go up; its places one tap away", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places/place/chapel-of-pelor");
+  await page.waitForSelector(".cc-crumbs");
+  eq(await page.locator('[data-place="high-pass"] .cc-twisty').getAttribute("aria-expanded"), "true", "a deep link unfolds the ancestors");
+  const row = page.locator('[data-place="chapel-of-pelor"]');
+  assert(await row.isVisible(), "the open place is in view");
+  eq(await row.locator(".cc-node-a").getAttribute("aria-current"), "true", "marked as current");
+  assert(await row.evaluate(r => r.classList.contains("is-sel")), "raised, with the ribbon");
+  eq(await page.$$eval(".cc-crumbs li", ls => ls.map(l => l.textContent.trim())), ["Vasselheim", "High Pass, Vasselheim", "Capilla de Pelor, High Pass"], "the recorded path, the place last");
+  eq(await page.getAttribute(".cc-crumb.is-here", "aria-current"), "location", "the last step is where we are");
+  await page.click(".cc-crumbs a:has-text('Vasselheim')");
+  await page.waitForFunction(() => location.hash === "#/places/place/vasselheim");
+  eq(await page.textContent(".cc-doc-h"), "Vasselheim", "one level up");
+  eq(await page.locator(".cc-crumbs").count(), 0, "a top-level place has no invented path");
+  eq(await page.locator('[data-place="vasselheim"] .cc-twisty').getAttribute("aria-expanded"), "true", "selecting does not fold it either");
+  await page.locator('[data-place="high-pass"] .cc-twisty').click();                        // fold it, then open it from the page
+  await page.click(".cc-doc .cc-chip.is-place:has-text('High Pass')");
+  await page.waitForFunction(() => location.hash === "#/places/place/high-pass");
+  eq(await page.locator('[data-place="high-pass"] .cc-twisty').getAttribute("aria-expanded"), "false", "opening a branch never unfolds it");
+  eq((await page.textContent(".cc-doc .cc-h2:has-text('Dentro')")).replace(/\s+/g, " ").trim(), "Dentro 2", "what it holds, counted");
+  await page.screenshot({ path: path.join(OUT, "places-1280-open.png") });
+  await ctx.close();
+});
+
+await check("places · search: nested places with their context, highlighted; kinds and English; none → the whole chronicle; clearing restores the tree", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places");
+  await page.locator('[data-place="vasselheim"] .cc-twisty').click();                       // the visitor's own folding
+  const before = await placeRows(page);
+  await page.fill(placeFind, "gilmore");
+  await page.waitForTimeout(120);
+  eq(await placeRows(page), ["taldorei", "emon", "academic-district", "gilmores-shop"], "the shop and where it lies");
+  eq(await page.$$eval(".cc-node-row.is-ctx", rs => rs.map(r => r.dataset.place)), ["taldorei", "emon", "academic-district"], "ancestors as context");
+  eq(await page.$$eval(".cc-node-n mark", ms => ms.map(m => m.textContent)), ["Gilmore"], "highlighted");
+  eq((await page.textContent("#cc-atlas-status")).trim(), "1 de 28 lugares coincide", "count, announced");
+  eq(await page.locator(".cc-atlas .cc-twisty:not(.none)").count(), 0, "no carets while filtering");
+  await page.fill(placeFind, "DISTRICT");
+  await page.waitForTimeout(120);
+  eq(await page.$$eval(".cc-node-row:not(.is-ctx)", rs => rs.map(r => r.dataset.place)), ["academic-district", "high-pass", "main-avenue", "war-district"], "a kind, in English, in capitals");
+  await page.fill(placeFind, "xyzzy");
+  await page.waitForTimeout(120);
+  assert((await page.textContent(".cc-atlas .cc-empty")).includes("Ningún lugar coincide con «xyzzy»."), "no-results message");
+  await page.click(".cc-atlas .cc-empty button:has-text('Buscar en toda la crónica')");
+  await page.waitForSelector("[data-dialog=search]");
+  eq(await page.inputValue(".cc-spanel input"), "xyzzy", "the universal search takes the words");
+  await page.keyboard.press("Escape");
+  await page.click(".cc-atlas .cc-search-x");
+  await page.waitForTimeout(120);
+  eq(await placeRows(page), before, "the folding comes back as it was");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("type")), "search", "focus back in the field");
+  await ctx.close();
+});
+
+await check("places · the map: a row's map action, the page's preview (never for other planes, a note when no event has a position)", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places/place/gilmores-shop");
+  await page.waitForSelector(".cc-placemap");
+  eq(await page.getAttribute(".cc-placemap .cc-minimap", "href"), "#/map/place/gilmores-shop", "the preview opens the map");
+  assert((await page.textContent(".cc-placemap .cc-mini-cap")).includes("El encuentro en lo de Gilmore"), "says which event places it");
+  eq(await page.getAttribute('[data-place="vasselheim"] .cc-node-map', "href"), "#/map/place/vasselheim", "row action (wide: map + its page)");
+  eq(await page.locator('[data-place="whitestone"] a.cc-node-map').count(), 0, "no map action without a position");
+  await page.click('[data-place="vasselheim"] .cc-node-map');
+  await page.waitForFunction(() => location.hash === "#/map/place/vasselheim");
+  await page.waitForSelector(".cc-mapwrap");
+  eq(await page.textContent(".cc-doc-h"), "Vasselheim", "the place beside the map");
+  eq(await page.locator(".cc-doc .cc-placemap").count(), 0, "no preview beside the full map");
+  for (const [id, note] of [["shadowfell", "Otro plano de existencia"], ["whitestone", "Sin marcador en el mapa"]]) {
+    await page.evaluate(h => { location.hash = h; }, `#/places/place/${id}`);
+    await page.waitForFunction(i => location.hash.endsWith(i), id);
+    await page.waitForTimeout(200);
+    eq(await page.locator(".cc-doc .cc-placemap").count(), 0, `${id}: no preview`);
+    assert((await page.textContent(".cc-doc")).includes(note), `${id}: says why`);
+  }
+  await ctx.close();
+});
+
+for (const [w, h] of [[320, 640], [375, 812]]) {
+  await check(`places · ${w}px phone: everything expanded fits, carets and map actions are comfortable, Back keeps the folding`, async () => {
+    const { ctx, page } = await open({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, "#/places");
+    await page.locator(".cc-atlas-tools button:has-text('Expandir todo')").tap();
+    eq((await placeRows(page)).length, 28, "every place");
+    eq(await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-main").scrollWidth]), [w, w], "no horizontal scroll");
+    const boxes = await page.$$eval(".cc-twisty:not(.none), .cc-node-map:not(.none)", els => els.map(e => { const r = e.getBoundingClientRect(), a = getComputedStyle(e, "::after"); return [r.width + (a.content !== "none" ? 8 : 0), r.height, r.right]; }));
+    assert(boxes.every(([bw, bh, right]) => bw >= 36 && bh >= 42 && right <= w), `targets ${JSON.stringify(boxes.slice(0, 4))}`);
+    await page.screenshot({ path: path.join(OUT, `places-${w}-all.png`) });
+    await page.locator('[data-place="tyrs-forge"] .cc-node-a').tap();
+    await page.waitForFunction(() => location.hash === "#/places/place/tyrs-forge");
+    await page.waitForSelector(".cc-crumbs");
+    eq(await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-detail").scrollWidth]), [w, w], "the page fits too");
+    if (w === 375) await page.screenshot({ path: path.join(OUT, "places-375-open.png") });
+    await page.locator(".cc-back").first().tap();
+    await page.waitForFunction(() => location.hash === "#/places");
+    eq((await placeRows(page)).length, 28, "the list as it was left");
+    await ctx.close();
+  });
+}
+
+await check("places · ES → EN keeps the filter and the folding; labels translated", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/places");
+  await page.locator('[data-place="emon"] .cc-twisty').click();
+  await page.fill(placeFind, "pelor");
+  await page.waitForTimeout(120);
+  const es = await placeRows(page);
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForFunction(() => document.documentElement.lang === "en");
+  eq([await page.inputValue(placeFind), await placeRows(page)], ["pelor", es], "same filter, same places");
+  eq((await page.textContent("#cc-atlas-status")).trim(), "2 of 28 places match", "English count");
+  await page.fill(placeFind, "");
+  await page.waitForTimeout(120);
+  eq(await page.locator('[data-place="emon"] .cc-twisty').getAttribute("aria-expanded"), "true", "folding kept");
+  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas of Exandria 25", "Other planes 3"], "group names");
+  await ctx.close();
+});
+
 // ── One dark theme ──────────────────────────────────────────────────────────
 const lum = rgb => { const [r, g, b] = rgb.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 await check("theme · always dark: no toggle, an old light preference is ignored and removed, dark browser chrome", async () => {
