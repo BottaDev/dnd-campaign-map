@@ -315,10 +315,11 @@
     if (content) checkTranslations(raw, content, locale).forEach(i => issues.push(i));
 
     // People: PCs (characters.json) + NPCs/deities/factions (npcs.json)
-    const people = [], personById = new Map();
+    const people = [], personById = new Map(), rawPeople = new Map();
     const addPerson = (p, kind) => {
       if (!p || !p.id) { error(`${kind === "pc" ? "characters" : "npcs"}.json: entry without id`); return; }
       if (personById.has(p.id)) { error(`Duplicate person id "${p.id}"`); return; }
+      rawPeople.set(p.id, p);
       const tr = overlay(content, "people", p.id);
       const nameEn = str(p.name) || p.id, aliasesEn = arr(p.aliases);
       const category = kind === "pc" ? "party" : (PERSON_CATEGORIES[p.category] ? p.category : "person");
@@ -697,6 +698,82 @@
         ...namesOf(s.eventIds, eventById), ...[...s.activePlots, ...s.completedPlots].map(p => p.name)].join(" • "));
     });
 
+    // The contextual searches of the Sessions and Quests lists (findSessions / findQuests): what an entry
+    // records and what is explicitly linked to it, one part per text, so a match can say where it was
+    // found. `text` is what this language shows (`shown`, folded); `keys` the English original and every
+    // loaded translation, folded. A linked place counts with the places it is recorded inside (an event at
+    // the Chapel of Pelor happened in Vasselheim), as in the Chronicle's place filter; nothing is inferred.
+    const part = (field, ref, text, keys) => ({ field, ref, text: str(text), shown: fold(text), keys: fold(uniq(keys.filter(nonEmpty)).join(" ")) });
+    const named = (field, x) => part(field, x.id, x.name || x.title, x.nameKeys);
+    const within = ids => uniq(ids.flatMap(id => [id, ...placeById.get(id).ancestorIds]));
+    // One record's texts at a path, e.g. ["activePlots", 0, "notes", 2]: this language's (its translation,
+    // else English) and every language's for the keys — positional arrays only when as long as the English
+    // one, the rule of every overlay. Several paths make one line joined by " — " (a who's-who entry).
+    const textsOf = (kind, id, src) => {
+      const trs = overlays.map(o => overlay(o, kind, id)), cur = overlay(content, kind, id);
+      const get = (o, path) => {
+        let s = src;
+        for (const k of path) {
+          if (o == null || s == null) return null;
+          if (typeof k === "number" && !(Array.isArray(o) && Array.isArray(s) && o.length === s.length)) return null;
+          o = o[k]; s = s[k];
+        }
+        return nonEmpty(o) ? o : null;
+      };
+      const line = (o, paths, fb) => paths.map(p => get(o, p) || (fb ? get(src, p) : null)).filter(Boolean).join(" — ");
+      return (field, ref, ...paths) => part(field, ref, line(cur, paths, true), [line(src, paths), ...trs.map(tr => line(tr, paths))]);
+    };
+    const eventParts = new Map(events.map(e => {
+      const at = textsOf("events", e.id, e.raw), list = k => arr(e.raw[k]).map((x, i) => at("event", e.id, [k, i]));
+      return [e.id, [at("event", e.id, ["title"]), at("event", e.id, ["summary"]), at("event", e.id, ["description"]),
+        ...list("consequences"), ...list("unresolved"), at("event", e.id, ["igLabel"]),
+        part("event", e.id, `${e.typeLabel} — ${e.title}`, vocab(`eventType.${e.type}`, EVENT_TYPES[e.type].label))]];
+    }));
+    const plotParts = new Map();                                   // questId → the session-log lines that carry it
+    sessions.forEach(s => {
+      const src = rawSessions[String(s.no)] || {}, at = textsOf("sessions", String(s.no), src);
+      const plots = ["activePlots", "completedPlots"].flatMap(k => arr(src[k]).flatMap((p, i) => {
+        const lines = [at("plot", s.no, [k, i, "name"]), at("plot", s.no, [k, i, "qt"]), at("plot", s.no, [k, i, "closed"]),
+          ...arr(p && p.notes).map((x, j) => at("plot", s.no, [k, i, "notes", j])),
+          ...arr(p && p.npcs).map((x, j) => at("plot", s.no, [k, i, "npcs", j, "name"], [k, i, "npcs", j, "role"], [k, i, "npcs", j, "region"]))];
+        const qid = p && p.questId;
+        if (qid && questById.has(qid)) plotParts.set(qid, [...(plotParts.get(qid) || []), ...lines]);
+        return lines;
+      }));
+      s.find = [part("title", null, s.title, variants("sessions", String(s.no), "title", s.titleEn)),
+        at("opening", null, ["startedHere"]), at("ending", null, ["endedHere"]), at("recap", null, ["recap", "summary"]),
+        ...s.eventIds.flatMap(id => eventParts.get(id)), ...plots,
+        ...arr(src.effects).map((x, i) => at("effect", null, ["effects", i])),
+        at("date", null, ["ig", "start"]), at("date", null, ["ig", "end"]), at("date", null, ["ig", "rest"]),
+        ...s.questIds.map(id => named("quest", questById.get(id))),
+        ...[...s.characterIds, ...s.npcIds].map(id => named("person", personById.get(id))),
+        ...within(s.placeIds).map(id => named("place", placeById.get(id)))].filter(p => p.keys);
+      s.findText = s.find.map(p => p.keys).join("\n");            // a query word never holds a line break: no match across parts
+    });
+    const rawQuests = new Map();
+    arr(raw.quests).forEach(q => { if (q && q.id && !rawQuests.has(q.id)) rawQuests.set(q.id, q); });
+    quests.forEach(q => {
+      const src = rawQuests.get(q.id) || {}, at = textsOf("quests", q.id, src);
+      q.find = [part("title", null, q.title, variants("quests", q.id, "title", q.titleEn)), at("summary", null, ["summary"]),
+        ...q.objectivesEn.map((x, i) => at("objective", null, ["objectives", i])),
+        src.giver !== "—" ? at("giver", null, ["giver"]) : null,              // a giverId's person is among the people below
+        ...(plotParts.get(q.id) || []), ...q.eventIds.flatMap(id => eventParts.get(id)),
+        ...[...q.characterIds, ...q.npcIds].map(id => named("person", personById.get(id))),
+        ...within(q.placeIds).map(id => named("place", placeById.get(id)))].filter(p => p && p.keys);
+      q.findText = q.find.map(p => p.keys).join("\n");
+    });
+    // People (the Characters list): exactly what its filter has always matched (`searchText`: names, aliases,
+    // kind and role), one part per text so a row can say why it appeared — an alias, the kind, the role. A
+    // translation whose aliases do not line up with the English ones still counts, through the last alias part.
+    people.forEach(p => {
+      const at = textsOf("people", p.id, rawPeople.get(p.id));
+      p.find = [part("name", null, p.name, variants("people", p.id, "name", p.nameEn)),
+        ...p.aliasesEn.map((x, i) => at("alias", null, ["aliases", i])),
+        part("alias", null, p.aliases.join(", "), variants("people", p.id, "aliases", p.aliasesEn)),
+        at("race", null, ["race"]), at("role", null, ["role"])].filter(x => x.keys);
+      p.findText = p.find.map(x => x.keys).join("\n");
+    });
+
     // Recap highlights: only events recorded in that same session, in the editor's order.
     sessions.forEach(s => {
       s.recap.highlightIds = uniq(s.recap.highlightIds).filter(id => {
@@ -938,6 +1015,76 @@
     return ranges.reduce((out, r) => { const last = out[out.length - 1]; if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]); else out.push(r); return out; }, []);
   }
 
+  // ── Contextual search: the Sessions and Quests lists ──────────────────────
+  // A filter, never a ranking: each list keeps its own order (Sessions the chosen one, Quests by status and
+  // latest session), and the Quests status filter applies on top (AND). An entry is found when every word
+  // of the query — accents and case ignored, in either language — is in its parts (build(): `find`); the
+  // first part holding them all says why it appeared, { field, ref, text } — one that holds them in the
+  // language on screen first (so they can be highlighted), else the part holding the most. A session
+  // number ("12", "s12", "Sesión 12", "Session 12") means that session only, never stray digits; in Quests,
+  // the quests recorded in that session. The Characters list (findPeople) reads numbers as words, as it
+  // always has.
+  function findIn(entries, keyOf, text, byNumber) {
+    const q = fold(text), toks = q.split(" ").filter(Boolean), hits = new Map();
+    const out = { query: q, searching: toks.length > 0, number: null, hits };
+    if (!toks.length) return out;
+    const num = byNumber ? numberQuery(q) : null;
+    if (num) {
+      out.number = num.no;
+      entries.forEach(x => { const hit = byNumber(x, num.no); if (hit) hits.set(keyOf(x), hit); });
+      return out;
+    }
+    entries.forEach(x => {
+      if (!toks.every(t => x.findText.includes(t))) return;
+      let here = null, all = null, some = null, most = 0;
+      for (const p of x.find) {
+        const n = toks.filter(t => p.keys.includes(t)).length;
+        if (n === toks.length) {
+          if (toks.every(t => p.shown.includes(t))) { here = p; break; }
+          if (!all) all = p;
+        } else if (n > most) { some = p; most = n; }
+      }
+      const best = here || all || some;
+      if (best) hits.set(keyOf(x), { field: best.field, ref: best.ref, text: best.text });
+    });
+    return out;
+  }
+
+  function findSessions(model, text) {
+    return findIn(model.sessions, s => s.no, text, (s, no) => (s.no === no ? { field: "number", ref: no, text: "" } : null));
+  }
+
+  function findQuests(model, text) {
+    return findIn(model.quests, q => q.id, text, (q, no) => {
+      const at = q.progress.find(p => p.session === no);
+      if (!at) return null;
+      const plot = at.plots[0], ev = at.eventIds.length ? model.eventById.get(at.eventIds[0]) : null;
+      return { field: "session", ref: no, text: plot ? plot.qt || plot.name : ev ? ev.title : "" };
+    });
+  }
+
+  function findPeople(model, text) {
+    return findIn(model.people, p => p.id, text, null);
+  }
+
+  // A short piece of `text` around the query (accents and case ignored) — it opens a little before the first
+  // place the query's longest word (the most telling one) appears — cut between words with an ellipsis, and
+  // the ranges to highlight in it: the line saying why an entry appeared. Without the words in it (they were
+  // in the other language), the text's beginning.
+  function excerpt(text, query, opts) {
+    const o = opts || {}, max = o.max || 160, lead = o.lead == null ? 32 : o.lead;
+    const s = str(text).replace(/\s+/g, " ").trim();
+    const at = fold(query).split(" ").filter(Boolean).sort((a, b) => b.length - a.length).map(w => highlightRanges(s, w)[0]).find(Boolean);
+    let a = 0, b = s.length;
+    if (s.length > max) {
+      if (at && at[0] > lead) { const sp = s.indexOf(" ", at[0] - lead); a = sp >= 0 && sp < at[0] ? sp + 1 : at[0] - lead; }
+      b = Math.min(s.length, a + max);
+      if (b < s.length) { const sp = s.lastIndexOf(" ", b); if (sp > (at ? Math.max(a, at[1]) : a)) b = sp; }
+    }
+    const cut = (a > 0 ? "…" : "") + s.slice(a, b).trim() + (b < s.length ? "…" : "");
+    return { text: cut, ranges: highlightRanges(cut, query) };
+  }
+
   // ── The Places index: a tree of recorded parentId links ───────────────────
   // Siblings in story order — the first event recorded there or inside — then by name (`cmp`; English
   // names by default, so the order is the same in every language); places never visited come last.
@@ -1060,7 +1207,8 @@
     return { event: rich, person, mapEvent: mapped };
   }
 
-  return { build, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, SEARCH_KINDS, resolveRef, latestSession, recapOf, guideExamples,
+  return { build, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, findSessions, findQuests, findPeople, excerpt,
+    SEARCH_KINDS, resolveRef, latestSession, recapOf, guideExamples,
     placeIndex, placeOrder, placeTreeView, isPlaceOpen, revealPlace,
     activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
     chronicleGroups, sessionListItems, normalizePrefs, sortOrders, DEFAULT_ORDER,

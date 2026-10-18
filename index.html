@@ -263,10 +263,14 @@
   .cc-input::placeholder{color:var(--muted);opacity:1;}
   .cc-input:focus{border-color:var(--gilt);box-shadow:0 0 0 3px rgba(207,166,80,.18);}
   .cc-search .cc-input{padding:0 44px 0 42px;}
+  .cc-search .cc-input:placeholder-shown{padding-right:14px;}      /* no ✕ while empty: the hint gets its room */
   .cc-input[type=search]::-webkit-search-cancel-button{display:none;}
   .cc-input::-webkit-calendar-picker-indicator{filter:invert(.8) sepia(.4);}
   .cc-search-x{position:absolute;right:3px;width:40px;height:40px;border:0;border-radius:var(--r-sm);background:none;color:var(--muted);cursor:pointer;font-size:15px;}
   .cc-search-x:hover{color:var(--title);}
+  /* A found word, wherever a search shows it (titles, the line saying why an entry appeared): a faint gilt
+     underlay and the brightest ink — a mark, never a bright yellow, readable on every card. */
+  :where(.cc-app) mark{padding:0 1px;border-radius:2px;background:rgba(207,166,80,.3);color:var(--title);}
   .cc-select{width:100%;height:44px;padding:0 34px 0 12px;border:1px solid var(--input-border);border-radius:var(--r-sm);font-family:var(--font-ui);font-size:16px;color:var(--input-color);background:var(--input-bg);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;}
   .cc-select:focus{border-color:var(--gilt);box-shadow:0 0 0 3px rgba(207,166,80,.18);}
   .cc-select option{background:var(--option-bg);color:var(--input-color);}
@@ -417,13 +421,19 @@
   .cc-qcard.tone-done .cc-ctitle{color:var(--body);}
   .cc-qcard.tone-done .cc-ctext{color:var(--muted);}
   .cc-qcard.tone-done:hover{background:var(--card-bg-hover);}
-  .cc-statusbar{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:-4px 0 6px;}
+  .cc-statusbar{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 6px;}
   .cc-statusbar .cc-btn{padding:0 12px;gap:6px;font-weight:500;border-color:var(--control-border);}
   .cc-statusbar .cc-btn:hover{border-color:var(--gilt-dim);}
   .cc-statusbar .cc-btn.is-on{font-weight:600;border-color:var(--gilt);}
   .cc-statusbar .cc-btn .cc-ico{width:17px;height:17px;color:var(--tone,currentColor);}
   .cc-statusbar .cc-count{min-width:20px;height:20px;font-size:12px;background:var(--elev);color:var(--body2);}
   .cc-statusbar .is-on .cc-count{background:var(--gilt);color:var(--on-accent);}
+  /* Sessions and Quests have their own search under the chapter opening — the Chronicle's and the atlas'
+     field — with the order (Sessions) or the status filter (Quests) below it. While searching, a card's own
+     line says where the words were found: a quiet label, then the words in their sentence, marked. */
+  .cc-why-k{font-family:var(--font-ui);font-size:12.5px;font-weight:600;color:var(--section);}
+  .cc-why-k::after{content:"\00B7";content:"\00B7" / "";margin:0 .4em;font-weight:400;color:var(--muted);}
+  .cc-empty-hint{margin:0 0 6px;font-size:15.5px;}
   .cc-party{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
   .cc-pcard{align-items:center;padding:12px 14px;}
   .cc-pcard .cc-seal{width:64px;height:64px;font-size:28px;border-width:2px;border-color:var(--pc-color,var(--seal-border));}  /* the ring keeps the member's route colour */
@@ -486,7 +496,6 @@
   .cc-node-row.is-planar .cc-node-ico{color:var(--ev-arcane);}
   .cc-node-b{flex:0 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px;}
   .cc-node-n{min-width:0;font-family:var(--font-read);font-size:17px;font-weight:600;line-height:22px;color:var(--title);overflow-wrap:break-word;}
-  .cc-node-n mark{padding:0 1px;border-radius:2px;background:rgba(207,166,80,.3);color:inherit;}
   .cc-node-k{font-family:var(--font-ui);font-size:12.5px;line-height:22px;color:var(--muted);white-space:nowrap;}
   .cc-node-lead{flex:1 1 auto;min-width:14px;height:15px;margin:0 2px;border-bottom:1px dotted var(--control-border);}
   .cc-node-ev{flex:none;display:inline-flex;align-items:center;gap:5px;height:22px;font-family:var(--font-ui);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--body);}
@@ -992,7 +1001,6 @@
   .cc-hit-b{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;}
   .cc-hit-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;line-height:1.25;color:var(--title);overflow-wrap:break-word;}
   .cc-hit-s{font-family:var(--font-ui);font-size:13px;line-height:1.35;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cc-hit mark{padding:0 1px;border-radius:2px;background:rgba(207,166,80,.3);color:inherit;}
   .cc-hit .cc-seal{width:30px;height:30px;font-size:15px;}
   .cc-hit-more{min-height:44px;color:var(--gilt);font-family:var(--font-ui);font-size:14px;font-weight:600;}
   .cc-hit-more .cc-hitico{background:none;}
@@ -1237,7 +1245,8 @@
       </div>
       </sc-if>
 
-      <!-- ═══ SESSIONS ═══ -->
+      <!-- ═══ SESSIONS — its own search (a number, the title, what the log and its events recorded, who and
+           where) above the order: a search shows the sessions found, in the chosen order, without the gaps. ═══ -->
       <sc-if value="{{ v.sessions }}">
       <div class="cc-page">
         <div class="cc-sechead">
@@ -1245,10 +1254,6 @@
           <h1 class="cc-sec-h">{{ t.sessions.title }}</h1>
           <p class="cc-sec-sub">{{ sl.sub }}</p>
           <div class="cc-orn" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="cc-seg" role="group" aria-label="{{ t.sessions.orderAria }}">
-            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}" aria-pressed="{{ sl.isAsc }}" title="{{ t.sessions.oldestTitle }}">{{ t.sessions.oldest }}</button>
-            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}" aria-pressed="{{ sl.isDesc }}" title="{{ t.sessions.latestTitle }}">{{ t.sessions.latest }}</button>
-          </div>
         </div>
         <sc-if value="{{ recapEntry }}">
           <a class="cc-latest" href="{{ recapEntry.href }}" title="{{ recapEntry.sub }}" aria-label="{{ recapEntry.aria }}" style="margin:-6px 0 8px;">
@@ -1257,6 +1262,23 @@
             <span class="cc-chev">{{ icons.next }}</span>
           </a>
         </sc-if>
+        <sc-if value="{{ sl.hasSessions }}">
+        <div class="cc-toolbar">
+          <div class="cc-search">
+            <span class="cc-search-ico">{{ icons.search }}</span>
+            <input class="cc-input" ref="{{ sl.find.inputRef }}" type="search" value="{{ sl.find.query }}" onChange="{{ sl.find.onQuery }}" onKeyDown="{{ sl.find.onKey }}" placeholder="{{ sl.placeholder }}" aria-label="{{ t.sessions.findAria }}" aria-describedby="{{ sl.statusId }}" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+            <sc-if value="{{ sl.find.query }}"><button class="cc-search-x" onClick="{{ sl.find.onClear }}" aria-label="{{ t.find.clear }}">✕</button></sc-if>
+          </div>
+        </div>
+        </sc-if>
+        <div class="cc-results">
+          <sc-if value="{{ sl.searching }}"><span class="cc-results-t" id="cc-sessions-status">{{ sl.status }}</span></sc-if>
+          <span class="cc-flex"></span>
+          <div class="cc-seg" role="group" aria-label="{{ t.sessions.orderAria }}">
+            <button class="{{ sl.ascCls }}" onClick="{{ sl.onAsc }}" aria-pressed="{{ sl.isAsc }}" title="{{ t.sessions.oldestTitle }}">{{ t.sessions.oldest }}</button>
+            <button class="{{ sl.descCls }}" onClick="{{ sl.onDesc }}" aria-pressed="{{ sl.isDesc }}" title="{{ t.sessions.latestTitle }}">{{ t.sessions.latest }}</button>
+          </div>
+        </div>
         <div class="cc-list">
           <sc-for list="{{ sl.items }}" as="it">
             <sc-if value="{{ it.isGap }}"><div class="cc-gap">{{ it.text }}</div></sc-if>
@@ -1273,10 +1295,14 @@
             </sc-if>
           </sc-for>
         </div>
+        <sc-if value="{{ sl.none }}">
+          <div class="cc-empty"><p style="margin:0 0 4px;">{{ t.sessions.none }}</p><sc-if value="{{ sl.noneHint }}"><p class="cc-empty-hint">{{ sl.noneHint }}</p></sc-if><button class="cc-linkbtn" onClick="{{ sl.find.onClear }}">{{ t.find.clear }}</button> <button class="cc-linkbtn" onClick="{{ sl.onSearchAll }}">{{ t.find.searchAll }}</button></div>
+        </sc-if>
       </div>
       </sc-if>
 
-      <!-- ═══ QUESTS ═══ -->
+      <!-- ═══ QUESTS — its own search above the status filter: both apply together (the status AND the words),
+           and changing one never clears the other. ═══ -->
       <sc-if value="{{ v.quests }}">
       <div class="cc-page">
         <div class="cc-sechead">
@@ -1285,9 +1311,24 @@
           <p class="cc-sec-sub">{{ ql.sub }}</p>
           <div class="cc-orn" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
+        <sc-if value="{{ ql.hasQuests }}">
+        <div class="cc-toolbar">
+          <div class="cc-search">
+            <span class="cc-search-ico">{{ icons.search }}</span>
+            <input class="cc-input" ref="{{ ql.find.inputRef }}" type="search" value="{{ ql.find.query }}" onChange="{{ ql.find.onQuery }}" onKeyDown="{{ ql.find.onKey }}" placeholder="{{ ql.placeholder }}" aria-label="{{ t.quests.findAria }}" aria-describedby="{{ ql.statusId }}" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+            <sc-if value="{{ ql.find.query }}"><button class="cc-search-x" onClick="{{ ql.find.onClear }}" aria-label="{{ t.find.clear }}">✕</button></sc-if>
+          </div>
+        </div>
+        </sc-if>
         <div class="cc-statusbar" role="group" aria-label="{{ t.quests.statusAria }}">
           <sc-for list="{{ ql.tabs }}" as="tb"><button class="{{ tb.cls }}" onClick="{{ tb.onClick }}" aria-pressed="{{ tb.on }}">{{ tb.icon }}{{ tb.label }} <span class="cc-count">{{ tb.count }}</span></button></sc-for>
         </div>
+        <sc-if value="{{ ql.searching }}">
+          <div class="cc-results">
+            <span class="cc-results-t" id="cc-quests-status">{{ ql.status }}</span>
+            <sc-if value="{{ ql.elsewhere }}"><button class="cc-linkbtn" onClick="{{ ql.onAllStatuses }}">{{ ql.elsewhere }}</button></sc-if>
+          </div>
+        </sc-if>
         <sc-for list="{{ ql.groups }}" as="grp">
           <h2 class="{{ grp.cls }}">{{ grp.icon }}{{ grp.label }} <span class="n">{{ grp.count }}</span></h2>
           <div class="cc-list">
@@ -1301,10 +1342,14 @@
             </sc-for>
           </div>
         </sc-for>
+        <sc-if value="{{ ql.none }}">
+          <div class="cc-empty"><p style="margin:0 0 4px;">{{ t.quests.none }}</p><sc-if value="{{ ql.noneStatus }}"><p class="cc-empty-hint">{{ ql.noneStatus }}</p></sc-if><button class="cc-linkbtn" onClick="{{ ql.find.onClear }}">{{ t.find.clear }}</button> <sc-if value="{{ ql.noneElsewhere }}"><button class="cc-linkbtn" onClick="{{ ql.onAllStatuses }}">{{ ql.noneElsewhere }}</button> </sc-if><button class="cc-linkbtn" onClick="{{ ql.onSearchAll }}">{{ t.find.searchAll }}</button></div>
+        </sc-if>
       </div>
       </sc-if>
 
-      <!-- ═══ CHARACTERS ═══ -->
+      <!-- ═══ CHARACTERS — its own search above the party and the groups: the same matches as ever (name, alias,
+           kind, role), a count, and the reason on a row's quiet line when its name does not hold the words. ═══ -->
       <sc-if value="{{ v.characters }}">
       <div class="cc-page">
         <div class="cc-sechead">
@@ -1313,11 +1358,16 @@
           <p class="cc-sec-sub">{{ t.characters.sub }}</p>
           <div class="cc-orn" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
-        <div class="cc-search" style="margin-bottom:6px;">
-          <span class="cc-search-ico">{{ icons.search }}</span>
-          <input class="cc-input" type="search" value="{{ pl.query }}" onChange="{{ pl.onQuery }}" placeholder="{{ t.characters.findPlaceholder }}" aria-label="{{ t.characters.findAria }}" autoComplete="off" spellCheck="false" />
-          <sc-if value="{{ pl.query }}"><button class="cc-search-x" onClick="{{ pl.onClear }}" aria-label="{{ t.common.clear }}">✕</button></sc-if>
+        <sc-if value="{{ pl.hasPeople }}">
+        <div class="cc-toolbar">
+          <div class="cc-search">
+            <span class="cc-search-ico">{{ icons.search }}</span>
+            <input class="cc-input" ref="{{ pl.inputRef }}" type="search" value="{{ pl.query }}" onChange="{{ pl.onQuery }}" onKeyDown="{{ pl.onKey }}" placeholder="{{ pl.placeholder }}" aria-label="{{ t.characters.findAria }}" aria-describedby="{{ pl.statusId }}" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+            <sc-if value="{{ pl.query }}"><button class="cc-search-x" onClick="{{ pl.onClear }}" aria-label="{{ t.find.clear }}">✕</button></sc-if>
+          </div>
         </div>
+        </sc-if>
+        <sc-if value="{{ pl.searching }}"><div class="cc-results"><span class="cc-results-t" id="cc-characters-status">{{ pl.status }}</span></div></sc-if>
         <sc-if value="{{ pl.hasParty }}">
           <h2 class="cc-h2">{{ t.characters.partyName }}</h2>
           <div class="cc-party">
@@ -1340,6 +1390,9 @@
             </sc-for>
           </div>
         </sc-for>
+        <sc-if value="{{ pl.none }}">
+          <div class="cc-empty"><p style="margin:0 0 4px;">{{ t.characters.none }}</p><button class="cc-linkbtn" onClick="{{ pl.onClear }}">{{ t.find.clear }}</button> <button class="cc-linkbtn" onClick="{{ pl.onSearchAll }}">{{ t.find.searchAll }}</button></div>
+        </sc-if>
         <sc-if value="{{ pl.isEmpty }}"><div class="cc-empty">{{ t.characters.empty }}</div></sc-if>
       </div>
       </sc-if>
@@ -1359,7 +1412,7 @@
           <div class="cc-toolbar">
             <div class="cc-search">
               <span class="cc-search-ico">{{ icons.search }}</span>
-              <input class="cc-input" ref="{{ pll.inputRef }}" type="search" value="{{ pll.query }}" onChange="{{ pll.onQuery }}" placeholder="{{ t.places.findPlaceholder }}" aria-label="{{ t.places.findAria }}" aria-describedby="cc-atlas-status" enterKeyHint="search" autoComplete="off" spellCheck="false" />
+              <input class="cc-input" ref="{{ pll.inputRef }}" type="search" value="{{ pll.query }}" onChange="{{ pll.onQuery }}" onKeyDown="{{ pll.onKey }}" placeholder="{{ t.places.findPlaceholder }}" aria-label="{{ t.places.findAria }}" aria-describedby="cc-atlas-status" enterKeyHint="search" autoComplete="off" spellCheck="false" />
               <sc-if value="{{ pll.query }}"><button class="cc-search-x" onClick="{{ pll.onClear }}" aria-label="{{ t.places.clearFind }}">✕</button></sc-if>
             </div>
           </div>
@@ -2214,6 +2267,9 @@ const FAV_KINDS = { event:1, session:1, quest:1, character:1, place:1 };
 const Tour = window.ChronicleTour;
 const TOUR_IDS = ["main","map","search"];
 const SEARCH_LIMIT = 5;                           // results per group before "show more"
+// Each section's own search field (the Chronicle's lives with its filters): where its words are kept.
+const FIND_STATE = { sessions:"sessionsQuery", quests:"questsQuery", characters:"peopleQuery", places:"placesQuery" };
+const FIND_SAY = 900;                              // ms of quiet after typing before the new count is said aloud
 const RECENT_DWELL = 1200;                         // ms an entry stays open before it counts as viewed
 const IS_MAC = /Mac|iPhone|iPad/.test((navigator.platform||"")+(navigator.userAgent||""));
 const GROUP_ICON = { character:"characters", event:"chronicle", quest:"quests", place:"places", session:"sessions", recent:"recent" };
@@ -2256,6 +2312,7 @@ class Component extends DCLogic {
       questStatus:"all",
       peopleQuery:"",
       placesQuery:"",                                // the Places filter (this visit only, like the Characters one)
+      sessionsQuery:"", questsQuery:"",              // the Sessions and Quests searches (this visit only too: see setFind)
       placesOpen:{},                                 // { placeId: true|false } — branches opened/closed this visit (M.isPlaceOpen)
       showRoute:props.showRoutes??true,
       view:{ scale:1, x:0, y:0 },
@@ -2311,7 +2368,8 @@ class Component extends DCLogic {
       this._detailEl=el; if(el) el.addEventListener("scroll",this._onDetailScroll,{passive:true});
     };
     this.searchRef = el=>{ this._searchEl=el; };
-    this.placesInputRef = el=>{ this._placesInput=el; };
+    this._findEls={}; this._findMsg={};
+    this.findRefs = Object.fromEntries(Object.keys(FIND_STATE).map(k=>[k,el=>{ this._findEls[k]=el; }]));
     this.headRef   = el=>{ this._headEl=el; };
     this.helpHeadRef = el=>{ this._helpHead=el; };
     // The first-visit welcome takes the focus once, the first time it appears and only while nothing
@@ -2420,7 +2478,7 @@ class Component extends DCLogic {
     window.removeEventListener("popstate",this._onPop);
     window.removeEventListener("storage",this._onStorage);
     window.removeEventListener("online",this._onNet); window.removeEventListener("offline",this._onNet);
-    clearTimeout(this._recentTimer);
+    clearTimeout(this._recentTimer); clearTimeout(this._findTimer);
   }
 
   // ── Language ──────────────────────────────────────────────────────────────
@@ -2615,11 +2673,12 @@ class Component extends DCLogic {
       const st=this.state, a=document.activeElement;
       this._tourSnap={ id, hash:routeHash(st.route), stack:this._stack.slice(), scroll:{...this._scroll}, dscroll:{...this._dscroll},
         filters:st.filters, filtersOpen:st.filtersOpen, view:st.view, mapSelId:st.mapSelId, mapList:st.mapList, mapPanelOpen:st.mapPanelOpen,
-        questStatus:st.questStatus, focus:this._returnFocus||(a&&a!==document.body?a:null) };
+        questStatus:st.questStatus, finds:{sessionsQuery:st.sessionsQuery,questsQuery:st.questsQuery}, focus:this._returnFocus||(a&&a!==document.body?a:null) };
       this._returnFocus=null;
       try{ history.pushState({ccTour:id},"",location.href); }catch(e){}
       this._stack.push(this._tourSnap.hash);
-      this.setState({tourOn:id,moreOpen:false,filtersOpen:false});
+      // The tour shows the real Sessions and Quests lists: their searches step aside and come back when it ends.
+      this.setState({tourOn:id,moreOpen:false,filtersOpen:false,sessionsQuery:"",questsQuery:""});
       this.tour.start(id);
     };
     // From the help centre (or the search): close it first, its history entry included.
@@ -2668,7 +2727,7 @@ class Component extends DCLogic {
     // Left early ("Omitir tutorial", ✕, Esc, Back): the visitor chose — the welcome does not come back by itself.
     else if(id==="main") this.onboarding.dismissInvite();
     this._overlay=null;
-    const base={ tourOn:null, onboardingRev:this.state.onboardingRev+1, moreOpen:false, search:{...this.state.search,open:false} };
+    const base={ tourOn:null, onboardingRev:this.state.onboardingRev+1, moreOpen:false, search:{...this.state.search,open:false}, ...(snap&&snap.finds) };
     if(completed||!snap){
       // Finished: stay where the tour ended (no marker's card left open for later); its history entry becomes an ordinary one.
       try{ if(history.state&&history.state.ccTour) history.replaceState(null,"",location.href); }catch(e){}
@@ -2927,64 +2986,138 @@ class Component extends DCLogic {
   _placeIndex(){ return this._memoize("placeIndex",this.model,()=>M.placeIndex(this.model,{cmp:(a,b)=>this.cmp(a.name,b.name)})); }
   _placeOrder(){ const m=this.model; return M.placeOrder(m,this._placeIndex()).map(id=>m.placeById.get(id)); }
 
+  // ── Each section's own search field: Sessions, Quests, Characters, Places ──
+  // One behaviour for all of them (the Chronicle's field lives with its filters). The words stay in memory
+  // for this visit only — opening an entry and coming back, another section or the language switch keep
+  // them; the next visit starts empty, so an old search never leaves a section looking empty. ✕ and Esc
+  // clear them with the focus kept in the field; typing in a field stuck over a scrolled list brings the
+  // list back to its top; the new count is said once typing pauses, never at every key.
+  setFind(key,q,focus){
+    this.setState({[FIND_STATE[key]]:q},()=>this._findScroll(key));
+    if(focus&&this._findEls[key]) this._findEls[key].focus();
+    clearTimeout(this._findTimer);
+    if(q.trim()&&key in this._findMsg) this._findTimer=setTimeout(()=>{ const msg=this._findMsg[key]; if(msg&&this.state[FIND_STATE[key]]===q) this._say(msg); },FIND_SAY);
+  }
+  _findVm(key){
+    const q=this.state[FIND_STATE[key]];
+    return { query:q, inputRef:this.findRefs[key], onQuery:e=>this.setFind(key,e.target.value), onClear:()=>this.setFind(key,"",true),
+      onKey:e=>{ if(e.key==="Escape"&&q){ e.preventDefault(); this.setFind(key,"",true); } } };
+  }
+  _findScroll(key){
+    const el=this._findEls[key], main=this._mainEl, bar=el&&el.closest(".cc-toolbar"), next=bar&&bar.nextElementSibling;
+    if(!main||!next) return;
+    const top=next.getBoundingClientRect().top-main.getBoundingClientRect().top+main.scrollTop-parseFloat(getComputedStyle(next).marginTop)-bar.offsetHeight;
+    if(main.scrollTop>top+1) main.scrollTop=Math.max(0,top);
+  }
+  // What the Sessions, Quests or Characters search finds (M.findSessions / findQuests / findPeople), once per model and words.
+  _found(key){
+    const q=this.state[FIND_STATE[key]], c=this._memo["find:"+key];
+    if(c&&c.model===this.model&&c.q===q) return c.val;
+    const val=(key==="sessions"?M.findSessions:key==="quests"?M.findQuests:M.findPeople)(this.model,q);
+    this._memo["find:"+key]={model:this.model,q,val};
+    return val;
+  }
+  // The line saying why an entry appeared: the words in their sentence, marked, after a quiet label naming
+  // where they were found. Found in its title (or by its number) the card keeps its usual line; found in
+  // that usual line (`own`: a session's opening, a quest's summary) the line needs no label.
+  _why(hit,words,own){
+    if(!hit||hit.field==="title"||hit.field==="number") return null;
+    const ex=M.excerpt(hit.text,words), bySession=hit.field==="session"||(hit.field==="plot"&&own==="summary");
+    const label=hit.field===own?"":bySession?this.sessLabel(hit.ref):this.t(`find.field.${hit.field}`);
+    return h("span",null,label?h("span",{className:"cc-why-k"},label,h("span",{className:"cc-sr"},": ")):null,this.marked(ex.text,ex.ranges));
+  }
+
   // ── Section lists ─────────────────────────────────────────────────────────
   _buildSessions(){
-    const m=this.model, desc=this.state.sessionsDesc, t=this.t;
-    // Numeric session order (oldest first by default), with a marker for every unchronicled run.
-    const items=M.sessionListItems(m,{order:desc?"desc":"asc"}).map(it=>{
+    const m=this.model, st=this.state, desc=st.sessionsDesc, t=this.t;
+    const find=this._findVm("sessions"), r=this._found("sessions"), words=r.number==null?st.sessionsQuery:"";
+    // Numeric session order (oldest first by default), with a marker for every unchronicled run. A search keeps
+    // the order and shows the sessions found — the markers describe the whole list, so they step aside.
+    const items=M.sessionListItems(m,{order:desc?"desc":"asc"}).filter(it=>!r.searching||(!it.gap&&r.hits.has(it.session.no))).map(it=>{
       if(it.gap) return { isGap:true, text:it.from===it.to?t("sessions.gapOne",{n:it.from}):t("sessions.gapRange",{a:it.from,b:it.to}) };
-      const s=it.session;
-      // Number, title, when, and the opening line; who took part and which quests moved are in the log.
-      return { isSession:true, no:s.no, aria:this.sessLabel(s.no), href:this.href("session",s.no), title:s.title||this.sessLabel(s.no),
+      const s=it.session, title=s.title||this.sessLabel(s.no);
+      // Number, title, when, and the opening line (in a search: where the words were found); who took part
+      // and which quests moved are in the log.
+      return { isSession:true, no:s.no, aria:this.sessLabel(s.no), href:this.href("session",s.no), title:words?this.hl(title,words):title,
         meta:this.metaLine([s.playedLabel?t("common.played",{date:s.playedLabel}):"", s.dayText])||t("sessions.noDate"),
-        opening:s.startedHere||(s.isStub?t("sessions.noLogYet"):""),
+        opening:this._why(r.hits.get(s.no),words,"opening")||(words&&s.startedHere?this.hl(s.startedHere,words):s.startedHere)||(s.isStub?t("sessions.noLogYet"):""),
         cls:"cc-scard"+(this.isOpen("session",s.no)?" is-sel":""), current:this.curOf("session",s.no) };
     });
-    const played=m.sessions.filter(s=>!s.isStub).length;
+    const played=m.sessions.filter(s=>!s.isStub).length, found=r.hits.size;
+    const status=r.searching?t("sessions.found",{shown:found,count:m.sessions.length}):"";
+    this._findMsg.sessions=!r.searching?"":found?status:t("sessions.none");
     return { items, sub:t("sessions.sub",{count:played}),
       isAsc:!desc, isDesc:desc, ascCls:desc?"":"is-on", descCls:desc?"is-on":"",
-      onAsc:()=>this.setSessionsOrder(false), onDesc:()=>this.setSessionsOrder(true) };
+      onAsc:()=>this.setSessionsOrder(false), onDesc:()=>this.setSessionsOrder(true),
+      find, hasSessions:m.sessions.length>0, placeholder:t(st.isMobile?"sessions.findShort":"sessions.findPlaceholder"),
+      searching:r.searching, status, statusId:r.searching?"cc-sessions-status":undefined,
+      none:r.searching&&!found, noneHint:r.number!=null?t("sessions.noneNumber",{n:r.number}):"",
+      onSearchAll:()=>this.openSearch(st.sessionsQuery.trim()) };
   }
   _buildQuests(){
     const m=this.model, sel=this.state.questStatus, t=this.t;
+    const find=this._findVm("quests"), r=this._found("quests"), words=r.number==null?this.state.questsQuery:"";
     const statuses=[...new Set(m.quests.map(q=>q.status))].sort((a,b)=>(m.quests.find(q=>q.status===a).statusOrder)-(m.quests.find(q=>q.status===b).statusOrder));
     const labelOf=st=>m.quests.find(q=>q.status===st).statusLabel;
     const toneOf=st=>m.quests.find(q=>q.status===st).statusTone;
+    // The tabs keep their meaning while searching: how many quests have each status.
     const tabs=[{key:"all",label:t("quests.all"),count:m.quests.length,tone:""},...statuses.map(st=>({key:st,label:labelOf(st),count:m.quests.filter(q=>q.status===st).length,tone:toneOf(st)}))]
       .map(tb=>({...tb,on:sel===tb.key,icon:tb.tone?this.statusIcon(tb.tone):null,cls:"cc-btn ghost"+(tb.tone?` tone-${tb.tone}`:"")+(sel===tb.key?" is-on":""),onClick:()=>this.setState({questStatus:tb.key})}));
     // Each card carries its status badge (icon + label) beside the title and the status colour on its edge;
     // the cast, places and events of each quest stay in its page. The giver may wrap inside its own words
     // (a long name on a narrow phone would otherwise widen every card of the group); the session part stays whole.
-    const card=q=>({ ...this.questRow(q), summary:q.summary,
+    // In a search the title's words are marked and the summary gives way to where the words were found.
+    const card=q=>({ ...this.questRow(q), title:words?this.hl(q.title,words):q.title, summary:this._why(r.hits.get(q.id),words,"summary")||(words?this.hl(q.summary,words):q.summary),
       cls:`cc-qcard tone-${q.statusTone}`+(this.isOpen("quest",q.id)?" is-sel":""), current:this.curOf("quest",q.id),
       foot:[q.giver?t("quests.givenBy",{name:q.giver}):"", this.metaLine([q.lastSession!=null?t("quests.lastIn",{n:q.lastSession}):""])].filter(Boolean).join(" · ") });
     const recent=(a,b)=>(b.lastSession||0)-(a.lastSession||0)||this.cmp(a.title,b.title);
-    const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st).sort(recent).map(card); return {label:labelOf(st),count:items.length,items,icon:this.statusIcon(toneOf(st)),cls:`cc-h2 tone-${toneOf(st)}`}; });
+    // The status filter and the words apply together: a quest shows when it has the chosen status AND holds the words.
+    const found=q=>!r.searching||r.hits.has(q.id);
+    const groups=statuses.filter(st=>sel==="all"||sel===st).map(st=>{ const items=m.quests.filter(q=>q.status===st&&found(q)).sort(recent).map(card); return {label:labelOf(st),count:items.length,items,icon:this.statusIcon(toneOf(st)),cls:`cc-h2 tone-${toneOf(st)}`}; })
+      .filter(g=>g.items.length);
     const active=m.quests.filter(q=>q.status==="active").length;
-    return { tabs, groups, sub:t("quests.sub",{active,total:m.quests.length}) };
+    const shown=groups.reduce((n,g)=>n+g.items.length,0), others=r.hits.size-shown;
+    const status=r.searching?t("quests.found",{shown,count:m.quests.length}):"", only=sel!=="all"?t("quests.noneStatus",{status:labelOf(sel)}):"";
+    const inOthers=others>0?t("quests.inOthers",{count:others}):"";
+    this._findMsg.quests=!r.searching?"":shown?status:[t("quests.none"),only].filter(Boolean).join(" ");
+    return { tabs, groups, sub:t("quests.sub",{active,total:m.quests.length}),
+      find, hasQuests:m.quests.length>0, placeholder:t(this.state.isMobile?"quests.findShort":"quests.findPlaceholder"),
+      searching:r.searching, status, statusId:r.searching?"cc-quests-status":undefined,
+      elsewhere:shown?inOthers:"", none:r.searching&&!shown, noneStatus:only, noneElsewhere:shown?"":inOthers,
+      onAllStatuses:()=>this.setState({questStatus:"all"}), onSearchAll:()=>this.openSearch(this.state.questsQuery.trim()) };
   }
   _buildPeople(){
-    const m=this.model, t=this.t, toks=M.fold(this.state.peopleQuery).split(" ").filter(Boolean);
-    const hit=p=>!toks.length||toks.every(tok=>p.searchText.includes(tok));
-    const party=m.pcs.filter(hit).map(p=>({ href:this.href("character",p.id), name:p.name, role:p.role||"", seal:this.seal(p),
+    const m=this.model, t=this.t, find=this._findVm("characters"), r=this._found("characters"), words=r.searching?find.query:"";
+    // The same matches as ever (names, aliases, kind, role, in either language: M.findPeople), in the same groups and order.
+    const hit=p=>!r.searching||r.hits.has(p.id);
+    const name=p=>words?this.hl(p.name,words):p.name;
+    // While searching, a row's quiet line says why it appeared when its name does not: an alias, the kind or the role.
+    // The line a row already shows (a party member's role, anyone else's kind) is just marked.
+    const line=(p,usual,shows)=>{ const why=r.hits.get(p.id);
+      return !why||why.field==="name"||why.field===shows?(words&&usual?this.hl(usual,words):usual):this._why(why,words,""); };
+    const party=m.pcs.filter(hit).map(p=>({ href:this.href("character",p.id), name:name(p), role:line(p,p.role||"","role"), seal:this.seal(p),
       stripe:`--pc-color:${p.color||"#b58f3e"};`,
       cls:"cc-pcard"+(this.isOpen("character",p.id)?" is-sel":""), current:this.curOf("character",p.id) }));
     const cats=Object.entries(M.PERSON_CATEGORIES).filter(([k])=>k!=="party").sort((a,b)=>a[1].order-b[1].order);
     const groups=cats.map(([k])=>{
       const items=m.npcs.filter(p=>p.category===k&&hit(p)).sort((a,b)=>b.eventIds.length-a.eventIds.length||this.cmp(a.name,b.name))
-        .map(p=>({ href:this.href("character",p.id), name:p.name, sub:[p.race,p.memberIds.length?t("common.members",{count:p.memberIds.length}):""].filter(Boolean).join(" · "),
+        .map(p=>({ href:this.href("character",p.id), name:name(p), sub:line(p,[p.race,p.memberIds.length?t("common.members",{count:p.memberIds.length}):""].filter(Boolean).join(" · "),"race"),
           sealCls:this.sealCls(p), mono:this.mono(p), cls:"cc-row"+(this.isOpen("character",p.id)?" is-sel":""), current:this.curOf("character",p.id) }));
       return {label:t(`personCategory.${k}`),count:items.length,items};
     }).filter(g=>g.items.length);
-    return { query:this.state.peopleQuery, onQuery:e=>this.setState({peopleQuery:e.target.value}), onClear:()=>this.setState({peopleQuery:""}),
-      party, hasParty:party.length>0, groups, isEmpty:!party.length&&!groups.length };
+    const shown=party.length+groups.reduce((n,g)=>n+g.items.length,0);
+    const status=r.searching?t("characters.found",{shown,count:m.people.length}):"";
+    this._findMsg.characters=!r.searching?"":shown?status:t("characters.none");
+    return { ...find, hasPeople:m.people.length>0, placeholder:t(this.state.isMobile?"characters.findShort":"characters.findPlaceholder"),
+      searching:r.searching, status, statusId:r.searching?"cc-characters-status":undefined,
+      party, hasParty:party.length>0, groups, none:r.searching&&!shown, isEmpty:!r.searching&&!shown,
+      onSearchAll:()=>this.openSearch(find.query.trim()) };
   }
   // ── Places: the atlas index ───────────────────────────────────────────────
   // Which branches are open and what the filter finds come from the model (M.placeTreeView); here, the rows.
   // Folding is remembered for this visit only (like the Chronicle's folded days); a search never changes it.
   togglePlace(id){ this.setState(s=>({placesOpen:{...s.placesOpen,[id]:!M.isPlaceOpen(this.model,s.placesOpen,id)}})); }
   setAllPlaces(open){ this.setState({placesOpen:Object.fromEntries(this._placeIndex().branchIds.map(id=>[id,open]))}); }
-  setPlacesQuery(q,focus){ this.setState({placesQuery:q}); if(focus&&this._placesInput) this._placesInput.focus(); }
   _buildPlaces(){
     // Memoized: the index only changes with the model, the folding, the filter, the open place and the map links' width.
     const st=this.state, r=st.route, sel=r.kind==="place"?String(r.id):"", c=this._memo.places;
@@ -3031,8 +3164,7 @@ class Component extends DCLogic {
     });
     const query=st.placesQuery;
     return {
-      hasPlaces:m.places.length>0, noPlaces:!m.places.length, query, inputRef:this.placesInputRef,
-      onQuery:e=>this.setPlacesQuery(e.target.value), onClear:()=>this.setPlacesQuery("",true),
+      hasPlaces:m.places.length>0, noPlaces:!m.places.length, ...this._findVm("places"),
       status:view.searching?t("places.found",{count:view.matchCount,total:view.total}):t("places.count",{count:view.total}),
       showFold:!view.searching&&this._placeIndex().branchIds.length>0, allOpen:view.allOpen, allClosed:view.allClosed,
       onExpandAll:()=>this.setAllPlaces(true), onCollapseAll:()=>this.setAllPlaces(false),
@@ -3044,8 +3176,10 @@ class Component extends DCLogic {
 
   // ── One row per entry, everywhere (search results, favourites, history, guide) ──
   // Type icon (event kind / status / portrait / session number), the name, and one quiet context line.
-  hl(text,q){
-    const r=q?M.highlightRanges(text,q):[]; if(!r.length) return text;
+  hl(text,q){ return this.marked(text,q?M.highlightRanges(text,q):[]); }
+  // The text with its [start, end) ranges in <mark> — the text itself is never changed, only wrapped.
+  marked(text,r){
+    if(!r||!r.length) return text;
     const out=[]; let at=0;
     r.forEach(([a,b],i)=>{ if(a>at) out.push(text.slice(at,a)); out.push(h("mark",{key:i},text.slice(a,b))); at=b; });
     if(at<text.length) out.push(text.slice(at));

@@ -500,6 +500,290 @@ await check("places · ES → EN keeps the filter and the folding; labels transl
   await ctx.close();
 });
 
+// ── Sessions and Quests: their own searches ────────────────────────────────
+const sessionFind = 'input[aria-label="Buscar sesiones"]', questFind = 'input[aria-label="Buscar misiones"]', charFind = 'input[aria-label="Buscar un personaje"]';
+const sessionNos = page => page.$$eval(".cc-main .cc-scard-no", els => els.map(e => +e.textContent));
+const questTitles = page => page.$$eval(".cc-main a.cc-qcard .cc-ctitle", els => els.map(e => e.textContent));
+const typeIn = async (page, sel, q) => { await page.fill(sel, q); await page.waitForTimeout(120); };
+const whyLabels = page => page.$$eval(".cc-main .cc-scard, .cc-main .cc-qcard", cs => cs.map(c => { const k = c.querySelector(".cc-why-k"); return k ? k.textContent.replace(/:\s*$/, "").trim() : ""; }));
+const fold = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+await check("sessions · search: a number, a title, what was recorded, accents and case; the count and why each appeared; the order kept; no results", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/sessions");
+  eq(await sessionNos(page), [1, 2, 8, 10, 11, 12], "every session, oldest first");
+  eq(await page.locator(".cc-main .cc-gap").count(), 2, "the unchronicled runs are marked (3–7, 9)");
+  eq(await page.locator("#cc-sessions-status").count(), 0, "no count until something is typed");
+  for (const q of ["12", "Sesión 12", "session 12"]) { await typeIn(page, sessionFind, q); eq(await sessionNos(page), [12], q); }
+  await typeIn(page, sessionFind, "1");
+  eq(await sessionNos(page), [1], "1 is session 1 — not 10, 11 or 12");
+  eq(await page.locator(".cc-main .cc-gap").count(), 0, "a search leaves the gap markers out");
+  await typeIn(page, sessionFind, "vigilados");
+  eq(await page.$$eval(".cc-main .cc-scard .cc-ctitle mark", ms => ms.map(m => m.textContent)), ["Vigilados"], "the title's words, marked");
+  // A word told in the logs: an event, an opening line, a plot, an effect — each card says where.
+  await typeIn(page, sessionFind, "incienso");
+  eq(await sessionNos(page), [8, 10, 11, 12], "what was recorded");
+  eq((await page.textContent("#cc-sessions-status")).trim(), "4 de 6 sesiones", "the count");
+  eq(await whyLabels(page), ["Acontecimiento", "", "Hilo", "Efecto"], "where the words were found (the opening line needs no label)");
+  eq(await page.$$eval(".cc-main .cc-scard .cc-ctext mark", ms => ms.map(m => m.textContent.toLowerCase())), ["incienso", "incienso", "incienso", "incienso"], "the word marked in its sentence");
+  const markBg = await page.$eval(".cc-main .cc-scard .cc-ctext mark", m => getComputedStyle(m).backgroundColor);
+  eq(markBg, "rgba(207, 166, 80, 0.3)", "a faint gilt underlay, not a bright yellow");
+  eq(await page.getAttribute(sessionFind, "aria-describedby"), "cc-sessions-status", "the field is described by its count");
+  await page.screenshot({ path: path.join(OUT, "find-sessions-1280.png") });
+  // The order the reader chose applies to the results too.
+  await page.click(".cc-results .cc-seg button:last-child");
+  eq(await sessionNos(page), [12, 11, 10, 8], "latest first");
+  eq(await page.inputValue(sessionFind), "incienso", "the words stay");
+  await page.click(".cc-results .cc-seg button:first-child");
+  eq(await sessionNos(page), [8, 10, 11, 12], "oldest first again");
+  // Accents and case.
+  await typeIn(page, sessionFind, "PELÓR");
+  const pelor = await sessionNos(page);
+  await typeIn(page, sessionFind, "pelor");
+  eq(await sessionNos(page), pelor, "PELÓR = pelor");
+  assert(pelor.length > 1, `pelor: ${pelor}`);
+  // Nothing found: said plainly, with the way out; an unchronicled number says so.
+  await typeIn(page, sessionFind, "Sesión 3");
+  const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
+  assert(empty.includes("No encontramos sesiones que coincidan con tu búsqueda.") && empty.includes("La sesión 3 no tiene crónica."), empty);
+  eq((await page.textContent("#cc-sessions-status")).trim(), "0 de 6 sesiones", "the count says none");
+  await page.screenshot({ path: path.join(OUT, "find-sessions-none.png") });
+  await page.click(".cc-main .cc-empty button:has-text('Borrar la búsqueda')");
+  await page.waitForTimeout(120);
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 6], "cleared: every session back");
+  eq(await page.evaluate(() => document.activeElement.getAttribute("aria-label")), "Buscar sesiones", "the focus stays in the field");
+  // ✕ and Esc clear too, the focus kept in the field.
+  await typeIn(page, sessionFind, "Locus");
+  eq(await page.getAttribute(".cc-main .cc-search-x", "aria-label"), "Borrar la búsqueda", "the ✕ has a name");
+  await page.click(".cc-main .cc-search-x");
+  await page.waitForTimeout(120);
+  eq([await page.inputValue(sessionFind), await page.evaluate(() => document.activeElement.getAttribute("aria-label"))], ["", "Buscar sesiones"], "✕");
+  await typeIn(page, sessionFind, "Locus");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(120);
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length, new URL(page.url()).hash], ["", 6, "#/sessions"], "Esc clears, and stays");
+  await page.fill(sessionFind, "zzqq");
+  await page.click(".cc-main .cc-empty button:has-text('Buscar en toda la crónica')");
+  await page.waitForSelector("[data-dialog=search]");
+  eq(await page.inputValue(".cc-spanel input"), "zzqq", "the universal search takes the words");
+  await page.keyboard.press("Escape");
+  await ctx.close();
+});
+
+await check("sessions · the count is said once typing pauses, not at every key", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/sessions");
+  await page.evaluate(() => { const el = document.querySelector(".cc-app > .cc-sr[aria-live]"); window.__said = []; new MutationObserver(() => window.__said.push(el.textContent.trim())).observe(el, { childList: true, subtree: true, characterData: true }); });
+  await page.locator(sessionFind).pressSequentially("cassandra", { delay: 60 });
+  await page.waitForTimeout(200);
+  eq(await page.evaluate(() => window.__said.filter(Boolean)), [], "nothing said while typing");
+  await page.waitForTimeout(1200);
+  eq([...new Set(await page.evaluate(() => window.__said.filter(Boolean)))], ["4 de 6 sesiones"], "then the count, once");
+  await ctx.close();
+});
+
+await check("sessions · a search survives opening a session and coming back — beside the list on desktop, Back on a phone (words, order, scroll); not the next visit", async () => {
+  let { ctx, page } = await open(DESKTOP, "#/sessions");
+  await typeIn(page, sessionFind, "Vasselheim");
+  const found = await sessionNos(page);
+  await page.click('.cc-main a.cc-scard[href="#/sessions/session/11"]');
+  await page.waitForFunction(() => location.hash === "#/sessions/session/11");
+  await page.waitForSelector(".cc-detail .cc-doc-h");
+  eq([await page.inputValue(sessionFind), await sessionNos(page)], ["Vasselheim", found], "the list beside the entry keeps its search");
+  eq(await page.locator(".cc-main .cc-scard.is-sel .cc-scard-no").textContent(), "11", "the open session is marked in the results");
+  await page.screenshot({ path: path.join(OUT, "find-sessions-1280-open.png") });
+  await page.click(".cc-docbar .cc-wide-only");                                    // ✕ closes the entry
+  await page.waitForFunction(() => location.hash === "#/sessions");
+  eq(await page.inputValue(sessionFind), "Vasselheim", "closed: still searching");
+  await ctx.close();
+  ({ ctx, page } = await open(PHONE, "#/sessions"));
+  await page.click(".cc-results .cc-seg button:last-child");                      // latest first
+  await typeIn(page, sessionFind, "Cassandra");
+  const nos = await sessionNos(page);
+  eq(nos, [12, 11, 10, 8], "latest first, found");
+  const scrolled = await page.evaluate(() => { const m = document.querySelector(".cc-main"); m.scrollTop = 300; return m.scrollTop; });
+  assert(scrolled > 50, `the results scroll (${scrolled})`);
+  await page.waitForTimeout(150);
+  await page.locator(".cc-main .cc-scard").nth(2).tap();
+  await page.waitForFunction(() => location.hash === "#/sessions/session/10");
+  await page.locator(".cc-back").first().tap();
+  await page.waitForFunction(() => location.hash === "#/sessions");
+  await page.waitForTimeout(250);
+  eq([await page.inputValue(sessionFind), await sessionNos(page)], ["Cassandra", nos], "Back: the same words, the same order");
+  const top = await page.evaluate(() => document.querySelector(".cc-main").scrollTop);
+  assert(Math.abs(top - scrolled) <= 4, `the scroll position too (${top}, left at ${scrolled})`);
+  // Another section and back: still there (this visit); the next visit starts empty.
+  await page.locator(".cc-bn", { hasText: "Crónica" }).tap();
+  await page.waitForSelector(".cc-results-t");
+  await page.locator(".cc-bn", { hasText: "Sesiones" }).tap();
+  await page.waitForSelector(sessionFind);
+  eq(await page.inputValue(sessionFind), "Cassandra", "kept across sections");
+  await page.reload();
+  await page.waitForSelector(sessionFind);
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 6], "a new visit starts with the whole list");
+  await ctx.close();
+});
+
+await check("quests · search AND status: the words survive status changes, the status survives clearing; ‘see N in other statuses’; no results explain both", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/quests");
+  const tab = name => page.locator(".cc-statusbar button", { hasText: name });
+  const on = () => page.$eval(".cc-statusbar .is-on", b => b.textContent.replace(/\s*\d+\s*$/, "").trim());
+  const counts = () => page.$$eval(".cc-statusbar .cc-count", cs => cs.map(c => +c.textContent));
+  const all = await counts();
+  await tab("En curso").click();
+  await typeIn(page, questFind, "Cassandra");
+  const active = await questTitles(page);
+  eq(active.length, 4, `active quests holding Cassandra: ${active}`);
+  assert(await page.$$eval(".cc-main a.cc-qcard .cc-badge", bs => bs.every(b => b.textContent.trim() === "En curso")), "only active ones");
+  eq((await page.textContent("#cc-quests-status")).trim(), "4 de 17 misiones", "the count against every quest");
+  eq(await counts(), all, "the tabs keep counting every quest of their status");
+  eq((await page.textContent(".cc-main .cc-results .cc-linkbtn")).trim(), "Ver 2 en otros estados", "the matches the status hides, one tap away");
+  assert((await whyLabels(page)).includes("Sesión 8"), "a session note says which session");
+  eq(await page.$$eval(".cc-main a.cc-qcard mark", ms => [...new Set(ms.map(m => m.textContent))]), ["Cassandra"], "marked in titles and reasons");
+  await page.screenshot({ path: path.join(OUT, "find-quests-1280.png") });
+  await tab("Completada").click();
+  await page.waitForTimeout(120);
+  eq(await page.inputValue(questFind), "Cassandra", "changing the status keeps the words");
+  eq((await questTitles(page)).length, 2, "completed quests holding Cassandra");
+  await tab("Todas").click();
+  await page.waitForTimeout(120);
+  eq((await questTitles(page)).length, 6, "every status: still searching");
+  // Nothing in this status: both criteria are named, the way to the others offered — nothing is changed by itself.
+  await tab("Completada").click();
+  await typeIn(page, questFind, "Pike");
+  const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
+  assert(empty.includes("No encontramos misiones que coincidan con tu búsqueda.") && empty.includes("Solo se muestran las misiones «Completada»."), empty);
+  eq(await on(), "Completada", "the status filter is not removed by itself");
+  await page.screenshot({ path: path.join(OUT, "find-quests-none.png") });
+  await page.click(".cc-main .cc-empty button:has-text('en otros estados')");
+  await page.waitForTimeout(120);
+  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["Todas", "Pike", 5], "every status, the same words");
+  // Clearing the words keeps the status.
+  await tab("En curso").click();
+  await page.click(".cc-main .cc-search-x");
+  await page.waitForTimeout(120);
+  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["En curso", "", 11], "cleared: the status stays");
+  eq(await page.locator("#cc-quests-status").count(), 0, "no count without words");
+  await ctx.close();
+});
+
+await check("quests · status and words survive opening a quest and Back (phone)", async () => {
+  const { ctx, page } = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }, "#/quests");
+  await page.locator(".cc-statusbar button", { hasText: "En curso" }).tap();
+  await typeIn(page, questFind, "Cassandra");
+  const titles = await questTitles(page);
+  await page.locator(".cc-main a.cc-qcard").nth(1).tap();
+  await page.waitForFunction(() => /^#\/quests\/quest\//.test(location.hash));
+  await page.waitForSelector(".cc-doc-h");
+  await page.locator(".cc-back").first().tap();
+  await page.waitForFunction(() => location.hash === "#/quests");
+  await page.waitForTimeout(200);
+  eq([await page.$eval(".cc-statusbar .is-on", b => b.textContent.replace(/\s*\d+\s*$/, "").trim()), await page.inputValue(questFind), await questTitles(page)],
+    ["En curso", "Cassandra", titles], "the same status, words and quests");
+  await ctx.close();
+});
+
+await check("characters · search: the same matches with a count; the reason on a row's quiet line (alias, kind, role); names marked; no results with its way out; ES ↔ EN", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/characters");
+  const rows = () => page.$$eval(".cc-main .cc-pcard, .cc-main .cc-row", as => as.map(a => a.getAttribute("href").split("/").pop()));
+  const sub = id => page.$eval(`.cc-main a[href$="/character/${id}"] .cc-row-sub`, s => ({ label: s.querySelector(".cc-why-k") ? s.querySelector(".cc-why-k").textContent.replace(/:\s*$/, "").trim() : "",
+    text: s.textContent.replace(/\s+/g, " ").trim(), marks: [...s.querySelectorAll("mark")].map(m => m.textContent) }));
+  eq((await rows()).length, 42, "everyone, as before");
+  eq(await page.locator("#cc-characters-status").count(), 0, "no count until something is typed");
+  await typeIn(page, charFind, "Morgas");
+  eq(await rows(), ["mortis"], "an alias");
+  eq((await page.textContent("#cc-characters-status")).trim(), "1 de 42 personajes", "the count");
+  eq(await page.getAttribute(charFind, "aria-describedby"), "cc-characters-status", "the field is described by its count");
+  eq(await sub("mortis"), { label: "Alias", text: "Alias: Morgas", marks: ["Morgas"] }, "the reason, marked, on the card's own line");
+  await typeIn(page, charFind, "nigromancia");
+  eq([await rows(), await sub("mortis")], [["mortis"], { label: "", text: "Mago · Escuela de Nigromancia / Clérigo · Dominio de la Muerte", marks: ["Nigromancia"] }], "the role the card already shows, just marked");
+  await typeIn(page, charFind, "dampiro");
+  eq([await rows(), await sub("locus")], [["locus"], { label: "", text: "dampiro", marks: ["dampiro"] }], "the kind the row already shows, just marked");
+  await typeIn(page, charFind, "custodio");
+  eq([await rows(), await sub("marco")], [["marco"], { label: "Alias", text: "Alias: El custodio de la capilla de Pelor", marks: ["custodio"] }], "an alias the row did not show");
+  await page.screenshot({ path: path.join(OUT, "find-characters-1280.png") });
+  await typeIn(page, charFind, "Bahamut");
+  const names = await page.$$eval(".cc-main .cc-ctitle mark", ms => ms.map(m => m.textContent));
+  assert(names.length > 0 && names.every(n => n === "Bahamut"), `names marked: ${names}`);
+  // Nothing found: said plainly, with the way out; Esc clears too.
+  await typeIn(page, charFind, "zzqq");
+  const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
+  assert(empty.includes("No encontramos personajes que coincidan con tu búsqueda.") && empty.includes("Borrar la búsqueda") && empty.includes("Buscar en toda la crónica"), empty);
+  eq((await page.textContent("#cc-characters-status")).trim(), "0 de 42 personajes", "the count says none");
+  await page.click(".cc-main .cc-empty button:has-text('Borrar la búsqueda')");
+  await page.waitForTimeout(120);
+  eq([await page.inputValue(charFind), (await rows()).length, await page.evaluate(() => document.activeElement.getAttribute("aria-label"))], ["", 42, "Buscar un personaje"], "cleared, the focus kept in the field");
+  await typeIn(page, charFind, "Pike");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(120);
+  eq([await page.inputValue(charFind), (await rows()).length], ["", 42], "Esc clears");
+  // The other language: the same people, the reason in English.
+  await typeIn(page, charFind, "custodian");
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForFunction(() => document.documentElement.lang === "en");
+  const enFind = 'input[aria-label="Find a character"]';
+  eq([await page.inputValue(enFind), await rows()], ["custodian", ["marco"]], "same words, same people");
+  eq((await page.textContent("#cc-characters-status")).trim(), "1 of 42 characters", "English count");
+  eq(await sub("marco"), { label: "Alias", text: "Alias: The custodian of Pelor's chapel", marks: ["custodian"] }, "English reason");
+  await ctx.close();
+});
+
+for (const [w, h] of [[320, 640], [360, 740], [390, 844], [720, 1000], [768, 1024], [1024, 768], [1440, 900]]) {
+  await check(`find · ${w}px: the Sessions, Quests and Characters fields fit with their hint, ✕ comfortable, no sideways scroll`, async () => {
+    const phone = w < 720;
+    const { ctx, page } = await open({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone }, "#/sessions");
+    const hints = { sessions: ["Número, título o contenido…", "Buscar sesiones por número, título o contenido…"], quests: ["Nombre o contenido…", "Buscar misiones por nombre o contenido…"],
+      characters: ["Nombre, alias, especie o rol…", "Buscar un personaje, deidad o facción…"] };
+    for (const [hash, sel, q, name] of [["#/sessions", sessionFind, "Cassandra", "sessions"], ["#/quests", questFind, "Vasselheim", "quests"], ["#/characters", charFind, "dragón", "characters"]]) {
+      await page.evaluate(x => { location.hash = x; }, hash);
+      await page.waitForSelector(sel);
+      const hint = await page.$eval(sel, el => { const cs = getComputedStyle(el), c = document.createElement("canvas").getContext("2d");
+        c.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`; return [c.measureText(el.placeholder).width, el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), el.placeholder]; });
+      assert(hint[0] <= hint[1], `${name}: the hint “${hint[2]}” (${Math.round(hint[0])}px) fits its field (${hint[1]}px)`);
+      eq(hint[2], hints[name][phone ? 0 : 1], `${name} hint`);
+      await typeIn(page, sel, q);
+      const box = await page.$eval(".cc-main .cc-search-x", b => { const r = b.getBoundingClientRect(), f = b.parentElement.getBoundingClientRect(); return [r.width, r.height, r.right <= f.right && r.left >= f.left]; });
+      assert(box[0] >= 40 && box[1] >= 40 && box[2], `${name}: ✕ ${box}`);
+      const sw = await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-main").scrollWidth - document.querySelector(".cc-main").clientWidth]);
+      assert(sw[0] <= w && sw[1] <= 0, `${name}: horizontal scroll ${sw}`);
+      assert((await page.locator(".cc-main .cc-scard, .cc-main .cc-qcard, .cc-main .cc-row, .cc-main .cc-pcard").count()) > 0, `${name}: results`);
+      await page.screenshot({ path: path.join(OUT, `find-${name}-${w}.png`) });
+    }
+    if (w >= 1024) {                                                             // the open book: the list keeps its search beside the entry
+      await page.evaluate(() => { location.hash = "#/quests"; });
+      await page.waitForSelector(".cc-main a.cc-qcard");
+      eq(await page.inputValue(questFind), "Vasselheim", "back on Quests: its search is still there");
+      await page.locator(".cc-main a.cc-qcard").first().click();
+      await page.waitForSelector(".cc-detail .cc-doc-h");
+      eq(await page.inputValue(questFind), "Vasselheim", "beside the open quest");
+      await page.screenshot({ path: path.join(OUT, `find-quests-${w}-open.png`) });
+    }
+    await ctx.close();
+  });
+}
+
+await check("find · ES → EN keeps the words and the status; count, reasons and empty states in English", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/sessions");
+  await typeIn(page, sessionFind, "Pelor");
+  const es = await sessionNos(page);
+  await page.click(".cc-lang button:has-text('EN')");
+  await page.waitForFunction(() => document.documentElement.lang === "en");
+  const enFind = 'input[aria-label="Search the sessions"]';
+  eq([await page.inputValue(enFind), await sessionNos(page)], ["Pelor", es], "same words, same sessions");
+  eq((await page.textContent("#cc-sessions-status")).trim(), `${es.length} of 6 sessions`, "English count");
+  eq(await page.getAttribute(enFind, "placeholder"), "Search sessions by number, title or content…", "English hint");
+  assert((await whyLabels(page)).some(l => ["Event", "Thread", "Effect", "Began", "Ended", "Character", "Place", "Quest"].includes(l)), `English reasons: ${await whyLabels(page)}`);
+  await page.evaluate(() => { location.hash = "#/quests"; });
+  const enQuest = 'input[aria-label="Search the quests"]';
+  await page.waitForSelector(enQuest);
+  await page.locator(".cc-statusbar button", { hasText: "Completed" }).click();
+  await typeIn(page, enQuest, "Pike");
+  const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
+  assert(empty.includes("We couldn't find any quests matching your search.") && empty.includes("Only “Completed” quests are shown.") && empty.includes("See 5 in other statuses"), empty);
+  await page.click(".cc-lang button:has-text('ES')");
+  await page.waitForFunction(() => document.documentElement.lang === "es-AR");
+  eq(await page.inputValue(questFind), "Pike", "and back");
+  await ctx.close();
+});
+
 // ── One dark theme ──────────────────────────────────────────────────────────
 const lum = rgb => { const [r, g, b] = rgb.match(/[\d.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 await check("theme · always dark: no toggle, an old light preference is ignored and removed, dark browser chrome", async () => {
@@ -580,7 +864,7 @@ await check("order · Chronicle opens latest first, Sessions oldest first; both 
   const nos = () => page.$$eval(".cc-scard-no", els => els.map(e => +e.textContent));
   const s0 = await nos();
   eq(s0, s0.slice().sort((a, b) => a - b), "Sessions oldest first by default (numeric: 10 after 8)");
-  await page.click(".cc-sechead .cc-seg button:last-child");
+  await page.click(".cc-results .cc-seg button:last-child");                      // under the Sessions search
   eq(await nos(), s0.slice().reverse(), "latest first");
   await page.reload();
   await page.waitForSelector(".cc-scard");
@@ -1402,6 +1686,29 @@ await check("pwa · installable; after one visit it opens offline (favourites ke
   assert((await page.textContent(".cc-page")).includes("Freshly Published Title"), "the offline copy was refreshed");
   eq(await page.evaluate(() => JSON.parse(localStorage.getItem("chronicle-favorites")).items.length), 1, "favourites untouched by updates");
   await page.screenshot({ path: path.join(OUT, "offline-sessions.png") });
+  await ctx.close();
+});
+
+// The tour helpers (TOUR, tourAt, tourGone…) are defined with the onboarding checks above.
+await check("find · the main tour shows the real Sessions list and gives the Sessions and Quests searches back", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/sessions");
+  await typeIn(page, sessionFind, "zzqq");                                          // a search that hides every session
+  await page.evaluate(() => { location.hash = "#/quests"; });
+  await typeIn(page, questFind, "Cassandra");
+  await page.click(".cc-actions button[aria-haspopup=dialog]");
+  await page.waitForSelector("[data-dialog=help]");
+  await page.locator(".cc-tourrow").first().click();
+  await tourAt(page, "Las secciones");
+  const s = await tourNextTo(page, "Sesiones");
+  assert(/cc-scard/.test(s.active.cls), `a real session, not the empty heading: ${s.active.cls}`);
+  await page.click(".driver-popover .cc-tour-skip");
+  await tourGone(page);
+  await page.waitForTimeout(150);
+  eq(await page.evaluate(() => location.hash), "#/quests", "back where it started");
+  eq(await page.inputValue(questFind), "Cassandra", "the Quests search is back");
+  await page.evaluate(() => { location.hash = "#/sessions"; });
+  await page.waitForSelector(sessionFind);
+  eq(await page.inputValue(sessionFind), "zzqq", "the Sessions search is back");
   await ctx.close();
 });
 
