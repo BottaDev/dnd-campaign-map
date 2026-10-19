@@ -58,6 +58,10 @@
     district: "District", site: "Site", plane: "Plane",
   };
 
+  // How sure a place's own map position is (locations.json `mapPrecision`, with `xp`/`yp`): "exact" = placed
+  // on the place itself, "approximate" = roughly there. A position without one counts as approximate.
+  const MAP_PRECISION = ["exact", "approximate"];
+
   // Optional structured lore facts (data/lore.json entries[id].facts), shown in this order.
   // Labels come from the interface dictionaries (lore.fact.<key>); unknown keys are ignored.
   const LORE_FACTS = ["alsoKnownAs", "continent", "region", "government", "portfolio", "domains", "symbol",
@@ -350,7 +354,14 @@
       const known = Object.prototype.hasOwnProperty.call(PLACE_KINDS, l.kind);
       if (!known) warn(l.kind ? `Place "${l.id}": unknown kind "${l.kind}" (shown as a plain place)` : `Place "${l.id}": no kind (shown as a plain place)`);
       const kindLabel = known ? L(`placeKind.${l.kind}`, PLACE_KINDS[l.kind]) : (l.kind ? cap(str(l.kind)) : L("kinds.place", "Place"));
+      // Its own map position (optional, both or neither, % of the map like an event's): a reference for the
+      // map and for placing new events there — never derived, and it never moves an event already placed.
+      const hasRef = isNum(l.xp) && isNum(l.yp);
+      if (!hasRef && (l.xp != null || l.yp != null)) warn(`Place "${l.id}": incomplete map coordinates (needs both xp and yp)`);
+      if (hasRef && l.mapPrecision != null && !MAP_PRECISION.includes(l.mapPrecision)) warn(`Place "${l.id}": unknown mapPrecision "${l.mapPrecision}" (counted as approximate)`);
+      const inMap = hasRef && l.xp >= 0 && l.xp <= 100 && l.yp >= 0 && l.yp <= 100;
       const place = { ...l, name: pickStr(tr, "name", nameEn), nameEn, aliases: pickArr(tr, "aliases", aliasesEn), aliasesEn, kindLabel, kindKey: known ? l.kind : "place",
+        ref: inMap ? { xp: l.xp, yp: l.yp, precision: l.mapPrecision === "exact" ? "exact" : "approximate" } : null,
         childIds: [], eventIds: [], allEventIds: [], notes: [], questIds: [], personIds: [], sessionNos: [] };
       place.nameKeys = foldAll([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn)]);
       place.searchText = fold([...variants("places", l.id, "name", nameEn), ...variants("places", l.id, "aliases", aliasesEn),
@@ -667,6 +678,10 @@
       p.isPlanar = p.kind === "plane" || p.ancestorIds.some(id => placeById.get(id).kind === "plane");
       const fe = p.isPlanar ? null : p.allEventIds.map(id => eventById.get(id)).find(e => e.hasCoords);
       p.focusEventId = fe ? fe.id : null;
+      if (p.isPlanar && p.ref) { warn(`Place "${p.id}": another plane is not on the map — its xp/yp are ignored`); p.ref = null; }
+      // Where the map shows it: its own reference position when recorded, else where its first located event happened.
+      p.mapPoint = p.ref ? { xp: p.ref.xp, yp: p.ref.yp, source: "ref", precision: p.ref.precision }
+        : fe ? { xp: fe.xp, yp: fe.yp, source: "event", eventId: fe.id } : null;
     });
 
     // Search text per event (folded, built once) — English original + every loaded translation,
@@ -810,8 +825,47 @@
     };
   }
 
+  // ── Validation shared by the validator and the Taller del Cronista ─────────
+  // Everything tools/validate-data.js checks that needs no file system: the model's own issues (references,
+  // duplicates, loops…), map coordinates of events and places, route waypoints and shared legs, the content
+  // translations (opts.translations: { <locale>: data/i18n/<locale>.json }) and lore attached to party
+  // members. The validator (Node) and the Taller (browser) run the same rules. → { model, issues: [{ level, msg }] }
+  function validateData(raw, opts) {
+    const o = opts || {}, issues = [];
+    const err = msg => issues.push({ level: "error", msg }), warn = msg => issues.push({ level: "warn", msg });
+    const m = build(raw);
+    m.issues.forEach(i => issues.push(i));
+    // Coordinates must be percentages of the map image.
+    m.events.forEach(e => {
+      if (e.hasCoords && (e.xp < 0 || e.xp > 100 || e.yp < 0 || e.yp > 100)) err(`Event "${e.id}": xp/yp must be 0–100 (% of the map)`);
+    });
+    m.places.forEach(p => {
+      if (isNum(p.xp) && isNum(p.yp) && (p.xp < 0 || p.xp > 100 || p.yp < 0 || p.yp > 100)) err(`Place "${p.id}": xp/yp must be 0–100 (% of the map)`);
+    });
+    Object.entries(m.routes).forEach(([id, pts]) => {
+      if (!Array.isArray(pts)) { err(`routes.json["${id}"] must be an array`); return; }
+      pts.forEach((p, i) => {
+        const at = `routes.json["${id}"][${i}]`;
+        if (!p || typeof p.xp !== "number" || typeof p.yp !== "number") return err(`${at} needs numeric xp/yp`);
+        if (p.xp < 0 || p.xp > 100 || p.yp < 0 || p.yp > 100) err(`${at}: xp/yp must be 0–100 (% of the map)`);
+        if (p.leg != null && (typeof p.leg !== "string" || !p.leg)) err(`${at}: "leg" must be a non-empty string id`);
+        if (p.break != null && typeof p.break !== "boolean") err(`${at}: "break" must be true or false`);
+        if (p.session != null && typeof p.session !== "number") err(`${at}: "session" must be a session number`);
+      });
+    });
+    // A shared leg id must be used by at least two characters (otherwise it is just a solo route).
+    const legUse = {};
+    m.routeById.forEach((r, id) => r.legIds.forEach(leg => (legUse[leg] = legUse[leg] || []).push(id)));
+    Object.entries(legUse).forEach(([leg, ids]) => { if (ids.length < 2) warn(`routes.json: leg "${leg}" is only used by ${ids[0]} — shared legs need two or more characters`); });
+    // Content translations: unknown ids and positional arrays that would fall back to English.
+    Object.entries(o.translations || {}).forEach(([code, content]) => { if (content) checkTranslations(raw, content, code).forEach(i => issues.push(i)); });
+    // Lore links to party members are allowed but unusual (player characters are our own creations).
+    m.lore.forEach((x, id) => { const p = m.personById.get(id); if (p && p.kind === "pc") warn(`lore.json: "${id}" is a party member — lore is meant for entities that exist in Exandria's canon`); });
+    return { model: m, issues };
+  }
+
   // ── Filtering ─────────────────────────────────────────────────────────────
-  const EMPTY_FILTERS = Object.freeze({ text: "", pcs: [], npc: "", quest: "", session: "", type: "", place: "",
+  const EMPTY_FILTERS =Object.freeze({ text: "", pcs: [], npc: "", quest: "", session: "", type: "", place: "",
     dayFrom: "", dayTo: "", playedFrom: "", playedTo: "" });
 
   // Party-member filter. `pcs` empty = no character filter (every event, including events
@@ -1207,11 +1261,11 @@
     return { event: rich, person, mapEvent: mapped };
   }
 
-  return { build, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, findSessions, findQuests, findPeople, excerpt,
+  return { build, validateData, filterEvents, search, searchAll, chronicleFilterFor, highlightRanges, findSessions, findQuests, findPeople, excerpt,
     SEARCH_KINDS, resolveRef, latestSession, recapOf, guideExamples,
     placeIndex, placeOrder, placeTreeView, isPlaceOpen, revealPlace,
     activeFilterCount, matchesCharacters, selectedCharacterIds, toggleVisibleCharacter,
     chronicleGroups, sessionListItems, normalizePrefs, sortOrders, DEFAULT_ORDER,
     checkTranslations, normalizeRoutes, normalizeLore, safeExternalUrl, fold, FILTER_PREDICATES, EMPTY_FILTERS, NO_CHARACTER, NO_ONE,
-    EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, LORE_FACTS, fmtDate, parseDay, parseRecorded, splitIgLabel };
+    EVENT_TYPES, QUEST_STATUS, PERSON_CATEGORIES, PLACE_KINDS, MAP_PRECISION, LORE_FACTS, fmtDate, parseDay, parseRecorded, splitIgLabel };
 });

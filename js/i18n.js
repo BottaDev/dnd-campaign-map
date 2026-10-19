@@ -30,6 +30,17 @@
   const get = (o, path) => String(path).split(".").reduce((a, k) => (isObj(a) ? a[k] : undefined), o);
 
   function register(code, dict) { dicts[code] = dict; return dict; }
+  // A dictionary loaded later (locales/taller.<code>.js, only when the Taller opens): merged into the registered
+  // one in place, so translators created before it find its keys (they read their dictionaries by reference).
+  function extend(code, dict) {
+    const target = dicts[code] || (dicts[code] = {});
+    const deep = (to, from) => Object.keys(from || {}).forEach(k => {
+      const v = from[k];
+      if (isObj(v) && !isPlural(v) && isObj(to[k]) && !isPlural(to[k])) deep(to[k], v); else to[k] = v;
+    });
+    deep(target, dict);
+    return target;
+  }
   function resolveLocale(stored) { return isLocale(stored) ? stored : DEFAULT_LOCALE; }
 
   // Saved preference → locale (default es-AR). Storage failures are non-fatal.
@@ -95,6 +106,6 @@
     });
   }
 
-  return { LOCALES, DEFAULT_LOCALE, FALLBACK_LOCALE, STORAGE_KEY, dicts, register, createTranslator,
+  return { LOCALES, DEFAULT_LOCALE, FALLBACK_LOCALE, STORAGE_KEY, dicts, register, extend, createTranslator,
     resolveLocale, loadLocale, saveLocale, isLocale, keysOf, merge, get };
 });

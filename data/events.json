@@ -10,8 +10,8 @@
     "title": "Arrival at Emon",
     "summary": "Ayante and his master Diomedes arrive in Tal'Dorei by skyship, taking in Emon — the city of wide stairs and mahogany roofs.",
     "locationId": "emon",
-    "xp": 42.3,
-    "yp": 39.51,
+    "xp": 42.17,
+    "yp": 37.69,
     "characterIds": [
       "ayante"
     ],
@@ -33,8 +33,8 @@
     "title": "The Meeting at Gilmore's",
     "summary": "In Emon's academic district, Ayante finds Gilmore's shop wreathed in magical fireworks. Overhearing Sorfon ask after an ancient temple, his mockery turns to respect once he learns Sorfon serves Pelor.",
     "locationId": "gilmores-shop",
-    "xp": 42.3,
-    "yp": 39.51,
+    "xp": 42.17,
+    "yp": 37.5,
     "characterIds": [
       "ayante",
       "sorfon"
@@ -58,8 +58,8 @@
     "title": "A Pact Beneath the Sun",
     "summary": "Bare arms clasped beneath the noon sun, Ayante and Sorfon seal their pact. Diomedes departs for Stilben, and the two devotees of Pelor set out together.",
     "locationId": "emon",
-    "xp": 42.3,
-    "yp": 39.51,
+    "xp": 42.17,
+    "yp": 37.56,
     "characterIds": [
       "ayante",
       "sorfon"
@@ -82,8 +82,8 @@
     "title": "Screams from Greyskull Keep",
     "summary": "Sorfon and Ayante meet in a small plaza near the locked Keep as screams erupt from inside. Ereldra lingers behind. Mortis is already within, following the Raven Queen's golden thread.",
     "locationId": "emon",
-    "xp": 41.9,
-    "yp": 39.3,
+    "xp": 42.2,
+    "yp": 37.68,
     "characterIds": [
       "sorfon",
       "ayante",
@@ -108,8 +108,8 @@
     "title": "The Book of Baba Yaga",
     "summary": "Slipping away from the others, Mortis finds a heavy tome pinned to a hallway shelf by an axe. He pries it open and discovers it belongs to Baba Yaga — grandmother of all witches. It snaps shut before he finishes, and he cannot reopen it.",
     "locationId": "greyskull-keep",
-    "xp": 41.9,
-    "yp": 39.3,
+    "xp": 42.18,
+    "yp": 37.62,
     "characterIds": [
       "mortis"
     ],
@@ -131,8 +131,8 @@
     "title": "Sarenrae's Anger",
     "summary": "Sorfon prays in the Keep's chapel and contacts Sarenrae directly. The goddess is angered by his lifelong devotion to Pelor alone, but gives a cryptic clue: 'The temple is just a temple; follow YOUR light.'",
     "locationId": "greyskull-keep",
-    "xp": 41.9,
-    "yp": 39.3,
+    "xp": 42.14,
+    "yp": 37.52,
     "characterIds": [
       "sorfon"
     ],
@@ -154,8 +154,8 @@
     "title": "Allura Vysoren Intervenes",
     "summary": "The archmage Allura Vysoren arrives to investigate the disturbance. She freezes Mortis, revealing him as the apparent ghost, then casts a bind spell linking him to Sorfon's armor. The party is named Mortis's wardens and charged with a future mission to repair the damages caused.",
     "locationId": "greyskull-keep",
-    "xp": 41.9,
-    "yp": 39.3,
+    "xp": 42.17,
+    "yp": 37.52,
     "characterIds": [
       "sorfon",
       "ayante",
@@ -180,8 +180,8 @@
     "title": "Long Rest at the Keep",
     "summary": "The party settles in for a long rest at Greyskull Keep. Allura confirms that Pike Trickfoot is in Issylra. Two hours remain before Mortis's bind spell expires.",
     "locationId": "greyskull-keep",
-    "xp": 41.9,
-    "yp": 39.3,
+    "xp": 42.14,
+    "yp": 37.52,
     "characterIds": [
       "sorfon",
       "ayante",
@@ -208,8 +208,8 @@
     "title": "The Vigil for Cassandra",
     "summary": "The dragon driven off, Cassandra de Rolo lies fallen in the ruined palace. Mortis reaches for her departing spirit before it slips beyond reach.",
     "locationId": "kraghammer",
-    "xp": 45.6,
-    "yp": 33.4,
+    "xp": 46.21,
+    "yp": 32.16,
     "characterIds": [
       "mortis"
     ],
@@ -231,8 +231,8 @@
     "title": "Returning the Barûk-Kazad",
     "summary": "The party restores the legendary dwarven axe to Kraghammer and escorts Cassandra's body from the palace. Both bounties are claimed — 4,800 gp — and Sorfon is named Emissary of Kraghammer.",
     "locationId": "kraghammer",
-    "xp": 45.6,
-    "yp": 33.4,
+    "xp": 46.21,
+    "yp": 32.16,
     "characterIds": [
       "sorfon",
       "ayante",
@@ -257,8 +257,8 @@
     "type": "conversation",
     "title": "Percy's Word",
     "summary": "Through the carriage's communicator, Percy confirms the soul has roughly ten days in limbo — and that a true resurrection is far harder than the party had hoped.",
-    "xp": 45.6,
-    "yp": 33.4,
+    "xp": 46.21,
+    "yp": 32.16,
     "characterIds": [
       "sorfon",
       "mortis",

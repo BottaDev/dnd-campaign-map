@@ -1068,6 +1068,226 @@
   .cc-popup-step:hover{border-color:var(--gilt-dim);}
   @media (max-width:719px){ .cc-mapwrap.has-popup .cc-zoom{display:none;} }   /* the popup needs the whole phone screen */
   @media (max-width:719px){ .cc-maphelp{width:44px;padding:0;justify-content:center;} .cc-maphelp span{display:none;} }
+
+  .cc-help-foot{display:flex;align-items:flex-start;gap:8px;margin:18px 0 0;padding-top:12px;border-top:1px solid var(--line-faint);font-family:var(--font-ui);font-size:13.5px;line-height:1.5;color:var(--muted);}
+  .cc-help-foot .cc-ico{width:18px;height:18px;flex:none;color:var(--gilt);}
+
+  /* ── A place's own position on the map (opened from its page, no event pin there): a gilt lozenge and its name ── */
+  .cc-placemark{position:absolute;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;transform-origin:50% 50%;}
+  .cc-placemark-d{width:18px;height:18px;transform:rotate(45deg);border:2px solid var(--gilt);background:rgba(14,13,12,.75);box-shadow:0 0 0 4px rgba(207,166,80,.22),0 4px 10px rgba(0,0,0,.55);}
+  .cc-placemark-l{padding:2px 8px;border-radius:3px;background:rgba(14,13,12,.85);font-family:var(--font-head);font-weight:700;font-size:11px;letter-spacing:.12em;color:#f1e9da;white-space:nowrap;}
+
+  /* ── Taller del Cronista: the chronicler's desk ──
+     The chronicle's own page (paper, gilt fillet) holding flat, clearly labelled controls: forms read first,
+     decoration stays on the page. Its sections are links (a route each); a record's preview is the reading page
+     on the right (the open book) or, on phones, a page of its own. Status colours always come with a word. */
+  .cc-tl .cc-sechead{margin-bottom:16px;}
+  .cc-tl-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 12px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card-bg);font-family:var(--font-ui);font-size:14px;line-height:1.4;color:var(--body2);}
+  .cc-tl-bar .cc-ico{width:18px;height:18px;color:var(--gilt);}
+  .cc-tl-save{display:inline-flex;align-items:center;gap:6px;min-width:0;}
+  .cc-tl-save.is-error,.cc-tl-save.is-conflict{color:var(--st-failed);}
+  .cc-tl-save.is-error .cc-ico,.cc-tl-save.is-conflict .cc-ico{color:var(--st-failed);}
+  .cc-tl-save.is-memory{color:var(--st-pending);}
+  .cc-tl-save.is-memory .cc-ico{color:var(--st-pending);}
+  .cc-tl-tabs{display:flex;flex-wrap:wrap;gap:2px;margin:0 0 18px;border-bottom:1px solid var(--line);}
+  @media (max-width:719px){ .cc-tl-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 16px;padding:0 16px;} .cc-tl-tabs::-webkit-scrollbar{display:none;} }
+  .cc-tl-tab{position:relative;flex:none;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 12px;font-family:var(--font-ui);font-size:14px;font-weight:500;color:var(--muted);white-space:nowrap;}
+  .cc-tl-tab:hover{color:var(--title);}
+  .cc-tl-tab .cc-ico{width:17px;height:17px;}
+  .cc-tl-tab[aria-current=page]{color:var(--title);font-weight:600;}
+  .cc-tl-tab[aria-current=page] .cc-ico{color:var(--gilt);}
+  .cc-tl-tab[aria-current=page]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:3px;border-top:1px solid var(--gilt);border-bottom:1px solid rgba(207,166,80,.5);}
+  .cc-tl-tab .cc-count{min-width:20px;height:20px;font-size:12px;}
+  .cc-tl-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:4px 0 6px;}
+  .cc-tl-h h2{margin:0;font-family:var(--font-display);font-weight:700;font-size:32px;line-height:1.1;color:var(--h1);overflow-wrap:anywhere;}
+  .cc-tl-h h2:focus{outline:none;}
+  .cc-tl-sub{margin:0 0 14px;font-family:var(--font-ui);font-size:14px;line-height:1.5;color:var(--muted);}
+  .cc-tl-crumb{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px 0 0;font-family:var(--font-ui);font-size:14px;font-weight:600;color:var(--gilt);}
+  .cc-tl-crumb:hover{text-decoration:underline;text-underline-offset:3px;}
+  .cc-tl-crumb .cc-ico{width:18px;height:18px;}
+  .cc-tl-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px;}
+  .cc-tl-tools .cc-search{flex:1 1 220px;}
+  .cc-tl-tools .cc-selwrap{flex:0 1 220px;}
+  .cc-tl-count{margin:0 0 8px;font-family:var(--font-ui);font-size:13.5px;color:var(--muted);}
+  /* Lists of records: plates like the chronicle's cards; the state in words beside its colour */
+  .cc-tl-rows{display:grid;gap:6px;}
+  .cc-tl-row{position:relative;display:flex;align-items:center;gap:12px;min-height:58px;padding:8px 14px;border:1px solid var(--card-border);border-radius:var(--r-sm);background:var(--card-bg);color:var(--title);transition:border-color .15s ease,background .15s ease;}
+  .cc-tl-row:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
+  .cc-tl-row-b{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .cc-tl-row-t{font-family:var(--font-read);font-size:17.5px;font-weight:600;line-height:1.25;color:var(--title);overflow-wrap:anywhere;}
+  .cc-tl-row-m{font-family:var(--font-ui);font-size:13px;line-height:1.35;color:var(--muted);}
+  .cc-tl-row-n{flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--elev);border:1px solid var(--gilt-dim);color:var(--link);font-family:var(--font-display);font-size:20px;font-weight:700;}
+  .cc-tl-row .cc-badge{flex:none;}
+  .cc-tl-row.is-deleted .cc-tl-row-t{text-decoration:line-through;color:var(--muted);}
+  .cc-tl-row.d1{margin-left:22px;} .cc-tl-row.d2{margin-left:44px;} .cc-tl-row.d3,.cc-tl-row.d4{margin-left:62px;}
+  @media (max-width:719px){ .cc-tl-row.d1{margin-left:12px;} .cc-tl-row.d2{margin-left:24px;} .cc-tl-row.d3,.cc-tl-row.d4{margin-left:32px;} }
+  .cc-tl-empty{margin:6px 0 0;padding:18px 14px;text-align:center;border:1px dashed var(--control-border);border-radius:var(--r-sm);font-style:italic;color:var(--muted);}
+  /* Forms */
+  .cc-tl-form{display:grid;gap:4px;}
+  .cc-tl-form .cc-h2{margin:24px 0 10px;}
+  .cc-tl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px 16px;align-items:start;}
+  .cc-tl-field{display:grid;gap:6px;min-width:0;margin:0 0 12px;}
+  .cc-tl-grid>.cc-tl-field{margin:0;}
+  .cc-tl-field.wide{grid-column:1/-1;}
+  .cc-tl-label{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-family:var(--font-ui);font-size:14px;font-weight:600;line-height:1.35;color:var(--body2);}
+  .cc-tl-req{font-weight:500;font-size:12.5px;color:var(--st-pending);}
+  .cc-tl-lang{font-weight:500;font-size:12.5px;color:var(--muted);}
+  .cc-tl-hint{margin:0;font-family:var(--font-ui);font-size:13px;line-height:1.45;color:var(--muted);}
+  .cc-tl-other{margin:0;font-family:var(--font-ui);font-size:12.5px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere;}
+  .cc-tl-other b{font-weight:600;color:var(--body);}
+  .cc-tl-err{margin:0;display:flex;align-items:flex-start;gap:6px;font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--st-failed);}
+  .cc-tl-err .cc-ico{width:16px;height:16px;margin-top:1px;}
+  .cc-tl-warnmsg{color:var(--st-pending);}
+  .cc-tl-field.has-err .cc-input,.cc-tl-field.has-err .cc-select{border-color:var(--st-failed);}
+  .cc-tl-area{height:auto;min-height:104px;padding:10px 14px;font-family:var(--font-read);font-size:17px;line-height:1.5;resize:vertical;}
+  .cc-tl-area.short{min-height:64px;}
+  .cc-tl-langbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:2px 0 6px;padding:8px 0 12px;border-bottom:1px solid var(--line-faint);font-family:var(--font-ui);font-size:13.5px;color:var(--muted);}
+  /* Repeatable items (effects, objectives, plots, relations…): a ruled card each, its buttons at hand */
+  .cc-tl-items{display:grid;gap:8px;}
+  .cc-tl-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:var(--r-sm);background:rgba(241,233,218,.025);}
+  .cc-tl-item>.cc-tl-field{margin:0;}
+  .cc-tl-item-x{display:flex;gap:2px;}
+  .cc-tl-item-x .cc-iconbtn{width:40px;height:40px;border-color:transparent;}
+  .cc-tl-item-x .cc-iconbtn:hover{border-color:var(--gilt-dim);}
+  .cc-tl-item-x .cc-iconbtn:disabled{opacity:.35;cursor:default;}
+  .cc-tl-item-x .cc-ico{width:17px;height:17px;}
+  .cc-tl-item .cc-tl-items{grid-column:1/-1;}
+  .cc-tl-plot{border-left:2px solid var(--st-active);}
+  .cc-tl-plot.done{border-left-color:var(--st-done);}
+  .cc-tl-add{justify-self:start;}
+  /* Choosing people, quests, sessions, events: toggles with the name, a filter when the list is long */
+  .cc-tl-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .cc-tl-chips .cc-pcchip{min-height:40px;padding:4px 12px 4px 5px;}
+  .cc-tl-chips .cc-pcchip.plain{padding-left:12px;}
+  .cc-tl-chips .cc-pcchip .cc-ico{width:16px;height:16px;color:var(--gilt);}
+  .cc-tl-pick{display:grid;gap:6px;}
+  .cc-tl-picklist{display:grid;gap:2px;max-height:240px;overflow-y:auto;padding:4px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--input-bg);}
+  .cc-tl-check{display:flex;align-items:center;gap:10px;min-height:40px;padding:4px 8px;border-radius:var(--r-sm);font-family:var(--font-ui);font-size:14.5px;color:var(--body2);cursor:pointer;}
+  .cc-tl-check:hover{background:var(--card-bg-hover);}
+  .cc-tl-check input{width:18px;height:18px;flex:none;accent-color:var(--gilt);}
+  .cc-tl-check small{margin-left:auto;font-size:12.5px;color:var(--muted);}
+  /* Notices: where drafts live, what is not published yet, validation, conflicts */
+  .cc-tl-note{display:flex;gap:10px;margin:0 0 14px;padding:12px 14px;border-radius:var(--r-sm);border:1px solid var(--line);background:rgba(241,233,218,.03);font-family:var(--font-ui);font-size:14px;line-height:1.5;color:var(--body2);}
+  .cc-tl-note>.cc-ico{width:19px;height:19px;flex:none;margin-top:1px;color:var(--gilt);}
+  .cc-tl-note.is-warn{border-color:color-mix(in srgb,var(--st-pending) 55%,transparent);}
+  .cc-tl-note.is-warn>.cc-ico{color:var(--st-pending);}
+  .cc-tl-note.is-error{border-color:color-mix(in srgb,var(--st-failed) 60%,transparent);}
+  .cc-tl-note.is-error>.cc-ico{color:var(--st-failed);}
+  .cc-tl-note.is-ok{border-color:color-mix(in srgb,var(--st-done) 55%,transparent);}
+  .cc-tl-note.is-ok>.cc-ico{color:var(--st-done);}
+  .cc-tl-note p{margin:0;}
+  .cc-tl-note p+p{margin-top:6px;}
+  .cc-tl-note strong{color:var(--title);font-weight:600;}
+  .cc-tl-flow{margin:0;padding:0 0 0 4px;list-style:none;counter-reset:step;display:grid;gap:8px;}
+  .cc-tl-flow li{position:relative;padding-left:34px;font-family:var(--font-ui);font-size:14.5px;line-height:1.45;color:var(--body2);counter-increment:step;}
+  .cc-tl-flow li::before{content:counter(step);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;border:1px solid var(--gilt-dim);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--gilt);}
+  .cc-tl-flow li.is-here::before{background:var(--gilt);color:var(--on-accent);border-color:var(--gilt);}
+  .cc-tl-quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin:0 0 18px;}
+  .cc-tl-quick .cc-qa-i{min-height:58px;}
+  .cc-tl-actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;}
+  .cc-tl-actions.end{justify-content:flex-end;}
+  .cc-btn.is-danger{border-color:color-mix(in srgb,var(--st-failed) 65%,transparent);color:var(--st-failed);}
+  .cc-btn.is-danger .cc-ico{color:var(--st-failed);}
+  .cc-btn:disabled{opacity:.5;cursor:not-allowed;filter:none;}
+  .cc-tl-issues{display:grid;gap:6px;margin:0 0 14px;padding:0;list-style:none;}
+  .cc-tl-issues li{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:var(--r-sm);background:rgba(241,233,218,.03);font-family:var(--font-ui);font-size:14px;line-height:1.45;color:var(--body2);}
+  .cc-tl-issues li>.cc-ico{width:17px;height:17px;flex:none;margin-top:2px;color:var(--st-failed);}
+  .cc-tl-issues.warn li>.cc-ico{color:var(--st-pending);}
+  .cc-tl-issues a{color:var(--link);text-decoration:underline;text-decoration-color:var(--gilt-dim);text-underline-offset:3px;}
+  .cc-tl-diff{width:100%;border-collapse:collapse;margin:8px 0 10px;font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--body2);}
+  .cc-tl-diff th{text-align:left;font-weight:600;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);}
+  .cc-tl-diff td{vertical-align:top;padding:6px 8px;border-bottom:1px solid var(--line-faint);overflow-wrap:anywhere;}
+  .cc-tl-diff tr.is-clash td:first-child{color:var(--st-failed);font-weight:600;}
+  .cc-tl-conflict{margin:0 0 12px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--st-pending) 55%,transparent);border-radius:var(--r-sm);background:var(--card-bg);}
+  .cc-tl-mono{font-family:ui-monospace,Consolas,monospace;font-size:13px;}
+  .cc-tl-coord{font-variant-numeric:tabular-nums;}
+  .cc-tl-file{display:block;width:100%;min-height:44px;font-family:var(--font-ui);font-size:14px;color:var(--body2);}
+  .cc-tl-file::file-selector-button{min-height:40px;margin-right:10px;padding:0 14px;border:1px solid var(--gilt-dim);border-radius:var(--r-sm);background:transparent;color:var(--title);font-family:var(--font-ui);font-weight:600;cursor:pointer;}
+  .cc-tl-backups{display:grid;gap:4px;margin:0;padding:0;list-style:none;}
+  .cc-tl-backups li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line-faint);font-family:var(--font-ui);font-size:14px;color:var(--body2);}
+  .cc-tl-backups li span{flex:1;min-width:180px;}
+  .cc-tl-dialog{width:min(620px,100%);}
+  .cc-tl-dialog h2{margin:0 0 10px;font-family:var(--font-display);font-weight:700;font-size:28px;line-height:1.1;color:var(--h1);}
+  .cc-tl-dialog h2:focus{outline:none;}
+  .cc-tl-dialog p{font-family:var(--font-ui);font-size:14.5px;line-height:1.5;color:var(--body2);}
+  .cc-tl-dialog ul{margin:0 0 12px;padding-left:20px;font-family:var(--font-ui);font-size:14px;line-height:1.5;color:var(--body2);}
+  .cc-preview-note{display:flex;align-items:center;gap:8px;margin:12px 0 0;padding:8px 12px;border:1px dashed var(--gilt-dim);border-radius:var(--r-sm);font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--body2);}
+  .cc-preview-note .cc-ico{width:18px;height:18px;flex:none;color:var(--gilt);}
+  @media (max-width:719px){
+    .cc-tl h1.cc-kicker{display:block;}                     /* the Taller's inner pages keep their one heading on phones */
+    .cc-tl-h h2{font-size:26px;}
+    .cc-tl-bar{padding:8px 10px;gap:4px 10px;font-size:13.5px;}
+    .cc-tl-item{padding:8px;}
+    .cc-tl-tools .cc-selwrap{flex:1 1 100%;}
+  }
+
+  /* ── The map editor: the real map, a marker to place, its panel ──
+     Beside the map on wide screens (the reading page), a sheet over it below 1024px. The marker being placed is a
+     crimson seal (it is the open thing: the ribbon's colour) with an exact centre dot; where it was stays as a dashed
+     ring joined by a thread; a suggestion is a dotted ring. Every action also has a keyboard and a field. */
+  .cc-mapwrap.is-editing .cc-vp{cursor:crosshair!important;}
+  .cc-mx-badge{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:var(--r-sm);border:1px solid var(--gilt);background:rgba(14,13,12,.88);color:var(--title);font-family:var(--font-ui);font-size:13.5px;font-weight:600;pointer-events:none;}
+  .cc-mx-badge .cc-ico{width:18px;height:18px;color:var(--gilt);}
+  @media (max-width:719px){ .cc-mx-badge span{display:none;} .cc-mx-badge{width:44px;justify-content:center;padding:0;} }
+  .cc-mx-loading{position:absolute;left:50%;top:84px;z-index:12;transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:var(--r-sm);background:rgba(14,13,12,.9);font-family:var(--font-ui);font-size:14px;color:var(--body2);}
+  .cc-mx{font-family:var(--font-ui);color:var(--body2);}
+  .cc-mx.is-aside{padding:18px 26px 32px 30px;}
+  .cc-mx-sheet{position:absolute;left:8px;right:8px;bottom:8px;z-index:14;max-height:min(58%,480px);overflow-y:auto;overscroll-behavior:contain;padding:10px 14px 14px;border-radius:var(--r-sm);border:1px solid rgba(207,166,80,.5);background:var(--page-bg);box-shadow:0 -14px 40px rgba(0,0,0,.55);}
+  .cc-mx-sheet.is-min{overflow:visible;}
+  @media (max-width:1023px){ .cc-mapwrap.is-editing .cc-zoom{bottom:auto;top:90px;} }       /* the sheet covers the bottom of the map */
+  @media (max-width:719px){ .cc-mapwrap.is-editing .cc-zoom{top:64px;left:12px;} .cc-mapwrap.is-editing .cc-zlabel{display:none;} }
+  .cc-mx-h{display:flex;align-items:center;gap:8px;margin:0 0 10px;}
+  .cc-mx-h h2{margin:0;flex:1;min-width:0;font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:.12em;color:var(--section);}
+  .cc-mx-h h2:focus{outline:none;}
+  .cc-mx-t{margin:0 0 2px;font-family:var(--font-read);font-size:20px;font-weight:600;line-height:1.25;color:var(--title);overflow-wrap:anywhere;}
+  .cc-mx-m{margin:0 0 10px;font-size:13.5px;line-height:1.4;color:var(--muted);}
+  .cc-mx-pos{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px;font-size:14px;}
+  .cc-mx-pos b{font-weight:600;color:var(--title);}
+  .cc-mx-src{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:var(--r-sm);border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--body2);}
+  .cc-mx-src.is-approx{border-color:color-mix(in srgb,var(--st-pending) 55%,transparent);color:var(--st-pending);}
+  .cc-mx-src.is-exact{border-color:color-mix(in srgb,var(--st-done) 55%,transparent);color:var(--st-done);}
+  .cc-mx-src.is-pending{border-color:color-mix(in srgb,var(--ev-turning) 55%,transparent);color:var(--ev-turning);}
+  .cc-mx-sug{margin:0 0 10px;padding:10px 12px;border:1px dashed var(--gilt-dim);border-radius:var(--r-sm);font-size:13.5px;line-height:1.45;}
+  .cc-mx-sug p{margin:0 0 8px;}
+  .cc-mx-xy{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 10px;}
+  .cc-mx-xy .cc-input{height:44px;font-variant-numeric:tabular-nums;}
+  .cc-mx-adjust{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 10px;}
+  .cc-mx-dpad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,40px);gap:2px;flex:none;}
+  .cc-mx-dpad .cc-iconbtn{width:44px;height:40px;font-size:16px;}
+  .cc-mx-dpad .up{grid-column:2;grid-row:1;} .cc-mx-dpad .left{grid-column:1;grid-row:2;} .cc-mx-dpad .right{grid-column:3;grid-row:2;} .cc-mx-dpad .down{grid-column:2;grid-row:3;}
+  .cc-mx-dpad .mid{grid-column:2;grid-row:2;display:flex;align-items:center;justify-content:center;color:var(--gilt);}
+  .cc-mx-help{flex:1;min-width:160px;margin:0;font-size:13px;line-height:1.45;color:var(--muted);}
+  .cc-mx-tools{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;}
+  .cc-mx-tools .cc-btn{min-height:40px;padding:0 12px;font-size:13.5px;}
+  .cc-mx-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding-top:10px;border-top:1px solid var(--line);}
+  .cc-mx-foot .cc-btn{flex:1 1 140px;}
+  .cc-mx-mini{display:flex;align-items:center;gap:8px;}
+  .cc-mx-mini-b{flex:1;min-width:0;}
+  .cc-mx-mini-b .cc-mx-t{font-size:16.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;}
+  .cc-mx-mini-b .cc-mx-m{margin:0;}
+  .cc-mx-mini .cc-btn{min-height:44px;padding:0 12px;}
+  .cc-mx-seg{display:flex;margin:0 0 10px;}
+  .cc-mx-seg button{flex:1;justify-content:center;}
+  .cc-mx-list{display:grid;gap:4px;margin:6px 0 10px;}
+  .cc-mx-item{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:6px 10px;border:1px solid var(--card-border);border-radius:var(--r-sm);background:var(--card-bg);text-align:left;cursor:pointer;color:var(--title);transition:border-color .15s ease,background .15s ease;}
+  .cc-mx-item:hover{border-color:var(--card-border-hover);background:var(--card-bg-hover);}
+  .cc-mx-item.is-sel{border-color:var(--card-border-sel);background:var(--card-bg-sel);}
+  .cc-mx-item-b{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .cc-mx-item-t{font-family:var(--font-read);font-size:16px;font-weight:600;line-height:1.25;overflow-wrap:anywhere;}
+  .cc-mx-item-m{font-size:12.5px;line-height:1.3;color:var(--muted);}
+  .cc-mx-dot{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;}
+  .cc-mx-dot .cc-ico{width:15px;height:15px;}
+  .cc-mx-dot.has{color:var(--st-done);}
+  .cc-mx-dot.pending{color:var(--ev-turning);}
+  .cc-editpin{position:absolute;z-index:9;display:flex;align-items:center;justify-content:center;padding:0;margin:0;border:2px solid var(--gilt);border-radius:50% 50% 50% 0;cursor:grab;touch-action:none;box-shadow:0 0 0 2px rgba(14,13,12,.6),0 0 0 9px rgba(184,64,76,.28),0 8px 18px rgba(0,0,0,.6);transform-origin:center;}
+  .cc-editpin.is-sel{background:var(--ribbon);}
+  .cc-editpin.is-drag{cursor:grabbing;}
+  .cc-editpin:focus-visible{outline:3px solid #f1e9da;outline-offset:4px;}
+  .cc-editpin-c{width:6px;height:6px;border-radius:50%;background:#f7eedc;box-shadow:0 0 0 1.5px rgba(14,13,12,.8);}
+  .cc-editghost{position:absolute;z-index:7;width:26px;height:26px;border:2px dashed var(--gilt);border-radius:50%;background:rgba(14,13,12,.35);pointer-events:none;}
+  .cc-editsug{position:absolute;z-index:7;width:34px;height:34px;border:2px dotted var(--gilt);border-radius:50%;background:rgba(207,166,80,.12);pointer-events:none;}
+  .cc-editcap{position:absolute;z-index:8;padding:2px 8px;border-radius:3px;background:rgba(14,13,12,.88);font-family:var(--font-ui);font-size:12px;font-weight:600;color:#f1e9da;white-space:nowrap;pointer-events:none;}
+  .cc-editline{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:6;}
 </style>
 </helmet>
 <div class="{{ appCls }}">
@@ -1470,11 +1690,14 @@
       </div>
       </sc-if>
 
+      <!-- ═══ TALLER DEL CRONISTA: the DM's editor (js/chronicle-taller.js, loaded on demand; drafts stay in this browser) ═══ -->
+      <sc-if value="{{ v.taller }}">{{ tl.view }}</sc-if>
+
       <!-- ═══ MAP ═══ -->
       <sc-if value="{{ v.map }}">
       <div class="{{ mp.wrapCls }}">
-        <div class="cc-vp" ref="{{ vpRef }}" onMouseDown="{{ mp.onDown }}" aria-label="{{ t.map.aria }}">
-          <div style="{{ mp.worldStyle }}">
+        <div class="cc-vp" ref="{{ vpRef }}" onMouseDown="{{ mp.onDown }}" onPointerDown="{{ mp.onVpPointerDown }}" onClick="{{ mp.onVpClick }}" aria-label="{{ t.map.aria }}">
+          <div style="{{ mp.worldStyle }}" data-world="1">
             <img class="cc-map-img" src="assets/exandria-map-preview.jpeg" alt="{{ t.map.imgAlt }}" draggable="false" loading="lazy" />
             <sc-if value="{{ mp.hiLoaded }}"><img class="cc-map-hi" src="{{ mp.hiSrc }}" alt="" draggable="false" loading="lazy" /></sc-if>
             <div class="cc-routes">{{ mp.routesSvg }}</div>
@@ -1485,6 +1708,8 @@
                 <div style="{{ p.labelStyle }}">{{ p.labelText }}</div>
               </div>
             </sc-for>
+            <sc-if value="{{ mp.placeMark }}"><div class="cc-placemark" style="{{ mp.placeMark.style }}" aria-hidden="true"><span class="cc-placemark-d"></span><span class="cc-placemark-l">{{ mp.placeMark.label }}</span></div></sc-if>
+            {{ mp.editLayer }}
             <sc-if value="{{ mp.hasSel }}">
               <div class="cc-popup is-entry" data-nopan="1" data-popup="{{ mp.sel.key }}" onMouseDown="{{ stop }}" style="{{ mp.sel.style }}">
                 <div style="{{ mp.sel.arrowStyle }}"></div>
@@ -1519,11 +1744,18 @@
         </div>
 
         <div class="cc-mapbar">
+          <sc-if value="{{ mp.notEditing }}">
           <button class="cc-mapbtn" onClick="{{ mp.onTogglePanel }}" aria-expanded="{{ mp.panelOpen }}">{{ icons.layers }}<span>{{ t.map.partyFilters }}</span><sc-if value="{{ mp.activeCount }}"><span class="cc-count">{{ mp.activeCount }}</span></sc-if></button>
+          </sc-if>
+          <sc-if value="{{ mp.editExit }}"><a class="cc-mapbtn" href="{{ mp.editExit.href }}">{{ icons.back }}<span>{{ mp.editExit.label }}</span></a><span class="cc-mx-badge">{{ icons.crosshair }}<span>{{ t.mx.title }}</span></span></sc-if>
           <span class="cc-flex"></span>
           <sc-if value="{{ mp.canBack }}"><button class="cc-mapbtn" onClick="{{ mp.onBack }}">{{ icons.back }}<span>{{ mp.backLabel }}</span></button></sc-if>
+          <sc-if value="{{ mp.notEditing }}">
           <sc-if value="{{ mp.canTour }}"><button class="cc-mapbtn cc-maphelp" onClick="{{ mp.onTour }}" title="{{ t.map.howToAria }}" aria-label="{{ t.map.howToAria }}">{{ icons.help }}<span>{{ t.map.howTo }}</span></button></sc-if>
+          </sc-if>
         </div>
+        <sc-if value="{{ mp.editLoading }}"><p class="cc-mx-loading" role="status">{{ t.taller.loading }}</p></sc-if>
+        {{ mp.editSheet }}
 
         <sc-if value="{{ mp.panelOpen }}">
           <div class="cc-mappanel cc-scroll" data-nopan="1" onMouseDown="{{ stop }}">
@@ -1562,8 +1794,9 @@
 
     <!-- ═══ DETAIL PANE ═══ -->
     <aside class="cc-detail cc-scroll" ref="{{ detailRef }}" aria-label="{{ t.app.detailsAria }}">
+      <sc-if value="{{ mx.aside }}">{{ mx.aside }}</sc-if>
       <sc-if value="{{ d.open }}">
-      <div class="cc-doc">
+      <div class="cc-doc" onClickCapture="{{ d.onCapture }}">
         <div class="cc-docbar">
           <button class="cc-back" onClick="{{ d.onBack }}">{{ icons.back }}<span>{{ t.common.back }}</span></button>
           <span class="cc-dockind">{{ d.kindLabel }}</span>
@@ -1574,6 +1807,8 @@
           <sc-if value="{{ d.nextHref }}"><a class="cc-iconbtn sm" href="{{ d.nextHref }}" title="{{ d.nextTitle }}" aria-label="{{ d.nextTitle }}">{{ icons.next }}</a></sc-if>
           <button class="cc-iconbtn sm cc-wide-only" onClick="{{ d.onClose }}" title="{{ t.common.close }}" aria-label="{{ t.common.close }}">✕</button>
         </div>
+        <!-- The Taller's preview: this same page, drawn from the draft — its links stay put (nothing is published yet). -->
+        <sc-if value="{{ d.previewNote }}"><p class="cc-preview-note" role="note">{{ icons.quill }}<span>{{ d.previewNote }}</span></p></sc-if>
 
         <sc-if value="{{ d.notFound }}"><div class="cc-notfound"><p class="cc-muted">{{ t.detail.notFound }}</p><a class="cc-btn ghost" href="{{ d.homeHref }}">{{ t.common.returnLink }}</a></div></sc-if>
 
@@ -1980,6 +2215,8 @@
               <details class="cc-faq-i"><summary>{{ fq.q }}</summary><p class="cc-faq-a">{{ fq.a }}</p></details>
             </sc-for>
           </div>
+          <!-- Whoever keeps the chronicle: the Taller del Cronista is one quiet link away (never a tab of its own). -->
+          <p class="cc-help-foot">{{ icons.quill }}<span>{{ t.taller.helpLine }} <a class="cc-a" href="#/taller" onClick="{{ hp.onTaller }}">{{ t.taller.title }}</a>.</span></p>
         </sc-if>
 
         <sc-if value="{{ hp.isGlossary }}">
@@ -2081,13 +2318,15 @@ class MapViewport {
   center(v,ev,minScale){ const el=this._el; if(!el||!el.clientWidth) return v; const vw=el.clientWidth,vh=el.clientHeight,s=Math.min(this.MAX,Math.max(v.scale,minScale)); return this.clamp({scale:s,x:vw/2-(ev.xp/100*vw)*s,y:vh/2-(ev.yp/100*this.worldH())*s}); }
   attach(el,onPan,onZoom,onDragEnd){
     this._el=el;
-    // Popups and panels inside the map (data-nopan) keep their own scrolling and taps.
+    // Popups and panels inside the map (data-nopan) keep their own scrolling and taps; a marker being dragged in the
+    // map editor (data-nodrag) keeps its own touch, while the wheel over it still zooms.
     const own=e=>!!(e.target&&e.target.closest&&e.target.closest("[data-nopan]"));
+    const held=e=>!!(e.target&&e.target.closest&&e.target.closest("[data-nopan],[data-nodrag]"));
     this._onWheel=e=>{ if(own(e)) return; e.preventDefault(); const r=el.getBoundingClientRect(); onZoom(e.clientX-r.left,e.clientY-r.top,e.deltaY<0?1.18:1/1.18); };
     this._onMove=e=>{ if(!this._drag)return; onPan(e.clientX-this._drag.px,e.clientY-this._drag.py); this._drag.px=e.clientX; this._drag.py=e.clientY; };
     this._onUp=()=>{ if(this._drag){ this._drag=null; onDragEnd(); } };
     this._onTouchStart=e=>{
-      if(own(e)){ this._drag=null; this._pinch=null; return; }
+      if(held(e)){ this._drag=null; this._pinch=null; return; }
       this._userTouched=true;
       if(e.touches.length>=2){
         const [a,b]=e.touches;
@@ -2117,7 +2356,7 @@ class MapViewport {
     };
     this._onTouchEnd=e=>{
       if(e.touches.length===0){ if(this._drag||this._pinch){ this._drag=null; this._pinch=null; onDragEnd(); } }
-      else if(e.touches.length===1&&!own(e)){ this._pinch=null; this._drag={px:e.touches[0].clientX,py:e.touches[0].clientY}; }
+      else if(e.touches.length===1&&!held(e)){ this._pinch=null; this._drag={px:e.touches[0].clientX,py:e.touches[0].clientY}; }
     };
     el.addEventListener("wheel",this._onWheel,{passive:false});
     el.addEventListener("touchstart",this._onTouchStart,{passive:true});
@@ -2188,6 +2427,17 @@ const ICON_SHAPES = {
   recap:    ["M11.5 6 5.5 12l6 6","M18.5 6l-6 6 6 6"],
   unfold:   ["M7.5 9 12 4.5 16.5 9","M7.5 15l4.5 4.5 4.5-4.5"],     // expand every branch
   fold:     ["M7.5 4.5 12 9l4.5-4.5","M7.5 19.5 12 15l4.5 4.5"],    // collapse every branch
+  // The Taller del Cronista and the map editor
+  quill:    ["M19.5 3.5c-6 1-10.5 5.5-12.5 13l-1.5 4","M19.5 3.5c.5 5-2.5 9.5-8 11.5","M9.5 12.5h4.5"],
+  plus:     ["M12 5v14","M5 12h14"],
+  edit:     ["M4.5 19.5h4l10-10-4-4-10 10z","M13 7l4 4"],
+  copy:     ["M9 9h10.5v10.5H9z","M15 9V4.5H4.5V15H9"],
+  download: ["M12 4v11","M7.5 10.5 12 15l4.5-4.5","M5 19.5h14"],
+  upload:   ["M12 15V4","M7.5 8.5 12 4l4.5 4.5","M5 19.5h14"],
+  undo:     ["M9 7.5 4.5 12 9 16.5","M4.5 12H15a4.5 4.5 0 0 1 0 9h-2"],
+  trash:    ["M4.5 7h15","M9.5 7V4.5h5V7","M6.5 7l1 13h9l1-13"],
+  warn:     ["M12 4 2.5 20h19z","M12 10v4.5","M12 17.3v.2"],
+  crosshair:["M12 19.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15z","M12 2.5v5","M12 16.5v5","M2.5 12h5","M16.5 12h5"],
 };
 // Event types — exactly one icon per type of ChronicleModel.EVENT_TYPES, always shown with the
 // type's label and tinted with its family colour (--ev-<family>). Same 24px stroke style as above.
@@ -2258,10 +2508,19 @@ const SECTIONS = [
   { id:"places",     icon:"places" },
   { id:"map",        icon:"map" },
   { id:"saved",      icon:"star", hidden:true },     // favourites + history: the star in the top bar / More, never a tab
+  { id:"taller",     icon:"quill", hidden:true },    // the Taller del Cronista (the DM's editor): reached by its link, never a tab
 ];
 const SECTION_IDS = SECTIONS.map(s=>s.id);
 // Detail kinds open the reading pane; "at" (map only) just focuses a pin. "recap" = "Previously on…" for a session.
 const KINDS = { event:1, session:1, quest:1, character:1, place:1, recap:1 };
+// Map-only kinds that open no pane: "at" focuses a pin, "near" a place's own position; "edit" / "editplace" are the
+// map editor (an event's or a place's position; "edit" alone is its list).
+const MAP_KINDS = { at:1, near:1, edit:1, editplace:1 };
+// The Taller's routes: #/taller/tab/<tab> and #/taller/<kind>/<id> (a record's form; its preview is the reading pane).
+const TALLER_KINDS = { tab:1, session:1, event:1, quest:1, character:1, place:1 };
+// The Taller's scripts and interface strings, loaded only when the Taller or the map editor opens (the public chronicle
+// never downloads them; sw.js keeps them in the offline copy from their first use online).
+const TALLER_SCRIPTS = ["js/chronicle-editor.js",...I18N.LOCALES.map(l=>`locales/taller.${l.code}.js`),"js/chronicle-taller.js"];
 const FAV_KINDS = { event:1, session:1, quest:1, character:1, place:1 };
 // Interactive tours (js/chronicle-tour.js on top of Driver.js): optional, never opened by themselves.
 const Tour = window.ChronicleTour;
@@ -2279,11 +2538,14 @@ function parseHash(hash){
   const parts=String(hash||"").replace(/^#\/?/,"").split("/").filter(Boolean).map(s=>{ try{ return decodeURIComponent(s); }catch(e){ return s; } });
   let [section,kind,id]=parts;
   if(!SECTION_IDS.includes(section)) section="chronicle";
-  if(!(kind in KINDS) && !(section==="map"&&kind==="at")) kind=null;
+  if(section==="taller"?!(kind in TALLER_KINDS):!(kind in KINDS)&&!(section==="map"&&kind in MAP_KINDS)) kind=null;
+  if(section==="map"&&kind==="edit"&&!id) return { section, kind, id:null };      // the map editor's list
   if(!kind||!id){ kind=null; id=null; }
   return { section, kind, id };
 }
-const routeHash = r => "#/"+r.section+(r.kind?`/${r.kind}/${enc(r.id)}`:"");
+const routeHash = r => "#/"+r.section+(r.kind?`/${r.kind}`+(r.id!=null?`/${enc(r.id)}`:""):"");
+const isEntryRoute = r => r.section!=="taller"&&!!r.kind&&r.kind in KINDS;      // a route that opens an entry in the reading pane
+const isMapEdit = r => r.section==="map"&&(r.kind==="edit"||r.kind==="editplace");
 
 class Component extends DCLogic {
   constructor(props){
@@ -2326,6 +2588,7 @@ class Component extends DCLogic {
       search:{ open:false, q:"", active:0, more:{} },
       libRev:0, liveMsg:"",
       servedOffline:false, netOffline:navigator.onLine===false, offlineHidden:false,
+      tlRev:0, tlReady:false, tlError:null,           // the Taller del Cronista: re-render counter, scripts loaded, load failure
     };
     if(!Array.isArray(this.state.filters.pcs)) this.state.filters.pcs=[];
     this._applyDocLang(lang);
@@ -2416,6 +2679,11 @@ class Component extends DCLogic {
     window.addEventListener("storage",this._onStorage);
     this._onNet=()=>this.setState({netOffline:navigator.onLine===false,offlineHidden:false});
     window.addEventListener("online",this._onNet); window.addEventListener("offline",this._onNet);
+    // The Taller del Cronista: closing the page asks first while its work is not safely stored (a save still
+    // pending or failed, a marker moved on the map but not confirmed). Drafts themselves survive a reload.
+    this._onBeforeUnload=e=>{ if(this._tl&&this._tl.isDirty()){ e.preventDefault(); e.returnValue=""; return ""; } };
+    window.addEventListener("beforeunload",this._onBeforeUnload);
+    if(this.state.route.section==="taller"||isMapEdit(this.state.route)) this._taller();
     const saved=this.store.load(); if(Object.keys(saved).length) this.setState({docs:saved});
     // A reload while an overlay was open leaves its history entry behind: it no longer opens anything.
     try{ if(history.state&&(history.state.ccOverlay||history.state.ccTour)) history.replaceState(null,"",location.href); }catch(e){}
@@ -2478,8 +2746,31 @@ class Component extends DCLogic {
     window.removeEventListener("popstate",this._onPop);
     window.removeEventListener("storage",this._onStorage);
     window.removeEventListener("online",this._onNet); window.removeEventListener("offline",this._onNet);
+    window.removeEventListener("beforeunload",this._onBeforeUnload);
+    if(this._tl&&this._tl.dispose) this._tl.dispose();
     clearTimeout(this._recentTimer); clearTimeout(this._findTimer);
   }
+
+  // ── The Taller del Cronista (js/chronicle-taller.js on js/chronicle-editor.js) ──
+  // Loaded only when its route or the map editor is opened — the public chronicle never downloads it — and kept in
+  // the offline copy. The instance owns its state (the local draft, forms, the map editor) and re-renders the page
+  // through `tlRev`; it reads the published data and the same view-model builders as the public pages.
+  _taller(){
+    if(this._tl) return this._tl;
+    const ready=window.ChronicleTaller&&window.ChronicleEditor;
+    if(ready&&this.model){
+      this._tl=window.ChronicleTaller.create(this,{ h, M, MapL, I18N, ICONS, EVENT_ICONS, STATUS_ICONS, PLACE_ICONS, routeHash, isMapEdit, safeStorage });
+      return this._tl;
+    }
+    if(!ready&&!this._tlLoading){
+      const load=src=>new Promise((resolve,reject)=>{ const s=document.createElement("script"); s.src=src; s.onload=resolve; s.onerror=()=>reject(new Error(src)); document.head.appendChild(s); });
+      this._tlLoading=TALLER_SCRIPTS.reduce((p,src)=>p.then(()=>load(src)),Promise.resolve())
+        .then(()=>this.setState({tlReady:true}))
+        .catch(err=>{ this._tlLoading=null; this.setState({tlError:String(err&&err.message||err)}); });
+    }
+    return null;
+  }
+  _tlRender(){ this.setState(s=>({tlRev:s.tlRev+1})); }
 
   // ── Language ──────────────────────────────────────────────────────────────
   _translator(code){ return this._ts[code]||(this._ts[code]=I18N.createTranslator(code)); }
@@ -2522,6 +2813,7 @@ class Component extends DCLogic {
     else if(st[st.length-1]!==hash) st.push(hash);
     if(st.length>60) st.splice(0,st.length-60);
     const prev=this.state.route;
+    if(r.section==="taller"||isMapEdit(r)) this._taller();
     this._overlay=null;                                            // any route change closes the help and the search
     this.setState(s=>({route:r,moreOpen:false,help:null,search:s.search.open?{...s.search,open:false}:s.search,placesOpen:this._revealPlace(s.placesOpen,r)}),()=>this._afterRoute(prev,r));
   }
@@ -2536,7 +2828,7 @@ class Component extends DCLogic {
   closeDetail(){ const r=this.state.route; this.navigate(routeHash({section:r.section})); }
   _afterRoute(prev,r){
     if(!this.model) return;
-    const listVisible=!(r.kind&&r.kind in KINDS)||this.state.isWide;
+    const listVisible=!isEntryRoute(r)||this.state.isWide;
     const main=this._mainEl, det=this._detailEl;
     this._restoring=true;
     if(main&&listVisible&&r.section!=="map"&&(!prev||prev.section!==r.section||(prev.kind&&!this.state.isWide))) main.scrollTop=this._scroll[r.section]||0;
@@ -2551,13 +2843,14 @@ class Component extends DCLogic {
     // On phones the reading pane replaces the list: move focus to its heading for screen readers
     // (and on every screen when the entry was opened from the search or the guide).
     const focusHead=this._focusHeadNext; this._focusHeadNext=false;
-    if(r.kind&&r.kind in KINDS&&(focusHead||!this.state.isWide)&&this._headEl&&(focusHead||!prev||routeHash(prev)!==routeHash(r))) this._headEl.focus({preventScroll:true});
+    if(isEntryRoute(r)&&(focusHead||!this.state.isWide)&&this._headEl&&(focusHead||!prev||routeHash(prev)!==routeHash(r))) this._headEl.focus({preventScroll:true});
     if(r.section==="map") this._syncMap(prev,false);
-    if(prev&&(!!(prev.kind in KINDS))!==(!!(r.kind in KINDS))) this.reflow();
+    if(prev&&(isEntryRoute(prev)!==isEntryRoute(r)||isMapEdit(prev)!==isMapEdit(r)||(prev.section==="taller")!==(r.section==="taller"))) this.reflow();
+    if(this._tl) this._tl.onRoute(prev,r);
     // Recently viewed: an entry counts once it has stayed open a moment (quick flips through
     // Earlier/Later or an accidental tap are not history); reopening moves it to the top.
     clearTimeout(this._recentTimer);
-    if(r.kind in FAV_KINDS&&M.resolveRef(this.model,r.kind,r.id)){
+    if(isEntryRoute(r)&&r.kind in FAV_KINDS&&M.resolveRef(this.model,r.kind,r.id)){
       const hash=routeHash(r);
       this._recentTimer=setTimeout(()=>{ if(routeHash(this.state.route)===hash&&this.lib.addRecent({kind:r.kind,id:String(r.id)})) this.setState(s=>({libRev:s.libRev+1})); },RECENT_DWELL);
     }
@@ -2576,6 +2869,8 @@ class Component extends DCLogic {
     if(e.key==="Tab"&&(this.state.search.open||this.state.help)) return this._trapFocus(e);
     // Esc inside the first-visit welcome = "Ahora no".
     if(e.key==="Escape"&&this._welcomeEl&&this._welcomeEl.isConnected&&this._welcomeEl.contains(document.activeElement)){ e.preventDefault(); return this.dismissInvite(); }
+    // The Taller and the map editor own Esc while they are open (a dialog, the preview, a marker moved but not confirmed).
+    if(this._tl&&(this.state.route.section==="taller"||isMapEdit(this.state.route))&&!this.state.search.open&&!this.state.help&&this._tl.handleKey(e,typing)) return;
     if(e.key==="Escape"){
       if(this.state.search.open) return this.closeSearch();
       if(this.state.help) return this.closeHelp();
@@ -2793,7 +3088,8 @@ class Component extends DCLogic {
     const r=this.state.route;
     let target=null;
     if((r.kind==="event"||r.kind==="at")){ const ev=this.model.eventById.get(r.id); if(ev&&ev.hasCoords){ target=ev; if(this.state.mapSelId!==ev.id||this.state.mapList) this.setState({mapSelId:ev.id,mapList:null}); } }
-    else if(r.kind==="place"){ const pl=this.model.placeById.get(r.id); const ev=pl&&pl.focusEventId&&this.model.eventById.get(pl.focusEventId); if(ev) target=ev; }
+    else if(r.kind==="place"||r.kind==="near"){ const pl=this.model.placeById.get(r.id); if(pl&&pl.mapPoint) target=pl.mapPoint; }   // its own position, else its first located event
+    else if(isMapEdit(r)&&r.id&&this._tl) target=this._tl.mapFocus();                // the map editor: what is being placed
     const changed=!prev||prev.section!=="map"||routeHash(prev)!==routeHash(r);
     if(target&&(changed||justMounted)) this._centerSoon(target,r.kind==="place"?2.0:2.4);
     else if(!this._mapCentered) this._centerSoon({xp:38,yp:30},2.2);
@@ -2843,7 +3139,7 @@ class Component extends DCLogic {
   // ── Link + presentation helpers ───────────────────────────────────────────
   href(kind,id)   { return `#/${this.state.route.section}/${kind}/${enc(id)}`; }
   mapHref(ev)     { return !ev||!ev.hasCoords?null:(this.state.isWide?`#/map/event/${enc(ev.id)}`:`#/map/at/${enc(ev.id)}`); }
-  placeMapHref(pl){ if(!pl||!pl.focusEventId) return null; return this.state.isWide?`#/map/place/${enc(pl.id)}`:`#/map/at/${enc(pl.focusEventId)}`; }
+  placeMapHref(pl){ const mp=pl&&pl.mapPoint; if(!mp) return null; return this.state.isWide?`#/map/place/${enc(pl.id)}`:mp.source==="event"?`#/map/at/${enc(mp.eventId)}`:`#/map/near/${enc(pl.id)}`; }
   isOpen(kind,id) { const r=this.state.route; return r.kind===kind&&String(r.id)===String(id); }
   curOf(kind,id)  { return this.isOpen(kind,id)?"true":undefined; }   // aria-current of the open entry's card (the one with the ribbon)
   title(ev)       { return this.store.titleOf(this.state.docs,ev); }
@@ -3265,7 +3561,7 @@ class Component extends DCLogic {
       onStart:()=>this.startTour(id) }));
     const sections=SECTIONS.filter(s=>!s.hidden).map(s=>({ icon:ICONS[s.icon], label:t(`nav.${s.id}`), text:t(`nav.desc.${s.id}`) }));
     const faq=[1,2,3,4,5,6].map(n=>({ q:t(`help.faq.q${n}`), a:t(`help.faq.a${n}`) }));
-    return { ...base, canTour, noTour:!canTour, tours, sections, faq };
+    return { ...base, canTour, noTour:!canTour, tours, sections, faq, onTaller:e=>{ e.preventDefault(); this._goFromOverlay("#/taller"); } };
   }
   _buildGlossary(){
     const t=this.t, m=this.model;
@@ -3484,7 +3780,9 @@ class Component extends DCLogic {
     const aliasList=pl.aliases.filter(a=>!same(a,pl.name)).map(a=>`“${a}”`).join(t("common.listSep"));
     // On the map: where its first event with a position happened (the same spot "Ver en el mapa" opens). A
     // continent, region or sea is framed wider. Planes and places without such an event say so instead.
-    const fe=pl.focusEventId?m.eventById.get(pl.focusEventId):null, feAt=fe&&fe.locationId!==pl.id?m.placeById.get(fe.locationId):null;
+    // Its own recorded position when it has one (exact or approximate, as recorded); otherwise its first located event.
+    const mp=pl.mapPoint, own=!!mp&&mp.source==="ref";
+    const fe=!own&&pl.focusEventId?m.eventById.get(pl.focusEventId):null, feAt=fe&&fe.locationId!==pl.id?m.placeById.get(fe.locationId):null;
     const wide=pl.kindKey==="continent"||pl.kindKey==="region"||pl.kindKey==="sea";
     return {
       name:pl.name, kindLabel:pl.kindLabel, icon:this.placeIcon(pl), kickCls:"cc-kick"+(pl.isPlanar?" ev-arcane":""),
@@ -3493,9 +3791,9 @@ class Component extends DCLogic {
       hasCrumbs:pl.ancestorIds.length>0, crumbsCls:"cc-crumbs"+(pl.isPlanar?" is-planar":""),
       aliases:aliasList?t("place.aka",{list:aliasList}):"",
       mapHref:this.placeMapHref(pl), canFilter:pl.allEventIds.length>0, onFilter:()=>this.filterBy("place",pl.id),
-      hasMap:!!fe&&this.state.route.section!=="map", mapAria:t("places.onMap",{name:pl.name}),     // beside the full map, no preview
-      mini:fe?{ at:`--x:${fe.xp};--y:${fe.yp};${wide?"--z:1.8;":""}`, caption:feAt?t("place.mapByIn",{event:this.title(fe),place:feAt.name}):t("place.mapBy",{event:this.title(fe)}) }:{},
-      planarNote:pl.isPlanar?t("place.planar"):"", noPosition:!fe&&!pl.isPlanar?t("place.noPosition"):"",
+      hasMap:!!mp&&this.state.route.section!=="map", mapAria:t("places.onMap",{name:pl.name}),     // beside the full map, no preview
+      mini:mp?{ at:`--x:${mp.xp};--y:${mp.yp};${wide?"--z:1.8;":""}`, caption:own?t(mp.precision==="exact"?"place.mapRef":"place.mapRefApprox"):feAt?t("place.mapByIn",{event:this.title(fe),place:feAt.name}):t("place.mapBy",{event:this.title(fe)}) }:{},
+      planarNote:pl.isPlanar?t("place.planar"):"", noPosition:!mp&&!pl.isPlanar?t("place.noPosition"):"",
       children:this._placeIndex().childIds.get(pl.id).map(id=>this.placeChip(m.placeById.get(id))), hasChildren:pl.childIds.length>0, childCount:String(pl.childIds.length),
       events, eventCount:events.length, hasEvents:events.length>0,
       quests:pl.questIds.map(id=>this.questRow(m.questById.get(id))), hasQuests:pl.questIds.length>0,
@@ -3579,8 +3877,11 @@ class Component extends DCLogic {
   // On-screen marker sizes. Phones get the design's full seals (markers merge there below 42px apart);
   // with a mouse (32px) they are a little smaller, so neighbouring markers still never overlap beyond their halos.
   _markerSize(){ const big=this.state.isMobile; return { pin:big?38:32, face:big?28:24, seal:n=>n>=10?(big?50:42):(big?46:38) }; }
-  _buildPins(markers,view,selId,listIds){
+  // `pick` (the map editor): a marker chooses what to place instead of opening its card; the others step back.
+  _buildPins(markers,view,selId,listIds,pick){
     const t=this.t, inv=this.viewport.MAX/view.scale, S=this._markerSize();
+    if(pick) return this._buildPins(markers,view,null,null).map((p,i)=>{ const ids=markers[i].events.map(e=>e.id);
+      return { ...p, haspopup:undefined, title:t("mx.pickMarker",{name:p.title}), onSelect:()=>pick(ids), style:p.style+"opacity:.72;" }; });
     return markers.map(mk=>{
       const ids=mk.events.map(e=>e.id);
       const isSel=(!listIds&&ids.includes(selId))||(!!listIds&&listIds.includes(ids[0])&&ids.length===listIds.length);
@@ -3639,10 +3940,13 @@ class Component extends DCLogic {
   }
   _buildMap(){
     const m=this.model, st=this.state, t=this.t, view=st.view, r=st.route, MAX=this.viewport.MAX;
-    const evs=this._mapEvents();
+    // The map editor (#/map/edit…): the draft's events as they will be, every marker a way to choose what to place,
+    // no cards; the marker being placed is drawn by the Taller (mp.editLayer).
+    const tl=isMapEdit(r)?this._tl:null;
+    const evs=tl?tl.mapEvents():this._mapEvents();
     const markers=this._markers(evs,view.scale);
-    const selId=(r.kind==="event"||r.kind==="at")?r.id:st.mapSelId;
-    const listIds=st.mapList&&st.mapList.filter(id=>evs.some(e=>e.id===id));
+    const selId=tl?null:(r.kind==="event"||r.kind==="at")?r.id:st.mapSelId;
+    const listIds=!tl&&st.mapList&&st.mapList.filter(id=>evs.some(e=>e.id===id));
     const hasListOpen=!!(listIds&&listIds.length);
     const markerOf=id=>markers.find(mk=>mk.events.some(e=>e.id===id));
     let sel=null, list=null;
@@ -3686,28 +3990,36 @@ class Component extends DCLogic {
     if(m.hasUnassigned){ const on=!pcs.length||pcs.includes(M.NO_CHARACTER);
       party.push({ name:t("map.unassignedRow"), sub:"", on, cls:"cc-partyrow"+(on?"":" is-off"), sealCls:"cc-seal mono mono-type", seal:"", mono:"❦", swatch:null, onToggle:()=>this.toggleVisiblePc(M.NO_CHARACTER) }); }
     const sharedMembers=[...new Set(routes.layers.shared.flatMap(l=>l.memberIds))].map(id=>m.personById.get(id).name);
-    const pinsKey=[view.scale.toFixed(4),selId||"",(listIds||[]).join(","),st.lang].join("|");
+    const pinsKey=[view.scale.toFixed(4),selId||"",(listIds||[]).join(","),st.lang,tl?"edit":""].join("|");
     const pins=(this._memo.pins&&this._memo.pins.markers===markers&&this._memo.pins.key===pinsKey)?this._memo.pins.val
-      :(this._memo.pins={markers,key:pinsKey,val:this._buildPins(markers,view,selId,hasListOpen?listIds:null)}).val;
+      :(this._memo.pins={markers,key:pinsKey,val:this._buildPins(markers,view,selId,hasListOpen?listIds:null,tl?ids=>tl.pickFromMap(ids):null)}).val;
+    // A place opened with its own recorded position (no event pin there): a small gilt lozenge and its name.
+    const fp=!tl&&(r.kind==="place"||r.kind==="near")&&m.placeById.get(r.id), fpt=fp&&fp.mapPoint&&fp.mapPoint.source==="ref"?fp.mapPoint:null;
+    const placeMark=fpt?{ label:fp.name, style:`left:${fpt.xp}%;top:${fpt.yp}%;transform:translate(-50%,-50%) scale(${(MAX/view.scale).toFixed(4)});` }:null;
     return {
       worldStyle:`position:absolute;top:0;left:0;width:${MAX*100}%;transform:translate(${view.x}px,${view.y}px) scale(${(view.scale/MAX).toFixed(6)});transform-origin:0 0;will-change:transform;`,
       hiLoaded:st.hiLoaded, hiSrc:HI_RES_MAP,
       routesSvg:routes.svg, pins,
       hasSel:!!sel, sel:sel||{}, onCloseSel:()=>{ this.setState({mapSelId:null}); if(r.kind==="at"||r.kind==="event") this.navigate("#/map",{replace:true}); },
       hasList:!!list, list:list||{}, onCloseList:()=>this.setState({mapList:null}),
-      wrapCls:"cc-mapwrap"+(sel||list?" has-popup":""),
+      wrapCls:"cc-mapwrap"+(sel||list?" has-popup":"")+(tl?" is-editing":""),
       onDown:e=>{ this.viewport.startDrag(e.clientX,e.clientY,cur=>{ if(this._vpEl) this._vpEl.style.cursor=cur; }); },
+      // The map editor: what is being placed (drawn in the map's own coordinates), a tap or click that places it,
+      // its panel (beside the map on wide screens — the reading pane — over it as a sheet below 1024px).
+      editing:!!tl, notEditing:!tl, editLayer:tl?tl.mapLayer(view):null, editSheet:tl&&!st.isWide?tl.mapPanel():null,
+      onVpPointerDown:tl?e=>tl.mapPointerDown(e):undefined, onVpClick:tl?e=>tl.mapClick(e):undefined,
+      editLoading:isMapEdit(r)&&!tl, editExit:tl?{ href:tl.exitHref(), label:t("mx.exit") }:null, placeMark,
       onZoomIn: ()=>{ const el=this._vpEl; this._interact++; this.setState(s=>{ const view=this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1.4); return {view}; }); },
       onZoomOut:()=>{ const el=this._vpEl; this._interact++; this.setState(s=>({view:this.viewport.zoom(s.view,el?el.clientWidth/2:0,el?el.clientHeight/2:0,1/1.4)})); },
       onResetView:()=>{ this._interact++; this.setState(s=>({view:this.viewport.clamp({scale:1,x:0,y:0})})); },
-      zoomLabel:`${Math.round(view.scale*100)}%`, zoomHint:st.isMobile?t("map.hintTouch"):t("map.hintMouse"),
+      zoomLabel:`${Math.round(view.scale*100)}%`, zoomHint:tl?tl.mapHint():st.isMobile?t("map.hintTouch"):t("map.hintMouse"),
       panelOpen:st.mapPanelOpen, onTogglePanel:()=>this.setState(s=>({mapPanelOpen:!s.mapPanelOpen})),
       party, showRoute:st.showRoute, onToggleRoute:()=>this.setState(s=>({showRoute:!s.showRoute})),
       hasShared:st.showRoute&&routes.layers.shared.length>0, sharedSwatch:swatch(null,true),
       sharedSub:`${sharedMembers.join(t("common.listSep"))} — ${t("map.sharedRouteSub")}`,
       countText:t("map.countText",{events:t("common.events",{count:evs.length}),places:t("map.countPlaces",{count:spots})})+(mapless?` ${t("map.mapless",{count:mapless})}`:""),
       activeCount,
-      canBack:this.canGoBack()&&!lastHash.startsWith("#/map"), onBack:()=>this.goBack(),
+      canBack:!tl&&this.canGoBack()&&!lastHash.startsWith("#/map"), onBack:()=>this.goBack(),
       canTour:!!this.tour, onTour:()=>this.startTour("map"),     // stays in view (dimmed) during a tour: the main tour points the visitor to it
       backLabel:lastHash.includes("/event/")&&!st.isMobile?t("map.backToEntry"):t("map.back"),
     };
@@ -3716,7 +4028,12 @@ class Component extends DCLogic {
   // ── renderVals — coordinates builders, owns no logic (SRP) ───────────────
   renderVals(){
     const st=this.state, r=st.route, m=this.model, ready=!!m, t=this.t;
-    const sec=r.section, hasDetail=ready&&!!(r.kind&&r.kind in KINDS);
+    const sec=r.section;
+    // The Taller (#/taller…) and the map editor: the instance once its scripts and the data are in. A record's preview is
+    // the reading pane fed by the draft; the map editor's panel sits in it beside the map on wide screens.
+    const tl=ready&&(sec==="taller"||isMapEdit(r))?this._taller():null;
+    const tlDetail=sec==="taller"&&tl?tl.preview():null, mxAside=!!tl&&isMapEdit(r)&&st.isWide;
+    const hasDetail=ready&&(sec==="taller"?!!tlDetail:mxAside||isEntryRoute(r));
     const latest=ready?M.latestSession(m):null, lastSess=latest?latest.no:0;
     const label=s=>t(`nav.${s.id}`);
     const nav=SECTIONS.filter(s=>!s.hidden).map(s=>({ href:`#/${s.id}`, label:label(s), title:`${label(s)} — ${t(`nav.desc.${s.id}`)}`, icon:ICONS[s.icon], current:s.id===sec?"page":undefined, cls:"cc-tab"+(s.id===sec?" is-on":"") }));
@@ -3725,11 +4042,11 @@ class Component extends DCLogic {
       { isMore:true, label:onSecondary?label(onSecondary):t("nav.more"), icon:onSecondary?ICONS[onSecondary.icon]:ICONS.more, cls:"cc-bn"+(onSecondary||st.moreOpen?" is-on":"") }];
     const langs=I18N.LOCALES.map(l=>({ code:l.code, short:l.short, lang:l.htmlLang, on:l.code===st.lang, cls:l.code===st.lang?"is-on":"",
       title:this._translator(l.code)("lang.switchTo",{name:l.name}), onClick:()=>this.setLang(l.code) }));
-    const [d,dv]=hasDetail?this._buildDetail():[{open:false},{}];
+    const [d,dv]=sec==="taller"?(tlDetail||[{open:false},{}]):hasDetail&&!mxAside?this._buildDetail():[{open:false},{}];
     const v={ chronicle:ready&&sec==="chronicle", sessions:ready&&sec==="sessions", quests:ready&&sec==="quests",
-              characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map", saved:ready&&sec==="saved" };
+              characters:ready&&sec==="characters", places:ready&&sec==="places", map:ready&&sec==="map", saved:ready&&sec==="saved", taller:ready&&sec==="taller" };
     // The star in the reading pane (not built into the memoized pane, so toggling it is instant).
-    const favRef=hasDetail&&d.open&&!d.notFound&&r.kind in FAV_KINDS?{kind:r.kind,id:String(r.id)}:null, favOn=!!favRef&&this.lib.isFavorite(favRef);
+    const favRef=hasDetail&&d.open&&!d.notFound&&isEntryRoute(r)&&r.kind in FAV_KINDS?{kind:r.kind,id:String(r.id)}:null, favOn=!!favRef&&this.lib.isFavorite(favRef);
     const recapEntry=latest&&(v.chronicle||v.sessions)?{ href:this.href("recap",latest.no), label:this.sessLabel(latest.no), title:latest.title?`· ${latest.title}`:"",
       sub:this.sessionSub(latest), aria:t("recap.entryAria",{party:t("characters.partyName"),session:[this.sessLabel(latest.no),latest.title].filter(Boolean).join(" — ")}),
       qaSub:t("chronicle.qaRecapSub",{label:t("recap.entry"),session:this.sessLabel(latest.no)}) }:null;
@@ -3758,6 +4075,8 @@ class Component extends DCLogic {
       pl:v.characters?this._buildPeople():{}, pll:v.places?this._buildPlaces():{},
       sv:v.saved?this._buildSaved():{},
       mp:v.map?this._buildMap():{},
+      tl:v.taller?{ view:tl?tl.render():h("div",{className:"cc-page"},h("p",{className:"cc-loading",role:"status"},st.tlError?t("taller.loadError",{error:st.tlError}):t("taller.loading"))) }:{},
+      mx:{ aside:mxAside?tl.mapPanel():null },
       d, e:d.event?dv:{}, s:d.session?dv:{}, q:d.quest?dv:{}, p:d.character?dv:{}, pp:d.place?dv:{}, rc:d.recap?dv:{}, lo:d.lore||{},
       dateType:"date",
       onText:e=>this.setF("text",e.target.value), onClearText:()=>{ this.setF("text",""); if(this._searchEl) this._searchEl.focus(); },

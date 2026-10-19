@@ -30,6 +30,7 @@
       places: "Places",
       map: "Map",
       saved: "Saved",
+      taller: "Workshop",
       more: "More",
       moreAria: "More sections",
       // What each section holds, in one line (tab titles and the help centre).
@@ -120,6 +121,7 @@
       playedLower: "played {date}",
       back: "Back",
       close: "Close",
+      cancel: "Cancel",
       clear: "Clear",
       map: "Map",
       viewOnMap: "View on map",
@@ -374,6 +376,8 @@
       planar: "Another plane of existence — it has no place on the map of Exandria.",
       mapBy: "Placed by “{event}”, its first event with a map position.",
       mapByIn: "Placed by “{event}” ({place}), its first event with a map position.",
+      mapRef: "The place’s recorded position on the map.",
+      mapRefApprox: "The place’s approximate recorded position on the map.",
       noPosition: "No marker on the map: no event recorded here has a position.",
       happened: "What happened here",
       within: "Within",
@@ -693,6 +697,17 @@
     offline: {
       note: "Offline — you are reading the last copy saved on this device.",
       dismiss: "Hide",
+    },
+    taller: {
+      title: "Chronicler’s Workshop",
+      loading: "Preparing the workshop…",
+      loadError: "The workshop could not be opened ({error}). Check the connection and reload the page.",
+      helpLine: "Do you keep the campaign’s chronicle? New sessions are prepared in the",
+    },
+    mx: {
+      title: "Map editor",
+      exit: "Leave the editor",
+      pickMarker: "Place: {name}",
     },
   };
   register("en", dict);

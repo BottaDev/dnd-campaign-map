@@ -1,8 +1,8 @@
 {
   "sorfon": [
     {
-      "xp": 45.3,
-      "yp": 33.4,
+      "xp": 45.91,
+      "yp": 32.16,
       "leg": "s8-airship",
       "session": 8,
       "locationId": "kraghammer"
@@ -35,8 +35,8 @@
   ],
   "ayante": [
     {
-      "xp": 45.6,
-      "yp": 33,
+      "xp": 46.21,
+      "yp": 31.76,
       "leg": "s8-airship",
       "session": 8,
       "locationId": "kraghammer"
@@ -69,8 +69,8 @@
   ],
   "mortis": [
     {
-      "xp": 45,
-      "yp": 33.6,
+      "xp": 45.61,
+      "yp": 32.36,
       "leg": "s8-airship",
       "session": 8,
       "locationId": "kraghammer"
@@ -103,8 +103,8 @@
   ],
   "ereldra": [
     {
-      "xp": 44.8,
-      "yp": 33.1,
+      "xp": 45.41,
+      "yp": 31.86,
       "leg": "s8-airship",
       "session": 8,
       "locationId": "kraghammer"

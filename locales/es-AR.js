@@ -30,6 +30,7 @@
       places: "Lugares",
       map: "Mapa",
       saved: "Guardados",
+      taller: "Taller",
       more: "Más",
       moreAria: "Más secciones",
       // Qué guarda cada sección, en una línea (títulos de las pestañas y la ayuda).
@@ -120,6 +121,7 @@
       playedLower: "jugada el {date}",
       back: "Volver",
       close: "Cerrar",
+      cancel: "Cancelar",
       clear: "Borrar",
       map: "Mapa",
       viewOnMap: "Ver en el mapa",
@@ -374,6 +376,8 @@
       planar: "Otro plano de existencia: no tiene lugar en el mapa de Exandria.",
       mapBy: "Marcado según «{event}», su primer acontecimiento con posición en el mapa.",
       mapByIn: "Marcado según «{event}» ({place}), su primer acontecimiento con posición en el mapa.",
+      mapRef: "La posición registrada del lugar en el mapa.",
+      mapRefApprox: "La posición aproximada registrada del lugar en el mapa.",
       noPosition: "Sin marcador en el mapa: ningún acontecimiento registrado acá tiene posición.",
       happened: "Qué pasó acá",
       within: "Dentro",
@@ -693,6 +697,17 @@
     offline: {
       note: "Sin conexión: estás leyendo la última copia guardada en este dispositivo.",
       dismiss: "Ocultar",
+    },
+    taller: {
+      title: "Taller del Cronista",
+      loading: "Preparando el taller…",
+      loadError: "No se pudo abrir el taller ({error}). Revisá la conexión y recargá la página.",
+      helpLine: "¿Llevás la crónica de la campaña? Las sesiones nuevas se preparan en el",
+    },
+    mx: {
+      title: "Editor cartográfico",
+      exit: "Salir del editor",
+      pickMarker: "Ubicar: {name}",
     },
   };
   register("es-AR", dict);

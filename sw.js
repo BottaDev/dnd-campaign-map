@@ -4,7 +4,9 @@
 // Offline (or on a connection that does not answer in time), the last copy is served instead and
 // marked with the "x-chronicle-offline: 1" header, so the page can say it is showing a saved copy.
 //
-//   • App shell, data/*.json and translations: precached on install, then network first.
+//   • App shell, data/*.json and translations: precached on install, then network first. The Taller del
+//     Cronista's scripts are not precached (visitors never use them): network first stores them on their first
+//     use online, so the Taller opens offline afterwards. Its drafts live in IndexedDB, never in these caches.
 //   • Small images (portraits, icons, the page textures, the 2400px map preview): stale-while-revalidate.
 //   • React from unpkg and Google Fonts: cache first (versioned / immutable URLs).
 //   • assets/exandria-map.jpeg (the 15 MB full-resolution map) is NEVER stored: it stays network-only.
@@ -12,7 +14,7 @@
 // Favourites, history and preferences live in localStorage — never in these caches — so updates,
 // cache clean-ups and new versions never touch them. Bump VERSION when the precache list changes
 // (adding a file); old caches are deleted when the new worker activates.
-const VERSION = "2026-10-15.1";
+const VERSION = "2026-10-18.1";
 const SHELL = `chronicle-shell-${VERSION}`;
 const RUNTIME = `chronicle-runtime-${VERSION}`;
 
