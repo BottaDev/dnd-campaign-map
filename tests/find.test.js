@@ -61,8 +61,10 @@ test("2 · Sessions: the title, partly typed, in either language", () => {
     for (const [q, no] of [["vigilados", 10], ["Watched", 10], ["watch", 10], ["pacto bajo", 1], ["Beneath", 1], ["cacer", 12], ["Councils", 12]])
       assert.deepEqual(titled(m, q), [no], `${m.locale}: “${q}” is in session ${no}'s title (other sessions may hold it elsewhere)`);
   }
-  // "Watched" is also the quest "Hunted and Watched": the sessions it moved are found too — by that quest.
-  assert.ok([...Model.findSessions(es, "Watched").hits.values()].every(h => h.field === "title" || h.field === "quest"));
+  // "Watched" is also the quest "Hunted and Watched": the sessions it moved are found too — by that quest
+  // (11 and 12 never use the word in their own log; a later log may, and is then found by its own text).
+  const watched = Model.findSessions(es, "Watched").hits;
+  assert.deepEqual([watched.get(11).field, watched.get(12).field], ["quest", "quest"]);
   assert.deepEqual(sessionsOf(tes, "arriv"), [1]);
   assert.deepEqual(sessionsOf(tes, "llegada"), [1], "the Spanish title");
 });
@@ -78,10 +80,9 @@ test("3 · Sessions: what was recorded — opening and closing lines, plots, eff
   assert.equal(field(ten, "revelation", 2), "event", "an event's kind");
   assert.equal(field(tes, "revelacion", 2), "event", "…named in Spanish, without its accent");
   assert.equal(Model.findSessions(tes, "revelacion").hits.get(2).text, "Revelación — Vigil", "the kind and the event it names");
-  // The real campaign: "incienso" is told in an event, an opening line, a plot and an effect.
+  // The real campaign: "incienso" is told in an event (8), an opening line (10), a plot (11) and an effect (12).
   const r = Model.findSessions(es, "incienso");
-  assert.deepEqual([...r.hits.keys()].sort((a, b) => a - b), [8, 10, 11, 12]);
-  assert.deepEqual([...r.hits.values()].map(h => h.field).sort(), ["effect", "event", "opening", "plot"]);
+  assert.deepEqual([8, 10, 11, 12].map(no => r.hits.has(no) && r.hits.get(no).field), ["event", "opening", "plot", "effect"]);
   for (const h of r.hits.values()) assert.ok(Model.fold(h.text).includes("incienso"), `the reason shows the word: ${h.text}`);
 });
 

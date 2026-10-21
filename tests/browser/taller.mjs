@@ -215,7 +215,7 @@ await check("map editor · Cancel discards the move; Confirm saves it in the dra
   // The public map: every marker where it was, the journeys untouched.
   await page.goto(BASE + "#/map"); await page.waitForSelector(".cc-marker"); await page.waitForTimeout(900);
   const total = await page.$$eval(".cc-marker", bs => bs.reduce((n, b) => { const m = /^(\d+) /.exec(b.getAttribute("title")); return n + (m ? +m[1] : 1); }, 0));
-  eq(total, 33, "33 published events on the public map");
+  eq(total, published("events.json").length, "every published event on the public map");
   const lines = await page.$$eval(".cc-routes polyline", ps => ps.map(p => p.getAttribute("points")));
   const routes = published("routes.json"), allPts = Object.values(routes).flat().map(p => `${p.xp},${p.yp}`);
   assert(lines.length > 0 && lines.every(l => l.split(" ").every(pt => allPts.includes(pt))), "every drawn route point is a published waypoint");
@@ -271,7 +271,7 @@ await check("map editor · a marker on the map chooses what to place; places get
 await check("taller · the whole path: a test session, two events, a party member, a quest, a position — saved, reloaded, exported, valid", async () => {
   const { ctx, page } = await open(LAPTOP, "#/taller");
   await page.waitForSelector(".cc-tl-tabs", { timeout: 15000 });
-  // 1. A fictitious session 99 (the dialog suggests 13: the number is changed on purpose).
+  // 1. A fictitious session 99 (the dialog suggests the next number: it is changed on purpose).
   await page.click(".cc-tl-quick .cc-qa-i:has-text('Nueva sesión')");
   await page.waitForSelector("[data-dialog=taller]");
   await page.fill("#tl-new-no", "99");
@@ -407,7 +407,8 @@ await check("taller · invalid data is caught: required fields, a missing sessio
   await page.click(".cc-tl-tools .cc-btn:has-text('Nuevo acontecimiento')");
   await page.waitForSelector("[data-dialog=taller]");
   await page.click("[data-dialog=taller] button[type=submit]");          // no title: allowed, the form asks for it
-  await page.waitForFunction(() => /#\/taller\/event\/s12_/.test(location.hash));
+  const latest = Math.max(...Object.keys(published("sessions.json")).map(Number));   // a new event starts in the latest session
+  await page.waitForFunction(no => location.hash.startsWith(`#/taller/event/s${no}_`), latest);
   await page.goto(BASE + "#/taller/tab/draft");
   await page.waitForSelector(".cc-tl-note.is-error");
   assert(await page.isDisabled("button:has-text('Exportar el paquete (.zip)')"), "export disabled while there are errors");

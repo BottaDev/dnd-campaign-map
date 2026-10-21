@@ -489,7 +489,7 @@ test("integration · a test session with two events, a party member, a quest and
   const base = { raw: loadRealData(), content: loadContent("es-AR") };
   let d = E.emptyDraft(base);
   const no = E.nextSessionNo(base, d);
-  assert.equal(no, 13);
+  assert.equal(no, Math.max(...Object.keys(base.raw.sessions).map(Number)) + 1, "the number after the latest logged session");
   d = E.putRecord(d, base, "session", no, { en: { title: "Test session", playedOn: "2026-10-25" }, es: { title: "Sesión de prueba" } });
   const id1 = E.nextEventId(base, d, no);
   d = E.putRecord(d, base, "event", id1, { en: { id: id1, session: no, campaignDay: 41, type: "travel", title: "Test arrival", summary: "A test.", locationId: "vasselheim", characterIds: ["sorfon"], questIds: ["cassandra"] }, es: { title: "Llegada de prueba", summary: "Una prueba." } });
@@ -501,7 +501,7 @@ test("integration · a test session with two events, a party member, a quest and
   p = E.withField(E.withField(p, ["xp"], sug.point.xp), ["yp"], sug.point.yp);
   d = E.putRecord(d, base, "event", id1, p);
   const id2 = E.nextEventId(base, d, no);
-  assert.equal(id2, "s13_02");
+  assert.equal(id2, `s${no}_02`);
   d = E.putRecord(d, base, "event", id2, { en: { id: id2, session: no, campaignDay: 41, type: "dream", title: "", summary: "" }, es: { title: "Un sueño de prueba", summary: "Sin lugar en el mapa." } });
   // The quest lists its sessions: add this one.
   const q = E.currentPair(d, base, "quest", "cassandra");
@@ -515,7 +515,7 @@ test("integration · a test session with two events, a party member, a quest and
     files.forEach(f => { const out = path.join(dir, f.path.replace(/^data\//, "")); fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, f.text); });
     const outText = execFileSync(process.execPath, [path.join(ROOT, "tools", "validate-data.js"), "--data", dir], { encoding: "utf8" });
     assert.match(outText, /OK — 0 warning\(s\)/);
-    assert.match(outText, /35 events/);
+    assert.match(outText, new RegExp(`\\b${base.raw.events.length + 2} events`), "the published events plus the draft's two");
     // tools/apply-draft.js applies the same draft to a copy of the data, and refuses a conflicting one.
     const data = path.join(dir, "repo-data");
     fs.cpSync(path.join(ROOT, "data"), data, { recursive: true });

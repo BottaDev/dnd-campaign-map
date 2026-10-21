@@ -800,7 +800,7 @@
       if (s.recap.highlightIds.length > 5) warn(`Session ${s.no}: recap has ${s.recap.highlightIds.length} highlights — 3 to 5 read best`);
     });
 
-    // Lore of Exandria — attached last, read-only beside the campaign data (see normalizeLore).
+    // Canon lore — attached last, read-only beside the campaign data (see normalizeLore).
     const lore = normalizeLore(raw.lore, { content, locale, personById, placeById, warn, error, L, dateLabel });
     people.forEach(p => { p.lore = lore.byId.get(p.id) || null; });
     places.forEach(p => { p.lore = lore.byId.get(p.id) || null; });
@@ -860,7 +860,7 @@
     // Content translations: unknown ids and positional arrays that would fall back to English.
     Object.entries(o.translations || {}).forEach(([code, content]) => { if (content) checkTranslations(raw, content, code).forEach(i => issues.push(i)); });
     // Lore links to party members are allowed but unusual (player characters are our own creations).
-    m.lore.forEach((x, id) => { const p = m.personById.get(id); if (p && p.kind === "pc") warn(`lore.json: "${id}" is a party member — lore is meant for entities that exist in Exandria's canon`); });
+    m.lore.forEach((x, id) => { const p = m.personById.get(id); if (p && p.kind === "pc") warn(`lore.json: "${id}" is a party member — lore is meant for entities from published canon (Exandria, other D&D worlds)`); });
     return { model: m, issues };
   }
 

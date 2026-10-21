@@ -6,12 +6,14 @@ const assert = require("node:assert/strict");
 const { Model, I18N, PCS, buildReal, loadRealData, loadContent } = require("./helpers");
 
 const raw = loadRealData();
+// The real data's latest log, by number (as text, "8" would sort after "13").
+const LATEST = Math.max(...Object.keys(raw.sessions).map(Number));
 const mini = (sessions, events, more) => Model.build({ characters: PCS, npcs: [], locations: [], routes: {}, quests: [], sessions, events, ...(more || {}) }, more && more.opts);
 const ev = (id, session, extra) => ({ id, session, campaignDay: session, title: `Event ${id}`, summary: `Summary ${id}`, characterIds: [], ...(extra || {}) });
 
 test("1 · the latest session is the highest NUMBER with a log — not the label order, not the list order", () => {
   const m = buildReal("es-AR");
-  assert.equal(Model.latestSession(m).no, 12);
+  assert.equal(Model.latestSession(m).no, LATEST);
   // Keys out of order and numerically tricky (10 > 9 > 2), with a later session that has events but no log.
   const x = mini({ 2: { title: "Two" }, 10: { title: "Ten" }, 9: { title: "Nine" } }, [ev("a", 2), ev("b", 10), ev("c", 11)]);
   assert.equal(Model.latestSession(x).no, 10, "session 11 has no log (stub) — 10 is the latest written");
@@ -22,11 +24,11 @@ test("1 · the latest session is the highest NUMBER with a log — not the label
   // The Sessions list order (oldest first by default) does not change it.
   const items = Model.sessionListItems(m, { order: "asc" }).filter(i => !i.gap);
   assert.equal(items[0].session.no, 1);
-  assert.equal(Model.latestSession(m).no, 12);
+  assert.equal(Model.latestSession(m).no, LATEST);
 });
 
 test("2 · session without a curated recap: every recorded event, in recorded order, nothing ranked", () => {
-  const m = buildReal("es-AR"), rc = Model.recapOf(m, 12), s = m.sessionByNo.get(12);
+  const m = buildReal("es-AR"), rc = Model.recapOf(m, LATEST), s = m.sessionByNo.get(LATEST);
   assert.equal(rc.curated, false);
   assert.deepEqual(rc.events.map(e => e.id), s.eventIds, "all events, recorded order");
   assert.deepEqual(rc.highlights, []);

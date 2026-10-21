@@ -167,6 +167,40 @@
     ]
   },
   {
+    "id": "palace-postmaster",
+    "name": "The palace postmaster",
+    "category": "person",
+    "race": "gnome"
+  },
+  {
+    "id": "tessa",
+    "name": "Tessa (?)",
+    "aliases": ["Tessa", "The high priestess of Sarenrae"],
+    "category": "person",
+    "factionIds": ["sarenraes-faithful"]
+  },
+  {
+    "id": "fungrim",
+    "name": "Fungrim (?)",
+    "aliases": ["Fungrim"],
+    "category": "person",
+    "race": "dwarf",
+    "relations": [
+      { "id": "ereldra", "label": "His friend, given a pendant to call him", "reverseLabel": "Her friend, called by breaking his pendant" },
+      { "id": "ashardalon", "label": "Likely his patron", "reverseLabel": "Likely one of his fourteen warlocks" }
+    ]
+  },
+  {
+    "id": "elias",
+    "name": "Elías",
+    "category": "person",
+    "relations": [
+      { "id": "ereldra", "label": "The warlock he hunts", "reverseLabel": "Hunting her" },
+      { "id": "ashardalon", "label": "Likely his patron", "reverseLabel": "Likely one of his fourteen warlocks" },
+      { "id": "ayante", "label": "The fighter he remembers from a bar in Emon", "reverseLabel": "Remembers him from a bar in Emon" }
+    ]
+  },
+  {
     "id": "strahd",
     "name": "Strahd von Zarovich",
     "aliases": ["Strahd"],
@@ -175,6 +209,26 @@
     "relations": [
       { "id": "locus", "label": "Bred to be his hound", "reverseLabel": "Wants him as his hound" },
       { "id": "raven-queen", "label": "Robbed of Ravenloft and Barovia", "reverseLabel": "Tore Ravenloft and Barovia from her realm" }
+    ]
+  },
+  {
+    "id": "sylas-briarwood",
+    "name": "Sylas Briarwood",
+    "category": "creature",
+    "race": "vampire",
+    "relations": [
+      { "id": "cassandra", "label": "Enthralled by him", "reverseLabel": "The vampire who enthralled her" }
+    ]
+  },
+  {
+    "id": "agro",
+    "name": "Agro (?)",
+    "aliases": ["Agro"],
+    "category": "creature",
+    "race": "horse",
+    "relations": [
+      { "id": "elias", "label": "His rider, who treats him like a racehorse", "reverseLabel": "His jet-black horse, his most prized companion" },
+      { "id": "ereldra", "label": "A rider he remembers from an old camp", "reverseLabel": "Elías's horse; remembers her from an old camp" }
     ]
   },
   {

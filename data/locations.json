@@ -23,8 +23,13 @@
   { "id": "palace-gate", "name": "The palace gate", "kind": "site", "parentId": "vasselheim" },
   { "id": "war-district", "name": "The war district pavilion", "aliases": ["The war-district enclave of La Toma"], "kind": "district", "parentId": "vasselheim" },
   { "id": "the-inn", "name": "The inn", "kind": "site", "parentId": "vasselheim" },
+  { "id": "palace-post-office", "name": "The palace post office", "aliases": ["The messenger loft"], "kind": "site", "parentId": "vasselheim" },
   { "id": "calamity-peak", "name": "The high peak of the Calamity", "kind": "site" },
+  { "id": "vasselheim-mountain", "name": "The mountain above Vasselheim", "kind": "site" },
+  { "id": "mountain-clearing", "name": "The clearing on the mountain", "kind": "site", "parentId": "vasselheim-mountain" },
   { "id": "shadowfell", "name": "The Shadowfell", "kind": "plane" },
   { "id": "ravenloft", "name": "Ravenloft / Barovia", "aliases": ["Ravenloft", "Barovia"], "kind": "plane", "parentId": "shadowfell" },
-  { "id": "far-realm", "name": "The Far Realm", "kind": "plane" }
+  { "id": "far-realm", "name": "The Far Realm", "kind": "plane" },
+  { "id": "nine-hells", "name": "The Nine Hells", "aliases": ["The Hells"], "kind": "plane" },
+  { "id": "dis", "name": "Dis", "kind": "plane", "parentId": "nine-hells" }
 ]

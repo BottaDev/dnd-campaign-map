@@ -5,6 +5,12 @@
       "url": "https://criticalrole.fandom.com/wiki/Critical_Role_Wiki",
       "community": true,
       "spoilers": true
+    },
+    "fr-wiki": {
+      "label": "Forgotten Realms Wiki",
+      "url": "https://forgottenrealms.fandom.com/wiki/Main_Page",
+      "community": true,
+      "spoilers": true
     }
   },
   "entries": {
@@ -152,6 +158,17 @@
       "summary": "A half-elf rogue, a member of Vox Machina and the twin brother of Vex'ahlia. Born in Byroden, the twins were later taken to the elven city of Syngorn at their father's direction, and left it in their teens to make their own way. In the lore he is known as the Champion of the Raven Queen.",
       "references": [{ "source": "cr-wiki", "title": "Vax'ildan", "url": "https://criticalrole.fandom.com/wiki/Vax%27ildan" }],
       "lastReviewed": "2026-10-14"
+    },
+    "ashardalon": {
+      "summary": "A red dragon of immense age and power, sung of across the multiverse and notorious for his depredations. Self-important and clinging almost desperately to his own life, he has gone to unusual lengths to escape death; he later rose to the rank of greatwyrm, yet never gave up his pursuit of godhood. His appearance sets him apart from other ancient red dragons: demonic features and a chest scar in the form of a huge winged humanoid.",
+      "references": [{ "source": "fr-wiki", "title": "Ashardalon", "url": "https://forgottenrealms.fandom.com/wiki/Ashardalon" }],
+      "lastReviewed": "2026-10-20"
+    },
+    "strahd": {
+      "summary": "Count Strahd von Zarovich, a vampire, rules Barovia as its dark lord from his seat, Castle Ravenloft. The valley is one of the Domains of Dread, in a far corner of the Shadowfell. In life he was a human prince and conqueror, who made his home in Barovia after taking it. He is the emblematic villain of the Ravenloft setting and the villain of the adventure Curse of Strahd.",
+      "facts": { "alsoKnownAs": "The First Vampire · The Devil Strahd" },
+      "references": [{ "source": "fr-wiki", "title": "Strahd von Zarovich", "url": "https://forgottenrealms.fandom.com/wiki/Strahd_von_Zarovich" }],
+      "lastReviewed": "2026-10-20"
     }
   }
 }

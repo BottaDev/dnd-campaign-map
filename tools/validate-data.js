@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Validates data/*.json: JSON syntax, unique ids, cross-references, asset paths,
-// route waypoints, the Exandria lore layer (data/lore.json: https-only links, every
+// route waypoints, the canon lore layer (data/lore.json: https-only links, every
 // summary sourced) and the content translations in data/i18n/<locale>.json.
 // Uses the same model the page uses (js/chronicle-model.js) — the rules that need no
 // file system are ChronicleModel.validateData, which the Taller del Cronista runs in the

@@ -115,7 +115,7 @@ await check("search · bilingual and accent-insensitive in the UI", async () => 
   const count = async q => { await page.fill("input[type=search]", q); await page.waitForTimeout(120); return page.textContent(".cc-results-t"); };
   const a = await count("revelation"), b = await count("revelación"), c = await count("revelacion");
   eq([b, c], [a, a], "same results");
-  assert(/^2 de 33/.test(a), `got "${a}"`);
+  assert(/^3 de 52/.test(a), `got "${a}"`);
   await ctx.close();
 });
 
@@ -123,16 +123,16 @@ await check("search · bilingual and accent-insensitive in the UI", async () => 
 await check("map · party filter uses OR for shared events; routes follow the selection only", async () => {
   const { ctx, page } = await open(DESKTOP, "#/map");
   await page.waitForTimeout(700);
-  eq(await markerTotal(page), 33, "every event in exactly one marker");
+  eq(await markerTotal(page), 52, "every event in exactly one marker");
   eq(await routeInks(page), ["#5a1f24|2 7"], "one shared journey line (not four, not chronological), dotted in sealing wax");
   await page.click(".cc-mapbtn");
   await page.waitForSelector(".cc-mappanel");
   const row = name => page.locator(".cc-partyrow", { hasText: name }).click();
   await row("Ayante");
-  eq(await markerTotal(page), 32, "only Ayante's solo event hides; shared ones stay");
+  eq(await markerTotal(page), 48, "only Ayante's solo events hide; shared ones stay");
   await row("Ereldra"); await row("Sorfon");
   eq(await routeInks(page), ["#858590|11 4 2 4"], "Mortis alone: his own route in his colour");
-  eq(await markerTotal(page), 23, "Mortis's events incl. shared");
+  eq(await markerTotal(page), 37, "Mortis's events incl. shared");
   // A quest filter changes pins, never the routes.
   await page.evaluate(() => { location.hash = "#/chronicle"; });
   await page.click("button[aria-controls=cc-filters]");
@@ -140,7 +140,7 @@ await check("map · party filter uses OR for shared events; routes follow the se
   await page.evaluate(() => { location.hash = "#/map"; });
   await page.waitForTimeout(400);
   eq(await routeInks(page), ["#858590|11 4 2 4"], "quest filter leaves routes alone");
-  assert(await markerTotal(page) < 23, "quest filter narrows pins");
+  assert(await markerTotal(page) < 37, "quest filter narrows pins");
   await ctx.close();
 });
 
@@ -264,9 +264,9 @@ for (const [w, h] of [[320, 640], [360, 740], [390, 844], [430, 932], [768, 1024
   });
 }
 
-// ── Lore of Exandria ────────────────────────────────────────────────────────
+// ── Canon lore ──────────────────────────────────────────────────────────────
 // External pages are stubbed: the tests never reach Fandom, they only check what the app asks for.
-const stubWiki = ctx => ctx.route("https://criticalrole.fandom.com/**", r => r.fulfill({ status: 200, contentType: "text/html", body: "<title>stub</title>" }));
+const stubWiki = ctx => ctx.route(/^https:\/\/(criticalrole|forgottenrealms)\.fandom\.com\//, r => r.fulfill({ status: 200, contentType: "text/html", body: "<title>stub</title>" }));
 
 await check("lore · collapsed by default; safe new-tab link; spoiler warning; ES ↔ EN; next entry folds again", async () => {
   const { ctx, page } = await open(DESKTOP, "#/places/place/taldorei");
@@ -281,7 +281,8 @@ await check("lore · collapsed by default; safe new-tab link; spoiler warning; E
   eq(await a.getAttribute("href"), "https://criticalrole.fandom.com/wiki/Tal%27Dorei", "href");
   eq([await a.getAttribute("target"), await a.getAttribute("rel")], ["_blank", "noopener noreferrer"], "target/rel");
   assert((await a.textContent()).includes("Critical Role Wiki"), "source named");
-  eq((await page.textContent(".cc-lore-warn")).trim(), "El artículo externo puede contener spoilers del universo de Critical Role.", "spoiler warning");
+  eq((await page.textContent(".cc-lore-hint")).trim(), "Información externa (Critical Role Wiki) · puede tener spoilers", "the folded row names its source");
+  eq((await page.textContent(".cc-lore-warn")).trim(), "El artículo externo puede contener spoilers.", "spoiler warning");
   const [tab] = await Promise.all([ctx.waitForEvent("page"), a.click()]);
   await tab.waitForLoadState();
   eq(tab.url(), "https://criticalrole.fandom.com/wiki/Tal%27Dorei", "article opened in a new tab");
@@ -293,13 +294,28 @@ await check("lore · collapsed by default; safe new-tab link; spoiler warning; E
   eq(await isOpen(), true, "still open after switching language");
   assert((await page.textContent(".cc-lore-p")).startsWith("One of the continents of Exandria"), "English summary");
   eq(await page.getAttribute(".cc-lore-p", "lang"), "en", "lang attribute");
-  eq((await page.textContent(".cc-lore-warn")).trim(), "The external article may contain spoilers from the Critical Role universe.", "English warning");
+  eq((await page.textContent(".cc-lore-warn")).trim(), "The external article may contain spoilers.", "English warning");
   await page.evaluate(() => { location.hash = "#/places/place/emon"; });
   await page.waitForFunction(() => document.querySelector(".cc-doc-h").textContent === "Emon");
   eq(await isOpen(), false, "the next entry starts collapsed");
   await page.evaluate(() => { location.hash = "#/characters/character/diomedes"; });
   await page.waitForFunction(() => document.querySelector(".cc-doc-h").textContent === "Diomedes");
   eq(await page.locator(".cc-lore").count(), 0, "no lore section for the DM's own NPC");
+  await ctx.close();
+});
+
+await check("lore · a D&D entity from beyond Exandria cites the Forgotten Realms Wiki", async () => {
+  const { ctx, page } = await open(DESKTOP, "#/characters/character/strahd");
+  await stubWiki(ctx);
+  await page.waitForFunction(() => document.querySelector(".cc-doc-h")?.textContent === "Strahd von Zarovich");
+  eq((await page.textContent(".cc-lore-h > span:first-child")).trim(), "Lore canónico", "heading names no single world");
+  eq((await page.textContent(".cc-lore-hint")).trim(), "Información externa (Forgotten Realms Wiki) · puede tener spoilers", "its own source");
+  await page.click(".cc-lore summary");
+  assert((await page.textContent(".cc-lore-p")).startsWith("El conde Strahd von Zarovich"), "Spanish summary");
+  const a = page.locator(".cc-extlink");
+  eq(await a.getAttribute("href"), "https://forgottenrealms.fandom.com/wiki/Strahd_von_Zarovich", "href");
+  assert((await a.textContent()).includes("Forgotten Realms Wiki — Strahd von Zarovich"), "source and article named");
+  assert((await page.textContent(".cc-lore-foot")).includes("basado en Forgotten Realms Wiki"), "attribution");
   await ctx.close();
 });
 
@@ -364,7 +380,7 @@ await check("places · main places and their first level in view; a caret folds 
   const rows = await placeRows(page);
   eq(rows.slice(0, 5), ["taldorei", "emon", "kraghammer", "ozmit-sea", "vasselheim"], "story order, first level shown");
   assert(!rows.includes("academic-district") && !rows.includes("chapel-of-pelor"), "deeper places folded");
-  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas de Exandria 25", "Otros planos 3"], "the Atlas and the other planes apart");
+  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas de Exandria 28", "Otros planos 5"], "the Atlas and the other planes apart");
   const caret = page.locator('[data-place="emon"] .cc-twisty');
   eq([await caret.getAttribute("aria-expanded"), await caret.getAttribute("aria-controls"), await caret.getAttribute("aria-label")], ["false", "cc-pt-emon", "2 lugares dentro de Emon"], "caret state and name");
   assert((await page.textContent('[data-place="emon"] .cc-node-k')).includes("2 lugares"), "a folded branch says what it holds");
@@ -379,11 +395,11 @@ await check("places · main places and their first level in view; a caret folds 
   eq(await caret.getAttribute("aria-expanded"), "true", "Space unfolds");
   eq(await caret.evaluate(el => getComputedStyle(el).outlineStyle), "solid", "visible focus");
   await page.click(".cc-atlas-tools button:has-text('Expandir todo')");
-  eq((await placeRows(page)).length, 28, "every place");
+  eq((await placeRows(page)).length, 33, "every place");
   assert(await page.locator(".cc-atlas-tools button:has-text('Expandir todo')").isDisabled(), "nothing left to expand");
   await page.screenshot({ path: path.join(OUT, "places-1280-all.png"), fullPage: false });
   await page.click(".cc-atlas-tools button:has-text('Contraer todo')");
-  eq((await placeRows(page)).length, 10, "the top level only");
+  eq((await placeRows(page)).length, 12, "the top level only");
   assert(await page.locator(".cc-atlas-tools button:has-text('Contraer todo')").isDisabled(), "nothing left to collapse");
   await ctx.close();
 });
@@ -421,7 +437,7 @@ await check("places · search: nested places with their context, highlighted; ki
   eq(await placeRows(page), ["taldorei", "emon", "academic-district", "gilmores-shop"], "the shop and where it lies");
   eq(await page.$$eval(".cc-node-row.is-ctx", rs => rs.map(r => r.dataset.place)), ["taldorei", "emon", "academic-district"], "ancestors as context");
   eq(await page.$$eval(".cc-node-n mark", ms => ms.map(m => m.textContent)), ["Gilmore"], "highlighted");
-  eq((await page.textContent("#cc-atlas-status")).trim(), "1 de 28 lugares coincide", "count, announced");
+  eq((await page.textContent("#cc-atlas-status")).trim(), "1 de 33 lugares coincide", "count, announced");
   eq(await page.locator(".cc-atlas .cc-twisty:not(.none)").count(), 0, "no carets while filtering");
   await page.fill(placeFind, "DISTRICT");
   await page.waitForTimeout(120);
@@ -466,7 +482,7 @@ for (const [w, h] of [[320, 640], [375, 812]]) {
   await check(`places · ${w}px phone: everything expanded fits, carets and map actions are comfortable, Back keeps the folding`, async () => {
     const { ctx, page } = await open({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, "#/places");
     await page.locator(".cc-atlas-tools button:has-text('Expandir todo')").tap();
-    eq((await placeRows(page)).length, 28, "every place");
+    eq((await placeRows(page)).length, 33, "every place");
     eq(await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-main").scrollWidth]), [w, w], "no horizontal scroll");
     const boxes = await page.$$eval(".cc-twisty:not(.none), .cc-node-map:not(.none)", els => els.map(e => { const r = e.getBoundingClientRect(), a = getComputedStyle(e, "::after"); return [r.width + (a.content !== "none" ? 8 : 0), r.height, r.right]; }));
     assert(boxes.every(([bw, bh, right]) => bw >= 36 && bh >= 42 && right <= w), `targets ${JSON.stringify(boxes.slice(0, 4))}`);
@@ -478,7 +494,7 @@ for (const [w, h] of [[320, 640], [375, 812]]) {
     if (w === 375) await page.screenshot({ path: path.join(OUT, "places-375-open.png") });
     await page.locator(".cc-back").first().tap();
     await page.waitForFunction(() => location.hash === "#/places");
-    eq((await placeRows(page)).length, 28, "the list as it was left");
+    eq((await placeRows(page)).length, 33, "the list as it was left");
     await ctx.close();
   });
 }
@@ -492,11 +508,11 @@ await check("places · ES → EN keeps the filter and the folding; labels transl
   await page.click(".cc-lang button:has-text('EN')");
   await page.waitForFunction(() => document.documentElement.lang === "en");
   eq([await page.inputValue(placeFind), await placeRows(page)], ["pelor", es], "same filter, same places");
-  eq((await page.textContent("#cc-atlas-status")).trim(), "2 of 28 places match", "English count");
+  eq((await page.textContent("#cc-atlas-status")).trim(), "2 of 33 places match", "English count");
   await page.fill(placeFind, "");
   await page.waitForTimeout(120);
   eq(await page.locator('[data-place="emon"] .cc-twisty').getAttribute("aria-expanded"), "true", "folding kept");
-  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas of Exandria 25", "Other planes 3"], "group names");
+  eq(await page.$$eval(".cc-atlas-grp .cc-h2", hs => hs.map(h => h.textContent.replace(/\s+/g, " ").trim())), ["Atlas of Exandria 28", "Other planes 5"], "group names");
   await ctx.close();
 });
 
@@ -510,31 +526,31 @@ const fold = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 await check("sessions · search: a number, a title, what was recorded, accents and case; the count and why each appeared; the order kept; no results", async () => {
   const { ctx, page } = await open(DESKTOP, "#/sessions");
-  eq(await sessionNos(page), [1, 2, 8, 10, 11, 12], "every session, oldest first");
+  eq(await sessionNos(page), [1, 2, 8, 10, 11, 12, 13, 14], "every session, oldest first");
   eq(await page.locator(".cc-main .cc-gap").count(), 2, "the unchronicled runs are marked (3–7, 9)");
   eq(await page.locator("#cc-sessions-status").count(), 0, "no count until something is typed");
   for (const q of ["12", "Sesión 12", "session 12"]) { await typeIn(page, sessionFind, q); eq(await sessionNos(page), [12], q); }
   await typeIn(page, sessionFind, "1");
-  eq(await sessionNos(page), [1], "1 is session 1 — not 10, 11 or 12");
+  eq(await sessionNos(page), [1], "1 is session 1 — not 10 to 14");
   eq(await page.locator(".cc-main .cc-gap").count(), 0, "a search leaves the gap markers out");
   await typeIn(page, sessionFind, "vigilados");
   eq(await page.$$eval(".cc-main .cc-scard .cc-ctitle mark", ms => ms.map(m => m.textContent)), ["Vigilados"], "the title's words, marked");
   // A word told in the logs: an event, an opening line, a plot, an effect — each card says where.
   await typeIn(page, sessionFind, "incienso");
-  eq(await sessionNos(page), [8, 10, 11, 12], "what was recorded");
-  eq((await page.textContent("#cc-sessions-status")).trim(), "4 de 6 sesiones", "the count");
-  eq(await whyLabels(page), ["Acontecimiento", "", "Hilo", "Efecto"], "where the words were found (the opening line needs no label)");
-  eq(await page.$$eval(".cc-main .cc-scard .cc-ctext mark", ms => ms.map(m => m.textContent.toLowerCase())), ["incienso", "incienso", "incienso", "incienso"], "the word marked in its sentence");
+  eq(await sessionNos(page), [8, 10, 11, 12, 13], "what was recorded");
+  eq((await page.textContent("#cc-sessions-status")).trim(), "5 de 8 sesiones", "the count");
+  eq(await whyLabels(page), ["Acontecimiento", "", "Hilo", "Efecto", "Acontecimiento"], "where the words were found (the opening line needs no label)");
+  eq(await page.$$eval(".cc-main .cc-scard .cc-ctext mark", ms => ms.map(m => m.textContent.toLowerCase())), ["incienso", "incienso", "incienso", "incienso", "incienso"], "the word marked in its sentence");
   const markBg = await page.$eval(".cc-main .cc-scard .cc-ctext mark", m => getComputedStyle(m).backgroundColor);
   eq(markBg, "rgba(207, 166, 80, 0.3)", "a faint gilt underlay, not a bright yellow");
   eq(await page.getAttribute(sessionFind, "aria-describedby"), "cc-sessions-status", "the field is described by its count");
   await page.screenshot({ path: path.join(OUT, "find-sessions-1280.png") });
   // The order the reader chose applies to the results too.
   await page.click(".cc-results .cc-seg button:last-child");
-  eq(await sessionNos(page), [12, 11, 10, 8], "latest first");
+  eq(await sessionNos(page), [13, 12, 11, 10, 8], "latest first");
   eq(await page.inputValue(sessionFind), "incienso", "the words stay");
   await page.click(".cc-results .cc-seg button:first-child");
-  eq(await sessionNos(page), [8, 10, 11, 12], "oldest first again");
+  eq(await sessionNos(page), [8, 10, 11, 12, 13], "oldest first again");
   // Accents and case.
   await typeIn(page, sessionFind, "PELÓR");
   const pelor = await sessionNos(page);
@@ -545,11 +561,11 @@ await check("sessions · search: a number, a title, what was recorded, accents a
   await typeIn(page, sessionFind, "Sesión 3");
   const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
   assert(empty.includes("No encontramos sesiones que coincidan con tu búsqueda.") && empty.includes("La sesión 3 no tiene crónica."), empty);
-  eq((await page.textContent("#cc-sessions-status")).trim(), "0 de 6 sesiones", "the count says none");
+  eq((await page.textContent("#cc-sessions-status")).trim(), "0 de 8 sesiones", "the count says none");
   await page.screenshot({ path: path.join(OUT, "find-sessions-none.png") });
   await page.click(".cc-main .cc-empty button:has-text('Borrar la búsqueda')");
   await page.waitForTimeout(120);
-  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 6], "cleared: every session back");
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 8], "cleared: every session back");
   eq(await page.evaluate(() => document.activeElement.getAttribute("aria-label")), "Buscar sesiones", "the focus stays in the field");
   // ✕ and Esc clear too, the focus kept in the field.
   await typeIn(page, sessionFind, "Locus");
@@ -560,7 +576,7 @@ await check("sessions · search: a number, a title, what was recorded, accents a
   await typeIn(page, sessionFind, "Locus");
   await page.keyboard.press("Escape");
   await page.waitForTimeout(120);
-  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length, new URL(page.url()).hash], ["", 6, "#/sessions"], "Esc clears, and stays");
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length, new URL(page.url()).hash], ["", 8, "#/sessions"], "Esc clears, and stays");
   await page.fill(sessionFind, "zzqq");
   await page.click(".cc-main .cc-empty button:has-text('Buscar en toda la crónica')");
   await page.waitForSelector("[data-dialog=search]");
@@ -576,7 +592,7 @@ await check("sessions · the count is said once typing pauses, not at every key"
   await page.waitForTimeout(200);
   eq(await page.evaluate(() => window.__said.filter(Boolean)), [], "nothing said while typing");
   await page.waitForTimeout(1200);
-  eq([...new Set(await page.evaluate(() => window.__said.filter(Boolean)))], ["4 de 6 sesiones"], "then the count, once");
+  eq([...new Set(await page.evaluate(() => window.__said.filter(Boolean)))], ["5 de 8 sesiones"], "then the count, once");
   await ctx.close();
 });
 
@@ -598,12 +614,12 @@ await check("sessions · a search survives opening a session and coming back —
   await page.click(".cc-results .cc-seg button:last-child");                      // latest first
   await typeIn(page, sessionFind, "Cassandra");
   const nos = await sessionNos(page);
-  eq(nos, [12, 11, 10, 8], "latest first, found");
+  eq(nos, [13, 12, 11, 10, 8], "latest first, found");
   const scrolled = await page.evaluate(() => { const m = document.querySelector(".cc-main"); m.scrollTop = 300; return m.scrollTop; });
   assert(scrolled > 50, `the results scroll (${scrolled})`);
   await page.waitForTimeout(150);
   await page.locator(".cc-main .cc-scard").nth(2).tap();
-  await page.waitForFunction(() => location.hash === "#/sessions/session/10");
+  await page.waitForFunction(() => location.hash === "#/sessions/session/11");
   await page.locator(".cc-back").first().tap();
   await page.waitForFunction(() => location.hash === "#/sessions");
   await page.waitForTimeout(250);
@@ -618,7 +634,7 @@ await check("sessions · a search survives opening a session and coming back —
   eq(await page.inputValue(sessionFind), "Cassandra", "kept across sections");
   await page.reload();
   await page.waitForSelector(sessionFind);
-  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 6], "a new visit starts with the whole list");
+  eq([await page.inputValue(sessionFind), (await sessionNos(page)).length], ["", 8], "a new visit starts with the whole list");
   await ctx.close();
 });
 
@@ -631,9 +647,9 @@ await check("quests · search AND status: the words survive status changes, the 
   await tab("En curso").click();
   await typeIn(page, questFind, "Cassandra");
   const active = await questTitles(page);
-  eq(active.length, 4, `active quests holding Cassandra: ${active}`);
+  eq(active.length, 6, `active quests holding Cassandra: ${active}`);
   assert(await page.$$eval(".cc-main a.cc-qcard .cc-badge", bs => bs.every(b => b.textContent.trim() === "En curso")), "only active ones");
-  eq((await page.textContent("#cc-quests-status")).trim(), "4 de 17 misiones", "the count against every quest");
+  eq((await page.textContent("#cc-quests-status")).trim(), "6 de 19 misiones", "the count against every quest");
   eq(await counts(), all, "the tabs keep counting every quest of their status");
   eq((await page.textContent(".cc-main .cc-results .cc-linkbtn")).trim(), "Ver 2 en otros estados", "the matches the status hides, one tap away");
   assert((await whyLabels(page)).includes("Sesión 8"), "a session note says which session");
@@ -645,22 +661,22 @@ await check("quests · search AND status: the words survive status changes, the 
   eq((await questTitles(page)).length, 2, "completed quests holding Cassandra");
   await tab("Todas").click();
   await page.waitForTimeout(120);
-  eq((await questTitles(page)).length, 6, "every status: still searching");
+  eq((await questTitles(page)).length, 8, "every status: still searching");
   // Nothing in this status: both criteria are named, the way to the others offered — nothing is changed by itself.
   await tab("Completada").click();
-  await typeIn(page, questFind, "Pike");
+  await typeIn(page, questFind, "Percy");
   const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
   assert(empty.includes("No encontramos misiones que coincidan con tu búsqueda.") && empty.includes("Solo se muestran las misiones «Completada»."), empty);
   eq(await on(), "Completada", "the status filter is not removed by itself");
   await page.screenshot({ path: path.join(OUT, "find-quests-none.png") });
   await page.click(".cc-main .cc-empty button:has-text('en otros estados')");
   await page.waitForTimeout(120);
-  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["Todas", "Pike", 5], "every status, the same words");
+  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["Todas", "Percy", 6], "every status, the same words");
   // Clearing the words keeps the status.
   await tab("En curso").click();
   await page.click(".cc-main .cc-search-x");
   await page.waitForTimeout(120);
-  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["En curso", "", 11], "cleared: the status stays");
+  eq([await on(), await page.inputValue(questFind), (await questTitles(page)).length], ["En curso", "", 12], "cleared: the status stays");
   eq(await page.locator("#cc-quests-status").count(), 0, "no count without words");
   await ctx.close();
 });
@@ -686,11 +702,11 @@ await check("characters · search: the same matches with a count; the reason on 
   const rows = () => page.$$eval(".cc-main .cc-pcard, .cc-main .cc-row", as => as.map(a => a.getAttribute("href").split("/").pop()));
   const sub = id => page.$eval(`.cc-main a[href$="/character/${id}"] .cc-row-sub`, s => ({ label: s.querySelector(".cc-why-k") ? s.querySelector(".cc-why-k").textContent.replace(/:\s*$/, "").trim() : "",
     text: s.textContent.replace(/\s+/g, " ").trim(), marks: [...s.querySelectorAll("mark")].map(m => m.textContent) }));
-  eq((await rows()).length, 42, "everyone, as before");
+  eq((await rows()).length, 48, "everyone, as before");
   eq(await page.locator("#cc-characters-status").count(), 0, "no count until something is typed");
   await typeIn(page, charFind, "Morgas");
   eq(await rows(), ["mortis"], "an alias");
-  eq((await page.textContent("#cc-characters-status")).trim(), "1 de 42 personajes", "the count");
+  eq((await page.textContent("#cc-characters-status")).trim(), "1 de 48 personajes", "the count");
   eq(await page.getAttribute(charFind, "aria-describedby"), "cc-characters-status", "the field is described by its count");
   eq(await sub("mortis"), { label: "Alias", text: "Alias: Morgas", marks: ["Morgas"] }, "the reason, marked, on the card's own line");
   await typeIn(page, charFind, "nigromancia");
@@ -707,21 +723,21 @@ await check("characters · search: the same matches with a count; the reason on 
   await typeIn(page, charFind, "zzqq");
   const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
   assert(empty.includes("No encontramos personajes que coincidan con tu búsqueda.") && empty.includes("Borrar la búsqueda") && empty.includes("Buscar en toda la crónica"), empty);
-  eq((await page.textContent("#cc-characters-status")).trim(), "0 de 42 personajes", "the count says none");
+  eq((await page.textContent("#cc-characters-status")).trim(), "0 de 48 personajes", "the count says none");
   await page.click(".cc-main .cc-empty button:has-text('Borrar la búsqueda')");
   await page.waitForTimeout(120);
-  eq([await page.inputValue(charFind), (await rows()).length, await page.evaluate(() => document.activeElement.getAttribute("aria-label"))], ["", 42, "Buscar un personaje"], "cleared, the focus kept in the field");
+  eq([await page.inputValue(charFind), (await rows()).length, await page.evaluate(() => document.activeElement.getAttribute("aria-label"))], ["", 48, "Buscar un personaje"], "cleared, the focus kept in the field");
   await typeIn(page, charFind, "Pike");
   await page.keyboard.press("Escape");
   await page.waitForTimeout(120);
-  eq([await page.inputValue(charFind), (await rows()).length], ["", 42], "Esc clears");
+  eq([await page.inputValue(charFind), (await rows()).length], ["", 48], "Esc clears");
   // The other language: the same people, the reason in English.
   await typeIn(page, charFind, "custodian");
   await page.click(".cc-lang button:has-text('EN')");
   await page.waitForFunction(() => document.documentElement.lang === "en");
   const enFind = 'input[aria-label="Find a character"]';
   eq([await page.inputValue(enFind), await rows()], ["custodian", ["marco"]], "same words, same people");
-  eq((await page.textContent("#cc-characters-status")).trim(), "1 of 42 characters", "English count");
+  eq((await page.textContent("#cc-characters-status")).trim(), "1 of 48 characters", "English count");
   eq(await sub("marco"), { label: "Alias", text: "Alias: The custodian of Pelor's chapel", marks: ["custodian"] }, "English reason");
   await ctx.close();
 });
@@ -768,19 +784,19 @@ await check("find · ES → EN keeps the words and the status; count, reasons an
   await page.waitForFunction(() => document.documentElement.lang === "en");
   const enFind = 'input[aria-label="Search the sessions"]';
   eq([await page.inputValue(enFind), await sessionNos(page)], ["Pelor", es], "same words, same sessions");
-  eq((await page.textContent("#cc-sessions-status")).trim(), `${es.length} of 6 sessions`, "English count");
+  eq((await page.textContent("#cc-sessions-status")).trim(), `${es.length} of 8 sessions`, "English count");
   eq(await page.getAttribute(enFind, "placeholder"), "Search sessions by number, title or content…", "English hint");
   assert((await whyLabels(page)).some(l => ["Event", "Thread", "Effect", "Began", "Ended", "Character", "Place", "Quest"].includes(l)), `English reasons: ${await whyLabels(page)}`);
   await page.evaluate(() => { location.hash = "#/quests"; });
   const enQuest = 'input[aria-label="Search the quests"]';
   await page.waitForSelector(enQuest);
   await page.locator(".cc-statusbar button", { hasText: "Completed" }).click();
-  await typeIn(page, enQuest, "Pike");
+  await typeIn(page, enQuest, "Percy");
   const empty = (await page.textContent(".cc-main .cc-empty")).replace(/\s+/g, " ");
-  assert(empty.includes("We couldn't find any quests matching your search.") && empty.includes("Only “Completed” quests are shown.") && empty.includes("See 5 in other statuses"), empty);
+  assert(empty.includes("We couldn't find any quests matching your search.") && empty.includes("Only “Completed” quests are shown.") && empty.includes("See 6 in other statuses"), empty);
   await page.click(".cc-lang button:has-text('ES')");
   await page.waitForFunction(() => document.documentElement.lang === "es-AR");
-  eq(await page.inputValue(questFind), "Pike", "and back");
+  eq(await page.inputValue(questFind), "Percy", "and back");
   await ctx.close();
 });
 
@@ -898,7 +914,7 @@ await check("cards · every event card has its type icon (family colour) and lab
     return { fam, svg: !!svg && svg.getAttribute("aria-hidden") === "true", label: meta && meta.textContent.trim(), iconColor: svg && getComputedStyle(svg).color,
       titlePx: parseFloat(getComputedStyle(t).fontSize), metaPx: parseFloat(getComputedStyle(meta).fontSize), h: a.getBoundingClientRect().height };
   }));
-  eq(cards.length, 33, "all cards");
+  eq(cards.length, 52, "all cards");
   for (const c of cards) {
     assert(c.fam && c.svg && c.label, `card ${JSON.stringify(c)}`);
     assert(c.titlePx >= 18 && c.metaPx >= 13 && c.titlePx > c.metaPx + 4, `hierarchy ${c.titlePx}/${c.metaPx}`);
@@ -931,7 +947,7 @@ await check("cards · quest cards show their status badge beside the title (unde
   }));
   let { ctx, page } = await open({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true }, "#/quests");
   let cards = await quests(page);
-  eq(cards.length, 17, "every quest");
+  eq(cards.length, 19, "every quest");
   cards.forEach(c => assert(c.badge === c.group && c.icon && c.inside && c.below && c.clear, `320: ${JSON.stringify(c)}`));
   await page.screenshot({ path: path.join(OUT, "quests-320.png") });
   // On a phone the chips keep inside their row: a long role ends in an ellipsis instead of widening the chip.
@@ -1389,7 +1405,7 @@ await check("tour · map tutorial from the map's “¿Cómo funciona?”: waits 
   assert((await page.textContent(".cc-zlabel")) !== z0, "wheel zoom still works");
   await page.click(".cc-zoom .cc-zbtn.solo");
   await page.waitForTimeout(150);
-  eq(await markerTotal(page), 33, "every marker still there");
+  eq(await markerTotal(page), 52, "every marker still there");
   assert(await page.isVisible(".cc-maphelp"), "the map's help is there");
   await ctx.close();
 });
@@ -1497,7 +1513,7 @@ await check("search · bilingual, no accents needed, empty state, from Quests an
   await page.click(".cc-searchbtn");
   const a = await evCount("revelacion"), b = await evCount("revelación");
   eq(a, b, "accents optional");
-  assert(a.some(g => /Acontecimientos 2/.test(g)), `revelación finds the two revelations: ${a}`);
+  assert(a.some(g => /Acontecimientos 3/.test(g)), `revelación finds the three revelations: ${a}`);
   await evCount("raven queen");
   assert((await page.locator(".cc-hit-t", { hasText: "La Reina Cuervo" }).count()) > 0, "English query, Spanish entry");
   await evCount("zzqqxx");
@@ -1517,7 +1533,7 @@ await check("search · bilingual, no accents needed, empty state, from Quests an
   await page.click(".cc-hit-more:has-text('Ver los')");                        // "See all in the Chronicle"
   await page.waitForFunction(() => location.hash === "#/chronicle");
   eq(await page.inputValue(".cc-toolbar input[type=search]"), "pelor", "the Chronicle filter takes the search");
-  assert(/de 33/.test(await page.textContent(".cc-results-t")), "Chronicle filtered");
+  assert(/de 52/.test(await page.textContent(".cc-results-t")), "Chronicle filtered");
   await ctx.close();
 });
 
@@ -1550,22 +1566,22 @@ await check("search · phone: full screen, typing right away, readable 44px rows
 });
 
 // ── Previously on… ──────────────────────────────────────────────────────────
-await check("recap · from the Chronicle: the latest session (12, by number), real events only, link to the full log; EN", async () => {
+await check("recap · from the Chronicle: the latest session (14, by number), real events only, link to the full log; EN", async () => {
   const { ctx, page } = await open(DESKTOP, "#/chronicle");
   eq((await page.textContent("a.cc-latest .cc-qa-t")).trim(), "Ponete al día", "quick action");
-  eq((await page.textContent("a.cc-latest .cc-qa-s")).trim(), "Anteriormente en… · Sesión 12", "entry label");
+  eq((await page.textContent("a.cc-latest .cc-qa-s")).trim(), "Anteriormente en… · Sesión 14", "entry label");
   await page.click("a.cc-latest");
-  await page.waitForFunction(() => location.hash === "#/chronicle/recap/12");
+  await page.waitForFunction(() => location.hash === "#/chronicle/recap/14");
   eq(await page.textContent(".cc-doc-h"), "Anteriormente en Bund Der Vier…", "heading");
-  assert((await page.textContent(".cc-byline")).includes("Sesión 12"), "session 12");
-  eq(await page.locator(".cc-doc .cc-evrow").count(), 7, "session 12's seven recorded events");
+  assert((await page.textContent(".cc-byline")).includes("Sesión 14"), "session 14");
+  eq(await page.locator(".cc-doc .cc-evrow").count(), 8, "session 14's eight recorded events");
   assert(await page.isVisible("text=Lo que quedó registrado"), "neutral heading (no editor-chosen highlights)");
   assert(await page.isVisible(".cc-where"), "where the party was left");
-  eq(await page.locator(".cc-doc .cc-plot").count(), 3, "the three threads still open");
+  eq(await page.locator(".cc-doc .cc-plot").count(), 2, "the two threads still open");
   await page.click(".cc-lang button:has-text('EN')");
   eq(await page.textContent(".cc-doc-h"), "Previously on Bund Der Vier…", "English");
   await page.click(".cc-doc .cc-btn:has-text('Read the full session')");
-  await page.waitForFunction(() => location.hash === "#/chronicle/session/12");
+  await page.waitForFunction(() => location.hash === "#/chronicle/session/14");
   await ctx.close();
 });
 
@@ -1573,7 +1589,7 @@ await check("recap · Sessions keeps oldest first and offers the same recap; pho
   const { ctx, page } = await open({ viewport: { width: 320, height: 640 }, hasTouch: true, isMobile: true }, "#/sessions");
   const nos = await page.$$eval(".cc-scard-no", els => els.map(e => +e.textContent));
   eq(nos, nos.slice().sort((a, b) => a - b), "Sessions oldest first");
-  eq(await page.getAttribute("a.cc-latest", "href"), "#/sessions/recap/12", "recap of session 12");
+  eq(await page.getAttribute("a.cc-latest", "href"), "#/sessions/recap/14", "recap of session 14");
   await page.locator("a.cc-latest").tap();
   await page.waitForSelector(".cc-where");
   eq(await page.evaluate(() => [document.documentElement.scrollWidth, document.querySelector(".cc-detail").scrollWidth]), [320, 320], "no horizontal scroll");
@@ -1669,7 +1685,7 @@ await check("pwa · installable; after one visit it opens offline (favourites ke
   eq(await page.getAttribute(".cc-favbtn", "aria-pressed"), "true", "favourite kept");
   await page.evaluate(() => { location.hash = "#/sessions"; });
   await page.waitForSelector(".cc-scard");
-  eq(await page.locator(".cc-scard").count(), 6, "the sessions list offline");
+  eq(await page.locator(".cc-scard").count(), 8, "the sessions list offline");
   const stored = await page.evaluate(async () => { const out = []; for (const n of await caches.keys()) for (const r of await (await caches.open(n)).keys()) out.push(r.url); return out; });
   assert(!stored.some(u => /exandria-map\.jpeg$/.test(u)), "the full-resolution map is not stored");
   assert(stored.some(u => /data\/sessions\.json$/.test(u)) && stored.some(u => /react\.production\.min\.js$/.test(u)), "data and React are");

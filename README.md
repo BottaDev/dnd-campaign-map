@@ -165,7 +165,7 @@ La guía del Taller está en español, como la interfaz que usa el DM; la docume
 
 ## Estado del proyecto
 
-**En uso y mantenido junto con la campaña.** A octubre de 2026 registra 6 sesiones (1, 2, 8, 10, 11 y 12), 33 acontecimientos, 17 misiones, 42 personajes y 28 lugares; acontecimientos, sesiones, misiones y resúmenes de lore están traducidos al español.
+**En uso y mantenido junto con la campaña.** A octubre de 2026 registra 8 sesiones (1, 2, 8 y de la 10 a la 14), 52 acontecimientos, 19 misiones, 48 personajes y 33 lugares; acontecimientos, sesiones, misiones y resúmenes de lore están traducidos al español.
 
 **Por escribir** —nada se completa por inferencia—: las sesiones 3 a 7 y 9; el relato ampliado de los acontecimientos importantes; los resúmenes editoriales de «Anteriormente en…»; las posiciones propias de los lugares. `node tools/validate-data.js` informa el estado actual.
 
@@ -173,16 +173,16 @@ La guía del Taller está en español, como la interfaz que usa el DM; la docume
 
 - Los borradores del Taller son locales a cada navegador y dispositivo: no hay sincronización.
 - No hay publicación directa desde el Taller: requeriría un backend o guardar credenciales de GitHub en el navegador.
-- Los recorridos del mapa y el Lore de Exandria se editan a mano en el repositorio.
+- Los recorridos del mapa y el lore canónico se editan a mano en el repositorio.
 - La primera visita necesita conexión, igual que el mapa en alta resolución.
 
 **Alcance:** es el archivo de una campaña concreta, no un gestor de campañas genérico ni una mesa virtual (no tiene cuentas, dados ni fichas). Sus textos de marca viven en los diccionarios de la interfaz, así que puede adaptarse a otra campaña.
 
 ## Créditos y licencias
 
-- *Dungeons & Dragons* es una marca de Wizards of the Coast. *Critical Role* y el mundo de *Exandria* pertenecen a sus respectivos titulares. Este es un proyecto de aficionados, sin afiliación ni respaldo oficial.
+- *Dungeons & Dragons*, *Forgotten Realms* y *Ravenloft* son marcas de Wizards of the Coast. *Critical Role* y el mundo de *Exandria* pertenecen a sus respectivos titulares. Este es un proyecto de aficionados, sin afiliación ni respaldo oficial.
 - El mapa de Exandria (`assets/exandria-map*.jpeg`) y los retratos de `assets/` no tienen una licencia declarada en este repositorio; sus derechos pertenecen a sus autores.
-- Los resúmenes del Lore de Exandria son textos originales con enlaces a la [Critical Role Wiki](https://criticalrole.fandom.com/wiki/Critical_Role_Wiki), una wiki comunitaria cuyo texto se publica bajo CC BY-SA; no se copia texto ni imágenes de allí.
+- Los resúmenes del lore canónico son textos originales con enlaces a la [Critical Role Wiki](https://criticalrole.fandom.com/wiki/Critical_Role_Wiki) y a la [Forgotten Realms Wiki](https://forgottenrealms.fandom.com/wiki/Main_Page), wikis comunitarias cuyo texto se publica bajo CC BY-SA; no se copia texto ni imágenes de ellas.
 - [Driver.js](https://driverjs.com/) 1.8.0, © Kamran Ahmed, licencia MIT, incluido sin cambios en `vendor/driver.js/` junto con su licencia. React 18 (MIT) se carga desde unpkg.
 - Tipografías Cormorant Garamond, Cormorant SC, Crimson Pro y Source Sans 3, servidas por Google Fonts bajo la SIL Open Font License.
 - **Licencia del proyecto:** el repositorio no incluye un archivo de licencia, así que no se concede ningún permiso explícito para reutilizar su código ni su contenido.

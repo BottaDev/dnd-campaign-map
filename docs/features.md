@@ -39,7 +39,7 @@ They never add a tab or a permanent bar.
 
 - Two quick actions — **Catch up** (the latest session's *Previously on…*) and **Find something** (the search) — and a quiet *How does it work?* link to the help.
 - On a first visit, once the chronicle has loaded, a **welcome** card appears by itself on the Chronicle's home — floating in a corner (above the bottom bar on phones), not a modal: the page stays usable — saying what the Chronicle is and offering the guided tour (*Start the tour* / *Not now*). A link straight to an entry or another section is never interrupted: the welcome waits until the visitor reaches the Chronicle's home, and once answered (or the tour finished or left) it does not come back by itself.
-- Small hints appear only where a control is not obvious: how the Chronicle's filters combine, where *Previously on…* comes from, and that the Lore of Exandria is outside information that may contain spoilers.
+- Small hints appear only where a control is not obvious: how the Chronicle's filters combine, where *Previously on…* comes from, and that the canon lore is outside information — naming the wiki it comes from — that may contain spoilers.
 - The Chronicle and Sessions orders are remembered separately, but only once you change them — until then each opens on its default.
 
 ## Reading an entry
@@ -48,7 +48,7 @@ They never add a tab or a permanent bar.
 - Everything links to everything else, and **Back** (the app button, the browser button or Android's back gesture) returns to where you were, with filters and scroll position kept.
 - An event with a location offers **View on map** and a small expandable map preview; the map is never opened automatically.
 - An important event can carry a longer account, *What changed* and *Still unresolved* ([narrative depth](data-model.md#narrative-depth-description-consequences-unresolved)).
-- Characters and places that also exist in Critical Role's Exandria end with a folded **Lore of Exandria** section — a short, spoiler-free summary and a link to the source article ([`lore.json`](data-model.md#lorejson--lore-of-exandria)); our own story always comes first. It starts folded on every page.
+- Characters and places that also exist in published canon — Critical Role's Exandria, or another Dungeons & Dragons setting the campaign brings in, like Strahd's — end with a folded **Canon lore** section: a short, spoiler-free summary and a link to the source article on the Critical Role Wiki or the Forgotten Realms Wiki ([`lore.json`](data-model.md#lorejson--canon-lore)); our own story always comes first. It starts folded on every page.
 
 ## Section searches
 

@@ -165,7 +165,7 @@ More in [docs/architecture.md](docs/architecture.md).
 
 ## Project status
 
-**In use and maintained alongside the campaign.** As of October 2026 it records 6 sessions (1, 2, 8, 10, 11 and 12), 33 events, 17 quests, 42 characters and 28 places; events, sessions, quests and lore summaries are translated into Spanish.
+**In use and maintained alongside the campaign.** As of October 2026 it records 8 sessions (1, 2, 8 and 10 to 14), 52 events, 19 quests, 48 characters and 33 places; events, sessions, quests and lore summaries are translated into Spanish.
 
 **Still to be written** — nothing is filled in by inference: sessions 3 to 7 and 9; the longer account of important events; editorial “Previously on…” summaries; places' own map positions. `node tools/validate-data.js` reports the current state.
 
@@ -173,16 +173,16 @@ More in [docs/architecture.md](docs/architecture.md).
 
 - Taller drafts are local to each browser and device: there is no sync.
 - There is no direct publishing from the Taller: it would need a backend or GitHub credentials stored in the browser.
-- The map's journeys and the Lore of Exandria are edited by hand in the repository.
+- The map's journeys and the canon lore are edited by hand in the repository.
 - The first visit needs a connection, and so does the full-resolution map.
 
 **Scope:** this is the archive of one specific campaign, not a generic campaign manager or a virtual tabletop (no accounts, dice or character sheets). Its branding texts live in the interface dictionaries, so it can be adapted to another campaign.
 
 ## Credits and licences
 
-- *Dungeons & Dragons* is a trademark of Wizards of the Coast. *Critical Role* and the world of *Exandria* belong to their respective owners. This is a fan project, with no affiliation or official endorsement.
+- *Dungeons & Dragons*, *Forgotten Realms* and *Ravenloft* are trademarks of Wizards of the Coast. *Critical Role* and the world of *Exandria* belong to their respective owners. This is a fan project, with no affiliation or official endorsement.
 - The map of Exandria (`assets/exandria-map*.jpeg`) and the portraits in `assets/` have no licence declared in this repository; their rights belong to their authors.
-- The Lore of Exandria summaries are original texts linking to the [Critical Role Wiki](https://criticalrole.fandom.com/wiki/Critical_Role_Wiki), a community wiki whose text is published under CC BY-SA; no text or images are copied from it.
+- The canon lore summaries are original texts linking to the [Critical Role Wiki](https://criticalrole.fandom.com/wiki/Critical_Role_Wiki) and the [Forgotten Realms Wiki](https://forgottenrealms.fandom.com/wiki/Main_Page), community wikis whose text is published under CC BY-SA; no text or images are copied from them.
 - [Driver.js](https://driverjs.com/) 1.8.0, © Kamran Ahmed, MIT licence, included unchanged in `vendor/driver.js/` with its licence. React 18 (MIT) loads from unpkg.
 - Fonts Cormorant Garamond, Cormorant SC, Crimson Pro and Source Sans 3, served by Google Fonts under the SIL Open Font License.
 - **Project licence:** the repository includes no licence file, so no explicit permission is granted to reuse its code or content.

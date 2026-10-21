@@ -165,6 +165,101 @@
       "title": "Sacan a Cassandra",
       "summary": "El custodio de Pelor le da a Cassandra los últimos sacramentos, por si la resurrección fracasa, y el grupo levanta su cuerpo para llevárselo a Pike. Locus no puede pisar el templo de Pelor y espera afuera. La ruta está fijada —la oficina de correos, luego provisiones, luego el Templo de Sarenrae— con unos seis días de limbo por delante.",
       "igLabel": "Día 40 · Capilla de Pelor, High Pass"
+    },
+    "s13_01": {
+      "title": "Cartas desde la torre del palacio",
+      "summary": "Ubu, de guardia y estrictamente formal, guía al grupo por una torre del palacio hasta el palomar de mensajería, donde un gnomo diminuto y arrugado sella el correo y un flamenco, un pelícano y las palomas se lo llevan. Ereldra paga el doble para que su carta llegue a su familia, muy lejos. Una segunda carta le avisa al Consejo de Kraghammer que el grupo llamará al Barûk-Kazad para usarlo como carnada y alejar a Haftifaflmorhen: quien la firma responde por el hacha y promete devolverla.",
+      "igLabel": "Día 40 · La oficina de correos del palacio"
+    },
+    "s13_02": {
+      "title": "Pike en el jardín",
+      "summary": "En el Templo de Sarenrae —un salón de madera con campanario, obeliscos de mármol y una pira apagada bajo un ídolo colgante—, la suma sacerdotisa, Tessa (?), cuya piel como de rubí cambia entre rojos y naranjas, manda a Sorfon de vuelta afuera: la pequeña jardinera con una cicatriz junto a la que pasó es Pike Trickfoot. Al volver corriendo choca con ella y cae de bruces con toda la armadura. Le entrega la urna sellada con el incienso de Pelor —que, como ella solo está de visita, es para el templo mismo— y se entera de que Grog está en Westruun, viviendo la vida de aventurero.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_03": {
+      "title": "El colgante de abrojo",
+      "summary": "Descansando en las escaleras del templo, Ereldra piensa en confiarle sus dos hermanos a Fungrim (?), y Mortis alcanza a ver el colgante que él le regaló: un abrojo de púas que le recuerda al enano medio loco que trepó a Haftifaflmorhen en Kraghammer, riéndose mientras peleaba. Emana pestilencia y una locura desbordada, parece obra de las mismas manos que el pacto de Ereldra, con otro acabado, y se abre para llamarlo. Ashardalon sabe de sus hermanos, aunque no dónde están; Mortis la convence de no hacerlo.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_04": {
+      "title": "Cassandra vuelve a respirar",
+      "summary": "El Descanso apacible de Mortis ganó el tiempo suficiente. Pike le pide una cama a la suma sacerdotisa y, mientras la luz brota de sus manos, el diamante se hunde en el pecho de Cassandra: Cassandra vuelve a respirar. Pálida, agotada y con migrañas, no recuerda nada del dragón. Toma la mano de Pike y le agradece al grupo: no tiene precio.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_05": {
+      "title": "Percy cae del cielo",
+      "summary": "A través de la perla del carruaje, Pike le dice a Percy que su hermana está bien. Tras un largo silencio la tierra tiembla y su máquina voladora llega zumbando sobre la ciudad, lenta como un zepelín; Percy salta, cae con estilo y llora junto a la cama de Cassandra. Le ofrece al grupo llevarlos adonde haga falta, y acepta una parada breve en el antiguo templo de Sarenrae —Pike lo marca en su mapa de Issylra, a unos 27 km al norte, en las montañas— antes de su última parada: Whitestone.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_06": {
+      "title": "Barovia no figura en ningún mapa",
+      "summary": "Mortis pregunta cómo Cassandra se convirtió en dampira, según había entendido por su diosa; Percy lo corrige: el vampiro Sylas Briarwood solo la hipnotizó, y está muerto. Al conocer a Locus, Percy dice no haber oído nunca de Strahd ni de Barovia, y ninguno de los mapas del grupo la muestra. Mortis recuerda Ravenloft como una de las pocas ciudades flotantes de la Era del Arcano, salvada de la Calamidad cuando la familia von Zarovich, que la había robado, la llevó al Páramo Sombrío; desde entonces puede haber ido a parar a cualquier lado.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_07": {
+      "title": "El asedio de Dis",
+      "summary": "Cuando Pike empieza a nombrar a alguien que vivió la Calamidad, el ojo de Ereldra se prende fuego y su alma, unida a un hilo plateado, es arrancada hacia los Nueve Infiernos. En medio de una matanza entre demonios y diablos, Ashardalon escupe fuego verde sobre la fortaleza de metal de Dis, mientras máquinas infernales, cargadas por diablillos con frascos de un líquido verde claro, disparan rayos en forma de calavera que la hacen estallar. En Vasselheim su cuerpo sangra por una herida que ningún filo hizo; la Marca del cazador de Sorfon encuentra su alma a leguas bajo tierra.",
+      "igLabel": "Día 40 · Dis, los Nueve Infiernos"
+    },
+    "s13_08": {
+      "title": "La exigencia de Ashardalon",
+      "summary": "Saltando de un punto a otro del campo de batalla, Ereldra termina junto a su patrón, con diecisiete filos al cuello. Ashardalon adopta una forma élfica: cuernos dracónicos e infernales, escleróticas oscuras, ojos amarillos. Piensa conquistar el resto de los Infiernos por la fuerza bruta, pero tiene los disparos contados y su residuum es basura: quiere la piedra blanca que hay bajo Whitestone, refinada. Un diablillo trae un pergamino negro: matar un cordero, verter su sangre encima y arrojarle todo el residuum. De sus catorce brujos, ella es la que mejor funciona; luego él aplasta al diablillo que la espiaba y la manda de vuelta.",
+      "igLabel": "Día 40 · Dis, los Nueve Infiernos"
+    },
+    "s13_09": {
+      "title": "La pólvora de Percy",
+      "summary": "De vuelta en su cuerpo, Ereldra describe las máquinas, y Percy reconoce su propia obra: la pólvora negra —su diseño, una invención de puro odio pensada para matar a cinco personas, que Ripley fabricó en masa a costa de su vida—, ahora llevada más allá de lo que humanos, elfos o enanos podrían construir. Las máquinas necesitan residuum refinado, así que lo que entregue Ereldra podría arruinarlas si se mezcla con algo aceitoso y combustible. Ella tiene que ser la primera de los catorce en entregarlo; Percy los quiere en su laboratorio de Whitestone.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_10": {
+      "title": "La mentira del diablillo",
+      "summary": "Advertidos de que alguien los espía, buscan al vigía. Mortis ahora cree que el diablillo a los pies de Ubu mintió sobre La Toma para proteger a su amo. Sentido divino y Ver lo invisible revelan otro diablillo a sus pies; Sorfon lo atrapa, Mortis lo hechiza con Amistad y el diablillo nombra como su amo a Fungrim (?), a siete cuadras, junto a La Toma. Ereldra rompe el colgante de abrojo —un olor a bacalao y a entrañas podridas, un señuelo— y Fungrim llega corriendo.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s13_11": {
+      "title": "Rayos desde la montaña",
+      "summary": "Fungrim llega gritando que todos se tiren al piso, y un rayo desde la montaña golpea a Mortis. Ayante lo cubre con su escudo, y otro disparo los alcanza mientras se repliegan al templo. El tirador es Elías, en una cueva a unos 3 km al noroeste. Tras las puertas trabadas, Fungrim le advierte a Ereldra que Ashardalon les dijo a sus otros brujos que ella debe morir, y que él se negó. El diablillo era el familiar de Elías desde el principio: mentía por su amo mientras le buscaba un tiro limpio contra ella.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s14_01": {
+      "title": "Huevos, disfraces y una puerta trasera",
+      "summary": "Tras las puertas trabadas, el grupo planea cómo llegar a un francotirador a unos 8 km cuesta arriba. Percy trae tres huevos mecánicos: cargas de humo que funcionan como Pasar sin rastro. Elías no le va a disparar a Fungrim, así que Fungrim fingirá una pelea, Mortis tomará la forma de Ereldra para hacer de ella, y Ayante —en short y con su espada— correrá hacia las alturas. La suma sacerdotisa, ahora con la piel como magma que se enfría, les muestra una salida oculta por el jardín del templo hacia la montaña.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s14_02": {
+      "title": "La pelea fingida",
+      "summary": "Fungrim saca a Sorfon por la puerta de una patada y le pega de verdad —'si no lo hago, no me va a creer nada: me conoce'—, y su brillo corrosivo y su veneno dejan a Sorfon muy malherido, mientras Mortis, con la cara de Ereldra, hace de víctima herida. Llueven los disparos de Elías: el Escudo de Mortis desvía uno y otro le pega al propio Fungrim. Mientras tanto Ayante, sin que lo vean, sube corriendo la montaña.",
+      "igLabel": "Día 40 · Templo de Sarenrae"
+    },
+    "s14_03": {
+      "title": "El hongo de Ayante",
+      "summary": "A mitad de camino, camuflado con barro, Ayante busca un hongo silvestre para darse fuerzas y se lo come. La ladera se inclina, el sol se detiene y las estrellas se estiran; atraviesa un viaje deslumbrante entre sudores, casi se desmaya y hunde la cara en un arroyo: las visiones se van, pero la droga y un agotamiento profundo siguen con él.",
+      "igLabel": "Día 40 · La montaña sobre Vasselheim"
+    },
+    "s14_04": {
+      "title": "Elías junto al arroyo",
+      "summary": "Junto a un arroyo, un hombre de botas y sombrero —Elías— encuentra al Ayante drogado y, pistola en mano, le tira unas hojas que le despejan la cabeza. Cuando Ayante se lava el barro, Elías lo reconoce: de un bar de Emon donde Ayante mató a varios enanos; su ruidosa banda es difícil de olvidar. Ayante gana tiempo dando los nombres de sus compañeros al revés y pidiendo un último rito sagrado en Ilión; Elías, asqueado, le pone al cuello la cadena invisible de un diablillo y retrocede, sin dejar de apuntarle.",
+      "igLabel": "Día 40 · La montaña sobre Vasselheim"
+    },
+    "s14_05": {
+      "title": "Una piedra, un puño y una pistola",
+      "summary": "Encadenado, Ayante arroja una piedra que le saca la pistola de la mano a Elías y después se le tira encima y lo derriba a puñetazos, pero la pistola vuelve volando a la mano de su dueño. Ninguno de los dos va a ceder. Ayante le escupe al ojo y se tira detrás de un árbol; Elías 'no necesita los dos ojos' para verlo ahí. En la persecución chocan y ruedan por el suelo, y los disparos de Elías destrozan a Ayante antes de que logre escapar, sangrando.",
+      "igLabel": "Día 40 · La montaña sobre Vasselheim"
+    },
+    "s14_06": {
+      "title": "Agro (?) y la escalada",
+      "summary": "Un disparo al aire le avisa al grupo que algo salió mal, y salen cuesta arriba. Encuentran el caballo azabache de Elías, Agro (?), que recuerda a Ereldra de un campamento que compartieron con Elías y Fungrim, la noche en que pateó una olla sobre Fungrim después de que él le hiciera a ella una broma pesada. Sorfon y Mortis van a caballo por el camino largo y suben una pared de 24 m con magia; Ereldra toma un atajo, con Fungrim pegado a su espalda por su armadura de abrojos, y con un Paso brumoso los sube a ambos por el último acantilado.",
+      "igLabel": "Día 40 · La montaña sobre Vasselheim"
+    },
+    "s14_07": {
+      "title": "Locus prueba sangre",
+      "summary": "Fungrim conjura un hocico de moscas violetas y sigue el olor a aceite para cuero de Elías; las huellas cuentan un choque y agujeros de bala que humean en la tierra. Ante una gota de sangre, Locus se quiebra: la prueba, las venas le suben por la cara y se le oscurece la esclerótica. Sobreestimulado, ahora puede seguir dos sangres —dos personas heridas— y Sorfon camina pegado a su espalda, listo para dejarlo inconsciente.",
+      "igLabel": "Día 40 · La montaña sobre Vasselheim"
+    },
+    "s14_08": {
+      "title": "El claro",
+      "summary": "En un claro con forma de anillo, bajo la llovizna, encuentran a Ayante tendido sobre una roca, desangrándose; uno de los huevos de humo de Percy cubre la carrera de Sorfon para curarlo. Mientras lo sacan de ahí, el diablillo invisible que tiene al cuello tira de una cuerda y su bomba estalla sobre Ayante y Sorfon; después, los disparos alcanzan a Sorfon desde el norte. Sorfon invoca a Aldis, que se divide en dos espíritus —uno con escudo— que derriban a Elías entre los arbustos; Aldis recibe un último disparo por Sorfon y se desvanece ardiendo. Elías se levanta, pistola en mano, frente a todos.",
+      "igLabel": "Día 40 · El claro de la montaña"
     }
   },
   "sessions": {
@@ -973,16 +1068,278 @@
           ]
         }
       ]
+    },
+    "13": {
+      "title": "Resurrección y fuego infernal",
+      "startedHere": "El palacio de Vasselheim: Ubu, de guardia y estrictamente formal, guía al grupo por una torre hasta el palomar de mensajería para enviar sus cartas, con el cuerpo de Cassandra todavía a su cargo.",
+      "endedHere": "Dentro del Templo de Sarenrae, con las puertas trabadas: Cassandra viva y descansando, Fungrim (?) con ellos, y Elías disparando desde una cueva en la montaña, después de que su diablillo invisible le marcara el blanco.",
+      "ig": {
+        "start": "40 Horisal 867 — la oficina de correos del palacio",
+        "end": "40 Horisal 867 — el Templo de Sarenrae, bajo fuego",
+        "rest": "39 Horisal 867 — la noche anterior"
+      },
+      "effects": [
+        "Cassandra de Rolo vuelve a vivir: pálida, agotada y con migrañas, descansa en el Templo de Sarenrae con Percy a su lado; el diamante se fundió en su pecho.",
+        "La aeronave de Percy llevará al grupo: una parada breve en el antiguo templo de Sarenrae, a unos 27 km al norte, en las montañas, y luego Whitestone.",
+        "Ereldra tiene el pergamino negro de Ashardalon: una vez vertida sobre él la sangre de un cordero, todo el residuum que se le arroje va directo a él.",
+        "El permiso del Consejo de Kraghammer para llamar al Barûk-Kazad como carnada debería llegar en un día; la carta de Ereldra a su familia ya está en camino.",
+        "El colgante de abrojo de Ereldra está roto: se usó como señuelo para llamar a Fungrim (?).",
+        "Elías dispara contra el grupo desde una cueva a unos 3 km al noroeste; están atrincherados dentro del Templo de Sarenrae."
+      ],
+      "activePlots": [
+        {
+          "name": "Trama A — Traer de vuelta a Cassandra",
+          "qt": "En el Templo de Sarenrae, Pike Trickfoot hundió el diamante de Mortis en el pecho de Cassandra y ella volvió a respirar. Está débil, pálida y con migrañas, y no recuerda nada del dragón. Percy llegó volando hasta su cama; el grupo sigue decidido a llevarla a casa, a Whitestone, la última parada de él.",
+          "npcs": [
+            {
+              "race": "humana",
+              "role": "viva otra vez, descansando al cuidado del templo"
+            },
+            {
+              "race": "gnoma",
+              "role": "la clériga de Vox Machina que realizó el rito"
+            },
+            {
+              "race": "humano",
+              "role": "llegó volando en su aeronave y lloró junto a su cama"
+            },
+            {
+              "role": "suma sacerdotisa del Templo de Sarenrae, que prestó el cuarto y la cuida"
+            }
+          ],
+          "notes": [
+            "El Descanso apacible de Mortis había ganado el tiempo necesario; Pike juzgó que alcanzaba.",
+            "La luz brotó de las manos de Pike, y el diamante se fundió en el pecho de Cassandra al descender.",
+            "Percy: se va a reponer; es un trauma post mortem, algo que él mismo vivió.",
+            "El objetivo del grupo se mantiene: llevar a Cassandra de vuelta a Whitestone, donde empezó este viaje."
+          ]
+        },
+        {
+          "name": "Trama B — El residuum de Ashardalon",
+          "qt": "Ashardalon asedia Dis, en los Nueve Infiernos, con máquinas infernales que queman residuum refinado, y tiene los disparos contados. Quiere la piedra blanca que hay bajo Whitestone, refinada, y le dio a Ereldra un pergamino negro para enviársela directamente. Percy reconoció en las máquinas su propio diseño de pólvora negra, y el grupo planea que Ereldra entregue residuum mezclado para arruinarlas.",
+          "npcs": [
+            {
+              "race": "dragón rojo",
+              "role": "el patrón de Ereldra, que asedia Dis; le habló en forma élfica"
+            },
+            {
+              "race": "humano",
+              "role": "su pólvora negra, difundida por Ripley, arma ahora las máquinas del patrón"
+            },
+            {
+              "region": "los Nueve Infiernos",
+              "role": "la ciudad fortaleza de metal bajo asedio"
+            },
+            {
+              "role": "el residuum que hay debajo es lo que quiere Ashardalon"
+            }
+          ],
+          "notes": [
+            "El ritual: matar un cordero, verter su sangre sobre el pergamino negro y arrojar encima todo el residuum; cae en manos de Ashardalon, que lo refina en su fragua.",
+            "De sus catorce brujos, Ereldra es la que 'mejor funciona'; el resto será desechado en cuanto uno de ellos cumpla.",
+            "La idea de Percy: mezclar el residuum en una solución homogénea, aceitosa y combustible para que las máquinas fallen; hay que probarlo en su laboratorio de Whitestone.",
+            "El señor asediado en Dis vivió la Calamidad; el grupo cree que es el veterano de la Calamidad que conoce Pike."
+          ]
+        },
+        {
+          "name": "Trama C — Los catorce",
+          "qt": "Ashardalon tiene catorce brujos y los enfrenta entre sí. Fungrim (?), el amigo medio loco de Ereldra, advierte que el patrón les dijo a los demás que ella debe morir, y que él se negó. Elías la está cazando: disparó contra el grupo desde una cueva en la montaña mientras su diablillo invisible le marcaba el blanco y mentía diciendo que su amo era Fungrim.",
+          "npcs": [
+            {
+              "race": "enano",
+              "role": "amigo de Ereldra que peleó contra Haftifaflmorhen en Kraghammer; acudió cuando ella rompió su colgante"
+            },
+            {
+              "role": "el tirador de la montaña, que caza a Ereldra"
+            },
+            {
+              "role": "el gremio al que Fungrim intenta unirse, por dinero"
+            },
+            {
+              "name": "Templo de Sarenrae",
+              "region": "Vasselheim",
+              "role": "donde el grupo quedó acorralado"
+            }
+          ],
+          "notes": [
+            "Las mañas de Fungrim, según las recuerda Mortis: heridas que sangran por sus abrojos, una luz que corroe piel y escamas, y un enjambre de moscas venenosas, un don primigenio de su patrón y no magia propia.",
+            "'Que nadie toque a este hombre', advierte Ereldra, por el bien de ellos.",
+            "El grupo ahora sospecha que el diablillo a los pies de Ubu mintió sobre La Toma para proteger a su verdadero amo.",
+            "Amistad no impide que una criatura mienta, y el amo de un familiar ve y oye a través de él."
+          ]
+        },
+        {
+          "name": "Trama D — El templo perdido de Sarenrae",
+          "qt": "Pike Trickfoot, la que sabía dónde se formó la madre de Sorfon, apareció cuidando los jardines del Templo de Sarenrae en Vasselheim. Marcó el templo antiguo en el mapa de Issylra del grupo: a unos 27 km al norte de la ciudad, en las montañas. Percy aceptó hacer allí una parada breve.",
+          "npcs": [
+            {
+              "race": "gnoma",
+              "role": "de visita en el templo; sabe dónde está el templo antiguo"
+            },
+            {
+              "role": "la suma sacerdotisa, de piel como de rubí que cambia entre rojos y naranjas"
+            },
+            {
+              "name": "La madre de Sorfon",
+              "race": "humana",
+              "role": "se formó en el templo antiguo que busca Sorfon"
+            },
+            {
+              "name": "Templo de Sarenrae",
+              "region": "Vasselheim",
+              "role": "un salón de madera con campanario, obeliscos de mármol y una pira bajo un ídolo colgante"
+            }
+          ],
+          "notes": [
+            "Sorfon le dio a Pike la urna sellada con el incienso de Pelor; como ella no pertenece a este templo, la urna es para el templo mismo.",
+            "Sorfon se presentó ante la suma sacerdotisa como iniciado de Sarenrae.",
+            "Grog está en Westruun, viviendo la vida de aventurero; Pike le enseñó a leer.",
+            "El templo antiguo está en una cordillera al norte de Vasselheim, 'no tan lejos, en realidad'."
+          ]
+        },
+        {
+          "name": "Trama E — El vampiro de Ravenloft",
+          "qt": "Percy nunca había oído hablar de Strahd ni de Barovia, y ninguno de los mapas del grupo la muestra. Mortis recuerda Ravenloft como una de las pocas ciudades flotantes de la Era del Arcano, salvada de la Calamidad cuando la familia von Zarovich, que la había robado, la llevó al Páramo Sombrío. Desde entonces puede haber ido a parar a cualquier lado.",
+          "npcs": [
+            {
+              "race": "vampiro",
+              "role": "el rey de Barovia, desconocido para Percy"
+            },
+            {
+              "race": "vampiro",
+              "role": "hipnotizó a Cassandra pero nunca la convirtió en dampira, según Percy; fue abatido"
+            },
+            {
+              "race": "dampiro",
+              "role": "presentado a Percy como un buen hombre al que el grupo quiere ayudar"
+            },
+            {
+              "role": "no figura en ningún mapa de Issylra, Tal'Dorei ni Marquet"
+            }
+          ],
+          "notes": [
+            "Mortis había entendido, por lo que le dijo su diosa, que Cassandra sufrió de dampirismo; Percy dice que solo estaba hipnotizada.",
+            "Mortis vio Barovia con sus propios ojos, en medio del océano, hace muchos siglos.",
+            "El gran mapa del mundo de Percy está en su laboratorio; sus máquinas se guían por los puntos cardinales.",
+            "Strahd y Baba Yaga siguen siendo la mejor hipótesis del grupo sobre cómo crearon a Locus."
+          ]
+        }
+      ],
+      "completedPlots": [
+        {
+          "name": "El viaje a los Infiernos",
+          "closed": "Cerrada en esta sesión",
+          "qt": "El ojo de Ereldra se prendió fuego y su alma, unida a un hilo plateado, fue arrastrada a los Nueve Infiernos. Vio cómo las máquinas de Ashardalon asediaban Dis, saltó a través del campo de batalla hasta su lado y escuchó su exigencia, mientras su cuerpo sangraba en Vasselheim por una herida que ningún filo había hecho. Él la mandó de vuelta con un pergamino negro y la orden de llevarle residuum.",
+          "npcs": [
+            {
+              "race": "dragón rojo",
+              "role": "adoptó una forma élfica, con cuernos dracónicos e infernales, para hablar con ella"
+            },
+            {
+              "name": "Los Nueve Infiernos",
+              "role": "una matanza entre demonios y diablos, alcanzada en un viaje astral"
+            },
+            {
+              "region": "los Nueve Infiernos",
+              "role": "la fortaleza de metal en el centro del asedio"
+            },
+            {
+              "race": "gnoma",
+              "role": "dijo que se sentía como entrar al infierno"
+            }
+          ],
+          "notes": [
+            "Lo que la rodeaba era real; solo su presencia no lo era, pero el daño allí alcanzaba su cuerpo (8 cortantes debajo de la rodilla, curados con Imposición de manos).",
+            "La Marca del cazador de Sorfon encontró su alma a leguas y leguas bajo tierra.",
+            "Las máquinas: metal oscuro y chamuscado; diablillos cargan frascos de un líquido verde claro y corrosivo; una bobina dispara un rayo en forma de calavera que hace implosionar lo que toca.",
+            "Ashardalon aplastó al diablillo que la vigilaba: alguien la está espiando."
+          ]
+        }
+      ]
+    },
+    "14": {
+      "title": "Cazar al cazador",
+      "startedHere": "Dentro del Templo de Sarenrae, con las puertas trabadas: Elías disparando desde la montaña, Fungrim (?) con el grupo y un plan para hacer salir al francotirador.",
+      "endedHere": "Un claro en la montaña sobre Vasselheim, bajo la llovizna: Ayante y Sorfon golpeados por la bomba del diablillo, Aldis desvanecido y Elías de pie frente a ellos, pistola en mano.",
+      "ig": {
+        "start": "40 Horisal 867 — el Templo de Sarenrae, bajo fuego",
+        "end": "40 Horisal 867 — un claro en la montaña sobre Vasselheim",
+        "rest": "39 Horisal 867 — la noche anterior"
+      },
+      "effects": [
+        "Ayante está malherido y agotado por el hongo silvestre; pelea en short: su armadura y su equipo están en la bolsa de contención.",
+        "Sorfon está malherido por la paliza fingida de Fungrim, la bomba del diablillo y los disparos de Elías; Aldis ya se desvaneció en este combate.",
+        "Locus probó sangre humana: puede rastrear a los heridos con ella, y el grupo teme por su control. Fungrim (?) se quedó atrás con él.",
+        "Elías está de pie en el claro, pistola en mano, y ahora conoce la cara de Ayante."
+      ],
+      "activePlots": [
+        {
+          "name": "Trama A — Los catorce",
+          "qt": "El grupo salió a buscar a Elías. Fungrim fingió una pelea para engañarlo mientras Mortis hacía de Ereldra y Ayante subía solo la montaña; Elías atrapó a Ayante, le puso al cuello la cadena de un diablillo y lo acribilló cuando se defendió. Siguiendo el rastro, el grupo encontró a Ayante sangrando en un claro, donde la bomba del diablillo y los disparos de Elías volvieron a golpear. Ahora Elías está frente a ellos, pistola en mano.",
+          "npcs": [
+            {
+              "role": "el pistolero de botas y sombrero, con monóculo; su pistola vuelve a su mano y dispara un rayo recto como el de Ereldra"
+            },
+            {
+              "race": "caballo",
+              "role": "el caballo azabache de Elías, su compañero más preciado; recuerda a Ereldra"
+            },
+            {
+              "race": "enano",
+              "role": "fingió la pelea; rastreó a Elías por el olor con un hocico de moscas conjuradas"
+            },
+            {
+              "name": "El claro de la montaña",
+              "region": "la montaña sobre Vasselheim",
+              "role": "donde la cacería llegó a su punto culminante"
+            }
+          ],
+          "notes": [
+            "Ereldra conoce a Elías: dice que una vez le voló un ojo a Haftifaflmorhen, y alguna vez acampó con él y con Fungrim.",
+            "Elías recuerda a la 'ruidosa banda' de Ayante de un bar de Emon donde Ayante mató a varios enanos.",
+            "El diablillo de Elías le encadenó el cuello a Ayante de forma invisible y después se hizo estallar con una bomba; la cadena desapareció con él.",
+            "Los tres huevos mecánicos de Percy son cargas de humo que funcionan como Pasar sin rastro; uno cubrió el rescate."
+          ]
+        },
+        {
+          "name": "Trama B — El dampiro redimido",
+          "qt": "En la montaña, Locus probó una gota de sangre humana. Las venas le subieron por la cara, se le oscureció la esclerótica y sus sentidos se desbordaron: podía seguir dos sangres a la vez, ambas de personas heridas. Solo se alimenta de animales; el grupo teme lo que la sangre humana pueda hacerle, y dejó a Fungrim para que lo mantuviera tranquilo.",
+          "npcs": [
+            {
+              "race": "dampiro",
+              "role": "probó sangre humana; rastrea con ella, sobreestimulado"
+            },
+            {
+              "race": "enano",
+              "role": "se quedó atrás para mantenerlo tranquilo"
+            },
+            {
+              "race": "caballo",
+              "role": "se espantó con él: no se lleva bien con los animales"
+            },
+            {
+              "name": "La montaña sobre Vasselheim",
+              "role": "donde corría el rastro de sangre"
+            }
+          ],
+          "notes": [
+            "Sorfon caminó justo detrás de él, listo para dejarlo inconsciente si perdía el control.",
+            "La sangre era de Ayante o de Elías: el grupo no supo de quién.",
+            "Podía decir dónde estaba uno de los heridos, al sur, pero no el otro.",
+            "Se le afinó el rostro y se le tensó la mandíbula; los ojos se le volvieron más claros y saturados."
+          ]
+        }
+      ]
     }
   },
   "quests": {
     "cassandra": {
       "title": "Traer de vuelta a Cassandra",
-      "summary": "Cassandra de Rolo cayó ante un dragón en Kraghammer y su alma permanece en el limbo: quedan unos seis días. El grupo volvió a sacar su cuerpo de la capilla de Pelor, con los últimos sacramentos dados por si el rito fracasa, y ahora lo lleva ante Pike Trickfoot, debajo del Templo de Sarenrae, quien debe clavar el diamante de Mortis en su pecho como catalizador; y luego de regreso a Whitestone, que no es nada sin ella."
+      "summary": "Cassandra de Rolo cayó ante un dragón en Kraghammer y quedó en el limbo mientras el grupo la llevaba a través de Vasselheim. En el Templo de Sarenrae, Pike Trickfoot hundió el diamante de Mortis en su pecho y ella volvió a respirar: pálida, agotada y con migrañas, sin recordar nada de su muerte. Percy llegó volando hasta su cama y les ofreció transporte; el grupo sigue decidido a llevarla a casa, a Whitestone, la última parada de él, después de un breve desvío al antiguo templo de Sarenrae."
     },
     "pelor-charge": {
       "title": "El encargo de Pelor",
-      "summary": "Pelor le encomendó a Sorfon llevar el incensario sellado con incienso unos siete kilómetros a través de Vasselheim, desde el Templo de Pelor hasta el Templo de Sarenrae, y proteger a los de Rolo sobrevivientes. El custodio Marco le concedió al grupo los ritos de peregrino y guardó el cuerpo de Cassandra durante la noche; la armadura de placas de Tyr ya fue retirada, pero el incienso todavía no fue entregado: la ruta pasa por la oficina de correos, las provisiones y luego el Templo de Sarenrae."
+      "summary": "Pelor le encomendó a Sorfon llevar el incensario sellado con incienso unos siete kilómetros a través de Vasselheim, desde el Templo de Pelor hasta el Templo de Sarenrae, y proteger a los de Rolo sobrevivientes. El custodio Marco le concedió al grupo los ritos de peregrino y guardó el cuerpo de Cassandra durante la noche. La urna ya llegó al Templo de Sarenrae: Sorfon se la entregó a Pike Trickfoot y, como ella no pertenece a ese templo, es para el templo mismo. Proteger a los de Rolo —Cassandra otra vez con vida, Percy a su lado— sigue siendo su encargo."
     },
     "raven-queen": {
       "title": "El hilo de la Reina Cuervo",
@@ -991,24 +1348,24 @@
     },
     "hunted": {
       "title": "Cazados y vigilados",
-      "summary": "Un diablillo invisible que espiaba a los pies de Ubu nombró a su amo: La Toma, el Slayer's Take, un gremio de cazadores de monstruos acuartelado en el distrito de la guerra, y están cazando a Mortis. Desde que Sorfon les compró su prisionero dampiro, también cazan a Locus; el contrato solo se levanta cuando se resuelva el asunto con su líder, Ocisa (?). Ahora la propia Sarenrae pidió que saquen a Locus de la ciudad y lo alejen de ellos."
+      "summary": "Un diablillo invisible que espiaba a los pies de Ubu nombró a su amo: La Toma, el Slayer's Take, un gremio de cazadores de monstruos acuartelado en el distrito de la guerra, y están cazando a Mortis. Desde que Sorfon les compró su prisionero dampiro, también cazan a Locus; el contrato solo se levanta cuando se resuelva el asunto con su líder, Ocisa (?). Ahora la propia Sarenrae pidió que saquen a Locus de la ciudad y lo alejen de ellos. Mortis ahora cree que aquel diablillo mintió sobre La Toma para proteger a su verdadero amo; Fungrim (?), por su parte, dice que intenta unirse a La Toma por dinero."
     },
     "locus": {
       "title": "El dampiro redimido",
-      "summary": "La Toma atrapó entre la multitud de la avenida principal a un dampiro de cabello blanco llamado Locus; Sorfon le pagó al orco Hungar (?) la recompensa de 200 po para reclamarlo, con la intención de redimirlo en lugar de matarlo. El libro de Baba Yaga lo señala como el último sujeto vivo de un linaje de Strahd y Baba Yaga criado como cazadores de monstruos vampíricos, y está atado por un Geas. Sarenrae, alcanzada mediante una purificación con agua bendita, le dijo a Sorfon que toda alma merece redención y le pidió que sacara a Locus de la ciudad y lo alejara de La Toma, orientándolo hacia un viejo aliado y hacia los vínculos que Ereldra mantiene ocultos. El Geas bloquea la memoria de Locus y lo obliga, y solo se levanta cuando Strahd, su probable ancestro, esté muerto. Ahora viaja con el grupo, y hay que mantenerlo fuera del Páramo Sombrío."
+      "summary": "La Toma atrapó entre la multitud de la avenida principal a un dampiro de cabello blanco llamado Locus; Sorfon le pagó al orco Hungar (?) la recompensa de 200 po para reclamarlo, con la intención de redimirlo en lugar de matarlo. El libro de Baba Yaga lo señala como el último sujeto vivo de un linaje de Strahd y Baba Yaga criado como cazadores de monstruos vampíricos, y está atado por un Geas. Sarenrae, alcanzada mediante una purificación con agua bendita, le dijo a Sorfon que toda alma merece redención y le pidió que sacara a Locus de la ciudad y lo alejara de La Toma, orientándolo hacia un viejo aliado y hacia los vínculos que Ereldra mantiene ocultos. El Geas bloquea la memoria de Locus y lo obliga, y solo se levanta cuando Strahd, su probable ancestro, esté muerto. Ahora viaja con el grupo, y hay que mantenerlo fuera del Páramo Sombrío. En la montaña sobre Vasselheim probó una gota de sangre humana: las venas le subieron por la cara, se le oscurecieron los ojos y empezó a rastrear a los heridos por su sangre, apenas bajo control."
     },
     "corrupted-dragon": {
       "title": "El hacha y el dragón corrompido",
-      "summary": "Bahamut explicó por qué el dragón negro anciano Haftifaflmorhen sigue apareciendo: engañado por Torog (?) y obligado a devorar a su mejor amigo, es una víctima enloquecida que persigue el Barûk-Kazad. El Dragón de Platino se negó a hacerse cargo del hacha: queda bajo custodia en Kraghammer, pero Ereldra puede llamarla a su lado como su arma de pacto, así que el grupo sigue respondiendo por ella y no le dice a nadie dónde está, más aún porque le serviría a su patrón Ashardalon. La paz solo llegará cuando el hacha vuelva a su creador. Desde entonces, Pelor nombró al corruptor: Torog, el Rey Reptante, el último Dios Traidor que derribó, que actúa desde su prisión en el Reino Lejano; y aconsejó que salvar o matar a Haftifaflmorhen termina igual, ya que su mente ya no está. La decisión del grupo: conservar el hacha, no dársela a ningún dragón, y tenderle una trampa al dragón y concederle descanso cuando sean lo bastante fuertes."
+      "summary": "Bahamut explicó por qué el dragón negro anciano Haftifaflmorhen sigue apareciendo: engañado por Torog (?) y obligado a devorar a su mejor amigo, es una víctima enloquecida que persigue el Barûk-Kazad. El Dragón de Platino se negó a hacerse cargo del hacha: queda bajo custodia en Kraghammer, pero Ereldra puede llamarla a su lado como su arma de pacto, así que el grupo sigue respondiendo por ella y no le dice a nadie dónde está, más aún porque le serviría a su patrón Ashardalon. La paz solo llegará cuando el hacha vuelva a su creador. Desde entonces, Pelor nombró al corruptor: Torog, el Rey Reptante, el último Dios Traidor que derribó, que actúa desde su prisión en el Reino Lejano; y aconsejó que salvar o matar a Haftifaflmorhen termina igual, ya que su mente ya no está. La decisión del grupo: conservar el hacha, no dársela a ningún dragón, y tenderle una trampa al dragón y concederle descanso cuando sean lo bastante fuertes. Una carta al Consejo de Kraghammer les avisa ahora que el grupo llamará al hacha para usarla como carnada, con la promesa de devolverla; el permiso debería llegar en un día."
     },
     "ashardalon": {
       "title": "El patrón en el tesoro",
-      "summary": "En plena travesía, el antiguo dragón rojo Ashardalon alcanzó a Ereldra desde lo alto de un vasto tesoro, proclamándose su patrón y exigiendo saber por qué el grupo se desvió de Whitestone. Ella profesa lealtad mientras sirve al verdadero objetivo del patrón, ligado al linaje de los de Rolo. En el consejo admitió abiertamente que el plan de Ashardalon es un genocidio, y el grupo resolvió que no recibirá ningún hacha de ellos; mientras tanto, en una vieja pesadilla de Mortis, Torog se ofrecía a ocupar el lugar de Ashardalon junto a ella."
+      "summary": "En plena travesía, el antiguo dragón rojo Ashardalon alcanzó a Ereldra desde lo alto de un vasto tesoro, proclamándose su patrón y exigiendo saber por qué el grupo se desvió de Whitestone. Ella profesa lealtad mientras sirve al verdadero objetivo del patrón, ligado al linaje de los de Rolo. En el consejo admitió abiertamente que el plan de Ashardalon es un genocidio, y el grupo resolvió que no recibirá ningún hacha de ellos; mientras tanto, en una vieja pesadilla de Mortis, Torog se ofrecía a ocupar el lugar de Ashardalon junto a ella. Después, su alma fue arrastrada en un viaje astral a los Nueve Infiernos, donde Ashardalon asedia Dis con máquinas infernales que queman residuum refinado. Quiere la piedra blanca que hay bajo Whitestone, refinada, y le dio un pergamino negro: si se vierte sobre él la sangre de un cordero, todo el residuum que se le arroje va directo a él. De sus catorce brujos, ella es la que mejor funciona. Percy reconoció en esas máquinas su propio diseño de pólvora negra, y el grupo piensa hacer que ella entregue residuum mezclado para arruinarlas."
     },
     "strahd": {
       "title": "El vampiro de Ravenloft",
       "giver": "La Reina Cuervo",
-      "summary": "La Reina Cuervo le dijo a Mortis que Ravenloft y Barovia fueron arrancadas de su reino y están en manos ilegítimas del vampiro Strahd von Zarovich, que crió a Locus para que fuera su sabueso y todavía pretende tenerlo. Todavía no se puede llegar a Strahd: cuando el grupo esté listo para cruzar el Páramo Sombrío, deberá buscar a Vax'ildan, su campeón, que los guiará. Hasta entonces, Locus se queda fuera del Páramo Sombrío, donde Strahd lo percibiría, y su Geas no puede romperse mientras Strahd viva."
+      "summary": "La Reina Cuervo le dijo a Mortis que Ravenloft y Barovia fueron arrancadas de su reino y están en manos ilegítimas del vampiro Strahd von Zarovich, que crió a Locus para que fuera su sabueso y todavía pretende tenerlo. Todavía no se puede llegar a Strahd: cuando el grupo esté listo para cruzar el Páramo Sombrío, deberá buscar a Vax'ildan, su campeón, que los guiará. Hasta entonces, Locus se queda fuera del Páramo Sombrío, donde Strahd lo percibiría, y su Geas no puede romperse mientras Strahd viva. Percy nunca había oído hablar de Strahd ni de Barovia, y ningún mapa del grupo la muestra; Mortis recuerda Ravenloft como una de las pocas ciudades flotantes de la Era del Arcano, salvada de la Calamidad cuando la familia von Zarovich, que la había robado, la llevó al Páramo Sombrío."
     },
     "greyskull-debt": {
       "title": "La deuda con Allura",
@@ -1017,7 +1374,7 @@
     "temple-sarenrae": {
       "title": "El templo perdido de Sarenrae",
       "giver": "La madre de Sorfon",
-      "summary": "Sorfon llegó a Tal'Dorei en busca del templo antiguo donde se formó su madre. Sarenrae, enojada por su devoción de toda la vida exclusivamente a Pelor, le dio solo un acertijo: 'El templo es solo un templo; seguí TU luz.'"
+      "summary": "Sorfon llegó a Tal'Dorei en busca del templo antiguo donde se formó su madre. Sarenrae, enojada por su devoción de toda la vida exclusivamente a Pelor, le dio solo un acertijo: 'El templo es solo un templo; seguí TU luz.' Pike Trickfoot, la que conocía el camino, apareció por fin cuidando los jardines del Templo de Sarenrae en Vasselheim, y marcó el templo antiguo en el mapa de Issylra del grupo: a unos 27 km al norte de la ciudad, en las montañas. Percy aceptó parar allí camino a Whitestone."
     },
     "aristeia": {
       "title": "La aristeia de Ayante",
@@ -1048,6 +1405,14 @@
     "gilmore-pact": {
       "title": "El pacto bajo el sol",
       "summary": "En la tienda de Gilmore en Emon, Ayante oyó a Sorfon preguntar por un templo antiguo. La burla dio paso al respeto en cuanto supo que Sorfon servía a Pelor, y los dos devotos sellaron un pacto con los brazos desnudos bajo el sol del mediodía."
+    },
+    "the-fourteen": {
+      "title": "Los catorce",
+      "summary": "Ashardalon tiene catorce brujos y los enfrenta entre sí: el que le lleve residuum gana su favor, y el resto queda descartado. Ereldra es la que 'mejor funciona', y por eso, advierte Fungrim (?), el patrón les dijo a los demás que ella debe morir. Fungrim, un enano medio loco que peleó contra Haftifaflmorhen en Kraghammer y le regaló un colgante de abrojo que lo llama, se negó. Elías no: desde una cueva en la montaña, a unos 3 km, disparó contra el grupo en el Templo de Sarenrae, mientras su familiar, un diablillo invisible, le marcaba el blanco y mentía diciendo que su amo era Fungrim. El grupo salió a buscarlo a la montaña sobre Vasselheim: Fungrim fingió una pelea, Mortis tomó la forma de Ereldra y Ayante subió solo, hasta que Elías lo atrapó, lo encadenó con un diablillo y lo acribilló cuando se defendió. La cacería llegó a su punto culminante en un claro, donde la bomba del diablillo y los disparos de Elías volvieron a golpear y Aldis, el espíritu de Sorfon, se desvaneció protegiéndolo; Elías sigue en pie, pistola en mano."
+    },
+    "hells-audience": {
+      "title": "El viaje a los Infiernos",
+      "summary": "El ojo de Ereldra se prendió fuego y su alma, unida a un hilo plateado, fue arrastrada a los Nueve Infiernos mientras su cuerpo sangraba en Vasselheim. Vio cómo las máquinas infernales de Ashardalon asediaban Dis, saltó a través del campo de batalla hasta su lado y escuchó su exigencia: la piedra blanca de Whitestone, refinada, enviada a través de un pergamino negro. Él aplastó al diablillo que la espiaba y la mandó de vuelta."
     }
   },
   "people": {
@@ -1318,6 +1683,67 @@
     },
     "monster-jagers": {
       "name": "Los Monster Jägers del Imperio Dwendaliano"
+    },
+    "palace-postmaster": {
+      "name": "El jefe de correos del palacio",
+      "race": "gnomo"
+    },
+    "tessa": {
+      "aliases": [
+        "Tessa",
+        "La suma sacerdotisa de Sarenrae"
+      ]
+    },
+    "fungrim": {
+      "race": "enano",
+      "relations": [
+        {
+          "label": "Su amiga, a quien le dio un colgante para llamarlo",
+          "reverseLabel": "Su amigo, llamado al romper su colgante"
+        },
+        {
+          "label": "Probablemente su patrón",
+          "reverseLabel": "Probablemente uno de sus catorce brujos"
+        }
+      ]
+    },
+    "elias": {
+      "relations": [
+        {
+          "label": "La bruja a la que caza",
+          "reverseLabel": "La está cazando"
+        },
+        {
+          "label": "Probablemente su patrón",
+          "reverseLabel": "Probablemente uno de sus catorce brujos"
+        },
+        {
+          "label": "El guerrero que recuerda de un bar de Emon",
+          "reverseLabel": "Lo recuerda de un bar de Emon"
+        }
+      ]
+    },
+    "sylas-briarwood": {
+      "race": "vampiro",
+      "relations": [
+        {
+          "label": "Hipnotizada por él",
+          "reverseLabel": "El vampiro que la hipnotizó"
+        }
+      ]
+    },
+    "agro": {
+      "race": "caballo",
+      "relations": [
+        {
+          "label": "Su jinete, que lo trata como a un caballo de carrera",
+          "reverseLabel": "Su caballo azabache, su compañero más preciado"
+        },
+        {
+          "label": "Una jinete que recuerda de un viejo campamento",
+          "reverseLabel": "El caballo de Elías; la recuerda de un viejo campamento"
+        }
+      ]
     }
   },
   "places": {
@@ -1394,6 +1820,24 @@
     },
     "far-realm": {
       "name": "El Reino Lejano"
+    },
+    "palace-post-office": {
+      "name": "La oficina de correos del palacio",
+      "aliases": [
+        "El palomar de mensajería"
+      ]
+    },
+    "nine-hells": {
+      "name": "Los Nueve Infiernos",
+      "aliases": [
+        "Los Infiernos"
+      ]
+    },
+    "vasselheim-mountain": {
+      "name": "La montaña sobre Vasselheim"
+    },
+    "mountain-clearing": {
+      "name": "El claro de la montaña"
     }
   },
   "lore": {
@@ -1488,10 +1932,19 @@
       "summary": "La hija menor de la familia de Rolo, la casa noble de Whitestone, y hermana menor de Percival de Rolo."
     },
     "percy": {
-      "summary": "Percival de Rolo III, al que suelen llamar Percy, es un pistolero humano, inventor y miembro de Vox Machina. Pertenece a la familia de Rolo, la casa noble de Whitestone, y en el lore de Exandria se le atribuye la creación dla primera arma de fuego."
+      "summary": "Percival de Rolo III, al que suelen llamar Percy, es un pistolero humano, inventor y miembro de Vox Machina. Pertenece a la familia de Rolo, la casa noble de Whitestone, y en el lore de Exandria se le atribuye la creación de la primera arma de fuego."
     },
     "vaxildan": {
       "summary": "Un semielfo pícaro, miembro de Vox Machina y hermano mellizo de Vex'ahlia. Nacidos en Byroden, los mellizos fueron llevados más tarde a la ciudad élfica de Syngorn por orden de su padre, y la dejaron en la adolescencia para valerse por sí mismos. En el lore se lo conoce como el Campeón de la Reina Cuervo."
+    },
+    "ashardalon": {
+      "summary": "Un dragón rojo de edad y poder inmensos, cantado en todo el multiverso y de triste fama por sus estragos. Engreído y aferrado casi con desesperación a su propia vida, recurrió a medios insólitos para escapar de la muerte; más tarde alcanzó el rango de gran sierpe (greatwyrm), pero nunca abandonó su búsqueda de la divinidad. Su aspecto lo distingue de otros dragones rojos antiguos: rasgos demoníacos y una cicatriz en el pecho con la forma de un enorme humanoide alado."
+    },
+    "strahd": {
+      "summary": "El conde Strahd von Zarovich, un vampiro, gobierna Barovia como su señor oscuro desde su sede, el castillo de Ravenloft. El valle es uno de los Dominios del Terror (Domains of Dread), en un rincón lejano del Páramo Sombrío. En vida fue un príncipe humano y conquistador, que se instaló en Barovia tras adueñarse del valle. Es el villano emblemático de la ambientación de Ravenloft y el de la aventura Curse of Strahd.",
+      "facts": {
+        "alsoKnownAs": "El Primer Vampiro · El Diablo Strahd"
+      }
     }
   }
 }

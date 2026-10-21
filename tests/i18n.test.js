@@ -82,8 +82,10 @@ test("7 · narrative content is shown in Spanish, the English original is kept",
   assert.equal(es.questById.get("cassandra").title, loadContent("es-AR").quests.cassandra.title);
   assert.equal(es.eventById.get("s1_01").typeLabel, "Viaje");
   assert.equal(en.eventById.get("s1_01").typeLabel, "Journey");
-  // The source files themselves are untouched English.
-  assert.ok(/^[\x00-\x7F’—–…·]*$/.test(raw.events.map(e => e.title).join("")) || raw.events.every(e => !/[áéíóúñ]/.test(e.title)));
+  // The source files themselves are untouched English — proper names keep their own spelling (Elías, Ilión).
+  const names = [...raw.characters, ...raw.npcs, ...raw.locations].flatMap(p => [p.name, ...(p.aliases || [])]).filter(Boolean).map(n => n.replace(/\s*\(\?\)$/, ""));
+  const withoutNames = s => names.reduce((t, n) => t.split(n).join(""), s);
+  assert.ok(raw.events.every(e => !/[áéíóúñ]/.test(withoutNames(e.title))), "no Spanish spelling outside proper names");
 });
 
 test("8 · missing translations fall back to English (never empty, never a key)", () => {

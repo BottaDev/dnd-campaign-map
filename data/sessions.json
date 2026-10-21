@@ -892,5 +892,305 @@
         ]
       }
     ]
+  },
+  "13": {
+    "dateLabel": "Recorded 9 Sep 2026 · Resurrection and Hellfire",
+    "title": "Resurrection and Hellfire",
+    "playedOn": "2026-09-09",
+    "startedHere": "The palace of Vasselheim — Ubu, on guard and strictly business, leads the party up a tower to the messenger loft to send their letters, Cassandra's body still in their care.",
+    "endedHere": "Inside the Temple of Sarenrae with the doors barred — Cassandra alive and resting, Fungrim (?) among them, and Elías firing from a cave on the mountain, his invisible imp having spotted for him.",
+    "ig": {
+      "start": "40 Horisal 867 — the palace post office",
+      "end": "40 Horisal 867 — the Temple of Sarenrae, under fire",
+      "rest": "39 Horisal 867 — the night before"
+    },
+    "effects": [
+      "Cassandra de Rolo lives again — pale, exhausted and racked by migraines, resting at the Temple of Sarenrae with Percy at her side; the diamond fused into her chest.",
+      "Percy's airship will carry the party: a short stop at Sarenrae's ancient temple, about 27 km north in the mountains, then Whitestone.",
+      "Ereldra holds Ashardalon's black parchment: once a lamb's blood is poured on it, any residuum thrown upon it goes straight to him.",
+      "Leave to call the Barûk-Kazad as bait should come from the Council of Kraghammer within a day; Ereldra's letter to her family is on its way.",
+      "Ereldra's burr pendant is broken — spent as the lure that called Fungrim (?).",
+      "Elías is firing on the party from a cave about 3 km northwest; they are barred inside the Temple of Sarenrae."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — Bringing Cassandra Back",
+        "questId": "cassandra",
+        "qt": "At the Temple of Sarenrae, Pike Trickfoot drove Mortis's diamond into Cassandra's chest and she breathed again. She is weak, pale and racked by migraines, and remembers nothing of the dragon. Percy has flown in to her bedside; the party still means to see her home to Whitestone, his last stop.",
+        "npcs": [
+          {
+            "name": "Cassandra de Rolo",
+            "race": "human",
+            "role": "alive again, resting under the temple's care"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "race": "gnome",
+            "role": "the Vox Machina cleric who performed the rite"
+          },
+          {
+            "name": "Percival 'Percy' de Rolo",
+            "race": "human",
+            "role": "flew in on his airship and wept at her bedside"
+          },
+          {
+            "name": "Tessa (?)",
+            "role": "high priestess of the Temple of Sarenrae, who gave the room and watches over her"
+          }
+        ],
+        "notes": [
+          "Mortis's Gentle Repose had bought the time; Pike judged it enough.",
+          "Light poured from Pike's hands, and the diamond fused into Cassandra's chest as it sank.",
+          "Percy: she will recover — post-mortem trauma, which he has lived through himself.",
+          "The party's aim stands: take Cassandra back to Whitestone, where this journey began."
+        ]
+      },
+      {
+        "name": "Plot B — Ashardalon's Residuum",
+        "questId": "ashardalon",
+        "qt": "Ashardalon is besieging Dis, in the Nine Hells, with infernal machines that burn refined residuum — and his shots are numbered. He wants the white stone beneath Whitestone, refined, and has given Ereldra a black parchment to send it straight to him. Percy recognised his own black-powder design in the machines, and the party plans to have Ereldra deliver residuum blended to wreck them.",
+        "npcs": [
+          {
+            "name": "Ashardalon",
+            "race": "red dragon",
+            "role": "Ereldra's patron, besieging Dis; spoke to her in an elven form"
+          },
+          {
+            "name": "Percival 'Percy' de Rolo",
+            "race": "human",
+            "role": "his black powder, spread by Ripley, now arms the patron's machines"
+          },
+          {
+            "name": "Dis",
+            "region": "the Nine Hells",
+            "role": "the metal fortress-city under siege"
+          },
+          {
+            "name": "Whitestone",
+            "role": "the residuum beneath it is what Ashardalon wants"
+          }
+        ],
+        "notes": [
+          "The ritual: kill a lamb, pour its blood on the black parchment and throw all the residuum on it; it falls into Ashardalon's hands, to be refined at his forge.",
+          "Of his fourteen warlocks Ereldra 'works best'; the rest are to be discarded once one of them delivers.",
+          "Percy's idea: blend the residuum into an oily, combustible, homogeneous mixture so the machines fail; it needs testing in his Whitestone laboratory.",
+          "The lord besieged in Dis lived through the Calamity; the party takes him for the Calamity veteran Pike knows."
+        ]
+      },
+      {
+        "name": "Plot C — The Fourteen",
+        "questId": "the-fourteen",
+        "qt": "Ashardalon keeps fourteen warlocks and sets them against one another. Fungrim (?), Ereldra's half-mad friend, warns that the patron has told the others she must die — and that he refused. Elías is hunting her: he fired on the party from a cave on the mountain while his invisible imp spotted for him, lying that its master was Fungrim.",
+        "npcs": [
+          {
+            "name": "Fungrim (?)",
+            "race": "dwarf",
+            "role": "Ereldra's friend, who fought Haftifaflmorhen at Kraghammer; came when she broke his pendant"
+          },
+          {
+            "name": "Elías",
+            "role": "the shooter on the mountain, hunting Ereldra"
+          },
+          {
+            "name": "La Toma (the Slayer's Take)",
+            "role": "the guild Fungrim is trying to join, for the money"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "region": "Vasselheim",
+            "role": "where the party is pinned down"
+          }
+        ],
+        "notes": [
+          "Fungrim's ways, as Mortis recalls them: wounds that bleed from his burrs, a light that corrodes skin and scale, and a swarm of poison flies — a primordial gift of his patron, not his own magic.",
+          "'Nobody touch this man,' Ereldra warns — for their own sake.",
+          "The party now suspects the imp at Ubu's feet lied about La Toma to shield its true master.",
+          "Friends does not stop a creature lying, and a familiar's master sees and hears through it."
+        ]
+      },
+      {
+        "name": "Plot D — The Lost Temple of Sarenrae",
+        "questId": "temple-sarenrae",
+        "qt": "Pike Trickfoot — the one who knew where Sorfon's mother trained — was found tending the gardens of the Temple of Sarenrae in Vasselheim. She marked the ancient temple on the party's map of Issylra: about 27 km north of the city, in the mountains. Percy has agreed to a short stop there.",
+        "npcs": [
+          {
+            "name": "Pike Trickfoot",
+            "race": "gnome",
+            "role": "visiting the temple; knows where the ancient temple lies"
+          },
+          {
+            "name": "Tessa (?)",
+            "role": "the high priestess, her ruby-like skin shifting through reds and oranges"
+          },
+          {
+            "name": "Sorfon's mother",
+            "race": "human",
+            "role": "trained at the ancient temple Sorfon seeks"
+          },
+          {
+            "name": "Temple of Sarenrae",
+            "region": "Vasselheim",
+            "role": "a wooden hall with a bell tower, marble obelisks and a pyre beneath a hanging idol"
+          }
+        ],
+        "notes": [
+          "Sorfon gave Pike the sealed urn of Pelor's incense; since she does not belong to this temple, it is meant for the temple itself.",
+          "Sorfon introduced himself to the high priestess as an initiate of Sarenrae.",
+          "Grog is in Westruun, living the adventurer's life; Pike taught him to read.",
+          "The ancient temple sits on a mountain range north of Vasselheim — 'not really far'."
+        ]
+      },
+      {
+        "name": "Plot E — The Vampire of Ravenloft",
+        "questId": "strahd",
+        "qt": "Percy had never heard of Strahd or Barovia, and none of the party's maps shows it. Mortis remembers Ravenloft as one of the few floating cities of the Age of Arcanum, spared the Calamity when the von Zarovich family — who had stolen it — drew it into the Shadowfell. It may have drifted anywhere since.",
+        "npcs": [
+          {
+            "name": "Strahd von Zarovich",
+            "race": "vampire",
+            "role": "Barovia's king, unknown to Percy"
+          },
+          {
+            "name": "Sylas Briarwood",
+            "race": "vampire",
+            "role": "enthralled Cassandra but never made her a dampir, says Percy; slain"
+          },
+          {
+            "name": "Locus",
+            "race": "dampir",
+            "role": "introduced to Percy as a good man the party means to help"
+          },
+          {
+            "name": "Ravenloft / Barovia",
+            "role": "on no map of Issylra, Tal'Dorei or Marquet"
+          }
+        ],
+        "notes": [
+          "Mortis had understood from his goddess that Cassandra suffered from dampirism; Percy says she was only enthralled.",
+          "Mortis saw Barovia himself, in the middle of the ocean, many centuries ago.",
+          "Percy's great map of the world is in his laboratory; his machines steer by the cardinal points.",
+          "Strahd and Baba Yaga remain the party's best guess for how Locus was made."
+        ]
+      }
+    ],
+    "completedPlots": [
+      {
+        "name": "The Journey to the Hells",
+        "questId": "hells-audience",
+        "closed": "Closed this session",
+        "qt": "Ereldra's eye caught fire and her soul, trailing a silver thread, was dragged to the Nine Hells. She watched Ashardalon's machines besiege Dis, blinked across the battlefield to his side and heard his demand, while her body bled in Vasselheim from a wound no blade had made. He sent her back with a black parchment and orders to bring residuum.",
+        "npcs": [
+          {
+            "name": "Ashardalon",
+            "race": "red dragon",
+            "role": "took an elven form, with draconic and infernal horns, to speak with her"
+          },
+          {
+            "name": "The Nine Hells",
+            "role": "a slaughter of demons and devils, reached on an astral journey"
+          },
+          {
+            "name": "Dis",
+            "region": "the Nine Hells",
+            "role": "the metal fortress at the heart of the siege"
+          },
+          {
+            "name": "Pike Trickfoot",
+            "race": "gnome",
+            "role": "said it felt like entering hell"
+          }
+        ],
+        "notes": [
+          "What surrounded her was real; only her presence was not — yet harm there reached her body (8 slashing below the knee, healed with Lay on Hands).",
+          "Sorfon's Hunter's Mark found her soul leagues and leagues beneath the ground.",
+          "The machines: dark, charred metal; imps load flasks of a pale green, corrosive liquid; a coil fires a skull-shaped bolt that implodes what it strikes.",
+          "Ashardalon crushed the imp that was watching her: someone is spying on her."
+        ]
+      }
+    ]
+  },
+  "14": {
+    "dateLabel": "Recorded 23 Sep 2026 · Hunting the Hunter",
+    "title": "Hunting the Hunter",
+    "playedOn": "2026-09-23",
+    "startedHere": "Inside the Temple of Sarenrae with the doors barred — Elías firing from the mountain, Fungrim (?) among the party, and a plan to draw the sniper out.",
+    "endedHere": "A clearing on the mountain above Vasselheim, in the drizzle — Ayante and Sorfon battered by the imp's bomb, Aldis gone, and Elías standing before them, pistol in hand.",
+    "ig": {
+      "start": "40 Horisal 867 — the Temple of Sarenrae, under fire",
+      "end": "40 Horisal 867 — a clearing on the mountain above Vasselheim",
+      "rest": "39 Horisal 867 — the night before"
+    },
+    "effects": [
+      "Ayante is badly hurt and exhausted after the wild mushroom; he fights in his shorts — his armour and gear are in the bag of holding.",
+      "Sorfon is badly hurt by Fungrim's staged beating, the imp's bomb and Elías's shots; Aldis has faded for this fight.",
+      "Locus has tasted human blood: he can track the wounded by it, and the party fears for his control. Fungrim (?) stayed behind with him.",
+      "Elías stands in the clearing, pistol in hand, and now knows Ayante's face."
+    ],
+    "activePlots": [
+      {
+        "name": "Plot A — The Fourteen",
+        "questId": "the-fourteen",
+        "qt": "The party went out after Elías. Fungrim staged a fight to fool him while Mortis played Ereldra and Ayante ran up the mountain alone; Elías caught Ayante, collared him with an imp's chain and shot him up when he fought back. Following the trail, the party found Ayante bleeding in a clearing, where the imp's bomb and Elías's shots struck again. Elías now stands before them, pistol in hand.",
+        "npcs": [
+          {
+            "name": "Elías",
+            "role": "the gunman in boots and a hat, with a monocle; his pistol returns to his hand and fires a straight beam like Ereldra's"
+          },
+          {
+            "name": "Agro (?)",
+            "race": "horse",
+            "role": "Elías's jet-black horse, his most prized companion; remembers Ereldra"
+          },
+          {
+            "name": "Fungrim (?)",
+            "race": "dwarf",
+            "role": "staged the fight; tracked Elías by smell through a snout of conjured flies"
+          },
+          {
+            "name": "The clearing on the mountain",
+            "region": "the mountain above Vasselheim",
+            "role": "where the hunt came to a head"
+          }
+        ],
+        "notes": [
+          "Ereldra knows Elías: she says he once shot out one of Haftifaflmorhen's eyes, and she once camped with him and Fungrim.",
+          "Elías remembers Ayante's 'noisy band' from a bar in Emon where Ayante killed several dwarves.",
+          "Elías's imp chained Ayante's neck invisibly, then blew itself up with a bomb; the chain vanished with it.",
+          "Percy's three mechanical eggs are smoke charges that work like Pass Without Trace; one covered the rescue."
+        ]
+      },
+      {
+        "name": "Plot B — The Redeemed Dampir",
+        "questId": "locus",
+        "qt": "On the mountain Locus tasted a drop of human blood. Veins rose across his face, his sclera darkened and his senses flooded — he could follow two bloods at once, both from wounded people. He feeds only on animals; the party fears what human blood will do to him, and left Fungrim to keep him calm.",
+        "npcs": [
+          {
+            "name": "Locus",
+            "race": "dampir",
+            "role": "tasted human blood; tracks by it, overstimulated"
+          },
+          {
+            "name": "Fungrim (?)",
+            "race": "dwarf",
+            "role": "stayed behind to keep him calm"
+          },
+          {
+            "name": "Agro (?)",
+            "race": "horse",
+            "role": "shied from him — he does not get on with animals"
+          },
+          {
+            "name": "The mountain above Vasselheim",
+            "role": "where the blood trail ran"
+          }
+        ],
+        "notes": [
+          "Sorfon walked right behind him, ready to knock him out if he lost control.",
+          "The blood was Ayante's or Elías's — the party could not tell whose.",
+          "He could tell where one of the wounded lay, to the south, but not the other.",
+          "His face grew gaunt and his jaw clenched; his eyes turned brighter and more saturated."
+        ]
+      }
+    ]
   }
 }

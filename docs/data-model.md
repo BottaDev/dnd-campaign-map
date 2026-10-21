@@ -4,7 +4,7 @@ All campaign content lives in JSON files under `data/`, fetched by the page at r
 
 ← [Back to the README](../README.md) · Related: [Map system](map-system.md) · [Architecture](architecture.md) · [Taller guide (ES)](editor-guide.md)
 
-**Contents:** [Files](#files) · [Identifiers and links](#identifiers-and-links) · [Dates](#dates-at-the-table-vs-in-the-world) · [`events.json`](#eventsjson) · [`sessions.json`](#sessionsjson) · [`quests.json`](#questsjson) · [`characters.json` and `npcs.json`](#charactersjson-and-npcsjson) · [`locations.json`](#locationsjson) · [`routes.json`](#routesjson) · [`lore.json`](#lorejson--lore-of-exandria) · [Translations](#translations-datai18nes-arjson) · [Validation](#validation-and-integrity-rules) · [Legacy records](#legacy-records) · [Current data status](#current-data-status)
+**Contents:** [Files](#files) · [Identifiers and links](#identifiers-and-links) · [Dates](#dates-at-the-table-vs-in-the-world) · [`events.json`](#eventsjson) · [`sessions.json`](#sessionsjson) · [`quests.json`](#questsjson) · [`characters.json` and `npcs.json`](#charactersjson-and-npcsjson) · [`locations.json`](#locationsjson) · [`routes.json`](#routesjson) · [`lore.json`](#lorejson--canon-lore) · [Translations](#translations-datai18nes-arjson) · [Validation](#validation-and-integrity-rules) · [Legacy records](#legacy-records) · [Current data status](#current-data-status)
 
 ## Files
 
@@ -17,7 +17,7 @@ data/
   routes.json       each party member's recorded journeys            required · object
   npcs.json         NPCs, deities, creatures and factions             optional · array
   locations.json    places, as a hierarchy                            optional · array
-  lore.json         Lore of Exandria: curated summaries + references  optional · object
+  lore.json         canon lore: curated summaries + references        optional · object
   i18n/es-AR.json   Spanish translation of the content above         optional · object
 ```
 
@@ -305,14 +305,15 @@ The order is the order travelled: revisits (A → B → A → C) are kept; only 
 
 The current file records the session 8 airship crossing Kraghammer → Vasselheim, taken by the whole party (the session 8 log ends "after the airship crossing" and all four arrive in event `s8_06`). The journey from Emon to Kraghammer (sessions 3–7, never chronicled) is deliberately *not* drawn. Never edit coordinates for presentation.
 
-## `lore.json` — Lore of Exandria
+## `lore.json` — Canon lore
 
-Background on the **wider world** (Critical Role's Exandria), kept apart from what happened at the table. It never changes campaign data: names, aliases, relations, events, search and filters are built exactly as if the file did not exist (a unit test compares both). Entities only *read* it, as a folded section at the end of their page.
+Background from **published canon** — Critical Role's Exandria, and the wider Dungeons & Dragons multiverse the campaign borrows from (Strahd, Ashardalon) — kept apart from what happened at the table. It never changes campaign data: names, aliases, relations, events, search and filters are built exactly as if the file did not exist (a unit test compares both). Entities only *read* it, as a folded section at the end of their page.
 
 ```json
 {
   "sources": {
-    "cr-wiki": { "label": "Critical Role Wiki", "url": "https://criticalrole.fandom.com/wiki/Critical_Role_Wiki", "community": true, "spoilers": true }
+    "cr-wiki": { "label": "Critical Role Wiki", "url": "https://criticalrole.fandom.com/wiki/Critical_Role_Wiki", "community": true, "spoilers": true },
+    "fr-wiki": { "label": "Forgotten Realms Wiki", "url": "https://forgottenrealms.fandom.com/wiki/Main_Page", "community": true, "spoilers": true }
   },
   "entries": {
     "pelor": {
@@ -327,7 +328,7 @@ Background on the **wider world** (Critical Role's Exandria), kept apart from wh
 ```
 
 - `entries` is keyed by an **existing** person or place id (`npcs.json`, `characters.json`, `locations.json`) — never a new entity, never a renamed id. An entity without an entry has no lore section. (Lore on a party member is allowed but warned about.)
-- `sources` — one per website: `label` (required, shown on links and in the attribution), optional home `url`, `community: true` for fan-run sites (shown as "community wiki, not official"), `spoilers` (default `true`: show the spoiler warning under its links).
+- `sources` — one per website: `label` (required, shown on links, in the folded row and in the attribution), optional home `url`, `community: true` for fan-run sites (shown as "community wiki, not official"), `spoilers` (default `true`: show the spoiler warning under its links). There are two, both Fandom community wikis whose text is CC BY-SA: `cr-wiki`, the [Critical Role Wiki](https://criticalrole.fandom.com/wiki/Critical_Role_Wiki), for Exandria's own people, places and gods; and `fr-wiki`, the [Forgotten Realms Wiki](https://forgottenrealms.fandom.com/wiki/Main_Page), for D&D entities from other settings that the campaign brings in (Strahd, Ashardalon).
 - `references` — one or more links: `source` (a key of `sources`), `url`, `title` (the article name). **Only absolute `https://` URLs** are accepted (no `javascript:`, `data:`, `http:`, relative or credential URLs); invalid links are dropped and reported, duplicates are ignored. Links open in a new tab with `rel="noopener noreferrer"`.
 - `summary` (optional) — a short **original** text, about 40–80 words (over 120 words is a warning).
 - `facts` (optional) — a few labelled values from a fixed vocabulary: `alsoKnownAs`, `continent`, `region`, `government`, `portfolio`, `domains`, `symbol`, `worshippers`, `temples`, `base`, `purpose`, `patron`, `affiliation`, `role`. Unknown keys are ignored (warning).
@@ -335,16 +336,16 @@ Background on the **wider world** (Critical Role's Exandria), kept apart from wh
 - A `summary` or `facts` **without at least one valid reference is rejected** (validator error, not shown): nothing unsourced reaches the page.
 - Spanish: `data/i18n/es-AR.json` → `"lore": { "<id>": { "summary": "…", "facts": { "domains": "Vida, Luz" } } }` (and `"loreSources": { "<sourceId>": { "label": "…" } }` if a source name needs translating). Per-field English fallback; a summary shown in English in the Spanish interface says so. Proper names stay as in the source.
 
-**On the page:** a single collapsed row **Lore of Exandria** after every campaign section, folded again on every page. Opened, it shows the summary, the facts, one link card per reference, the spoiler warning and a one-line attribution (*summary written for this chronicle from … · reviewed … · what happened at our table takes precedence*). Nothing is fetched from the external site — no scraping, no embeds, no images.
+**On the page:** a single collapsed row **Canon lore** after every campaign section, folded again on every page; its hint names the entry's own sources (*Outside information (Forgotten Realms Wiki) · may contain spoilers*). Opened, it shows the summary, the facts, one link card per reference, the spoiler warning and a one-line attribution (*summary written for this chronicle from … · reviewed … · what happened at our table takes precedence*). Nothing is fetched from the external site — no scraping, no embeds, no images.
 
 ### Adding lore for an entity — checklist
 
 1. Make sure the entity really *is* the canon one (same person/place, not just a similar name). The DM's own NPCs get nothing unless that link is confirmed.
-2. Find the article and check that it exists under that exact title (the wiki's API is handy: `https://criticalrole.fandom.com/api.php?action=query&format=json&redirects=1&titles=<Title>` — use the final title of any redirect, e.g. Pelor → *The Dawnfather*).
+2. Pick the wiki — the Critical Role Wiki for Exandria's own canon, the Forgotten Realms Wiki for a D&D entity from another setting — then find the article and check that it exists under that exact title. Each wiki's API is handy: `https://<wiki>.fandom.com/api.php?action=query&format=json&redirects=1&titles=<Title>` with `<wiki>` = `criticalrole` or `forgottenrealms`; use the final title of any redirect (e.g. Pelor → *The Dawnfather*). When the article page refuses automated readers, `action=parse&format=json&prop=wikitext&page=<Title>` returns its text.
 3. Write the summary in your own words from verifiable facts, **spoiler-free**: no secret identities, betrayals, deaths, plot twists or late-campaign developments. When in doubt, leave it out — the link is there for the rest. Never copy article text or images (Fandom text is CC BY-SA; images have their own terms).
 4. Add the Spanish version under `lore` in `data/i18n/es-AR.json`, then run `npm test`.
 
-**Current coverage** (reviewed 2026-10-14, all from the Critical Role Wiki): places Tal'Dorei, Emon, Greyskull Keep, Gilmore's shop (*Gilmore's Glorious Goods*), Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the Shadowfell, the Far Realm; deities Pelor, Sarenrae, the Raven Queen, Bahamut, Torog; factions La Toma (*Slayer's Take*) and the shadar-kai; people Gilmore, Pike Trickfoot, Allura Vysoren, Cassandra and Percival de Rolo, Vax'ildan. Without a wiki article (left without lore on purpose): Strahd, Ashardalon, Baba Yaga, Ravenloft/Barovia, the Monster Jägers, Haftifaflmorhen, Cromulus, Ilión, Damali, and every DM-original NPC and place.
+**Current coverage.** From the Critical Role Wiki (reviewed 2026-10-14): places Tal'Dorei, Emon, Greyskull Keep, Gilmore's shop (*Gilmore's Glorious Goods*), Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the Shadowfell, the Far Realm; deities Pelor, Sarenrae, the Raven Queen, Bahamut, Torog; factions La Toma (*Slayer's Take*) and the shadar-kai; people Gilmore, Pike Trickfoot, Allura Vysoren, Cassandra and Percival de Rolo, Vax'ildan. From the Forgotten Realms Wiki (reviewed 2026-10-20): the creatures Ashardalon and Strahd von Zarovich. Not covered yet, although the Forgotten Realms Wiki has articles for them: Baba Yaga (*Baba Yaga*) and Ravenloft/Barovia (*Barovia*). Without an article in either wiki (left without lore on purpose): the Monster Jägers, Haftifaflmorhen, Cromulus, Ilión, Damali, and every DM-original NPC and place.
 
 ## Translations (`data/i18n/es-AR.json`)
 
@@ -406,10 +407,10 @@ Older records keep working: events with only `date`/`igLabel`/`xp`/`yp`, session
 
 ## Current data status
 
-Nothing in the chronicle is filled in automatically, and nothing is invented to complete optional fields. As of 2026-10-19 (`node tools/validate-data.js` prints the current state):
+Nothing in the chronicle is filled in automatically, and nothing is invented to complete optional fields. As of 2026-10-20 (`node tools/validate-data.js` prints the current state):
 
-- 6 sessions (1, 2, 8, 10, 11, 12), 33 events (all with a map position), 17 quests, 4 party members, 38 NPCs/deities/creatures/factions, 28 places, lore for 23 entities; every event, session, quest and lore summary has its Spanish translation (people and places only need one when their name has translatable words).
+- 8 sessions (1, 2, 8, 10–14), 52 events (all with a map position), 19 quests, 4 party members, 44 NPCs/deities/creatures/factions, 33 places, lore for 25 entities; every event, session, quest and lore summary has its Spanish translation (people and places only need one when their name has translatable words).
 - **Sessions 3–7 and 9 have not been chronicled** (no log, no events): the Sessions list shows them as gaps. They should be written from the table's notes, not reconstructed.
-- **No event has `description`, `consequences` or `unresolved` yet** (0 of 33), and **no session has an editorial `recap`** (0 of 6), so *Previously on…* lists every recorded event of the latest session.
+- **No event has `description`, `consequences` or `unresolved` yet** (0 of 52), and **no session has an editorial `recap`** (0 of 8), so *Previously on…* lists every recorded event of the latest session.
 - **No place has its own map position yet**; they are added in the map editor when known, never inferred.
-- **Seven places of the Atlas have no `parentId`** (Ilión, Damali, Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the high peak of the Calamity), so they sit at the top level of the Places index beside Tal'Dorei. Some have hints outside the campaign's links — Vasselheim's lore names the continent Issylra (not a recorded place), Whitestone's the Parchwood Timberlands, and the session 1 log calls Ilión "the far continent" while `locations.json` records it as a `region` — but nothing is nested or re-kinded from hints: add `parentId` / `kind` when the table confirms it.
+- **Eight places of the Atlas have no `parentId`** (Ilión, Damali, Kraghammer, the Ozmit Sea, Whitestone, Vasselheim, the high peak of the Calamity, the mountain above Vasselheim — the table only says it overlooks the city), so they sit at the top level of the Places index beside Tal'Dorei. Some have hints outside the campaign's links — Vasselheim's lore names the continent Issylra (not a recorded place), Whitestone's the Parchwood Timberlands, and the session 1 log calls Ilión "the far continent" while `locations.json` records it as a `region` — but nothing is nested or re-kinded from hints: add `parentId` / `kind` when the table confirms it.

@@ -32,7 +32,7 @@ All colours, surfaces and fonts are CSS custom properties on `.cc-app,.cc-tour` 
 | Map | `--pin-bg` `#1b1513`, `--wax` (crimson gradient), `--wax-ink` `#f7eedc`, `--map-filter` | seals and the map picture |
 | Event families | `--ev-<family>`, applied by `.ev-<family>` (sets `--ev`) | [Kinds of event](#kinds-of-event) |
 | Quest status | `--st-active`, `--st-pending`, `--st-done`, `--st-failed`, applied by `.tone-<tone>` (sets `--tone`) | status badges and plot rules |
-| Lore | `--lore` `#97b4c6` | the Lore of Exandria section |
+| Lore | `--lore` `#97b4c6` | the canon lore section |
 | Shape | `--r-sm` 4 px, `--r-page` 6 px | corners |
 | Fonts | `--font-display`, `--font-head`, `--font-read`, `--font-ui` | [Typography](#typography) |
 
@@ -49,7 +49,7 @@ All colours, surfaces and fonts are CSS custom properties on `.cc-app,.cc-tour` 
 | Completed | `--st-done` | `#9dbe8a` green | check |
 | Failed | `--st-failed` | `#e3837a` red | cross |
 
-Open session-log threads are ruled in the active colour, closed ones in the done colour. **Lore of Exandria** — background from Critical Role's world — is set apart from the campaign by the cool slate `--lore` on its heading, icon and source links.
+Open session-log threads are ruled in the active colour, closed ones in the done colour. **Canon lore** — background from the published worlds of Critical Role and D&D — is set apart from the campaign by the cool slate `--lore` on its heading, icon and source links.
 
 ## Typography
 

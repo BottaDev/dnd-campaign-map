@@ -89,8 +89,9 @@ test("4 · contextual help only where it is needed: filters, the recap's source,
     const t = I18N.createTranslator(code);
     assert.match(t("chronicle.filtersHint"), code === "en" ? /combine/ : /combinan/);
     assert.match(t("recap.source", { n: 12 }), /12/);
-    assert.match(t("lore.hint"), /Critical Role/);
-    assert.match(t("lore.hint"), /spoilers/, `${code}: the lore says it is external and may spoil`);
+    const loreHint = t("lore.hint", { sources: "Critical Role Wiki" });
+    assert.match(loreHint, /Critical Role Wiki/, `${code}: the lore names where it comes from`);
+    assert.match(loreHint, /spoilers/, `${code}: the lore says it is external and may spoil`);
     assert.ok(t("map.howTo") && t("map.howToAria"));
   }
   // Few question marks: the hints are text lines, not a row of "?" icons.

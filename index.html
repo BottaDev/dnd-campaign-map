@@ -97,7 +97,7 @@
     --ev-discovery:#6fb3a4; --ev-journey:#98b072; --ev-turning:#d2ae64; --ev-neutral:#a68d6b;
     /* quest status (QUEST_STATUS[status].tone) */
     --st-active:#e2b85f; --st-pending:#e09a5b; --st-done:#9dbe8a; --st-failed:#e3837a;
-    /* Lore of Exandria: the wider world, set apart from the campaign's gold */
+    /* Canon lore: the published worlds, set apart from the campaign's gold */
     --lore:#97b4c6;
     /* shape */
     --r-sm:4px; --r-page:6px;
@@ -650,7 +650,7 @@
   .cc-disc>summary .n{font-family:var(--font-ui);font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0;}
   .cc-disc-b{padding:2px 4px 18px;}
   .cc-disc-b>.cc-h2:first-child{margin-top:4px;}
-  /* Lore of Exandria: background from the wider world — folded away, below our own story, in its own cool tone */
+  /* Canon lore: background from the published worlds — folded away, below our own story, in its own cool tone */
   .cc-lore{margin-top:30px;border-top-color:color-mix(in srgb,var(--lore) 35%,transparent);}
   .cc-lore>summary{padding:8px 4px;color:var(--lore);}
   .cc-lore>summary .cc-ico{color:var(--lore);}
@@ -2130,11 +2130,11 @@
           <div class="cc-btnrow" style="margin-top:22px;"><a class="cc-btn" href="{{ rc.sessionHref }}">{{ icons.sessions }}{{ t.recap.fullSession }}</a><sc-if value="{{ rc.canFilter }}"><button class="cc-btn ghost" onClick="{{ rc.onFilter }}">{{ icons.chronicle }}{{ t.recap.inChronicle }}</button></sc-if></div>
         </sc-if>
 
-        <!-- LORE OF EXANDRIA (characters, places): curated background, collapsed, after our own story.
+        <!-- CANON LORE (characters, places): curated background, collapsed, after our own story.
              key = entity, so it starts folded again on every entry; the language switch keeps it open. -->
         <sc-if value="{{ lo.has }}">
           <details class="cc-disc cc-lore" key="{{ lo.key }}">
-            <summary>{{ icons.lore }}<span class="cc-lore-h"><span>{{ t.lore.heading }}</span><span class="cc-lore-hint">{{ t.lore.hint }}</span></span></summary>
+            <summary>{{ icons.lore }}<span class="cc-lore-h"><span>{{ t.lore.heading }}</span><span class="cc-lore-hint">{{ lo.hint }}</span></span></summary>
             <div class="cc-disc-b">
               <sc-if value="{{ lo.summary }}"><p class="cc-lore-p" lang="{{ lo.summaryLang }}">{{ lo.summary }}</p></sc-if>
               <sc-if value="{{ lo.fallbackNote }}"><p class="cc-lore-note">{{ lo.fallbackNote }}</p></sc-if>
@@ -3802,17 +3802,19 @@ class Component extends DCLogic {
     };
   }
 
-  // Lore of Exandria for a person or place (model: entity.lore, from data/lore.json). Only text and
+  // Canon lore for a person or place (model: entity.lore, from data/lore.json). Only text and
   // https:// URLs already checked by ChronicleModel.safeExternalUrl reach the template — no HTML.
+  // The folded row names the entry's own sources (Critical Role Wiki, Forgotten Realms Wiki…).
   _loreVm(ent,kind){
     const lo=ent&&ent.lore, t=this.t;
     if(!lo) return { has:false };
     const refs=lo.references.map(r=>({ url:r.url, label:r.title?`${r.sourceLabel} — ${r.title}`:r.sourceLabel,
       sub:[t("lore.readMore"), r.community?t("lore.community"):""].filter(Boolean).join(" · ") }));
+    const sources=[...new Set(lo.references.map(r=>r.sourceLabel))].join(t("common.listSep"));
     const foot=[lo.basedOn.length?t("lore.basedOn",{sources:lo.basedOn.join(t("common.listSep"))}):"",
       lo.reviewedLabel?t("lore.reviewed",{date:lo.reviewedLabel}):"", t("lore.precedence")].filter(Boolean);
     return {
-      has:true, key:`lore:${kind}:${ent.id}`,
+      has:true, key:`lore:${kind}:${ent.id}`, hint:t("lore.hint",{sources}),
       summary:lo.summary, summaryLang:lo.summaryLang==="en"?"en":t.meta.htmlLang, noSummary:!lo.summary,
       fallbackNote:lo.summaryFallback?t("lore.inEnglish"):"",
       facts:lo.facts.map(x=>({ label:x.label, value:x.value })), hasFacts:lo.facts.length>0,

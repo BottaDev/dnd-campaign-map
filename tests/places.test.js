@@ -121,7 +121,8 @@ test("6 · search: a nested place keeps its ancestors as context; case, accents,
   const matched = view => shown(view).filter(id => find(view, id).match).sort();
   assert.deepEqual(matched(cities), es.places.filter(p => p.kind === "city").map(p => p.id).sort());
   assert.deepEqual(matched(citiesEn), matched(cities));
-  assert.deepEqual(matched(Model.placeTreeView(es, ies, { query: "plano" })), ["far-realm", "ravenloft", "shadowfell"]);
+  assert.deepEqual(matched(Model.placeTreeView(es, ies, { query: "plano" })), es.places.filter(p => p.kind === "plane").map(p => p.id).sort());
+  assert.ok(matched(Model.placeTreeView(es, ies, { query: "plano" })).includes("ravenloft"), "a plane inside a plane too");
   const none = Model.placeTreeView(m, idx, { query: "xyzzy" });
   assert.deepEqual([none.searching, none.matchCount, none.groups.length], [true, 0, 0]);
   assert.deepEqual(shown(Model.placeTreeView(m, idx, { query: "   " })), shown(Model.placeTreeView(m, idx, {})), "blank = no search");
@@ -183,7 +184,7 @@ test("11 · the real campaign: every place once, the planes apart, the path to G
   const m = buildReal("es-AR"), idx = Model.placeIndex(m);
   assert.equal(Model.placeOrder(m, idx).length, m.places.length);
   assert.deepEqual(idx.groups.map(g => g.key), ["atlas", "planes"]);
-  assert.deepEqual(idx.groups[1].rootIds.slice().sort(), ["far-realm", "shadowfell"]);
+  assert.deepEqual(idx.groups[1].rootIds.slice().sort(), ["far-realm", "nine-hells", "shadowfell"]);
   assert.ok(idx.groups[0].rootIds.every(id => !m.placeById.get(id).isPlanar));
   const v = Model.placeTreeView(m, idx, { query: "Gilmore" });
   assert.deepEqual(shown(v), ["taldorei", "emon", "academic-district", "gilmores-shop"]);

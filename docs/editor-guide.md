@@ -223,7 +223,7 @@ Si no se puede abrir un `.zip`, **Descargar los archivos sueltos** baja los mism
 ## Qué no se edita en el Taller
 
 - **Los recorridos** (las líneas punteadas del mapa): son viajes registrados y se cargan a mano en `data/routes.json`.
-- **El Lore de Exandria**: es canon curado con fuentes y se mantiene en `data/lore.json`.
+- **El lore canónico** (de la Critical Role Wiki y la Forgotten Realms Wiki): es canon curado con fuentes y se mantiene en `data/lore.json`.
 - **Personajes del grupo nuevos**: se agregan en el repositorio (con su retrato, su color y sus recorridos). Tampoco se eliminan desde el Taller.
 - **Retratos nuevos**: la imagen se agrega primero al repositorio (`assets/`) y después se elige en el formulario.
 - **Eliminar**: solo se puede eliminar lo que ningún otro registro menciona. Un acontecimiento mencionado por otros acontecimientos o por momentos destacados se puede eliminar quitando esas menciones (**Eliminar y quitar las menciones**).

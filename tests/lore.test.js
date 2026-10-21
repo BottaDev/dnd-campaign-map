@@ -1,4 +1,4 @@
-// Lore of Exandria (data/lore.json): external references, curated summaries, translations,
+// Canon lore (data/lore.json): external references, curated summaries, translations,
 // spoiler flags, link safety, and — above all — that the lore layer never changes campaign data.
 "use strict";
 const test = require("node:test");
@@ -166,6 +166,10 @@ test("integration · campaign data, relations, links and search are identical wi
 });
 
 // ── The real lore file ──────────────────────────────────────────────────────
+// Each source's links stay on its own wiki: Exandria's canon on the Critical Role Wiki, D&D entities
+// from other settings (Strahd, Ashardalon…) on the Forgotten Realms Wiki.
+const WIKIS = { "cr-wiki": "https://criticalrole.fandom.com/wiki/", "fr-wiki": "https://forgottenrealms.fandom.com/wiki/" };
+
 test("real data · every lore entry is sourced, https-only, reviewed, bilingual and spoiler-flagged", () => {
   const lore = readJson("data/lore.json"), es = loadContent("es-AR");
   const en = buildReal("en"), sp = buildReal("es-AR");
@@ -174,8 +178,8 @@ test("real data · every lore entry is sourced, https-only, reviewed, bilingual 
   for (const [id, lo] of en.lore) {
     assert.ok(lo.references.length >= 1, id);
     lo.references.forEach(r => {
-      assert.ok(r.url.startsWith("https://criticalrole.fandom.com/wiki/"), `${id}: ${r.url}`);
-      assert.equal(r.source, "cr-wiki");
+      assert.ok(WIKIS[r.source], `${id}: a declared wiki source (${r.source})`);
+      assert.ok(r.url.startsWith(WIKIS[r.source]), `${id}: ${r.url}`);
       assert.ok(r.title, `${id}: article title`);
     });
     assert.equal(lo.spoilers, true, id);
@@ -188,7 +192,11 @@ test("real data · every lore entry is sourced, https-only, reviewed, bilingual 
     assert.equal(s.lore.summaryFallback, false, id);
     assert.notEqual(s.lore.summary, lo.summary, `${id}: translated`);
   }
-  assert.equal(lore.sources["cr-wiki"].community, true, "the CR Wiki is identified as a community wiki");
+  Object.keys(WIKIS).forEach(s => {
+    assert.equal(lore.sources[s].community, true, `${s} is identified as a community wiki`);
+    assert.ok(lore.sources[s].url.startsWith(WIKIS[s]), `${s}: its home page is on its own wiki`);
+  });
+  ["ashardalon", "strahd"].forEach(id => assert.deepEqual(en.lore.get(id).references.map(r => r.source), ["fr-wiki"], `${id}: from the Forgotten Realms Wiki`));
   // Party members and the DM's own NPCs carry no external lore.
   en.pcs.forEach(p => assert.equal(p.lore, null, p.id));
   ["diomedes", "marco", "locus", "caval", "tyr", "ubu", "sorfons-mother", "metrodidacts", "sarenraes-faithful"].forEach(id => assert.equal(en.personById.get(id).lore, null, id));
@@ -200,10 +208,12 @@ test("i18n · every lore interface key exists in both locales (incl. fact labels
       assert.ok(I18N.get(I18N.dicts[code], `lore.${k}`), `${code} lore.${k}`);
     Model.LORE_FACTS.forEach(k => assert.ok(I18N.get(I18N.dicts[code], `lore.fact.${k}`), `${code} lore.fact.${k}`));
     const t = I18N.createTranslator(code);
-    assert.match(t("lore.spoiler", { count: 1 }), /Critical Role/);
+    // Lore comes from more than one wiki: the folded row names the entry's own sources, the warning fits them all.
+    assert.match(t("lore.hint", { sources: "Forgotten Realms Wiki" }), /\(Forgotten Realms Wiki\)/);
+    assert.doesNotMatch(t("lore.heading") + t("lore.spoiler", { count: 1 }) + t("lore.spoiler", { count: 2 }), /Exandria|Critical Role|Forgotten Realms/);
     assert.notEqual(t("lore.spoiler", { count: 1 }), t("lore.spoiler", { count: 2 }));
   }
-  assert.equal(I18N.createTranslator("es-AR")("lore.spoiler", { count: 1 }), "El artículo externo puede contener spoilers del universo de Critical Role.");
+  assert.equal(I18N.createTranslator("es-AR")("lore.spoiler", { count: 1 }), "El artículo externo puede contener spoilers.");
 });
 
 test("template · the lore section is a collapsed disclosure keyed per entity, placed after the campaign sections", () => {

@@ -73,7 +73,7 @@ npm run test:taller   # tests/browser/taller.mjs only (TALLER_ONLY=<regex> for a
 | `tests/i18n.test.js` | Languages: defaults, keys present in both dictionaries, content translation and fallback, bilingual search, dates. |
 | `tests/order.test.js` | Default orders and explicit preferences. |
 | `tests/design.test.js` | Visual contracts: icons, colour tokens, the single dark theme, textures, the ribbon, the illuminated initial. |
-| `tests/lore.test.js` | The Lore of Exandria layer. |
+| `tests/lore.test.js` | The canon lore layer. |
 | `tests/search.test.js` | The universal search. |
 | `tests/find.test.js` | The Sessions, Quests and Characters searches. |
 | `tests/recap.test.js` | *Previously on…*. |
@@ -97,7 +97,7 @@ npm run test:taller   # tests/browser/taller.mjs only (TALLER_ONLY=<regex> for a
 - `tests/i18n.test.js` — default language, persistence, every key used by `index.html` exists in both dictionaries, content translation and fallback, bilingual accent-insensitive search, localized dates, identical ids/relations in both languages.
 - `tests/order.test.js` — default orders (Chronicle latest first, Sessions oldest first), explicit choices kept per section, legacy preferences migrated, numeric session order with gaps, stable same-day order, undated events last, independent of language and filters.
 - `tests/design.test.js` — every event type has its own icon and a colour family with a token, every kind of place its own icon, every quest status an icon and a tone (and every quest card its status badge); one dark theme only (no light tokens, toggle or theme strings; an old preference is discarded; dark before the app boots); the Grimorio textures are small precached WebP files, dropped when saving data, never on controls or cards, leather only on the bars and map controls; the crimson ribbon only on states (open, current, saved); the illuminated initial keeps the paragraph whole for screen readers.
-- `tests/lore.test.js` — Lore of Exandria: one, several or no references, invalid/unsafe URLs, new-tab `rel`, summaries with and without translation, facts, unsourced lore rejected, the real `lore.json` (sourced, https, bilingual, reviewed), and campaign data identical with and without lore.
+- `tests/lore.test.js` — canon lore: one, several or no references, invalid/unsafe URLs, new-tab `rel`, summaries with and without translation, facts, unsourced lore rejected, the real `lore.json` (sourced, https, bilingual, reviewed, each link on its own source's wiki — Critical Role Wiki or Forgotten Realms Wiki), texts that name no single world, and campaign data identical with and without lore.
 - `tests/search.test.js` — universal search: every kind of entry, grouping and relevance (names first), entries linked to a person, bilingual, accents/case, aliases and name prefixes, session numbers and campaign days, empty and no-result queries, highlighting, same ranking in both languages, the Chronicle's own search unchanged (and *See all in the Chronicle* showing exactly the same events).
 - `tests/find.test.js` — the Sessions, Quests and Characters searches (Characters: exactly the same people as its filter always found, now with the reason — an alias, the kind, the role —, translated aliases that do not line up still found, numbers read as words); a session number means that session only (never stray digits, an unchronicled number finds nothing), titles partly typed, what was recorded (opening/closing lines, plots and notes, effects, events and their kind), people, places (with the places they lie in) and quests linked explicitly — never through links of links —, quests by title, summary, objectives, giver, session notes, events, people, places and session number, both languages/accents/case, no results and nothing typed, the Sessions order kept, status AND words for Quests, the excerpt that says why an entry appeared, a label for every place a word can be found; the `index.html` wiring (one field behaviour, header → search → order/status → list, nothing stored, the count said once typing pauses, the tour setting the searches aside and giving them back).
 - `tests/recap.test.js` — Previously on…: latest session by number (gaps, stubs, out-of-order keys), sessions without summary/events, several events, editorial highlights (validated, order kept), pending threads and events' open questions, nothing invented (every text traced to the data), translation and fallback.
@@ -126,9 +126,9 @@ It runs the page's own model (`js/chronicle-model.js`) over `data/*.json` and `d
 Its last lines report counts, translation coverage and what is still to be written, for example:
 
 ```text
-33 events (0 without map position) · 6 sessions · 17 quests · 4 PCs · 38 NPCs/factions · 28 places (0 with their own map position) · lore for 23 entities (23 links)
-Translated es-AR: events 33/33 · sessions 6/6 · quests 17/17 · lore summaries 23/23
-Pending to write: sessions not chronicled 3–7, 9 · events with description/consequences/unresolved 0/33 · sessions with an editorial recap 0/6
+52 events (0 without map position) · 8 sessions · 19 quests · 4 PCs · 44 NPCs/factions · 33 places (0 with their own map position) · lore for 25 entities (25 links)
+Translated es-AR: events 52/52 · sessions 8/8 · quests 19/19 · lore summaries 25/25
+Pending to write: sessions not chronicled 3–7, 9 · events with description/consequences/unresolved 0/52 · sessions with an editorial recap 0/8
 ```
 
 Run it after any change to `data/`, and before committing.
@@ -175,7 +175,7 @@ The Taller del Cronista does steps 1–7 through forms and exports a package (th
 5. **Narrative depth (optional):** for the session's important moments, add `description`, `consequences` and `unresolved` — only with what happened at the table.
 6. **Recap (optional):** give the session a `recap` with 3–5 `highlights` and/or a `summary`.
 7. **Translation:** add the Spanish text for the new events, session or quest to `data/i18n/es-AR.json`.
-8. **Lore (optional):** if a new NPC or place is a verified part of Exandria's canon, add a reference and a spoiler-free summary to `lore.json` ([checklist](data-model.md#adding-lore-for-an-entity--checklist)).
+8. **Lore (optional):** if a new NPC or place is a verified canon entity (Exandria's, from the Critical Role Wiki, or another D&D setting's, from the Forgotten Realms Wiki), add a reference and a spoiler-free summary to `lore.json` ([checklist](data-model.md#adding-lore-for-an-entity--checklist)).
 9. **Offline copy:** only if you added a *new file* the page loads at start (a new `data/*.json`, script or portrait), list it in `PRECACHE` in `sw.js` and bump `VERSION`. New content in existing files needs nothing.
 10. **Validate and test:** `npm test` (or at least `node tools/validate-data.js`).
 
